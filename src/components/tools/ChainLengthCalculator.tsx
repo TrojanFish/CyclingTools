@@ -1,0 +1,389 @@
+import React, { useState, useMemo } from 'react';
+import { Link, CheckCircle2, AlertTriangle, Info, Copy, Settings, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Tooltip } from '../common/Tooltip';
+import { NumberStepper } from '../common/NumberStepper';
+import { useToast } from '../../context/ToastContext';
+
+export const ChainLengthCalculator: React.FC = () => {
+  const { showToast } = useToast();
+
+  const [chainstayLengthMm, setChainstayLengthMm] = useState<number>(410);
+  const [bigRing, setBigRing] = useState<number>(50);
+  const [smallRing, setSmallRing] = useState<number>(34);
+  const [isSingleRing, setIsSingleRing] = useState<boolean>(false);
+  const [bigCog, setBigCog] = useState<number>(34);
+  const [smallCog, setSmallCog] = useState<number>(11);
+  const [pulleyTeeth, setPulleyTeeth] = useState<number>(11); // 11T standard or 12/14T oversized
+
+  // Preset Configurations
+  const loadPreset = (type: string) => {
+    if (type === 'compact_34') {
+      setIsSingleRing(false);
+      setBigRing(50);
+      setSmallRing(34);
+      setBigCog(34);
+      setSmallCog(11);
+      setChainstayLengthMm(410);
+      setPulleyTeeth(11);
+      showToast('已加载压缩盘 50/34T + 11-34T 预设', 'info');
+    } else if (type === 'semi_30') {
+      setIsSingleRing(false);
+      setBigRing(52);
+      setSmallRing(36);
+      setBigCog(30);
+      setSmallCog(11);
+      setChainstayLengthMm(410);
+      setPulleyTeeth(11);
+      showToast('已加载半压缩 52/36T + 11-30T 预设', 'info');
+    } else if (type === 'sram_axs') {
+      setIsSingleRing(false);
+      setBigRing(48);
+      setSmallRing(35);
+      setBigCog(33);
+      setSmallCog(10);
+      setChainstayLengthMm(410);
+      setPulleyTeeth(12);
+      showToast('已加载 SRAM AXS 48/35T + 10-33T 预设', 'info');
+    } else if (type === 'gravel_1x') {
+      setIsSingleRing(true);
+      setBigRing(40);
+      setSmallRing(40);
+      setBigCog(44);
+      setSmallCog(10);
+      setChainstayLengthMm(425);
+      setPulleyTeeth(12);
+      showToast('已加载 Gravel 单盘 40T + 10-44T 预设', 'info');
+    }
+  };
+
+  // Comprehensive Calculation
+  const result = useMemo(() => {
+    // 1. Standard Rigby Equation: L = 2 * (C / 25.4) + (F / 4) + (R / 4) + 1
+    const cInches = chainstayLengthMm / 25.4;
+    const rawLinksRigby = 2 * cInches + bigRing / 4 + bigCog / 4 + 1;
+    // Oversized pulley wheel compensation (if 14T+ add 1 link)
+    const pulleyExtra = pulleyTeeth > 11 ? (pulleyTeeth - 11) * 0.3 : 0;
+    const finalRawLinks = rawLinksRigby + pulleyExtra;
+
+    // Must be an even integer for standard inner-outer link pairs
+    const recommendedLinksEven = Math.ceil(finalRawLinks / 2) * 2;
+    const chainLengthInches = (recommendedLinksEven * 0.5).toFixed(1); // Standard 1/2" pitch
+
+    // 2. Shimano / SRAM Direct Method (Large-Large + 2 links with quick link)
+    const shimanoMethodLinks = Math.ceil((2 * cInches + (bigRing + bigCog) / 4 + (isSingleRing ? 3 : 2)) / 2) * 2;
+
+    // 3. Drivetrain Capacity Check (后拨齿容量校核)
+    const frontDifference = isSingleRing ? 0 : bigRing - smallRing;
+    const rearDifference = bigCog - smallCog;
+    const requiredCapacity = frontDifference + rearDifference;
+
+    let rearDerailleurRecommendation = '短腿 (SS: ~30T) 或 中腿 (GS)';
+    let isCapacityWarning = false;
+
+    if (requiredCapacity > 41) {
+      rearDerailleurRecommendation = '超长腿 (SGS: 43T+)';
+    } else if (requiredCapacity > 34) {
+      rearDerailleurRecommendation = '中腿 (GS: 35~41T)';
+    } else {
+      rearDerailleurRecommendation = '短腿 (SS: 28~34T) 或 中腿 (GS)';
+    }
+
+    if (bigCog > 34 && requiredCapacity > 39) {
+      isCapacityWarning = true;
+    }
+
+    return {
+      recommendedLinks: recommendedLinksEven,
+      chainLengthInches,
+      shimanoMethodLinks,
+      requiredCapacity,
+      rearDerailleurRecommendation,
+      isCapacityWarning,
+      rawFloat: finalRawLinks.toFixed(2)
+    };
+  }, [chainstayLengthMm, bigRing, smallRing, isSingleRing, bigCog, smallCog, pulleyTeeth]);
+
+  const copyReport = () => {
+    const text = `⛓️ SoloRiderTools 链条长度与传动计算报告:\n- 后下叉 RC: ${chainstayLengthMm} mm\n- 传动搭配: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} + ${smallCog}-${bigCog}T 飞轮\n- 推荐链条截取节数: ${result.recommendedLinks} 节 (含魔术扣)\n- 链条总长: ${result.chainLengthInches} 英寸\n- 传动总齿容量需求: ${result.requiredCapacity}T (推荐 ${result.rearDerailleurRecommendation})`;
+    navigator.clipboard.writeText(text);
+    showToast('链条长度计算报告已复制到剪贴板！', 'success');
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+              <Link className="w-3.5 h-3.5" />
+              传动系统装配与链条数学
+            </div>
+            <h1 className="text-2xl font-bold text-slate-100">链条长度与传动链节计算器</h1>
+            <p className="text-slate-400 text-sm mt-1">
+              换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。
+            </p>
+          </div>
+
+          <button
+            onClick={copyReport}
+            className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition self-start md:self-auto"
+          >
+            <Copy className="w-3.5 h-3.5" />
+            复制链条报告
+          </button>
+        </div>
+      </div>
+
+      {/* Preset Buttons */}
+      <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-slate-400">常见规格一键填入:</span>
+        <button
+          onClick={() => loadPreset('compact_34')}
+          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+        >
+          压缩盘 50/34T + 11-34T (410mm)
+        </button>
+        <button
+          onClick={() => loadPreset('semi_30')}
+          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+        >
+          半压缩 52/36T + 11-30T (410mm)
+        </button>
+        <button
+          onClick={() => loadPreset('sram_axs')}
+          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+        >
+          SRAM AXS 48/35T + 10-33T
+        </button>
+        <button
+          onClick={() => loadPreset('gravel_1x')}
+          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+        >
+          Gravel 单盘 40T + 10-44T
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Inputs */}
+        <div className="lg:col-span-5 space-y-6">
+          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
+            <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
+              <Settings className="w-4 h-4 text-cyan-400" />
+              车架几何与齿盘参数
+            </h2>
+
+            {/* Chainstay Length */}
+            <div>
+              <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center">
+                后下叉长度 Chainstay RC (mm)
+                <Tooltip content="五通中轴中心至后轮快拆/桶轴中心的直线距离，绝大多数公路车为 405~415mm，Gravel/耐力车为 420~435mm。" />
+              </label>
+              <NumberStepper
+                value={chainstayLengthMm}
+                onChange={setChainstayLengthMm}
+                step={1}
+                min={390}
+                max={460}
+                unit="mm"
+              />
+            </div>
+
+            {/* Drivetrain 1x or 2x */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                onClick={() => setIsSingleRing(false)}
+                className={`py-2 rounded-xl border text-xs font-semibold transition ${
+                  !isSingleRing ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-400'
+                }`}
+              >
+                双盘系统 (2x)
+              </button>
+              <button
+                onClick={() => setIsSingleRing(true)}
+                className={`py-2 rounded-xl border text-xs font-semibold transition ${
+                  isSingleRing ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-400'
+                }`}
+              >
+                单盘系统 (1x)
+              </button>
+            </div>
+
+            {/* Chainrings */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-medium text-slate-300 block mb-1.5">
+                  {isSingleRing ? '单盘齿数 (T)' : '最大大盘齿数 (T)'}
+                </label>
+                <NumberStepper value={bigRing} onChange={setBigRing} min={30} max={60} unit="T" />
+              </div>
+              {!isSingleRing && (
+                <div>
+                  <label className="text-xs font-medium text-slate-300 block mb-1.5">最小小盘齿数 (T)</label>
+                  <NumberStepper value={smallRing} onChange={setSmallRing} min={28} max={46} unit="T" />
+                </div>
+              )}
+            </div>
+
+            {/* Cassette */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-medium text-slate-300 block mb-1.5">飞轮最大片齿数 (T)</label>
+                <NumberStepper value={bigCog} onChange={setBigCog} min={25} max={52} unit="T" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-slate-300 block mb-1.5">飞轮最小片齿数 (T)</label>
+                <NumberStepper value={smallCog} onChange={setSmallCog} min={9} max={14} unit="T" />
+              </div>
+            </div>
+
+            {/* Pulley Teeth */}
+            <div className="pt-2 border-t border-slate-800">
+              <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center">
+                后拨导轮规格 (Pulley Wheels)
+                <Tooltip content="标准原厂导轮一般为 11T/12T；若改装超大导轮系统（如 14T/16T/18T 大鸡腿），需相应补偿链节。" />
+              </label>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                {[
+                  { teeth: 11, label: '标准原厂 (11T)' },
+                  { teeth: 12, label: 'AXS/新型 (12T)' },
+                  { teeth: 14, label: '大鸡腿改装 (14T+)' }
+                ].map((p) => (
+                  <button
+                    key={p.teeth}
+                    onClick={() => setPulleyTeeth(p.teeth)}
+                    className={`py-2 px-1 rounded-xl border text-center transition ${
+                      pulleyTeeth === p.teeth
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400 font-semibold'
+                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Outputs & Visualization */}
+        <div className="lg:col-span-7 space-y-6">
+          {/* Main Key Link Metric Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
+              <span className="text-xs text-slate-400 font-medium block">标准截链推荐</span>
+              <div className="text-3xl font-extrabold font-mono text-cyan-400 mt-1">
+                {result.recommendedLinks} <span className="text-xs text-slate-400 font-sans font-normal">Links (节)</span>
+              </div>
+              <span className="text-[10px] text-slate-500 font-mono">
+                含 1 节魔术扣 (Quick Link)
+              </span>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
+              <span className="text-xs text-slate-400 font-medium block">链条理论总长度</span>
+              <div className="text-3xl font-extrabold font-mono text-emerald-400 mt-1">
+                {result.chainLengthInches} <span className="text-xs text-slate-400 font-sans font-normal">英寸</span>
+              </div>
+              <span className="text-[10px] text-slate-500">
+                约 {(parseFloat(result.chainLengthInches) * 25.4).toFixed(0)} mm
+              </span>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
+              <span className="text-xs text-slate-400 font-medium block">后拨总齿容量需求</span>
+              <div className={`text-3xl font-extrabold font-mono mt-1 ${result.isCapacityWarning ? 'text-amber-400' : 'text-slate-100'}`}>
+                {result.requiredCapacity} <span className="text-xs text-slate-400 font-sans font-normal">T</span>
+              </div>
+              <span className="text-[10px] text-slate-500">
+                {result.rearDerailleurRecommendation}
+              </span>
+            </div>
+          </div>
+
+          {/* Drivetrain Visual SVG Schematic */}
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                传动链条闭环受力几何示意
+              </span>
+              <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">RC: {chainstayLengthMm}mm</span>
+            </div>
+
+            <div className="flex justify-center bg-slate-50 dark:bg-slate-950/40 rounded-xl p-4 border border-slate-200 dark:border-slate-800/60 transition-colors">
+              <svg viewBox="0 0 360 140" className="w-full max-w-md h-auto select-none">
+                {/* Chainstay line */}
+                <line x1="80" y1="70" x2="280" y2="70" stroke="#94a3b8" strokeWidth="2.5" strokeDasharray="4 4" className="dark:stroke-slate-700" />
+                <text x="180" y="62" fontSize="9" fill="#64748b" textAnchor="middle" fontFamily="monospace">
+                  RC = {chainstayLengthMm} mm
+                </text>
+
+                {/* Chain Loop (upper & lower runs) */}
+                <path
+                  d="M 80 40 L 280 25 A 45 45 0 0 1 280 115 L 110 110 L 80 95 A 25 25 0 0 1 80 40"
+                  fill="none"
+                  stroke="#0284c7"
+                  strokeWidth="3"
+                  strokeDasharray="6 2"
+                  opacity="0.85"
+                  className="dark:stroke-[#00AFFF]"
+                />
+
+                {/* Front Chainring */}
+                <circle cx="280" cy="70" r="45" fill="#f1f5f9" stroke="#0284c7" strokeWidth="2.5" className="dark:fill-slate-800 dark:stroke-[#00AFFF]" />
+                <circle cx="280" cy="70" r="10" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-slate-900 dark:stroke-slate-600" />
+                <text x="280" y="74" fontSize="12" fontWeight="bold" fill="#0369a1" textAnchor="middle" fontFamily="monospace" className="dark:fill-sky-400">
+                  {bigRing}T
+                </text>
+                <text x="280" y="128" fontSize="9" fill="#64748b" textAnchor="middle" className="dark:fill-slate-400">
+                  牙盘 (Chainring)
+                </text>
+
+                {/* Rear Cassette */}
+                <circle cx="80" cy="70" r="28" fill="#f1f5f9" stroke="#059669" strokeWidth="2.5" className="dark:fill-slate-800 dark:stroke-emerald-500" />
+                <circle cx="80" cy="70" r="8" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-slate-900 dark:stroke-slate-600" />
+                <text x="80" y="74" fontSize="11" fontWeight="bold" fill="#047857" textAnchor="middle" fontFamily="monospace" className="dark:fill-emerald-400">
+                  {bigCog}T
+                </text>
+                <text x="80" y="128" fontSize="9" fill="#64748b" textAnchor="middle" className="dark:fill-slate-400">
+                  飞轮 (Cassette)
+                </text>
+
+                {/* Derailleur Pulley Cage */}
+                <circle cx="105" cy="108" r="9" fill="#fef3c7" stroke="#d97706" strokeWidth="2" className="dark:fill-slate-900 dark:stroke-amber-500" />
+                <text x="105" y="111" fontSize="7" fontWeight="bold" fill="#b45309" textAnchor="middle" className="dark:fill-amber-400">
+                  {pulleyTeeth}T
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          {/* Installation Best Practices Card */}
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+              官方装配与物理测量截链法则
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                <span className="font-semibold text-cyan-600 dark:text-cyan-300 block">Shimano 经典大对大法</span>
+                <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                  链条不经过后拨导轮，直接绕过最大大盘与最大飞轮拉紧，在两端闭合重合处额外加 <strong>2 节 (含魔术扣)</strong> 即为标准长度。
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                <span className="font-semibold text-emerald-600 dark:text-emerald-300 block">小盘小飞下垂校验</span>
+                <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                  截链装好后切换至小盘最小飞轮，确认后拨导板仍保有微小张力且链条不会刮蹭后拨上导轮下沿。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
