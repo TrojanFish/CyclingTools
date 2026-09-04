@@ -21,6 +21,8 @@ import { GpxRouteCreator } from './components/tools/GpxRouteCreator';
 import { GroupRideSimulator } from './components/tools/GroupRideSimulator';
 import { CyclingWeatherAdvisor } from './components/tools/CyclingWeatherAdvisor';
 import { HealthCalculator } from './components/tools/HealthCalculator';
+import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
+import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { TOOLS_LIST } from './data/toolsList';
 import { ArrowLeft, ChevronRight, ChevronLeft, Home } from 'lucide-react';
 
@@ -29,6 +31,7 @@ const MainAppContent: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isDark, setIsDark] = useState<boolean>(true);
+  const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const { language, t } = useLanguageAndUnit();
 
   // Filter tools by category & search term
@@ -78,6 +81,9 @@ const MainAppContent: React.FC = () => {
   return (
     <div className={`min-h-screen flex flex-col justify-between ${isDark ? 'dark bg-[#0b0f19] text-slate-100' : 'light bg-slate-50 text-slate-900'}`}>
       <div>
+        {/* PWA Installation Prompt Bar (Mobile & Desktop) */}
+        <PwaInstallPrompt />
+
         {/* Top Header */}
         <Header
           searchTerm={searchTerm}
@@ -90,10 +96,12 @@ const MainAppContent: React.FC = () => {
           }}
           currentToolId={currentToolId}
           onSelectTool={(id) => setCurrentToolId(id)}
+          profileModalOpen={profileModalOpen}
+          setProfileModalOpen={setProfileModalOpen}
         />
 
-        {/* Main Container */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Main Container with extra bottom padding on mobile for MobileBottomNav */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 md:pb-8">
           <main className="space-y-6">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
@@ -213,6 +221,21 @@ const MainAppContent: React.FC = () => {
           </main>
         </div>
       </div>
+
+      {/* Mobile Bottom Dock Navigation */}
+      <MobileBottomNav
+        currentToolId={currentToolId}
+        onNavigateHome={() => {
+          setCurrentToolId(null);
+          setSelectedCategory('all');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onSelectTool={(id) => {
+          setCurrentToolId(id);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onOpenProfile={() => setProfileModalOpen(true)}
+      />
 
       {/* Global Footer & Back to Top Button */}
       <Footer

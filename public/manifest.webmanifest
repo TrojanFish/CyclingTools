@@ -1,0 +1,52 @@
+{
+  "name": "SoloRiderTools Pro - Precision Cycling Science",
+  "short_name": "SoloRider",
+  "description": "Modern precision data-driven cycling science and aerodynamics platform with 14 tools.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0284c7",
+  "orientation": "any",
+  "categories": ["sports", "fitness", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Power & Speed Calculator",
+      "short_name": "Power",
+      "description": "Calculate cycling aerodynamic power & speed",
+      "url": "/#tool-power-calc"
+    },
+    {
+      "name": "Tire Pressure Optimizer",
+      "short_name": "Tire Pressure",
+      "description": "Calculate optimal front and rear tire pressures",
+      "url": "/#tool-tire-pressure"
+    },
+    {
+      "name": "Roadbook Library",
+      "short_name": "Roadbook",
+      "description": "Explore Grand Tour climbs & GPX library",
+      "url": "/#tool-roadbook-library"
+    },
+    {
+      "name": "Bike Fitting Calculator",
+      "short_name": "Bike Fit",
+      "description": "Calculate saddle height & bike geometry",
+      "url": "/#tool-bike-fitter"
+    }
+  ]
+}

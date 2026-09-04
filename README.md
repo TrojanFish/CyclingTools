@@ -7,6 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?logo=tailwind-css)](https://tailwindcss.com/)
 [![i18n](https://img.shields.io/badge/i18n-English%20%7C%20%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%20%7C%20%E7%B9%81%E9%AB%94%E4%B8%AD%E6%96%87-brightgreen)]()
+[![PWA](https://img.shields.io/badge/PWA-Ready-10b981?logo=pwa)]()
 [![Units](https://img.shields.io/badge/Units-Metric%20%7C%20Imperial-orange)]()
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20Client--Side-success)]()
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -23,6 +24,10 @@
 
 ## 🌟 Key Architectural Features / 核心特性
 
+- 📱 **Progressive Web App (PWA) & Mobile-First UX**:
+  - **Standalone App Launch**: Installable on iOS (Safari "Add to Home Screen"), Android, macOS, and Windows Chrome.
+  - **Offline Resilience**: Service Worker caches critical bundles and route assets for smooth usage without network connectivity.
+  - **Mobile vs Desktop Adaptive Layout**: Features a dedicated mobile bottom navigation dock (`MobileBottomNav`) with safe area insets (`env(safe-area-inset-bottom)`), while providing desktop users full keyboard shortcuts (`/` for quick search), interactive breadcrumbs, and expansive multi-column grid views.
 - 🌐 **Global Trilingual Support (i18n)**: Instant zero-flicker toggle between **English**, **简体中文**, and **繁體中文**. Automatically detects user browser locale (`zh-TW`, `zh-HK`, `zh-CN`, `en`).
 - ⚖️ **Dual Unit Engine (Metric ↔ Imperial)**:
   - Weight: `kg` ↔ `lbs`
@@ -74,8 +79,8 @@
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/soloridertools.git
-cd soloridertools
+git clone https://github.com/TrojanFish/CyclingTools.git
+cd CyclingTools
 ```
 
 ### 2. Install dependencies

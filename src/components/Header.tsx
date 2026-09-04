@@ -13,6 +13,8 @@ interface HeaderProps {
   onNavigateHome: () => void;
   currentToolId: string | null;
   onSelectTool: (id: string) => void;
+  profileModalOpen?: boolean;
+  setProfileModalOpen?: (open: boolean) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -20,9 +22,13 @@ export const Header: React.FC<HeaderProps> = ({
   setSearchTerm,
   isDark,
   setIsDark,
-  onNavigateHome
+  onNavigateHome,
+  profileModalOpen,
+  setProfileModalOpen
 }) => {
-  const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
+  const [internalProfileOpen, setInternalProfileOpen] = useState<boolean>(false);
+  const isProfileOpen = profileModalOpen !== undefined ? profileModalOpen : internalProfileOpen;
+  const setProfileOpen = setProfileModalOpen || setInternalProfileOpen;
   const [mobileSearchOpen, setMobileSearchOpen] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const { profile } = useRiderProfile();
@@ -36,14 +42,14 @@ export const Header: React.FC<HeaderProps> = ({
         setMobileSearchOpen(true);
         setTimeout(() => searchInputRef.current?.focus(), 50);
       } else if (e.key === 'Escape') {
-        setProfileModalOpen(false);
+        setProfileOpen(false);
         setMobileSearchOpen(false);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [setProfileOpen]);
 
   const formattedWeight = convertWeight(profile.weightKg || 68);
 
@@ -146,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Universal Rider Profile Button */}
             <button
-              onClick={() => setProfileModalOpen(true)}
+              onClick={() => setProfileOpen(true)}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 text-xs font-semibold transition"
               title="Rider Profile & Dimensions"
             >
@@ -187,7 +193,7 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* Global Rider Profile Modal */}
-      <RiderProfileModal isOpen={profileModalOpen} onClose={() => setProfileModalOpen(false)} />
+      <RiderProfileModal isOpen={isProfileOpen} onClose={() => setProfileOpen(false)} />
     </>
   );
 };
