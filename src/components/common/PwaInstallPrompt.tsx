@@ -73,39 +73,44 @@ export const PwaInstallPrompt: React.FC = () => {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-3 py-2 text-xs flex items-center justify-between shadow-md relative z-30 transition-all">
-        <div className="flex items-center gap-2 max-w-2xl">
-          <Smartphone className="w-4 h-4 shrink-0 text-cyan-200" />
-          <span className="font-medium truncate">
-            {language === 'en'
-              ? 'Install SoloRider WebApp to your home screen for full-screen offline use!'
-              : language === 'zh-TW'
-              ? '將 SoloRider 安裝至主畫面，享全螢幕離線單車科學體驗！'
-              : '将 SoloRider 安装至手机主屏幕，享原生全屏离线骑行体验！'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={handleInstallClick}
-            className="flex items-center gap-1 px-3 py-1 rounded-lg bg-white text-slate-950 font-bold hover:bg-cyan-50 text-[11px] transition shadow-xs active:scale-95"
-          >
-            <Download className="w-3 h-3 text-cyan-600" />
-            <span>
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 sm:pt-2.5 no-print">
+        <div className="max-w-xl mx-auto flex items-center justify-between gap-2 px-3 py-1.5 rounded-2xl bg-cyan-500/10 dark:bg-cyan-950/30 border border-cyan-500/30 dark:border-cyan-500/20 backdrop-blur-md text-slate-800 dark:text-slate-200 shadow-xs animate-in fade-in slide-in-from-top-1">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+              <Smartphone className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[11px] sm:text-xs font-medium truncate text-slate-700 dark:text-slate-300">
               {language === 'en'
-                ? 'Install'
+                ? 'Add to Home Screen for full-screen offline use'
                 : language === 'zh-TW'
-                ? '立即安裝'
-                : '立即安装'}
+                ? '加入主畫面，享全螢幕離線計算'
+                : '添加到主屏幕，享全屏离线体验'}
             </span>
-          </button>
-          <button
-            onClick={handleDismiss}
-            className="p-1 hover:bg-white/20 rounded-lg transition text-white/80 hover:text-white"
-            title="Dismiss"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handleInstallClick}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[11px] transition shadow-xs active:scale-95"
+            >
+              <Download className="w-3 h-3 text-slate-950" />
+              <span>
+                {language === 'en'
+                  ? 'Install'
+                  : language === 'zh-TW'
+                  ? '安裝'
+                  : '安装'}
+              </span>
+            </button>
+            <button
+              onClick={handleDismiss}
+              className="p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition"
+              title="Dismiss"
+              aria-label="Close"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 
