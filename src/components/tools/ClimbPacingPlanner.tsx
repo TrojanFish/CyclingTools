@@ -14,6 +14,8 @@ import {
   Filler,
 } from 'chart.js';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -412,105 +414,145 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Mountain className="w-3.5 h-3.5" />
-              爬坡体能分配与动力学仿真
+              {language === 'zh-TW' ? '爬坡體能分配與動力學模擬' : '爬坡体能分配与动力学仿真'}
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">爬坡路段分段配速与功率规划器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
-              挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {language === 'zh-TW' ? '爬坡路段分段配速與功率規劃器' : '爬坡路段分段配速与功率规划器'}
+            </h1>
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+              {language === 'zh-TW'
+                ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗時與體能負荷。'
+                : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 cursor-pointer transition shadow-xs">
-              <Upload className="w-4 h-4 text-cyan-500" />
-              <span>导入 GPX 爬坡路线</span>
+          <div className="flex items-center gap-2.5">
+            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
+              <Upload className="w-4 h-4 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '匯入 GPX 路線' : '导入 GPX 爬坡路线'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxClimbUpload} className="hidden" />
             </label>
 
             <button
               onClick={copyPacingPlan}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
-              <Copy className="w-3.5 h-3.5" />
-              复制计划
+              <Copy className="w-3.5 h-3.5 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '複製計劃' : '复制计划'}</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Preset Mountains & Route Upload Bar */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-ios-card">
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">精选名山:</span>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            {language === 'zh-TW' ? '精選名山:' : '精选名山:'}
+          </span>
           <button
             onClick={() => loadPreset('longjing')}
-            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="杭州龙井 (3.2km)"
           >
             杭州龙井
           </button>
           <button
             onClick={() => loadPreset('miaofeng')}
-            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="北京妙峰山 (20.5km)"
           >
             北京妙峰山
           </button>
           <button
             onClick={() => loadPreset('tianhuang')}
-            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="安吉天荒坪 (18km)"
           >
             安吉天荒坪
           </button>
           <button
             onClick={() => loadPreset('balang')}
-            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="巴朗山 (30km)"
           >
             巴朗山
           </button>
           <button
             onClick={() => loadPreset('alpedhuez')}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-ios-blue text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="环法殿堂 Alpe d'Huez 21道拐 (13.8km)"
           >
-            <Mountain className="w-3 h-3 text-cyan-500" />
+            <Mountain className="w-3.5 h-3.5 text-ios-blue" />
             <span>阿尔普迪埃</span>
           </button>
           <button
             onClick={() => loadPreset('stelvio')}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-ios-blue text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="环意最高峰 Passo dello Stelvio 48弯 (24.3km)"
           >
-            <Mountain className="w-3 h-3 text-cyan-500" />
+            <Mountain className="w-3.5 h-3.5 text-ios-blue" />
             <span>斯泰尔维奥</span>
           </button>
           <button
             onClick={() => loadPreset('sacalobra')}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-ios-blue text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             title="马略卡骑行圣地 Sa Calobra (9.4km)"
           >
-            <Mountain className="w-3 h-3 text-cyan-500" />
+            <Mountain className="w-3.5 h-3.5 text-ios-blue" />
             <span>卡洛布拉</span>
           </button>
         </div>
 
         <div className="flex items-center gap-2 flex-1 max-w-xs">
-          <label className="text-xs text-slate-500 dark:text-slate-400 shrink-0">当前爬坡:</label>
+          <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+            {language === 'zh-TW' ? '當前爬坡:' : '当前爬坡:'}
+          </label>
           <input
             type="text"
             value={climbName}
             onChange={(e) => setClimbName(e.target.value)}
-            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1 text-xs text-cyan-600 dark:text-cyan-400 font-medium focus:outline-none focus:border-cyan-500"
+            className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-1 text-xs text-ios-blue font-semibold focus:outline-none focus:border-ios-blue"
           />
         </div>
+      </div>
+
+      {/* 4 Hero Metric Summary Tiles */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '預計登頂總耗時' : '预计登顶总耗时'}
+          value={planResults.overallTimeStr}
+          unit=""
+          subValue={`${planResults.totalDistanceKm} km`}
+          accent="blue"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '累計爬升高度' : '累计爬升高度'}
+          value={`+${planResults.totalElevationM}`}
+          unit="m"
+          subValue={`${language === 'zh-TW' ? '平均坡度' : '平均坡度'} ${planResults.avgGrade}%`}
+          accent="orange"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '建議全程均瓦' : '建议全程均瓦'}
+          value={planResults.avgWatts}
+          unit="W"
+          subValue={`${planResults.avgWkg} W/kg`}
+          accent="green"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '預估垂直升速' : '预估垂直升速'}
+          value={planResults.overallVam}
+          unit="m/h"
+          subValue="VAM"
+          accent="purple"
+        />
       </div>
 
       {/* Main Grid */}
@@ -518,21 +560,21 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
         {/* Left Inputs & Segments */}
         <div className="lg:col-span-5 space-y-6">
           {/* Rider Parameters */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Zap className="w-4 h-4 text-ios-blue" />
               {language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '車手 FTP 閾值功率' : '车手 FTP 阈值功率'} (W)
                 </label>
                 <NumberStepper value={ftpWatts} onChange={setFtpWatts} step={5} min={100} max={500} unit="W" />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
@@ -547,51 +589,28 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
               </div>
             </div>
 
-            {/* Pacing Strategy Buttons */}
+            {/* Pacing Strategy Segmented Control */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-2">
                 {language === 'zh-TW' ? '攀爬攻堅策略激進度' : '攀爬攻坚策略激进度'}
               </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  {
-                    id: 'conservative',
-                    label: language === 'zh-TW' ? '穩妥完賽' : '稳妥完赛',
-                    desc: '88% FTP'
-                  },
-                  {
-                    id: 'balanced',
-                    label: language === 'zh-TW' ? '均衡均速' : '均衡均速',
-                    desc: '96% FTP'
-                  },
-                  {
-                    id: 'aggressive',
-                    label: language === 'zh-TW' ? '極限刷PR' : '极限刷PR',
-                    desc: '105% FTP'
-                  },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setPacingStrategy(s.id as any)}
-                    className={`p-2.5 rounded-xl border text-center transition ${
-                      pacingStrategy === s.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="text-xs font-semibold">{s.label}</div>
-                    <div className="text-[10px] text-slate-500">{s.desc}</div>
-                  </button>
-                ))}
-              </div>
+              <IOSSegmentedControl
+                options={[
+                  { value: 'conservative', label: language === 'zh-TW' ? '穩妥 (88%)' : '稳妥 (88%)' },
+                  { value: 'balanced', label: language === 'zh-TW' ? '均衡 (96%)' : '均衡 (96%)' },
+                  { value: 'aggressive', label: language === 'zh-TW' ? '極限 (105%)' : '极限 (105%)' }
+                ]}
+                value={pacingStrategy}
+                onChange={(v) => setPacingStrategy(v as any)}
+              />
             </div>
           </div>
 
           {/* Segments Editor */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <Mountain className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Mountain className="w-4 h-4 text-ios-blue" />
                 {language === 'zh-TW' ? `爬坡路段分段拆解 (${segments.length} 個分段)` : `爬坡路段分段拆解 (${segments.length} 个分段)`}
               </h2>
               <button
@@ -673,62 +692,11 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
 
         {/* Right Output & Pacing Blueprint */}
         <div className="lg:col-span-7 space-y-6">
-          {/* High Level Climb Blueprint Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '預計登頂總耗時' : '预计登顶总耗时'}
-              </span>
-              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                {planResults.overallTimeStr}
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {'全程'} {planResults.totalDistanceKm} km {isImperial ? `(${(planResults.totalDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
-              </span>
-            </div>
-
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '建議全程平均功率' : '建议全程平均功率'}
-              </span>
-              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-                {planResults.avgWatts} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {'推重比'}: {planResults.avgWkg} W/kg
-              </span>
-            </div>
-
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '累計爬升 / 均坡' : '累计爬升 / 均坡'}
-              </span>
-              <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
-                +{planResults.totalElevationM} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {isImperial ? `+${Math.round(planResults.totalElevationM * 3.28084)} ft | ` : ''}{'平均'}: {planResults.avgGrade}%
-              </span>
-            </div>
-
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '平均垂直上升 VAM' : '平均垂直上升 VAM'}
-              </span>
-              <div className="text-xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1">
-                {planResults.overallVam} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m/h</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {isImperial ? `${Math.round(planResults.overallVam * 3.28084)} ft/h` : ('垂直爬升速度')}
-              </span>
-            </div>
-          </div>
-
           {/* Visual Chart: Elevation Profile & Target Watts */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+              <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-ios-blue" />
                 {language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
               </span>
               <span className="text-slate-400 dark:text-slate-500 text-[10px]">
@@ -749,14 +717,14 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                       display: true,
                       position: 'left' as const,
                       grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                      title: { display: true, text: '功率 (Watts)', color: '#38bdf8', font: { size: 10 } }
+                      title: { display: true, text: '功率 (Watts)', color: '#007aff', font: { size: 10 } }
                     },
                     y1: {
                       type: 'linear' as const,
                       display: true,
                       position: 'right' as const,
                       grid: { drawOnChartArea: false },
-                      title: { display: true, text: '坡度 (%)', color: '#fbbf24', font: { size: 10 } }
+                      title: { display: true, text: '坡度 (%)', color: '#ff9500', font: { size: 10 } }
                     }
                   }
                 }}
@@ -766,64 +734,64 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
 
           {/* Steep Slope Low-Cadence Torque Alert */}
           {planResults.hasSteepTorqueHazard && (
-            <div className="glass-panel p-4 rounded-xl border border-rose-300 dark:border-rose-500/30 bg-rose-50 dark:bg-rose-950/25 flex items-start gap-3 shadow-xs">
-              <ShieldAlert className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+            <div className="ios-card p-5 rounded-3xl border border-ios-red/30 bg-ios-red/10 flex items-start gap-3 shadow-ios-card">
+              <ShieldAlert className="w-5 h-5 text-ios-red shrink-0 mt-0.5" />
               <div className="space-y-1 text-xs">
-                <div className="font-bold text-rose-800 dark:text-rose-300 flex items-center gap-2">
-                  <span>{'陡坡极低踏频与肌力负荷预警'}</span>
-                  <span className="font-mono px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-300 rounded text-[10px]">
-                    {'推算踏频 < 65 RPM'}
+                <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>{language === 'zh-TW' ? '陡坡極低踏頻與肌力負荷預警' : '陡坡极低踏频与肌力负荷预警'}</span>
+                  <span className="font-mono px-2 py-0.5 bg-ios-red/20 text-ios-red rounded-full text-[10px] font-bold">
+                    {'踏频 < 65 RPM'}
                   </span>
                 </div>
-                <p className="text-rose-950/90 dark:text-rose-200/90 leading-relaxed">
-                  检测到路线存在坡度 ≥11% 的攻坚分段！在常规 34-34T 齿比下，踩踏踏频将逼近 60 RPM 甚至更低。<strong>重踏（Grinding）危害：</strong>极低踏频将急剧加大膝盖髌股关节剪切压，并过早动员易疲劳的快肌纤维（Type IIb），引发局部肌酸暴增与抽筋。
-                  <br />
-                  <strong>战术建议：</strong>① 改装 36T / 40T 爬坡大飞轮；② 进坡前提前拉高踏频蓄势；③ 采取「坐骑踏频结合间歇站姿摇车（15-20次踏频轮换）」利用自重借力卸载股四头肌峰值扭矩。
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {language === 'zh-TW'
+                    ? '檢測到路線存在坡度 ≥11% 的攻堅分段！在常規 34-34T 齒比下，踩踏踏頻將逼近 60 RPM 甚至更低。重踏（Grinding）危害：極低踏頻將急劇加大膝蓋髕股關節剪切壓，引發局部乳酸暴增與抽筋。戰術建議：① 改裝 36T / 40T 爬坡大飛輪；② 進坡前提前拉高踏頻蓄勢；③ 採取「坐騎結合間歇站姿搖車」卸載股四頭肌峰值扭矩。'
+                    : '检测到路线存在坡度 ≥11% 的攻坚分段！在常规 34-34T 齿比下，踩踏踏频将逼近 60 RPM 甚至更低。重踏（Grinding）危害：极低踏频将急剧加大膝盖髌股关节剪切压，引发局部肌酸暴增与抽筋。战术建议：① 改装 36T / 40T 爬坡大飞轮；② 进坡前提前拉高踏频蓄势；③ 采取「坐骑结合间歇站姿摇车」卸载股四头肌峰值扭矩。'}
                 </p>
               </div>
             </div>
           )}
 
           {/* Segment Details Table */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
-            <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+            <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               {language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                  <tr className="border-b border-slate-200/80 dark:border-white/10 text-slate-500 dark:text-slate-400">
                     <th className="pb-2">{language === 'zh-TW' ? '分段名' : '分段名'}</th>
                     <th className="pb-2">{language === 'zh-TW' ? '距離 / 坡度' : '距离 / 坡度'}</th>
                     <th className="pb-2">{language === 'zh-TW' ? '建議功率' : '建议功率'}</th>
                     <th className="pb-2">{'推重比 / FTP%'}</th>
-                    <th className="pb-2">{'预估踏频'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '預估踏頻' : '预估踏频'}</th>
                     <th className="pb-2">{language === 'zh-TW' ? '預估耗時' : '预估耗时'}</th>
-                    <th className="pb-2">{'预估 VAM'}</th>
+                    <th className="pb-2">{'VAM'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono text-slate-700 dark:text-slate-300">
+                <tbody className="divide-y divide-slate-200/80 dark:divide-white/5 font-mono text-slate-700 dark:text-slate-300">
                   {planResults.segmentOutputs.map((s, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
-                      <td className="py-2.5 font-sans font-semibold text-slate-900 dark:text-slate-200">{s.name}</td>
+                    <tr key={idx} className="hover:bg-black/5 dark:hover:bg-white/5 transition">
+                      <td className="py-2.5 font-sans font-semibold text-slate-900 dark:text-white">{s.name}</td>
                       <td>
                         {s.distanceKm}km {isImperial ? `(${(s.distanceKm * 0.621371).toFixed(1)}mi)` : ''} /{' '}
-                        <span className="text-amber-600 dark:text-amber-400 font-bold">{s.gradePct}%</span>
+                        <span className="text-ios-orange font-bold">{s.gradePct}%</span>
                       </td>
-                      <td className="text-cyan-600 dark:text-cyan-400 font-bold">{s.targetWatts} W</td>
+                      <td className="text-ios-blue font-bold">{s.targetWatts} W</td>
                       <td>{s.targetWkg} W/kg ({s.targetFtpPct}%)</td>
                       <td>
-                        <span className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
+                        <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${
                           s.isSteepTorqueHazard
-                            ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
+                            ? 'bg-ios-red/15 text-ios-red font-bold'
                             : 'text-slate-600 dark:text-slate-400'
                         }`}>
                           ~{s.estimatedCadenceRpm} RPM
                         </span>
                       </td>
-                      <td className="text-emerald-600 dark:text-emerald-400 font-semibold">{s.timeStr}</td>
-                      <td className="text-purple-600 dark:text-purple-400">
-                        {s.vam} m/h {isImperial ? `(${Math.round(s.vam * 3.28084)} ft/h)` : ''}
+                      <td className="text-ios-green font-semibold">{s.timeStr}</td>
+                      <td className="text-ios-purple">
+                        {s.vam} m/h
                       </td>
                     </tr>
                   ))}

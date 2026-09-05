@@ -15,6 +15,8 @@ import {
   Clock,
   Layers
 } from 'lucide-react';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -178,19 +180,21 @@ export const TubelessSealantCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-ios-blue/10 rounded-full blur-3xl pointer-events-none" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold">
               <Droplets className="w-3.5 h-3.5" />
-              <span>{'真空胎系统工程与养护'}</span>
+              <span>{language === 'zh-TW' ? '無內胎系統工程與養護' : '真空胎系统工程与养护'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-              {'真空胎自补液加注量与补液周期计算器'}
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {language === 'zh-TW' ? '無內胎自補液加注量與週期計算器' : '真空胎自补液加注量与补液周期计算器'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-              {'基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量，兼顾防扎自封能力与转动惯量轻量化。'}
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl">
+              {language === 'zh-TW'
+                ? '基於外胎環面 (Torus) 幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'
+                : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量。'}
             </p>
           </div>
 
@@ -198,30 +202,62 @@ export const TubelessSealantCalculator: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
             <button
               onClick={() => handlePreset('road28')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
-              公路 28c
+              {language === 'zh-TW' ? '公路 28c' : '公路 28c'}
             </button>
             <button
               onClick={() => handlePreset('road32')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
-              全路况 32c
+              {language === 'zh-TW' ? '全路況 32c' : '全路况 32c'}
             </button>
             <button
               onClick={() => handlePreset('gravel40')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
               Gravel 40c
             </button>
             <button
               onClick={() => handlePreset('mtb225')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
-              山地 2.25"
+              {language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"'}
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Hero Metric Summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '單輪初次加注' : '单轮初次加注'}
+          value={calculation.initialDoseMl}
+          unit="ml"
+          subValue={`${calculation.initialDoseFlOz} fl oz`}
+          accent="blue"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '整車前後雙輪' : '整车前后双轮'}
+          value={calculation.pairTotalMl}
+          unit="ml"
+          subValue={`${calculation.pairTotalFlOz} fl oz`}
+          accent="mint"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '單輪補液補充' : '单轮补液补充'}
+          value={calculation.topUpDoseMl}
+          unit="ml"
+          subValue={`${calculation.topUpDoseFlOz} fl oz`}
+          accent="purple"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '檢查補液週期' : '检查补液周期'}
+          value={calculation.inspectionDays}
+          unit={language === 'zh-TW' ? '天' : '天'}
+          subValue={`~${calculation.inspectionMonths} 个月`}
+          accent="orange"
+        />
       </div>
 
       {/* Main Interactive Grid */}
@@ -229,59 +265,48 @@ export const TubelessSealantCalculator: React.FC = () => {
         {/* Left Input Configuration (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
           {/* Section 1: Wheel & Tire Geometry */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Gauge className="w-4 h-4 text-cyan-500" />
-              <span>{'轮组规格与几何参数'}</span>
+              <Gauge className="w-4 h-4 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '輪組規格與幾何參數' : '轮组规格与几何参数'}</span>
             </div>
 
             {/* Wheel Standard & Category */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{'轮径规格'}</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {(['700c', '650b', '29er', '26er'] as const).map((std) => (
-                    <button
-                      key={std}
-                      onClick={() => setWheelStandard(std)}
-                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                        wheelStandard === std
-                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                      }`}
-                    >
-                      {std}
-                    </button>
-                  ))}
-                </div>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">
+                  {language === 'zh-TW' ? '輪徑規格' : '轮径规格'}
+                </label>
+                <IOSSegmentedControl
+                  options={[
+                    { value: '700c', label: '700c' },
+                    { value: '650b', label: '650b' },
+                    { value: '29er', label: '29er' },
+                    { value: '26er', label: '26er' }
+                  ]}
+                  value={wheelStandard}
+                  onChange={(v) => setWheelStandard(v as any)}
+                />
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{'车型分类'}</label>
-                <div className="grid grid-cols-3 gap-1">
-                  {[
-                    { id: 'road', label: '公路' },
-                    { id: 'gravel', label: '全地形' },
-                    { id: 'mtb', label: '山地' }
-                  ].map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        setTireCategory(cat.id as any);
-                        if (cat.id === 'road' && tireWidthMm > 35) setTireWidthMm(28);
-                        if (cat.id === 'gravel' && (tireWidthMm < 35 || tireWidthMm > 52)) setTireWidthMm(40);
-                        if (cat.id === 'mtb' && tireWidthMm < 50) setTireWidthMm(57);
-                      }}
-                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                        tireCategory === cat.id
-                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
-                </div>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">
+                  {language === 'zh-TW' ? '車型分類' : '车型分类'}
+                </label>
+                <IOSSegmentedControl
+                  options={[
+                    { value: 'road', label: language === 'zh-TW' ? '公路車' : '公路车' },
+                    { value: 'gravel', label: language === 'zh-TW' ? '全地形' : '全地形' },
+                    { value: 'mtb', label: language === 'zh-TW' ? '山地車' : '山地车' }
+                  ]}
+                  value={tireCategory}
+                  onChange={(cat) => {
+                    setTireCategory(cat as any);
+                    if (cat === 'road' && tireWidthMm > 35) setTireWidthMm(28);
+                    if (cat === 'gravel' && (tireWidthMm < 35 || tireWidthMm > 52)) setTireWidthMm(40);
+                    if (cat === 'mtb' && tireWidthMm < 50) setTireWidthMm(57);
+                  }}
+                />
               </div>
             </div>
 
@@ -336,29 +361,31 @@ export const TubelessSealantCalculator: React.FC = () => {
           </div>
 
           {/* Section 2: Casing Type & Climate */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Thermometer className="w-4 h-4 text-rose-500" />
-              <span>{'胎体孔隙率与环境挥发工况'}</span>
+              <Thermometer className="w-4 h-4 text-ios-red" />
+              <span>{language === 'zh-TW' ? '胎體孔隙率與環境揮發工況' : '胎体孔隙率与环境挥发工况'}</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Casing Construction */}
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{'外胎胎体构造'}</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">
+                  {language === 'zh-TW' ? '外胎胎體構造' : '外胎胎体构造'}
+                </label>
                 <div className="space-y-1.5">
                   {[
-                    { id: 'race', label: '超轻棉线 / 黄边竞速胎' },
-                    { id: 'standard', label: '标准真空胎 TLR' },
-                    { id: 'heavy', label: '重型防穿刺 / 丁基加强层' }
+                    { id: 'race', label: language === 'zh-TW' ? '超輕棉線 / 黃邊競速胎' : '超轻棉线 / 黄边竞速胎' },
+                    { id: 'standard', label: language === 'zh-TW' ? '標準無內胎 TLR' : '标准真空胎 TLR' },
+                    { id: 'heavy', label: language === 'zh-TW' ? '重型防穿刺 / 丁基加強層' : '重型防穿刺 / 丁基加强层' }
                   ].map((c) => (
                     <button
                       key={c.id}
                       onClick={() => setCasingType(c.id as any)}
-                      className={`w-full py-1.5 px-2.5 text-xs text-left rounded-xl border transition flex items-center justify-between ${
+                      className={`w-full py-2 px-3 text-xs text-left rounded-2xl border transition flex items-center justify-between apple-touch ${
                         casingType === c.id
-                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400 font-semibold'
-                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                          ? 'bg-ios-blue/15 border-ios-blue/50 text-ios-blue font-semibold'
+                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <span>{c.label}</span>
@@ -370,20 +397,22 @@ export const TubelessSealantCalculator: React.FC = () => {
 
               {/* Climate & Temperature */}
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{'当地骑行气候环境'}</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">
+                  {language === 'zh-TW' ? '當地騎行氣候環境' : '当地骑行气候环境'}
+                </label>
                 <div className="space-y-1.5">
                   {[
-                    { id: 'hot_dry', label: '炎热干燥 (>28°C)' },
-                    { id: 'moderate', label: '温和适宜 (15-25°C)' },
-                    { id: 'cool_humid', label: '湿润阴冷 (<15°C)' }
+                    { id: 'hot_dry', label: language === 'zh-TW' ? '炎熱乾燥 (>28°C)' : '炎热干燥 (>28°C)' },
+                    { id: 'moderate', label: language === 'zh-TW' ? '溫和適宜 (15-25°C)' : '温和适宜 (15-25°C)' },
+                    { id: 'cool_humid', label: language === 'zh-TW' ? '濕潤陰冷 (<15°C)' : '湿润阴冷 (<15°C)' }
                   ].map((cl) => (
                     <button
                       key={cl.id}
                       onClick={() => setClimate(cl.id as any)}
-                      className={`w-full py-1.5 px-2.5 text-xs text-left rounded-xl border transition flex items-center justify-between ${
+                      className={`w-full py-2 px-3 text-xs text-left rounded-2xl border transition flex items-center justify-between apple-touch ${
                         climate === cl.id
-                          ? 'bg-rose-500/15 border-rose-500/50 text-rose-600 dark:text-rose-400 font-semibold'
-                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                          ? 'bg-ios-red/15 border-ios-red/50 text-ios-red font-semibold'
+                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       <span>{cl.label}</span>
@@ -395,30 +424,34 @@ export const TubelessSealantCalculator: React.FC = () => {
             </div>
 
             {/* Sealant Formula & Riding Frequency */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200/80 dark:border-white/10">
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{'自补液配方类型'}</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">
+                  {language === 'zh-TW' ? '自補液配方類型' : '自补液配方类型'}
+                </label>
                 <select
                   value={sealantType}
                   onChange={(e) => setSealantType(e.target.value as any)}
-                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
                 >
-                  <option value="latex">天然水基乳胶 (Stan's / Orange Regular / 经典款)</option>
-                  <option value="endurance">微粒纤维强化长效版 (Orange Seal Endurance / Muc-Off)</option>
-                  <option value="synthetic">无氨合成环保液 (Effetto Mariposa / Finish Line)</option>
+                  <option value="latex">{language === 'zh-TW' ? "天然水基乳膠 (Stan's / Orange Regular / 經典款)" : "天然水基乳胶 (Stan's / Orange Regular / 经典款)"}</option>
+                  <option value="endurance">{language === 'zh-TW' ? '微粒纖維強化長效版 (Orange Seal Endurance / Muc-Off)' : '微粒纤维强化长效版 (Orange Seal Endurance / Muc-Off)'}</option>
+                  <option value="synthetic">{language === 'zh-TW' ? '無氨合成環保液 (Effetto Mariposa / Finish Line)' : '无氨合成环保液 (Effetto Mariposa / Finish Line)'}</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{'骑行与停放习惯'}</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">
+                  {language === 'zh-TW' ? '騎行與停放習慣' : '骑行与停放习惯'}
+                </label>
                 <select
                   value={rideFrequency}
                   onChange={(e) => setRideFrequency(e.target.value as any)}
-                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
                 >
-                  <option value="frequent">高频骑行 (每周 2-4 次，液体均匀附着流动)</option>
-                  <option value="occasional">中频骑行 (双周 1 次，偶尔停放)</option>
-                  <option value="stored">长期悬挂停放 (容易在胎底聚集成橡胶团块)</option>
+                  <option value="frequent">{language === 'zh-TW' ? '高頻騎行 (每週 2-4 次，液體均勻附著流動)' : '高频骑行 (每周 2-4 次，液体均匀附着流动)'}</option>
+                  <option value="occasional">{language === 'zh-TW' ? '中頻騎行 (雙週 1 次，偶爾停放)' : '中频骑行 (双周 1 次，偶尔停放)'}</option>
+                  <option value="stored">{language === 'zh-TW' ? '長期懸掛停放 (容易在胎底聚集成橡膠團塊)' : '长期悬挂停放 (容易在胎底聚集成橡胶团块)'}</option>
                 </select>
               </div>
             </div>
@@ -428,27 +461,27 @@ export const TubelessSealantCalculator: React.FC = () => {
         {/* Right Output Scoreboard (5 cols) */}
         <div className="lg:col-span-5 space-y-5">
           {/* Main Dosage Recommendation Card */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden space-y-5">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden space-y-5 shadow-ios-card">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-xs font-bold text-ios-blue uppercase tracking-wider flex items-center gap-1.5">
                 <Droplets className="w-4 h-4" />
-                {'推荐首次加注量'}
+                {language === 'zh-TW' ? '推薦首次加注量' : '推荐首次加注量'}
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 font-mono">
-                {calculation.effectiveTireWidth}mm 实测充气胎宽
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-mono font-medium">
+                {calculation.effectiveTireWidth}mm {language === 'zh-TW' ? '實測充氣胎寬' : '实测充气胎宽'}
               </span>
             </div>
 
             {/* Single Wheel Hero Number */}
             <div className="space-y-1">
               <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {'单轮首次加注推荐量'}
+                {language === 'zh-TW' ? '單輪首次加注推薦量' : '单轮首次加注推荐量'}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+                <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   {calculation.initialDoseMl}
                 </span>
-                <span className="text-lg font-bold text-cyan-500">ml</span>
+                <span className="text-lg font-bold text-ios-blue">ml</span>
                 <span className="text-sm font-mono text-slate-400 ml-1">
                   ({calculation.initialDoseFlOz} fl oz)
                 </span>
@@ -456,78 +489,74 @@ export const TubelessSealantCalculator: React.FC = () => {
             </div>
 
             {/* Secondary Output Grid */}
-            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200 dark:border-slate-800/80">
-              <div className="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
-                <div className="text-[11px] text-slate-500 flex items-center gap-1">
-                  <Layers className="w-3.5 h-3.5 text-blue-500" />
-                  <span>{'整车前后双轮总量'}</span>
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
+              <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-1">
+                <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-ios-blue" />
+                  <span>{language === 'zh-TW' ? '整車前後雙輪總量' : '整车前后双轮总量'}</span>
                 </div>
-                <div className="text-lg font-extrabold text-blue-500">
+                <div className="text-lg font-extrabold text-ios-blue">
                   {calculation.pairTotalMl} ml
                 </div>
-                <div className="text-[10px] text-slate-400">
-                  {calculation.pairTotalFlOz} fl oz (约备一小瓶)
+                <div className="text-[11px] text-slate-400">
+                  {calculation.pairTotalFlOz} fl oz
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
-                <div className="text-[11px] text-slate-500 flex items-center gap-1">
-                  <RotateCcw className="w-3.5 h-3.5 text-purple-500" />
-                  <span>{'单轮补液补充量'}</span>
+              <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-1">
+                <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <RotateCcw className="w-3.5 h-3.5 text-ios-purple" />
+                  <span>{language === 'zh-TW' ? '單輪定期補液量' : '单轮定期补液量'}</span>
                 </div>
-                <div className="text-lg font-extrabold text-purple-500">
+                <div className="text-lg font-extrabold text-ios-purple">
                   {calculation.topUpDoseMl} ml
                 </div>
-                <div className="text-[10px] text-slate-400">
-                  {calculation.topUpDoseFlOz} fl oz (定期补充)
+                <div className="text-[11px] text-slate-400">
+                  {calculation.topUpDoseFlOz} fl oz
                 </div>
               </div>
             </div>
 
             {/* Inspection & Expiry Timeline */}
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 space-y-1.5 text-xs">
+            <div className="p-3.5 rounded-2xl bg-ios-orange/10 border border-ios-orange/20 text-slate-900 dark:text-white space-y-1.5 text-xs">
               <div className="font-bold flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-amber-500" />
-                  <span>{'建议检查与补液周期'}</span>
+                <span className="flex items-center gap-1.5 text-ios-orange">
+                  <Calendar className="w-4 h-4" />
+                  <span>{language === 'zh-TW' ? '建議檢查與補液週期' : '建议检查与补液周期'}</span>
                 </span>
-                <span className="font-mono text-amber-600 dark:text-amber-400 text-sm">
-                  {calculation.inspectionDays} 天 (~{calculation.inspectionMonths} 个月)
+                <span className="font-mono text-ios-orange text-sm font-bold">
+                  {calculation.inspectionDays} {language === 'zh-TW' ? '天' : '天'} (~{calculation.inspectionMonths} {language === 'zh-TW' ? '個月' : '个月'})
                 </span>
               </div>
-              <p className="text-[11px] opacity-90 leading-relaxed">
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
                 {`受当地${climate === 'hot_dry' ? '高温炎热' : '常温'}气候与${casingType === 'race' ? '竞速薄胎壁' : '标准'}胎体影响，乳胶在此周期后将逐渐胶化脱水，请提前摇轮听声自查。`}
               </p>
-              <div className="pt-1.5 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-amber-800 dark:text-amber-300 font-medium">
-                <span>{'原装避光未开封保质期: 24-36个月'}</span>
-                <span>{'开封后建议: 6-12个月内用毕'}</span>
-              </div>
             </div>
 
             {/* Puncture Threshold Gauge */}
-            <div className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-900">
+            <div className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-white/60 dark:bg-white/5 border border-slate-200/80 dark:border-white/10">
               <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>{'最大刺穿自封孔径能力'}</span>
+                <ShieldCheck className="w-4 h-4 text-ios-green" />
+                <span>{language === 'zh-TW' ? '最大刺穿自封孔徑能力' : '最大刺穿自封孔径能力'}</span>
               </span>
-              <strong className="text-emerald-500 font-mono text-sm">≤ {calculation.maxPunctureMm} mm</strong>
+              <strong className="text-ios-green font-mono text-sm">≤ {calculation.maxPunctureMm} mm</strong>
             </div>
           </div>
 
           {/* Interactive Cross-Section SVG Diagram */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
-              <span>{'真空轮胎截面与注胶池物理示意'}</span>
+              <span>{language === 'zh-TW' ? '無內胎截面與注膠池物理示意' : '真空轮胎截面与注胶池物理示意'}</span>
               <span className="text-[10px] text-slate-400">容积 ~{calculation.volumeLiters} L</span>
             </div>
 
-            <div className="h-44 w-full flex items-center justify-center bg-slate-50 dark:bg-slate-950/80 rounded-xl p-2 border border-slate-100 dark:border-slate-900 relative">
+            <div className="h-44 w-full flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl p-2 border border-slate-200/60 dark:border-white/10 relative">
               <svg viewBox="0 0 200 160" className="w-full h-full max-h-40">
                 {/* Tire Casing Outer Curve */}
                 <path
                   d="M 50 130 C 20 80, 40 20, 100 20 C 160 20, 180 80, 150 130"
                   fill="none"
-                  stroke={casingType === 'race' ? '#d97706' : '#334155'}
+                  stroke={casingType === 'race' ? '#ff9500' : '#334155'}
                   strokeWidth="8"
                   strokeLinecap="round"
                 />
@@ -535,7 +564,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 {/* Tire Inner Chamber */}
                 <path
                   d="M 54 126 C 28 82, 46 28, 100 28 C 154 28, 172 82, 146 126"
-                  fill="rgba(6, 182, 212, 0.05)"
+                  fill="rgba(0, 122, 255, 0.05)"
                   stroke="#64748b"
                   strokeWidth="1"
                 />
@@ -543,14 +572,14 @@ export const TubelessSealantCalculator: React.FC = () => {
                 {/* Liquid Sealant Pool at bottom */}
                 <path
                   d="M 68 126 Q 100 138 132 126 Q 100 118 68 126 Z"
-                  fill="#06b6d4"
+                  fill="#007aff"
                   opacity="0.85"
                 />
 
                 {/* Liquid Droplets coating sidewalls */}
-                <circle cx="56" cy="70" r="2.5" fill="#06b6d4" opacity="0.7" />
-                <circle cx="144" cy="65" r="2" fill="#06b6d4" opacity="0.7" />
-                <circle cx="100" cy="35" r="1.8" fill="#06b6d4" opacity="0.6" />
+                <circle cx="56" cy="70" r="2.5" fill="#007aff" opacity="0.7" />
+                <circle cx="144" cy="65" r="2" fill="#007aff" opacity="0.7" />
+                <circle cx="100" cy="35" r="1.8" fill="#007aff" opacity="0.6" />
 
                 {/* Rim Hook & Bed */}
                 <path
@@ -561,11 +590,11 @@ export const TubelessSealantCalculator: React.FC = () => {
                   strokeLinejoin="round"
                 />
 
-                {/* Rim Tape (Yellow/Blue) */}
+                {/* Rim Tape (Blue) */}
                 <path
                   d="M 54 133 L 62 143 L 138 143 L 146 133"
                   fill="none"
-                  stroke="#3b82f6"
+                  stroke="#007aff"
                   strokeWidth="2.5"
                 />
 
@@ -574,7 +603,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <circle cx="100" cy="143" r="2" fill="#0f172a" />
 
                 {/* Annotations */}
-                <text x="100" y="105" textAnchor="middle" fill="#06b6d4" fontSize="9" fontWeight="bold">
+                <text x="100" y="105" textAnchor="middle" fill="#007aff" fontSize="9" fontWeight="bold">
                   {calculation.initialDoseMl}ml 液池
                 </text>
                 <text x="100" y="15" textAnchor="middle" fill="#94a3b8" fontSize="8">
@@ -587,51 +616,51 @@ export const TubelessSealantCalculator: React.FC = () => {
       </div>
 
       {/* Workshop Pro Tips & Tubeless FAQ */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
         <div className="flex items-center gap-2">
-          <Wrench className="w-5 h-5 text-cyan-500" />
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-            {'专业技师真空胎装调与免拆胎自查秘笈'}
+          <Wrench className="w-5 h-5 text-ios-blue" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+            {language === 'zh-TW' ? '專業技師真空胎裝調與免拆胎自查秘笈' : '专业技师真空胎装调与免拆胎自查秘笈'}
           </h3>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
+          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+            <div className="font-bold text-ios-blue flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>1. 摇轮听声法 (Slosh Test)</span>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               无需拆卸外胎！将车轮拆下在耳边快速晃动。若能听到清脆的“哗啦哗啦”水撞击声，表明胶水充足活跃；若声音沉闷微弱或完全无声，说明乳胶已干涸结块，需立即补液。
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+            <div className="font-bold text-ios-blue flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>2. 气门嘴注胶与气芯防堵</span>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               拆下气门芯后用注射器注胶。注完后先空打数下气吹净管道残留乳胶，在气门芯螺牙涂抹微量硅油防粘连，防止乳胶干固锁死气门。车座包内建议备用 2 个铜制气门芯。
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+            <div className="font-bold text-ios-orange flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
               <span>3. 开封保质期与仓储</span>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               原装密封自补液保质期通常为 24~36 个月；开封接触空气后溶剂缓慢挥发，建议在 6~12 个月内用完。每次注胶前务必剧烈摇匀瓶身 30 秒，确保天然微粒晶核完全悬浮分散。
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
-            <div className="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+            <div className="font-bold text-ios-purple flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>4. 扎钉与培根胶条配合</span>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               自补液对 2-3mm 以下微孔可在旋转中数秒自封；对于 3-5mm 较大划口，应迅速将破口朝下让液态胶水浸润，并立即插拔培根胶条（Tubeless Plug），机械填补瞬间止漏。
             </p>
           </div>

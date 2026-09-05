@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Link, CheckCircle2, AlertTriangle, Info, Copy, Settings, ArrowRight, ShieldCheck, Zap, Lightbulb } from 'lucide-react';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { IOSMetricTile } from '../common/IOSCard';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
@@ -117,23 +119,23 @@ export const ChainLengthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Link className="w-3.5 h-3.5" />
-              传动系统装配与链条数学
+              传动几何与链条物理
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">链条长度与传动链节计算器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">链条长度与齿容量计算器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。
             </p>
           </div>
 
           <button
             onClick={copyReport}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition self-start md:self-auto shadow-xs"
+            className="apple-touch flex items-center gap-1.5 px-3.5 py-2 bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition self-start md:self-auto shadow-ios-sm active:scale-95"
           >
             <Copy className="w-3.5 h-3.5" />
             复制报告
@@ -142,40 +144,30 @@ export const ChainLengthCalculator: React.FC = () => {
       </div>
 
       {/* Preset Buttons */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2">
+      <div className="p-4 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex flex-wrap items-center gap-2 shadow-ios-sm">
         <span className="text-xs text-slate-500 dark:text-slate-400">规格预设:</span>
-        <button
-          onClick={() => loadPreset('compact_34')}
-          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-        >
-          公路 50/34T
-        </button>
-        <button
-          onClick={() => loadPreset('semi_30')}
-          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-        >
-          公路 52/36T
-        </button>
-        <button
-          onClick={() => loadPreset('sram_axs')}
-          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-        >
-          AXS 48/35T
-        </button>
-        <button
-          onClick={() => loadPreset('gravel_1x')}
-          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-        >
-          Gravel 40T
-        </button>
+        {[
+          { id: 'compact_34', label: '公路 50/34T' },
+          { id: 'semi_30', label: '公路 52/36T' },
+          { id: 'sram_axs', label: 'AXS 48/35T' },
+          { id: 'gravel_1x', label: 'Gravel 40T' },
+        ].map((p) => (
+          <button
+            key={p.id}
+            onClick={() => loadPreset(p.id)}
+            className="apple-touch px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition active:scale-95"
+          >
+            {p.label}
+          </button>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Settings className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <Settings className="w-4 h-4 text-ios-blue" />
               车架几何与齿盘参数
             </h2>
 
@@ -196,25 +188,25 @@ export const ChainLengthCalculator: React.FC = () => {
             </div>
 
             {/* Frame Suspension Type */}
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2.5">
+            <div className="p-3.5 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">全避震软尾补偿 (Full Suspension)</span>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-white block">全避震软尾补偿 (Full Suspension)</span>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
                 </div>
                 <input
                   type="checkbox"
                   checked={isFullSuspension}
                   onChange={(e) => setIsFullSuspension(e.target.checked)}
-                  className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                  className="w-4 h-4 rounded accent-ios-blue cursor-pointer"
                 />
               </div>
 
               {isFullSuspension && (
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1">
+                <div className="pt-2 border-t border-black/[0.04] dark:border-white/[0.06] space-y-1">
                   <div className="flex justify-between text-xs">
                     <span className="text-slate-500 dark:text-slate-400">压缩触底拉伸量 (Chainstay Growth)</span>
-                    <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">+{chainstayGrowthMm} mm</span>
+                    <span className="font-mono text-ios-blue font-bold">+{chainstayGrowthMm} mm</span>
                   </div>
                   <input
                     type="range"
@@ -223,10 +215,10 @@ export const ChainLengthCalculator: React.FC = () => {
                     step={1}
                     value={chainstayGrowthMm}
                     onChange={(e) => setChainstayGrowthMm(Number(e.target.value))}
-                    className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded"
+                    className="w-full accent-ios-blue cursor-pointer h-1.5 bg-black/[0.06] dark:bg-white/[0.1] rounded"
                   />
-                  <span className="text-[10px] text-amber-600 dark:text-amber-400 flex items-start gap-1 pt-0.5">
-                    <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <span className="text-[10px] text-ios-orange flex items-start gap-1 pt-0.5">
+                    <Lightbulb className="w-3.5 h-3.5 text-ios-orange shrink-0 mt-0.5" />
                     <span>{language === 'zh-TW' ? `已自動在有效後下叉中計入 ${chainstayGrowthMm}mm 拉伸並增加安全鏈節，杜絕大飛大盤衝擊觸底拉爆後撥！` : `已自动在有效后下叉中计入 ${chainstayGrowthMm}mm 拉伸并增加安全链节，杜绝大飞大盘冲击触底拉爆后拨！`}</span>
                   </span>
                 </div>
@@ -234,27 +226,17 @@ export const ChainLengthCalculator: React.FC = () => {
             </div>
 
             {/* Drivetrain 1x or 2x */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
-              <button
-                onClick={() => setIsSingleRing(false)}
-                className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  !isSingleRing
-                    ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400'
-                    : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                }`}
-              >
-                双盘 (2x)
-              </button>
-              <button
-                onClick={() => setIsSingleRing(true)}
-                className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  isSingleRing
-                    ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400'
-                    : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                }`}
-              >
-                单盘 (1x)
-              </button>
+            <div className="pt-1">
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">齿盘系统</label>
+              <IOSSegmentedControl
+                options={[
+                  { id: '2x', label: '双盘 (2x)' },
+                  { id: '1x', label: '单盘 (1x)' },
+                ]}
+                value={isSingleRing ? '1x' : '2x'}
+                onChange={(val) => setIsSingleRing(val === '1x')}
+                size="sm"
+              />
             </div>
 
             {/* Chainrings */}
@@ -317,36 +299,33 @@ export const ChainLengthCalculator: React.FC = () => {
         {/* Right Outputs & Visualization */}
         <div className="lg:col-span-7 space-y-6">
           {/* Main Key Link Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">标准截链推荐</span>
-              <div className="text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                {result.recommendedLinks} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">Links (节)</span>
-              </div>
-              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
-                含 1 节魔术扣 (Quick Link)
-              </span>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <IOSMetricTile
+              label="标准截链推荐"
+              value={result.recommendedLinks}
+              unit="Links"
+              subtext="含 1 节魔术扣 (Quick Link)"
+              accentColor="blue"
+              icon={Link}
+            />
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">链条理论总长度</span>
-              <div className="text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-                {result.chainLengthInches} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">英寸</span>
-              </div>
-              <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                约 {(parseFloat(result.chainLengthInches) * 25.4).toFixed(0)} mm
-              </span>
-            </div>
+            <IOSMetricTile
+              label="链条理论总长度"
+              value={result.chainLengthInches}
+              unit="英寸"
+              subtext={`约 ${(parseFloat(result.chainLengthInches) * 25.4).toFixed(0)} mm`}
+              accentColor="green"
+              icon={Zap}
+            />
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">后拨总齿容量需求</span>
-              <div className={`text-3xl font-extrabold font-mono mt-1 ${result.isCapacityWarning ? 'text-amber-500 dark:text-amber-400' : 'text-slate-900 dark:text-slate-100'}`}>
-                {result.requiredCapacity} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">T</span>
-              </div>
-              <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                {result.rearDerailleurRecommendation}
-              </span>
-            </div>
+            <IOSMetricTile
+              label="后拨总齿容量需求"
+              value={result.requiredCapacity}
+              unit="T"
+              subtext={result.rearDerailleurRecommendation}
+              accentColor={result.isCapacityWarning ? 'orange' : 'blue'}
+              icon={Settings}
+            />
           </div>
 
           {/* Drivetrain Visual SVG Schematic */}

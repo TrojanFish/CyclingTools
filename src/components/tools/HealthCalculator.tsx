@@ -3,6 +3,8 @@ import { HeartPulse, Flame, Activity, User, Scale, Shield, Sparkles, Droplet, Ap
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { IOSMetricTile } from '../common/IOSCard';
 
 export const HealthCalculator: React.FC = () => {
   const { profile } = useRiderProfile();
@@ -194,68 +196,33 @@ export const HealthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-red/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
               <HeartPulse className="w-3.5 h-3.5" />
               运动生理学与能量代谢
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">骑行与运动健康综合计算器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">骑行与运动健康综合计算器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               一站式计算骑行能量补给、Karvonen 靶心率区间、BMR 基础代谢、TDEE 每日总能耗及体脂率(BFP)。
             </p>
           </div>
 
-          {/* Tab buttons */}
-          <div className="flex flex-wrap bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 gap-1">
-            <button
-              onClick={() => setActiveTab('fueling')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                activeTab === 'fueling' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Apple className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '能量補給' : '能量补给'}</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('hr_zones')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                activeTab === 'hr_zones' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Heart className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '靶心率' : '靶心率'}</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('bmr')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                activeTab === 'bmr' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Flame className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '代謝能耗' : '代谢能耗'}</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('bmi')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                activeTab === 'bmi' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Scale className="w-3.5 h-3.5" />
-              <span>BMI</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('bfp')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                activeTab === 'bfp' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Percent className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '體脂率' : '体脂率'}</span>
-            </button>
-          </div>
+          {/* Apple HIG Tab buttons */}
+          <IOSSegmentedControl
+            options={[
+              { id: 'fueling', label: language === 'zh-TW' ? '補給' : '补给', icon: Apple },
+              { id: 'hr_zones', label: language === 'zh-TW' ? '心率' : '心率', icon: Heart },
+              { id: 'bmr', label: language === 'zh-TW' ? '代謝' : '代谢', icon: Flame },
+              { id: 'bmi', label: 'BMI', icon: Scale },
+              { id: 'bfp', label: language === 'zh-TW' ? '體脂' : '体脂', icon: Percent },
+            ]}
+            value={activeTab}
+            onChange={(val) => setActiveTab(val as any)}
+            size="sm"
+          />
         </div>
       </div>
 
@@ -263,9 +230,9 @@ export const HealthCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <User className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <User className="w-4 h-4 text-ios-red" />
               {language === 'zh-TW' ? '個人身體與心率數據 (自動同步車手檔案)' : '个人身体与心率数据 (自动同步车手档案)'}
             </h2>
 
@@ -275,28 +242,15 @@ export const HealthCalculator: React.FC = () => {
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
                   {language === 'zh-TW' ? '生理性別' : '生理性别'}
                 </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => setGender('male')}
-                    className={`py-2 rounded-xl border text-xs font-medium transition ${
-                      gender === 'male'
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    {language === 'zh-TW' ? '男' : '男'}
-                  </button>
-                  <button
-                    onClick={() => setGender('female')}
-                    className={`py-2 rounded-xl border text-xs font-medium transition ${
-                      gender === 'female'
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    {language === 'zh-TW' ? '女' : '女'}
-                  </button>
-                </div>
+                <IOSSegmentedControl
+                  options={[
+                    { id: 'male', label: language === 'zh-TW' ? '男性' : '男性' },
+                    { id: 'female', label: language === 'zh-TW' ? '女性' : '女性' },
+                  ]}
+                  value={gender}
+                  onChange={(val) => setGender(val as any)}
+                  size="sm"
+                />
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
@@ -418,36 +372,33 @@ export const HealthCalculator: React.FC = () => {
               </div>
 
               {/* Fueling Highlights */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60">
-                  <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">总碳水化合物需求</span>
-                  <div className="text-2xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                    {fuelingResult.totalCarbsG} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">克</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
-                    约合 {fuelingResult.gelCount} 支能量胶
-                  </span>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <IOSMetricTile
+                  label="总碳水化合物需求"
+                  value={fuelingResult.totalCarbsG}
+                  unit="g"
+                  subtext={`约合 ${fuelingResult.gelCount} 支能量胶`}
+                  accentColor="blue"
+                  icon={Apple}
+                />
 
-                <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60">
-                  <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">全程总饮水需求</span>
-                  <div className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-                    {fuelingResult.totalFluidL} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">升</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono block">
-                    ≈ {fuelingResult.bottles550} 壶 (550ml) / {fuelingResult.bottles750} 壶 (750ml)
-                  </span>
-                </div>
+                <IOSMetricTile
+                  label="全程总饮水需求"
+                  value={fuelingResult.totalFluidL}
+                  unit="L"
+                  subtext={`≈ ${fuelingResult.bottles550} 壶 (550ml)`}
+                  accentColor="green"
+                  icon={Droplet}
+                />
 
-                <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60">
-                  <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">电解质钠补充</span>
-                  <div className="text-2xl font-bold font-mono text-amber-500 dark:text-amber-400 mt-1">
-                    {fuelingResult.totalSodiumMg} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">mg</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                    预防肌肉抽筋衰竭
-                  </span>
-                </div>
+                <IOSMetricTile
+                  label="电解质钠补充"
+                  value={fuelingResult.totalSodiumMg}
+                  unit="mg"
+                  subtext="预防肌肉抽筋衰竭"
+                  accentColor="orange"
+                  icon={Flame}
+                />
               </div>
             </div>
           )}

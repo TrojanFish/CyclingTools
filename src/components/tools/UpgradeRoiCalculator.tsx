@@ -12,6 +12,8 @@ import {
 } from 'chart.js';
 import { NumberStepper } from '../common/NumberStepper';
 import { Tooltip } from '../common/Tooltip';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { IOSMetricTile } from '../common/IOSCard';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -245,6 +247,11 @@ export const UpgradeRoiCalculator: React.FC = () => {
     setItems(prev => prev.filter(item => item.id !== id));
   };
 
+  const resetToDefaults = () => {
+    setItems(DEFAULT_ITEMS_WITH_SPECS);
+    showToast('已恢复默认预设改装清单', 'info');
+  };
+
   // Calculation of Savings and ROI
   const analysis = useMemo(() => {
     const activeItems = items.filter(i => i.enabled);
@@ -333,52 +340,48 @@ export const UpgradeRoiCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Scale className="w-3.5 h-3.5" />
               风洞实测基准与改装边际效益测算
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">零件减重与气动升级省瓦推算器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">零件减重与气动升级省瓦推算器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               内置各大实验室风洞实测基准（轮组/头盔/骑行服/内胎），支持<strong>规格下拉一键自动推算省瓦</strong>或手动自定义，自动随巡航车速折算真实收益。
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {/* Currency Selector */}
-            <div className="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-mono">
-              {(['CNY', 'USD', 'EUR', 'GBP'] as const).map(c => (
-                <button
-                  key={c}
-                  onClick={() => setCurrency(c)}
-                  className={`px-2 py-1 rounded-lg transition ${
-                    currency === c
-                      ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                  }`}
-                  title={`切换货币: ${c}`}
-                >
-                  {c === 'CNY' ? '¥' : c === 'USD' ? '$' : c === 'EUR' ? '€' : '£'}
-                </button>
-              ))}
-            </div>
+            {/* Apple Currency Selector */}
+            <IOSSegmentedControl
+              options={[
+                { id: 'CNY', label: '¥ CNY' },
+                { id: 'USD', label: '$ USD' },
+                { id: 'EUR', label: '€ EUR' },
+                { id: 'GBP', label: '£ GBP' },
+              ]}
+              value={currency}
+              onChange={(val) => setCurrency(val as any)}
+              size="sm"
+            />
 
             <button
               onClick={copyReport}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
             >
               <Copy className="w-3.5 h-3.5" />
               复制报告
             </button>
+
             <button
-              onClick={handleAddCustomItem}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 rounded-xl text-xs font-semibold transition"
+              onClick={resetToDefaults}
+              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
             >
-              <Plus className="w-3.5 h-3.5" />
-              添加自定义件
+              <RotateCcw className="w-3.5 h-3.5" />
+              重置预设
             </button>
           </div>
         </div>

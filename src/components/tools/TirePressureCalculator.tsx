@@ -3,6 +3,7 @@ import { Gauge, Info, AlertTriangle, Layers, Copy, Check, User } from 'lucide-re
 import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/tirePressureConfig';
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -102,44 +103,39 @@ export const TirePressureCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Gauge className="w-3.5 h-3.5" />
               滚阻与形变算法
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">公路/全地形智能胎压计算器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">公路/全地形智能胎压计算器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮差异化最佳气压。
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={copyPressureToClipboard}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
             >
               <Copy className="w-3.5 h-3.5" />
               复制胎压
             </button>
 
-            {/* Unit Toggle */}
-            <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
-              {(['psi', 'bar', 'kpa'] as const).map((u) => (
-                <button
-                  key={u}
-                  onClick={() => setPressureUnit(u)}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono font-medium uppercase transition ${
-                    pressureUnit === u
-                      ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {u}
-                </button>
-              ))}
-            </div>
+            {/* Apple Unit Segmented Control */}
+            <IOSSegmentedControl
+              options={[
+                { id: 'psi', label: 'PSI' },
+                { id: 'bar', label: 'BAR' },
+                { id: 'kpa', label: 'KPA' },
+              ]}
+              value={pressureUnit}
+              onChange={(val) => setPressureUnit(val as any)}
+              size="sm"
+            />
           </div>
         </div>
       </div>
@@ -147,38 +143,31 @@ export const TirePressureCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-6 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Layers className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <Layers className="w-4 h-4 text-ios-blue" />
               车辆与骑行参数
             </h2>
 
             {/* Bike Type Selector */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">{language === 'zh-TW' ? '車輛類型' : '车辆类型'}</label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { id: 'road', label: language === 'zh-TW' ? '公路車' : '公路车', defaultTire: 28 },
-                  { id: 'gravel', label: 'Gravel', defaultTire: 40 },
-                  { id: 'mtb', label: language === 'zh-TW' ? '山地車' : '山地车', defaultTire: 55 }
-                ].map((b) => (
-                  <button
-                    key={b.id}
-                    onClick={() => {
-                      setBikeType(b.id as any);
-                      setNominalWidth(b.defaultTire);
-                      setActualWidth(b.defaultTire + 1);
-                    }}
-                    className={`p-2.5 rounded-xl border text-center transition ${
-                      bikeType === b.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    <span className="text-xs">{b.label}</span>
-                  </button>
-                ))}
-              </div>
+              <IOSSegmentedControl
+                options={[
+                  { id: 'road', label: language === 'zh-TW' ? '公路車' : '公路车' },
+                  { id: 'gravel', label: 'Gravel' },
+                  { id: 'mtb', label: language === 'zh-TW' ? '山地車' : '山地车' },
+                ]}
+                value={bikeType}
+                onChange={(val) => {
+                  const bId = val as 'road' | 'gravel' | 'mtb';
+                  setBikeType(bId);
+                  const defTire = bId === 'road' ? 28 : bId === 'gravel' ? 40 : 55;
+                  setNominalWidth(defTire);
+                  setActualWidth(defTire + 1);
+                }}
+                size="md"
+              />
             </div>
 
             {/* Weight Inputs */}
@@ -253,26 +242,16 @@ export const TirePressureCalculator: React.FC = () => {
             {/* Tire Setup */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">{language === 'zh-TW' ? '外胎系統' : '轮胎系统'}</label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { id: 'tubeless', label: language === 'zh-TW' ? '真空胎' : '真空胎', desc: '低滚阻/防刺' },
-                  { id: 'tube', label: language === 'zh-TW' ? '普通內胎' : '普通内胎', desc: 'TPU/丁基胶' },
-                  { id: 'tubular', label: language === 'zh-TW' ? '管胎' : '管胎', desc: '竞赛管胎' },
-                ].map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => setTireSetup(t.id as any)}
-                    className={`p-2 rounded-xl border text-left transition ${
-                      tireSetup === t.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="text-xs font-semibold">{t.label}</div>
-                    <div className="text-[10px] text-slate-500">{t.desc}</div>
-                  </button>
-                ))}
-              </div>
+              <IOSSegmentedControl
+                options={[
+                  { id: 'tubeless', label: language === 'zh-TW' ? '真空胎' : '真空胎' },
+                  { id: 'tube', label: language === 'zh-TW' ? '內胎' : '内胎' },
+                  { id: 'tubular', label: language === 'zh-TW' ? '管胎' : '管胎' },
+                ]}
+                value={tireSetup}
+                onChange={(val) => setTireSetup(val as any)}
+                size="md"
+              />
             </div>
 
             {/* Dimensions & Hookless toggle */}

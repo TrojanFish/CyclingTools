@@ -111,30 +111,30 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-red/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
               <Activity className="w-3.5 h-3.5" />
               骑行运动医学自查系统
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">公路车骑行疼痛排查与自诊指南</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">公路车骑行疼痛排查与自诊指南</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。
             </p>
           </div>
           <div className="flex items-center gap-2.5">
             <button
               onClick={copyActionPlan}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold transition"
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 rounded-xl border border-black/[0.05] dark:border-white/[0.08] text-xs font-semibold transition shadow-ios-sm active:scale-95"
             >
               <Copy className="w-3.5 h-3.5" />
               复制清单
             </button>
             <button
               onClick={exportActionPlan}
-              className="flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-xs transition shadow-lg shadow-cyan-500/20"
+              className="apple-touch flex items-center gap-2 px-4 py-2 bg-ios-blue hover:opacity-90 text-white rounded-xl font-semibold text-xs transition shadow-ios-sm active:scale-95"
             >
               <Download className="w-4 h-4" />
               导出指南
@@ -142,18 +142,18 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
           </div>
         </div>
 
-        {/* Quick Symptom Search Input */}
+        {/* Apple Spotlight Search Input */}
         <div className="relative mt-5">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="搜索不适关键词快速定位 (如: 髌骨, 膝前痛, 手麻, 会阴, 锁片, 塌腰)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-blue transition"
           />
           {searchQuery && (
-            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-cyan-600 dark:text-cyan-400 font-mono">
+            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-ios-blue font-mono">
               匹配到 {matchingAreaIds.length} 个部位
             </span>
           )}
@@ -169,16 +169,16 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
               <button
                 key={key}
                 onClick={() => setSelectedAreaId(key)}
-                className={`p-3 rounded-xl border text-center transition flex flex-col items-center gap-1.5 relative ${
+                className={`apple-touch p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 relative active:scale-95 ${
                   isSelected
-                    ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 shadow-md ring-1 ring-cyan-500/30 font-bold'
+                    ? 'bg-ios-red/10 border-ios-red/40 text-ios-red shadow-ios-sm font-bold'
                     : isMatch
-                    ? 'bg-amber-500/10 border-amber-500/40 text-amber-600 dark:text-amber-400 font-semibold'
-                    : 'bg-slate-50 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 font-semibold'
+                    : 'bg-black/[0.03] dark:bg-white/[0.06] border-black/[0.04] dark:border-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-black/[0.06] dark:hover:bg-white/[0.1]'
                 }`}
               >
                 {isMatch && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400" />
                 )}
                 {(() => {
                   const AreaIcon = areaIconMap[key] || Activity;
@@ -186,9 +186,9 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
                     <AreaIcon
                       className={`w-5 h-5 transition-colors ${
                         isSelected
-                          ? 'text-cyan-600 dark:text-cyan-400'
+                          ? 'text-ios-red'
                           : isMatch
-                          ? 'text-amber-500 dark:text-amber-400'
+                          ? 'text-amber-500'
                           : 'text-slate-500 dark:text-slate-400'
                       }`}
                     />

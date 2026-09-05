@@ -37,6 +37,8 @@ import {
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import {
   ActivityAnalysis,
   parseFitFile,
@@ -462,33 +464,33 @@ export const FitActivityAnalyzer: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="ios-card p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-ios-blue/10 rounded-full blur-3xl pointer-events-none" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold">
               <LineChartIcon className="w-3.5 h-3.5" />
               <span>{'数据复盘与运动生理学'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {'码表活动与 FIT 航迹深度解析器'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
               {'纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。'}
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+          <div className="flex items-center gap-2.5 self-start sm:self-center shrink-0">
             <button
               onClick={() => window.print()}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs apple-touch transition flex items-center gap-1.5"
             >
               <Printer className="w-4 h-4" />
               <span>{language === 'zh-TW' ? '列印報告' : '打印报告'}</span>
             </button>
             <button
               onClick={handleLoadDemo}
-              className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition flex items-center gap-2"
+              className="px-4 py-2.5 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold text-xs shadow-ios-sm apple-touch transition flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
               <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
@@ -503,7 +505,7 @@ export const FitActivityAnalyzer: React.FC = () => {
         <div
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          className="lg:col-span-2 glass-panel p-6 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 transition flex flex-col items-center justify-center text-center group cursor-pointer relative"
+          className="lg:col-span-2 ios-card p-6 sm:p-8 rounded-3xl border-2 border-dashed border-slate-300/80 dark:border-white/20 hover:border-ios-blue dark:hover:border-ios-blue transition flex flex-col items-center justify-center text-center group cursor-pointer relative shadow-ios-card"
         >
           <input
             type="file"
@@ -516,11 +518,11 @@ export const FitActivityAnalyzer: React.FC = () => {
             className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
           />
 
-          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-3 group-hover:scale-110 transition">
+          <div className="w-14 h-14 rounded-2xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue flex items-center justify-center mb-3.5 group-hover:scale-105 transition apple-touch">
             <Upload className="w-6 h-6" />
           </div>
 
-          <div className="font-bold text-sm text-slate-800 dark:text-slate-200">
+          <div className="font-bold text-sm text-slate-800 dark:text-white">
             {'点击选择或拖拽码表文件至此 (.fit / .gpx / .tcx)'}
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -528,63 +530,63 @@ export const FitActivityAnalyzer: React.FC = () => {
           </div>
 
           {analysis && (
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-300 text-xs font-mono">
-              <CheckCircle2 className="w-3.5 h-3.5" />
+            <div className="mt-3.5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono">
+              <CheckCircle2 className="w-3.5 h-3.5 text-ios-green" />
               <span className="font-semibold">{analysis.fileName}</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 uppercase font-bold">{analysis.fileType}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-blue text-white uppercase font-bold">{analysis.fileType}</span>
             </div>
           )}
         </div>
 
         {/* Dynamic Rider Physiological Anchor Card */}
-        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Gauge className="w-4 h-4 text-cyan-500" />
+              <Gauge className="w-4 h-4 text-ios-blue" />
               {'车手基准生理参数'}
             </span>
-            <span className="text-[10px] text-slate-500">{'用于推算 IF/TSS'}</span>
+            <span className="text-[10px] text-slate-400">{'用于推算 IF/TSS'}</span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2.5">
             <div>
-              <label className="text-[11px] text-slate-500 block mb-1">FTP (W)</label>
+              <label className="text-[10px] text-slate-500 block mb-1">FTP (W)</label>
               <input
                 type="number"
                 value={ftpWatts}
                 onChange={(e) => setFtpWatts(Number(e.target.value))}
-                className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:border-cyan-500"
+                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-2 text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-ios-blue"
               />
             </div>
 
             <div>
-              <label className="text-[11px] text-slate-500 block mb-1">
+              <label className="text-[10px] text-slate-500 block mb-1">
                 {'体重 (kg)'}
               </label>
               <input
                 type="number"
                 value={weightKg}
                 onChange={(e) => setWeightKg(Number(e.target.value))}
-                className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:border-cyan-500"
+                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-2 text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-ios-blue"
               />
             </div>
 
             <div>
-              <label className="text-[11px] text-slate-500 block mb-1">
+              <label className="text-[10px] text-slate-500 block mb-1">
                 {'最大心率'}
               </label>
               <input
                 type="number"
                 value={maxHr}
                 onChange={(e) => setMaxHr(Number(e.target.value))}
-                className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:border-cyan-500"
+                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-2 text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-ios-blue"
               />
             </div>
           </div>
 
           <button
             onClick={handleProfileRecompute}
-            className="w-full py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-2xl bg-slate-100/80 dark:bg-white/10 hover:bg-ios-blue/10 hover:text-ios-blue text-slate-700 dark:text-slate-300 text-xs font-semibold transition apple-touch flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '更新分析' : '更新分析'}</span>
@@ -597,103 +599,65 @@ export const FitActivityAnalyzer: React.FC = () => {
         <div className="space-y-6">
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {/* Normalized Power */}
-            <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{'标准化功率 NP'}</span>
-                <Zap className="w-3.5 h-3.5 text-cyan-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-cyan-500">
-                {analysis.normalizedPower} <span className="text-xs font-normal text-slate-400">W</span>
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · {'均功率'} {analysis.avgPower}W
-              </div>
-            </div>
-
-            {/* Intensity Factor */}
-            <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{'强度系数 IF'}</span>
-                <Flame className="w-3.5 h-3.5 text-amber-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-amber-500">
-                {analysis.intensityFactor}
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {Math.round(analysis.intensityFactor * 100)}% {'FTP负荷'}
-              </div>
-            </div>
-
-            {/* Training Stress Score */}
-            <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{'训练压力 TSS'}</span>
-                <Award className="w-3.5 h-3.5 text-purple-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-purple-500">
-                {analysis.tss}
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {analysis.tss < 150 ? ('低度疲劳') : analysis.tss < 300 ? ('中度疲劳') : ('重度负荷')}
-              </div>
-            </div>
-
-            {/* Variability Index */}
-            <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{'变化指数 VI'}</span>
-                <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-blue-500">
-                {analysis.variabilityIndex}
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {analysis.variabilityIndex <= 1.05 ? 'TT Steady' : analysis.variabilityIndex <= 1.15 ? 'Rolling Hills' : 'Punchy Attack'}
-              </div>
-            </div>
-
-            {/* Distance & Moving Time */}
-            <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{'里程与净骑行'}</span>
-                <Timer className="w-3.5 h-3.5 text-emerald-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-emerald-500">
-                {analysis.totalDistanceKm} <span className="text-xs font-normal text-slate-400">km</span>
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {formatDuration(analysis.movingTimeSec)} ({analysis.avgSpeedKmh} km/h)
-              </div>
-            </div>
-
-            {/* Elevation & Work Done */}
-            <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{'累计爬升与做功'}</span>
-                <Mountain className="w-3.5 h-3.5 text-rose-500" />
-              </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-rose-500">
-                +{analysis.elevationGainM} <span className="text-xs font-normal text-slate-400">m</span>
-              </div>
-              <div className="text-[10px] text-slate-500">
-                {analysis.workKj} kJ ({analysis.caloriesKcal} kcal)
-              </div>
-            </div>
+            <IOSMetricTile
+              label="标准化功率 NP"
+              value={analysis.normalizedPower}
+              unit="W"
+              subtext={`${(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · 均功率 ${analysis.avgPower}W`}
+              theme="blue"
+              icon={<Zap className="w-4 h-4 text-ios-blue" />}
+            />
+            <IOSMetricTile
+              label="强度系数 IF"
+              value={analysis.intensityFactor}
+              subtext={`${Math.round(analysis.intensityFactor * 100)}% FTP负荷`}
+              theme="amber"
+              icon={<Flame className="w-4 h-4 text-ios-orange" />}
+            />
+            <IOSMetricTile
+              label="训练压力 TSS"
+              value={analysis.tss}
+              subtext={analysis.tss < 150 ? '低度疲劳' : analysis.tss < 300 ? '中度疲劳' : '重度负荷'}
+              theme="purple"
+              icon={<Award className="w-4 h-4 text-ios-purple" />}
+            />
+            <IOSMetricTile
+              label="变化指数 VI"
+              value={analysis.variabilityIndex}
+              subtext={analysis.variabilityIndex <= 1.05 ? 'TT Steady' : analysis.variabilityIndex <= 1.15 ? 'Rolling Hills' : 'Punchy Attack'}
+              theme="blue"
+              icon={<TrendingUp className="w-4 h-4 text-ios-blue" />}
+            />
+            <IOSMetricTile
+              label="里程与净骑行"
+              value={analysis.totalDistanceKm}
+              unit="km"
+              subtext={`${formatDuration(analysis.movingTimeSec)} (${analysis.avgSpeedKmh} km/h)`}
+              theme="green"
+              icon={<Timer className="w-4 h-4 text-ios-green" />}
+            />
+            <IOSMetricTile
+              label="累计爬升与做功"
+              value={`+${analysis.elevationGainM}`}
+              unit="m"
+              subtext={`${analysis.workKj} kJ (${analysis.caloriesKcal} kcal)`}
+              theme="mint"
+              icon={<Mountain className="w-4 h-4 text-ios-mint" />}
+            />
           </div>
 
           {/* Secondary Biological & Efficiency Strip */}
-          <div className="glass-panel px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs">
+          <div className="ios-card px-5 py-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs flex flex-wrap items-center justify-between gap-4 text-xs">
             <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
               <span className="flex items-center gap-1.5">
-                <Heart className="w-4 h-4 text-rose-500" />
-                <span>{'平均心率'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
+                <Heart className="w-4 h-4 text-ios-red" />
+                <span>{'平均心率'}: <strong className="text-slate-900 dark:text-white">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
                 <span className="text-slate-400 text-[10px]">({'最高'} {analysis.maxHeartRate ?? '--'})</span>
               </span>
 
               <span className="flex items-center gap-1.5">
-                <Activity className="w-4 h-4 text-amber-500" />
-                <span>{'平均踏频'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgCadence ?? '--'} rpm</strong></span>
+                <Activity className="w-4 h-4 text-ios-orange" />
+                <span>{'平均踏频'}: <strong className="text-slate-900 dark:text-white">{analysis.avgCadence ?? '--'} rpm</strong></span>
                 <span className="text-slate-400 text-[10px]">
                   ({'踩踏'} {analysis.pedalingPercent ?? 100}% · {'滑行'} {100 - (analysis.pedalingPercent ?? 100)}%)
                 </span>
@@ -701,15 +665,15 @@ export const FitActivityAnalyzer: React.FC = () => {
 
               {analysis.efficiencyFactor && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
-                  <Gauge className="w-4 h-4 text-cyan-500" />
-                  <span>{'效率因子 (EF)'}: <strong className="text-cyan-500">{analysis.efficiencyFactor} W/bpm</strong></span>
+                  <Gauge className="w-4 h-4 text-ios-blue" />
+                  <span>{'效率因子 (EF)'}: <strong className="text-ios-blue">{analysis.efficiencyFactor} W/bpm</strong></span>
                 </span>
               )}
 
               {analysis.aerobicDecoupling !== undefined && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
-                  <TrendingUp className="w-4 h-4 text-purple-500" />
-                  <span>{'有氧解耦率 (Pw:HR)'}: <strong className={analysis.aerobicDecoupling > 5 ? 'text-amber-500' : 'text-emerald-500'}>{analysis.aerobicDecoupling}%</strong></span>
+                  <TrendingUp className="w-4 h-4 text-ios-purple" />
+                  <span>{'有氧解耦率 (Pw:HR)'}: <strong className={analysis.aerobicDecoupling > 5 ? 'text-ios-orange' : 'text-ios-green'}>{analysis.aerobicDecoupling}%</strong></span>
                 </span>
               )}
             </div>
@@ -720,70 +684,33 @@ export const FitActivityAnalyzer: React.FC = () => {
           </div>
 
           {/* Interactive Tabbed Navigation */}
-          <div className="flex border-b border-slate-200 dark:border-slate-800 space-x-2 sm:space-x-4">
-            <button
-              onClick={() => setActiveTab('trends')}
-              className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-                activeTab === 'trends'
-                  ? 'border-cyan-500 text-cyan-500'
-                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-              }`}
-            >
-              <LineChartIcon className="w-4 h-4" />
-              <span>{language === 'zh-TW' ? '時序趨勢' : '时序趋势'}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('zones')}
-              className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-                activeTab === 'zones'
-                  ? 'border-cyan-500 text-cyan-500'
-                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-              }`}
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span>{language === 'zh-TW' ? '區間駐留' : '区间驻留'}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('mmp')}
-              className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-                activeTab === 'mmp'
-                  ? 'border-cyan-500 text-cyan-500'
-                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              <span>{language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线'}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('coaching')}
-              className={`pb-3 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition ${
-                activeTab === 'coaching'
-                  ? 'border-cyan-500 text-cyan-500'
-                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-              }`}
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>{language === 'zh-TW' ? '生理診斷' : '生理诊断'}</span>
-            </button>
+          <div className="max-w-md">
+            <IOSSegmentedControl
+              options={[
+                { value: 'trends', label: language === 'zh-TW' ? '時序趨勢' : '时序趋势' },
+                { value: 'zones', label: language === 'zh-TW' ? '區間駐留' : '区间驻留' },
+                { value: 'mmp', label: language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线' },
+                { value: 'coaching', label: language === 'zh-TW' ? '生理診斷' : '生理诊断' }
+              ]}
+              value={activeTab}
+              onChange={(v) => setActiveTab(v as any)}
+            />
           </div>
 
           {/* TAB 1: Time-Series Trends */}
           {activeTab === 'trends' && (
-            <div className="glass-panel p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                <div className="text-xs font-bold text-slate-850 dark:text-white">
                   {'多轨遥测曲线 (时间轴：分:秒)'}
                 </div>
 
                 {/* Channel Visibility Switches */}
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px]">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
                   <button
                     onClick={() => setShowPower(!showPower)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
-                      showPower ? 'bg-cyan-500/20 text-cyan-500 border border-cyan-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
+                      showPower ? 'bg-ios-blue text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
                     }`}
                   >
                     <Zap className="w-3 h-3" />
@@ -792,8 +719,8 @@ export const FitActivityAnalyzer: React.FC = () => {
 
                   <button
                     onClick={() => setShowHeartRate(!showHeartRate)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
-                      showHeartRate ? 'bg-rose-500/20 text-rose-500 border border-rose-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
+                      showHeartRate ? 'bg-ios-red text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
                     }`}
                   >
                     <Heart className="w-3 h-3" />
@@ -802,8 +729,8 @@ export const FitActivityAnalyzer: React.FC = () => {
 
                   <button
                     onClick={() => setShowElevation(!showElevation)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
-                      showElevation ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
+                      showElevation ? 'bg-ios-mint text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
                     }`}
                   >
                     <Mountain className="w-3 h-3" />
@@ -812,8 +739,8 @@ export const FitActivityAnalyzer: React.FC = () => {
 
                   <button
                     onClick={() => setShowSpeed(!showSpeed)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
-                      showSpeed ? 'bg-blue-500/20 text-blue-500 border border-blue-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
+                      showSpeed ? 'bg-ios-blue text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
                     }`}
                   >
                     <Gauge className="w-3 h-3" />
@@ -822,8 +749,8 @@ export const FitActivityAnalyzer: React.FC = () => {
 
                   <button
                     onClick={() => setShowCadence(!showCadence)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
-                      showCadence ? 'bg-amber-500/20 text-amber-500 border border-amber-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
+                      showCadence ? 'bg-ios-orange text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
                     }`}
                   >
                     <RotateCcw className="w-3 h-3" />
@@ -842,10 +769,10 @@ export const FitActivityAnalyzer: React.FC = () => {
           {activeTab === 'zones' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Coggan 7-Zone Power Distribution */}
-              <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+              <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-cyan-500" />
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-ios-blue" />
                     {'Coggan 功率 7 区分布'}
                   </span>
                   <span className="text-xs text-slate-400">FTP: {ftpWatts}W</span>
@@ -866,17 +793,17 @@ export const FitActivityAnalyzer: React.FC = () => {
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {analysis.timeInPowerZones.map((z) => (
-                    <div key={z.zone} className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-slate-50 dark:bg-slate-900/60">
+                    <div key={z.zone} className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
-                        <strong className="text-slate-800 dark:text-slate-200">{z.zone} {z.label}</strong>
+                        <strong className="text-slate-800 dark:text-white">{z.zone} {z.label}</strong>
                         <span className="text-slate-400 text-[10px]">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
                         <span className="text-slate-500">{formatDuration(z.seconds)}</span>
-                        <span className="font-bold text-slate-900 dark:text-slate-100 min-w-[40px] text-right">{z.percent}%</span>
+                        <span className="font-bold text-slate-900 dark:text-white min-w-[40px] text-right">{z.percent}%</span>
                       </div>
                     </div>
                   ))}
@@ -884,10 +811,10 @@ export const FitActivityAnalyzer: React.FC = () => {
               </div>
 
               {/* Heart Rate 5-Zone Distribution */}
-              <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+              <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                    <Heart className="w-4 h-4 text-rose-500" />
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-ios-red" />
                     {'心率 5 区分布'}
                   </span>
                   <span className="text-xs text-slate-400">{'最大心率'}: {maxHr}bpm</span>
@@ -908,17 +835,17 @@ export const FitActivityAnalyzer: React.FC = () => {
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {analysis.timeInHrZones.map((z) => (
-                    <div key={z.zone} className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-slate-50 dark:bg-slate-900/60">
+                    <div key={z.zone} className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
-                        <strong className="text-slate-800 dark:text-slate-200">{z.zone} {z.label}</strong>
+                        <strong className="text-slate-800 dark:text-white">{z.zone} {z.label}</strong>
                         <span className="text-slate-400 text-[10px]">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
                         <span className="text-slate-500">{formatDuration(z.seconds)}</span>
-                        <span className="font-bold text-slate-900 dark:text-slate-100 min-w-[40px] text-right">{z.percent}%</span>
+                        <span className="font-bold text-slate-900 dark:text-white min-w-[40px] text-right">{z.percent}%</span>
                       </div>
                     </div>
                   ))}
@@ -929,10 +856,10 @@ export const FitActivityAnalyzer: React.FC = () => {
 
           {/* TAB 3: MMP Power Curve */}
           {activeTab === 'mmp' && (
-            <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                     {'最佳平均峰值功率 (MMP) 曲线'}
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
@@ -959,9 +886,9 @@ export const FitActivityAnalyzer: React.FC = () => {
               {/* MMP Grid Table */}
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 {analysis.mmp.map((m) => (
-                  <div key={m.label} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-center space-y-1">
-                    <div className="text-xs font-bold text-purple-500 uppercase">{m.label}</div>
-                    <div className="text-lg font-extrabold text-slate-900 dark:text-slate-100">{m.watts} W</div>
+                  <div key={m.label} className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-1">
+                    <div className="text-xs font-bold text-ios-purple uppercase">{m.label}</div>
+                    <div className="text-lg font-extrabold text-slate-900 dark:text-white">{m.watts} W</div>
                     <div className="text-[11px] text-slate-500">{m.wkg} W/kg</div>
                   </div>
                 ))}
@@ -971,10 +898,10 @@ export const FitActivityAnalyzer: React.FC = () => {
 
           {/* TAB 4: Physiological Coaching Insights */}
           {activeTab === 'coaching' && (
-            <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-cyan-500" />
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                <Sparkles className="w-5 h-5 text-ios-blue" />
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   {'自动化运动生理学诊断与复原窗口评估'}
                 </h3>
               </div>
@@ -983,20 +910,20 @@ export const FitActivityAnalyzer: React.FC = () => {
                 {coachingNotes.map((note, idx) => (
                   <div
                     key={idx}
-                    className={`p-4 rounded-xl border flex items-start gap-3 text-xs ${
+                    className={`p-4 rounded-2xl border flex items-start gap-3 text-xs ${
                       note.type === 'success'
-                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-200'
+                        ? 'bg-ios-green/10 border-ios-green/30 text-slate-900 dark:text-emerald-100'
                         : note.type === 'warning'
-                        ? 'bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200'
-                        : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-900 dark:text-cyan-200'
+                        ? 'bg-ios-orange/10 border-ios-orange/30 text-slate-900 dark:text-amber-100'
+                        : 'bg-ios-blue/10 border-ios-blue/30 text-slate-900 dark:text-sky-100'
                     }`}
                   >
                     {note.type === 'success' ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-5 h-5 text-ios-green shrink-0 mt-0.5" />
                     ) : note.type === 'warning' ? (
-                      <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                      <AlertTriangle className="w-5 h-5 text-ios-orange shrink-0 mt-0.5" />
                     ) : (
-                      <Info className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
+                      <Info className="w-5 h-5 text-ios-blue shrink-0 mt-0.5" />
                     )}
                     <div className="space-y-1">
                       <div className="font-bold text-sm">{note.title}</div>
@@ -1007,9 +934,9 @@ export const FitActivityAnalyzer: React.FC = () => {
               </div>
 
               {/* Recovery & Nutrition Advice */}
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
-                <div className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                  <Flame className="w-4 h-4 text-rose-500" />
+              <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-xs space-y-2">
+                <div className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                  <Flame className="w-4 h-4 text-ios-orange" />
                   {'赛后糖原与肌肉超量恢复建议'}
                 </div>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">

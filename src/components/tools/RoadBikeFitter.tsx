@@ -3,6 +3,8 @@ import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer,
 import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { IOSMetricTile } from '../common/IOSCard';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -135,16 +137,16 @@ export const RoadBikeFitter: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-purple/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-xs font-semibold mb-2">
               <Ruler className="w-3.5 h-3.5" />
               生物力学与几何拟合
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">专业公路车 Fitting 尺寸拟合器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">专业公路车 Fitting 尺寸拟合器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               根据人体解剖学多维测量，科学推导有效上管 ETT、坐高、座舱落差、Stack/Reach、把立及锁片安装方案。
             </p>
           </div>
@@ -152,7 +154,7 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 transition"
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
             >
               <Printer className="w-3.5 h-3.5" />
               {language === 'zh-TW' ? '列印工單' : '打印工单'}
@@ -164,9 +166,9 @@ export const RoadBikeFitter: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <User className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <User className="w-4 h-4 text-ios-purple" />
               {language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
             </h2>
 
@@ -178,7 +180,7 @@ export const RoadBikeFitter: React.FC = () => {
                     {language === 'zh-TW' ? '身高' : '身高'} (cm)
                   </label>
                   {isImperial && (
-                    <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-medium">
+                    <span className="text-[10px] text-ios-purple font-mono font-medium">
                       {Math.floor(height / 30.48)}'{Math.round((height % 30.48) / 2.54)}"
                     </span>
                   )}
@@ -192,7 +194,7 @@ export const RoadBikeFitter: React.FC = () => {
                     <Tooltip content="赤脚靠墙站立，双脚间距15cm，用硬皮书夹紧会阴部测量地面到书顶垂直距离。" />
                   </label>
                   {isImperial && (
-                    <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-medium">
+                    <span className="text-[10px] text-ios-purple font-mono font-medium">
                       {(inseam / 2.54).toFixed(1)}"
                     </span>
                   )}
@@ -211,7 +213,7 @@ export const RoadBikeFitter: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '臂長' : '臂长'} (cm)
+                  {language === 'zh-TW' ? '手臂長' : '手臂长'} (cm)
                 </label>
                 <NumberStepper value={armLength} onChange={setArmLength} step={0.5} min={45} max={90} unit="cm" decimals={1} />
               </div>
@@ -230,38 +232,16 @@ export const RoadBikeFitter: React.FC = () => {
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
                 {language === 'zh-TW' ? '騎行目標偏好' : '骑行目标偏好'}
               </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  {
-                    id: 'recreational',
-                    label: language === 'zh-TW' ? '休閒騎遊' : '休闲骑游',
-                    desc: '舒适直立'
-                  },
-                  {
-                    id: 'endurance',
-                    label: language === 'zh-TW' ? '長途耐力' : '长途耐力',
-                    desc: '均衡适中'
-                  },
-                  {
-                    id: 'racing',
-                    label: language === 'zh-TW' ? '競技突圍' : '竞技突围',
-                    desc: '破风激进'
-                  },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setRidingStyle(s.id as any)}
-                    className={`p-2.5 rounded-xl border text-center transition ${
-                      ridingStyle === s.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="text-xs font-semibold">{s.label}</div>
-                    <div className="text-[10px] text-slate-500">{s.desc}</div>
-                  </button>
-                ))}
-              </div>
+              <IOSSegmentedControl
+                options={[
+                  { id: 'recreational', label: language === 'zh-TW' ? '休閒騎遊' : '休闲骑游' },
+                  { id: 'endurance', label: language === 'zh-TW' ? '長途耐力' : '长途耐力' },
+                  { id: 'racing', label: language === 'zh-TW' ? '競技突圍' : '竞技突围' },
+                ]}
+                value={ridingStyle}
+                onChange={(val) => setRidingStyle(val as any)}
+                size="md"
+              />
             </div>
 
             {/* Flexibility */}
@@ -269,25 +249,16 @@ export const RoadBikeFitter: React.FC = () => {
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
                 {language === 'zh-TW' ? '身體柔韌度' : '身体柔韧度'}
               </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { id: 'low', label: language === 'zh-TW' ? '較低' : '较低 (指触不到地)' },
-                  { id: 'medium', label: language === 'zh-TW' ? '正常' : '正常 (指尖触地)' },
-                  { id: 'high', label: language === 'zh-TW' ? '極佳' : '极佳 (手掌触地)' }
-                ].map((f) => (
-                  <button
-                    key={f.id}
-                    onClick={() => setFlexibility(f.id as any)}
-                    className={`py-2 px-1 rounded-xl border text-center text-xs transition ${
-                      flexibility === f.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    {f.label}
-                  </button>
-                ))}
-              </div>
+              <IOSSegmentedControl
+                options={[
+                  { id: 'low', label: language === 'zh-TW' ? '較低' : '较低' },
+                  { id: 'medium', label: language === 'zh-TW' ? '正常' : '正常' },
+                  { id: 'high', label: language === 'zh-TW' ? '極佳' : '极佳' },
+                ]}
+                value={flexibility}
+                onChange={(val) => setFlexibility(val as any)}
+                size="md"
+              />
             </div>
 
             {/* Advanced Extra Measurements Accordion */}
@@ -359,53 +330,37 @@ export const RoadBikeFitter: React.FC = () => {
 
           {/* Key Output Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '推薦坐高' : '推荐坐高'}
-              </span>
-              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                {result.saddleHeight} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {isImperial ? `${(result.saddleHeight / 2.54).toFixed(1)} in | ` : ''}{'中轴中心至坐垫顶'}
-              </span>
-            </div>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '推薦坐高' : '推荐坐高'}
+              value={result.saddleHeight}
+              unit="cm"
+              subtext={isImperial ? `${(result.saddleHeight / 2.54).toFixed(1)} in | 中轴至坐垫顶` : '中轴中心至坐垫顶'}
+              accentColor="purple"
+            />
 
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
-              </span>
-              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                {result.effectiveTopTube} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | ` : ''}{'水平有效上管长'}
-              </span>
-            </div>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
+              value={result.effectiveTopTube}
+              unit="cm"
+              subtext={isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | 水平上管长` : '水平有效上管长'}
+              accentColor="blue"
+            />
 
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
-              </span>
-              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-                {result.saddleSetback} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {'鼻头距离五通垂线'}
-              </span>
-            </div>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
+              value={result.saddleSetback}
+              unit="cm"
+              subtext="鼻头距离五通垂线"
+              accentColor="green"
+            />
 
-            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
-              </span>
-              <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
-                {result.saddleDrop} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
-              </div>
-              <span className="text-[10px] text-slate-500">
-                {'坐垫顶与车把高差'}
-              </span>
-            </div>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
+              value={result.saddleDrop}
+              unit="cm"
+              subtext="坐垫顶与车把高差"
+              accentColor="orange"
+            />
           </div>
 
           {/* Stack & Reach + Body Proportion Analysis */}

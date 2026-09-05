@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { ROADBOOK_DATABASE, RoadbookItem, RoadbookPoint } from '../../data/roadbookDatabase';
@@ -459,34 +461,34 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Compass className="w-3.5 h-3.5" />
               {language === 'zh-TW' ? '精選世界與全國經典單車路書工坊' : '行者实测·全国及世界经典骑行路书精选工坊'}
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               {language === 'zh-TW' ? '經典單車路書與航跡精選庫' : '经典骑行路书与航迹精选库'}
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
               {language === 'zh-TW'
                 ? '匯聚歐洲環法環義傳奇天路與經典實測單車路書，支援互動式地圖漫遊、高程起伏剖面、一鍵匯出 GPX 及與天氣/爬坡工具連動。'
                 : '汇聚浙江与全国高热度实测骑行路书及欧洲环法环意传奇天路，支持交互式地图漫游、高程起伏剖面、一键导出 GPX 及与天气/爬坡工具联动。'}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 cursor-pointer transition shadow-sm">
-              <Upload className="w-4 h-4 text-cyan-500" />
+          <div className="flex items-center gap-2.5">
+            <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
+              <Upload className="w-4 h-4 text-ios-blue" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
             </label>
 
             <button
               onClick={handleExportGpx}
-              className="flex items-center gap-2 px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-xs transition shadow-lg shadow-cyan-500/20"
+              className="flex items-center gap-2 px-4 py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-2xl font-bold text-xs transition shadow-ios-md apple-touch"
             >
               <Download className="w-4 h-4" />
               {language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}
@@ -495,44 +497,30 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         </div>
 
         {/* Tabs & Search Filter Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800/80 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-          {/* Tabs */}
-          <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 self-start">
-            <button
-              onClick={() => setActiveTab('curated')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                activeTab === 'curated'
-                  ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              {language === 'zh-TW' ? `精選路書 (${ROADBOOK_DATABASE.length})` : `精选路书 (${ROADBOOK_DATABASE.length})`}
-            </button>
-            <button
-              onClick={() => setActiveTab('personal')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                activeTab === 'personal'
-                  ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Bookmark className="w-3.5 h-3.5" />
-              {language === 'zh-TW' ? `本地匯入 (${personalRoutes.length})` : `本地导入 (${personalRoutes.length})`}
-            </button>
+        <div className="mt-6 pt-5 border-t border-slate-200/80 dark:border-white/10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          {/* IOSSegmentedControl Tabs */}
+          <div className="w-full sm:w-auto">
+            <IOSSegmentedControl
+              options={[
+                { value: 'curated', label: language === 'zh-TW' ? `精選路書 (${ROADBOOK_DATABASE.length})` : `精选路书 (${ROADBOOK_DATABASE.length})` },
+                { value: 'personal', label: language === 'zh-TW' ? `本地匯入 (${personalRoutes.length})` : `本地导入 (${personalRoutes.length})` }
+              ]}
+              value={activeTab}
+              onChange={(v) => setActiveTab(v as any)}
+            />
           </div>
 
           {/* Quick Filters */}
           <div className="flex flex-wrap items-center gap-2.5 flex-1 max-w-2xl">
             {/* Search Input */}
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder={language === 'zh-TW' ? '搜尋路書名稱、城市、景點、行者編號...' : '搜索路书名、城市、景点、行者编号...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
               />
             </div>
 
@@ -540,7 +528,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <select
               value={selectedProvince}
               onChange={(e) => setSelectedProvince(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-cyan-500"
+              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
             >
               <option value="all">{language === 'zh-TW' ? '全部地區' : '全部地区'}</option>
               <option value="Europe">{language === 'zh-TW' ? '歐洲經典 (阿爾卑斯/馬略卡)' : '欧洲经典 (阿尔卑斯/马略卡)'}</option>
@@ -554,7 +542,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-cyan-500"
+              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
             >
               <option value="all">{language === 'zh-TW' ? '全部難度' : '全部难度'}</option>
               <option value="入门休闲">{language === 'zh-TW' ? '入門休閒' : '入门休闲'}</option>
@@ -565,6 +553,40 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
         </div>
       </div>
+
+      {/* Hero Metric Summary for Active Route */}
+      {activeRoute && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '路線總里程' : '路线总里程'}
+            value={convertDistance(activeRoute.distanceKm).value}
+            unit={convertDistance(activeRoute.distanceKm).unit}
+            subValue={activeRoute.region}
+            accent="blue"
+          />
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '累計總爬升' : '累计总爬升'}
+            value={`+${convertElevation(activeRoute.elevationGainM).value}`}
+            unit={convertElevation(activeRoute.elevationGainM).unit}
+            subValue={`${language === 'zh-TW' ? '平均坡度' : '平均坡度'} ${activeRoute.avgGradePct}%`}
+            accent="orange"
+          />
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '最高海拔點' : '最高海拔点'}
+            value={convertElevation(activeRoute.maxAltitudeM).value}
+            unit={convertElevation(activeRoute.maxAltitudeM).unit}
+            subValue={activeRoute.categoryLabel || activeRoute.category}
+            accent="purple"
+          />
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '挑戰難度' : '挑战难度'}
+            value={activeRoute.difficulty}
+            unit=""
+            subValue={`景致 ⭐${activeRoute.sceneryRating}/5`}
+            accent="green"
+          />
+        </div>
+      )}
 
       {/* Main Grid: Left Route Cards + Right Interactive Map & Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -596,31 +618,31 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 <div
                   key={route.id}
                   onClick={() => setSelectedRouteId(route.id)}
-                  className={`p-4 rounded-2xl border transition cursor-pointer relative group ${
+                  className={`ios-card p-4 rounded-3xl border transition cursor-pointer relative group apple-touch shadow-ios-card ${
                     isSelected
-                      ? 'bg-cyan-500/10 border-cyan-500 ring-1 ring-cyan-500/40 shadow-md'
-                      : 'bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                      ? 'border-ios-blue ring-2 ring-ios-blue/30 bg-ios-blue/5'
+                      : 'border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
                   }`}
                 >
                   <div className="flex justify-between items-start gap-2">
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20">
+                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-ios-blue/15 text-ios-blue font-semibold">
                           {route.sourceCode}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300 font-medium">
                           {rRegion}
                         </span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-lg font-semibold ${
-                          route.difficulty === '终极硬核' ? 'bg-rose-500/15 text-rose-500' :
-                          route.difficulty === '长途挑战' ? 'bg-amber-500/15 text-amber-500' :
-                          route.difficulty === '进阶爬坡' ? 'bg-purple-500/15 text-purple-500' :
-                          'bg-emerald-500/15 text-emerald-500'
+                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-semibold ${
+                          route.difficulty === '终极硬核' ? 'bg-ios-red/15 text-ios-red' :
+                          route.difficulty === '长途挑战' ? 'bg-ios-orange/15 text-ios-orange' :
+                          route.difficulty === '进阶爬坡' ? 'bg-ios-purple/15 text-ios-purple' :
+                          'bg-ios-green/15 text-ios-green'
                         }`}>
                           {rDiff}
                         </span>
                       </div>
-                      <h3 className={`text-sm font-bold pt-1 ${isSelected ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-900 dark:text-slate-200'}`}>
+                      <h3 className={`text-sm font-bold pt-1 ${isSelected ? 'text-ios-blue' : 'text-slate-900 dark:text-white'}`}>
                         {rName}
                       </h3>
                     </div>
@@ -628,9 +650,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                     <div className="flex items-center gap-1">
                       <button
                         onClick={(e) => toggleBookmark(route.id, e)}
-                        className={`p-1.5 rounded-lg transition ${
+                        className={`p-1.5 rounded-xl transition apple-touch ${
                           isBookmarked
-                            ? 'text-amber-500 hover:text-amber-400'
+                            ? 'text-ios-orange hover:opacity-80'
                             : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                         }`}
                         title={isBookmarked ? ('取消收藏') : ('加入收藏')}
@@ -641,7 +663,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                       {activeTab === 'personal' && (
                         <button
                           onClick={(e) => deletePersonalRoute(route.id, e)}
-                          className="p-1.5 text-slate-400 hover:text-rose-500 transition rounded-lg"
+                          className="p-1.5 text-slate-400 hover:text-ios-red transition rounded-xl apple-touch"
                           title={'删除该自定义路书'}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -651,29 +673,29 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   </div>
 
                   {/* Route Key Metric Grid */}
-                  <div className="grid grid-cols-4 gap-2 mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-center font-mono">
-                    <div className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60">
+                  <div className="grid grid-cols-4 gap-2 mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/10 text-center font-mono">
+                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
                       <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '總里程' : '总里程'}</span>
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{convertDistance(route.distanceKm).formatted}</span>
                     </div>
-                    <div className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60">
+                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
                       <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</span>
-                      <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400">+{convertElevation(route.elevationGainM).formatted}</span>
+                      <span className="text-xs font-bold text-ios-blue">+{convertElevation(route.elevationGainM).formatted}</span>
                     </div>
-                    <div className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60">
+                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
                       <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '最高海拔' : '最高海拔'}</span>
-                      <span className="text-xs font-bold text-amber-600 dark:text-amber-400">{convertElevation(route.maxAltitudeM).formatted}</span>
+                      <span className="text-xs font-bold text-ios-orange">{convertElevation(route.maxAltitudeM).formatted}</span>
                     </div>
-                    <div className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/60">
+                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
                       <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '平均坡度' : '平均坡度'}</span>
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{route.avgGradePct}%</span>
+                      <span className="text-xs font-bold text-ios-green">{route.avgGradePct}%</span>
                     </div>
                   </div>
 
                   {/* Highlights Pill Tags */}
                   <div className="flex flex-wrap gap-1.5 mt-2.5">
                     {route.highlights.slice(0, 4).map((h, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400">
+                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-white/70 dark:bg-white/5 text-slate-600 dark:text-slate-300">
                         #{h}
                       </span>
                     ))}
@@ -687,23 +709,23 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         {/* Right Column: Full Interactive Map + Elevation Chart + Deep Notes */}
         <div className="lg:col-span-7 space-y-6">
           {/* Map Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-cyan-500" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <MapPin className="w-4 h-4 text-ios-blue" />
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
                   {activeRoute.name}
                 </h2>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 font-bold">
+                <span className="text-xs font-mono text-ios-blue font-bold">
                   {convertDistance(activeRoute.distanceKm).formatted} / +{convertElevation(activeRoute.elevationGainM).formatted}
                 </span>
               </div>
             </div>
 
             {/* Leaflet Map Box */}
-            <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 z-10 shadow-inner">
+            <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 dark:border-white/10 z-10 shadow-inner">
               <div ref={mapContainerRef} className="w-full h-80 bg-slate-900"></div>
             </div>
 
@@ -715,7 +737,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               {activeRoute.waypoints.map((wp, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 shrink-0 text-[11px]"
+                  className="px-2.5 py-0.5 rounded-full bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 shrink-0 text-[11px]"
                 >
                   {idx + 1}. {wp.name.split(' ')[0]} ({convertElevation(wp.elevation).formatted})
                 </span>
@@ -724,10 +746,10 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
 
           {/* Elevation Profile Chart */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <Mountain className="w-4 h-4 text-cyan-500" />
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Mountain className="w-4 h-4 text-ios-blue" />
                 {'全线高程起伏与地形剖面 (交互联动)'}
               </h3>
               <span className="text-[11px] text-slate-400">
@@ -752,11 +774,11 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   },
                   scales: {
                     x: {
-                      grid: { color: 'rgba(150, 150, 150, 0.1)' },
+                      grid: { color: 'rgba(150, 150, 150, 0.08)' },
                       ticks: { color: '#94a3b8', font: { size: 10 } }
                     },
                     y: {
-                      grid: { color: 'rgba(150, 150, 150, 0.1)' },
+                      grid: { color: 'rgba(150, 150, 150, 0.08)' },
                       ticks: { color: '#94a3b8', font: { size: 10 } }
                     }
                   }
@@ -766,9 +788,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
 
           {/* Route Deep Intel & Tips */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-amber-500" />
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-ios-orange" />
               {'路线实测指引与安全贴士'}
             </h3>
 
@@ -777,9 +799,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-1">
                 <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-cyan-500" />
+                  <Compass className="w-3.5 h-3.5 text-ios-blue" />
                   <span>{language === 'zh-TW' ? '路況與通行情況:' : '路况与通行情况:'}</span>
                 </span>
                 <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed block">
@@ -787,9 +809,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-1">
                 <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5">
-                  <Sun className="w-3.5 h-3.5 text-amber-500" />
+                  <Sun className="w-3.5 h-3.5 text-ios-orange" />
                   <span>{language === 'zh-TW' ? '最佳騎行季節與時段:' : '最佳骑行季节与时段:'}</span>
                 </span>
                 <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed block">
@@ -800,33 +822,33 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             {/* Practical Advice Tips */}
             <div className="space-y-2 pt-1">
-              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+              <span className="text-[11px] font-semibold text-ios-orange flex items-center gap-1.5">
+                <Lightbulb className="w-3.5 h-3.5 text-ios-orange" />
                 <span>{language === 'zh-TW' ? '老鳥車手避坑與補給經驗:' : '老鸟车手避坑与补给经验:'}</span>
               </span>
               {activeRoute.tips.map((tip, idx) => (
-                <div key={idx} className="flex items-start gap-2 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/10 text-xs text-slate-700 dark:text-slate-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span>
+                <div key={idx} className="flex items-start gap-2 p-3 rounded-2xl bg-ios-orange/10 border border-ios-orange/20 text-xs text-slate-700 dark:text-slate-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-ios-orange mt-1.5 shrink-0"></span>
                   <span className="leading-relaxed">{tip}</span>
                 </div>
               ))}
             </div>
 
             {/* Cross-Tool Actions */}
-            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div className="pt-3 border-t border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 {onNavigateTool && (
                   <>
                     <button
                       onClick={() => onNavigateTool('weather-advisor')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition"
+                      className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
                     >
-                      <Compass className="w-3.5 h-3.5 text-cyan-500" />
+                      <Compass className="w-3.5 h-3.5 text-ios-blue" />
                       {language === 'zh-TW' ? '沿途天氣' : '沿途天气'}
                     </button>
                     <button
                       onClick={() => onNavigateTool('climb-pacing')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition"
+                      className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
                     >
                       <Mountain className="w-3.5 h-3.5 text-amber-500" />
                       {language === 'zh-TW' ? '爬坡規劃' : '爬坡规划'}

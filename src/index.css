@@ -3,31 +3,35 @@
 @tailwind utilities;
 
 :root {
-  --bg-main: #0b0f19;
-  --text-main: #f8fafc;
-  --text-sub: #94a3b8;
-  --text-muted: #64748b;
-  --glass-bg: rgba(15, 23, 42, 0.75);
+  --bg-main: #000000;
+  --text-main: #ffffff;
+  --text-sub: #8e8e93;
+  --text-muted: #636366;
+  --glass-bg: rgba(28, 28, 30, 0.78);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-glow: rgba(0, 175, 255, 0.15);
-  --input-bg: #0f172a;
-  --input-border: #1e293b;
-  --card-bg: rgba(15, 23, 42, 0.6);
-  --accent-cyan: #00AFFF;
+  --glass-glow: rgba(10, 132, 255, 0.12);
+  --input-bg: #1c1c1e;
+  --input-border: rgba(255, 255, 255, 0.12);
+  --card-bg: #1c1c1e;
+  --card-secondary: #2c2c2e;
+  --separator: rgba(255, 255, 255, 0.08);
+  --accent-cyan: #0a84ff;
 }
 
 .light {
-  --bg-main: #f8fafc;
-  --text-main: #0f172a;
-  --text-sub: #475569;
-  --text-muted: #94a3b8;
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(203, 213, 225, 0.8);
-  --glass-glow: rgba(0, 175, 255, 0.1);
+  --bg-main: #f2f2f7;
+  --text-main: #000000;
+  --text-sub: #3c3c43;
+  --text-muted: #8e8e93;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-glow: rgba(0, 122, 255, 0.08);
   --input-bg: #ffffff;
-  --input-border: #cbd5e1;
+  --input-border: rgba(60, 60, 67, 0.18);
   --card-bg: #ffffff;
-  --accent-cyan: #0284c7;
+  --card-secondary: #e5e5ea;
+  --separator: rgba(60, 60, 67, 0.12);
+  --accent-cyan: #007aff;
 }
 
 html, body {
@@ -38,7 +42,10 @@ html, body {
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   padding-left: env(safe-area-inset-left, 0px);
@@ -50,45 +57,56 @@ header {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* Glassmorphic card & panel styling */
+/* Apple Materials & Frosted Panels */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
 }
 
 .glass-card {
   background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .glass-card:hover {
-  border-color: rgba(0, 175, 255, 0.4);
-  box-shadow: 0 10px 25px -5px var(--glass-glow);
+  border-color: rgba(10, 132, 255, 0.4);
+  box-shadow: 0 8px 30px -4px var(--glass-glow);
 }
 
-/* Light mode automated overrides for high readability */
+/* Apple HIG tactile button touch effect */
+.apple-touch {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
+}
+.apple-touch:active {
+  transform: scale(0.975);
+  opacity: 0.88;
+}
+
+/* Light mode Apple system overrides */
 .light .glass-panel {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-  border-color: rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .light .glass-card {
   background: #ffffff;
-  box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.04);
-  border-color: rgba(226, 232, 240, 0.9);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 12px -2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .light .glass-card:hover {
   background-color: #ffffff !important;
-  border-color: rgba(2, 132, 199, 0.5) !important;
-  box-shadow: 0 12px 28px -4px rgba(2, 132, 199, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 122, 255, 0.35) !important;
+  box-shadow: 0 12px 32px -4px rgba(0, 122, 255, 0.10), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
   transform: translateY(-2px);
 }
 
@@ -180,29 +198,99 @@ header {
   color: #334155 !important;
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars (iOS macOS overlay style) */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.1);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(142, 142, 147, 0.3);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 175, 255, 0.7);
+  background: rgba(142, 142, 147, 0.6);
+}
+
+/* iOS & macOS Native Control Utilities */
+.ios-segmented-control {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 12px;
+  background-color: rgba(118, 118, 128, 0.12);
+  user-select: none;
+}
+.dark .ios-segmented-control {
+  background-color: rgba(118, 118, 128, 0.24);
+}
+
+.ios-segment-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8e8e93;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+.ios-segment-item:hover {
+  color: #3c3c43;
+}
+.dark .ios-segment-item:hover {
+  color: #ffffff;
+}
+
+.ios-segment-item.active {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.dark .ios-segment-item.active {
+  background-color: #636366;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.ios-inset-group {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+.dark .ios-inset-group {
+  background-color: #1c1c1e;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.ios-inset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 0.5px solid rgba(60, 60, 67, 0.12);
+}
+.ios-inset-row:last-child {
+  border-bottom: none;
+}
+.dark .ios-inset-row {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Leaflet map custom styling */
 .leaflet-container {
   font-family: inherit;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   z-index: 1;
 }
 
@@ -223,7 +311,7 @@ header {
   header, .no-print, button {
     display: none !important;
   }
-  .glass-panel, .glass-card {
+  .glass-panel, .glass-card, .ios-inset-group {
     background: #ffffff !important;
     border: 1px solid #cccccc !important;
     box-shadow: none !important;

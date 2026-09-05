@@ -14,6 +14,8 @@ import {
 } from 'chart.js';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -264,56 +266,44 @@ export const CyclePowerCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Zap className="w-3.5 h-3.5" />
-              空气动力学与重力方程
+              {language === 'zh-TW' ? '空氣動力學與重力方程' : '空气动力学与重力方程'}
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">骑行功率与速度计算器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
-              高精度空气阻力、滚阻、重力分量与海拔密度推算，支持功速互推、Coggan 7 区间划分与 VAM 爬坡耗时求解。
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              {language === 'zh-TW' ? '單車功率與速度計算器' : '骑行功率与速度计算器'}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+              {language === 'zh-TW'
+                ? '高精度空氣阻力、滾阻、重力分量與海拔密度推算，支援功速互推、Coggan 7 區間劃分與 VAM 爬坡耗時求解。'
+                : '高精度空气阻力、滚阻、重力分量与海拔密度推算，支持功速互推、Coggan 7 区间划分与 VAM 爬坡耗时求解。'}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={copyFullReport}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
             >
               <Copy className="w-3.5 h-3.5" />
-              复制报告
+              {language === 'zh-TW' ? '複製報告' : '复制报告'}
             </button>
 
-            {/* Mode Selectors */}
-            <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
-              <button
-                onClick={() => setCalcMode('speed')}
-                className={`px-3 py-1 rounded-lg font-medium transition ${
-                  calcMode === 'speed' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                功率求速度
-              </button>
-              <button
-                onClick={() => setCalcMode('power')}
-                className={`px-3 py-1 rounded-lg font-medium transition ${
-                  calcMode === 'power' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                速度求功率
-              </button>
-              <button
-                onClick={() => setCalcMode('wkg')}
-                className={`px-3 py-1 rounded-lg font-medium transition ${
-                  calcMode === 'wkg' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                推重比求功率
-              </button>
-            </div>
+            {/* Apple Mode Segmented Control */}
+            <IOSSegmentedControl
+              options={[
+                { id: 'speed', label: language === 'zh-TW' ? '功率求速度' : '功率求速度' },
+                { id: 'power', label: language === 'zh-TW' ? '速度求功率' : '速度求功率' },
+                { id: 'wkg', label: language === 'zh-TW' ? '推重比求功率' : '推重比求功率' },
+              ]}
+              value={calcMode}
+              onChange={(val) => setCalcMode(val as any)}
+              size="sm"
+            />
           </div>
         </div>
       </div>
@@ -554,56 +544,46 @@ export const CyclePowerCalculator: React.FC = () => {
         {/* Right Output Results & Full Analytics */}
         <div className="lg:col-span-7 space-y-6">
           {/* Main Hero Metric Cards */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                {language === 'zh-TW' ? '估算騎行速度' : '估算骑行速度'}
-              </span>
-              <div className="text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                {isImperial ? (result.speedKmh * 0.621371).toFixed(1) : result.speedKmh}
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal ml-1">
-                  {isImperial ? 'mph' : 'km/h'}
-                </span>
-              </div>
-              <span className="text-[10px] text-slate-500 font-mono block mt-0.5">
-                {isImperial ? `${result.speedKmh} km/h` : `${(result.speedKmh * 0.621371).toFixed(1)} mph`}
-              </span>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '估算速度' : '估算速度'}
+              value={isImperial ? (result.speedKmh * 0.621371).toFixed(1) : result.speedKmh}
+              unit={isImperial ? 'mph' : 'km/h'}
+              subtext={isImperial ? `${result.speedKmh} km/h` : `${(result.speedKmh * 0.621371).toFixed(1)} mph`}
+              accentColor="blue"
+              icon={Gauge}
+            />
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                {language === 'zh-TW' ? '推重比 (W/kg)' : '推重比 (W/kg)'}
-              </span>
-              <div className="text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-                {result.wkg} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W/kg</span>
-              </div>
-              <span className="text-[10px] text-slate-500 block mt-0.5">
-                {result.power} {language === 'zh-TW' ? '瓦實際總輸出' : '瓦实际总输出'}
-              </span>
-            </div>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '推重比 (W/kg)' : '推重比 (W/kg)'}
+              value={result.wkg}
+              unit="W/kg"
+              subtext={`${result.power} ${language === 'zh-TW' ? '瓦實際總輸出' : '瓦实际总输出'}`}
+              accentColor="green"
+              icon={Zap}
+            />
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                {language === 'zh-TW' ? '人體能耗代謝' : '人体能耗代谢'}
-              </span>
-              <div className="text-3xl font-extrabold font-mono text-amber-600 dark:text-amber-400 mt-1">
-                {result.kcalPerHour} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">kcal/h</span>
-              </div>
-              <span className="text-[10px] text-slate-500 block mt-0.5">
-                {'24% 机械效率推算'}
-              </span>
-            </div>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '人體能耗代謝' : '人体能耗代谢'}
+              value={result.kcalPerHour}
+              unit="kcal/h"
+              subtext="24% 机械效率推算"
+              accentColor="orange"
+              icon={Flame}
+            />
           </div>
 
           {/* Coggan Level Badge */}
-          <div className="glass-panel p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-xs">
+          <div className="p-4 rounded-2xl bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl border border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between shadow-ios-sm">
             <div className="flex items-center gap-2.5">
-              <Award className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+              <div className="w-8 h-8 rounded-xl bg-ios-blue/10 flex items-center justify-center text-ios-blue">
+                <Award className="w-4 h-4" />
+              </div>
               <div>
-                <span className="text-xs text-slate-500 dark:text-slate-400 block">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
                   {language === 'zh-TW' ? '車手競技水平評估 (Coggan Power Profile)' : '车手竞技水平评估 (Coggan Power Profile)'}
                 </span>
-                <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{result.levelTitle}</span>
+                <span className="text-sm font-bold text-slate-900 dark:text-white">{result.levelTitle}</span>
               </div>
             </div>
             <span className={`text-xs px-3 py-1 rounded-full font-mono font-bold border ${result.levelBadgeColor}`}>
@@ -612,13 +592,13 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* VAM Climbing Estimator Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 dark:bg-cyan-950/20 space-y-4 shadow-xs">
+          <div className="p-5 rounded-3xl border border-ios-blue/20 bg-ios-blue/[0.04] dark:bg-ios-blue/[0.08] backdrop-blur-xl space-y-4 shadow-ios-sm">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <Mountain className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                <Mountain className="w-4 h-4 text-ios-blue" />
                 {language === 'zh-TW' ? '爬坡性能與 VAM (垂直上升速度) 推算' : '爬坡性能与 VAM (垂直上升速度) 推算'}
               </h3>
-              <span className="text-xs font-mono text-cyan-600 dark:text-cyan-300 font-bold">
+              <span className="text-xs font-mono text-ios-blue dark:text-blue-400 font-bold">
                 VAM: {result.vam} m/h {isImperial ? `(${Math.round(result.vam * 3.28084)} ft/h)` : ''}
               </span>
             </div>
@@ -650,7 +630,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {language === 'zh-TW' ? '預計登頂耗時' : '预计登顶耗时'}
                 </span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                <span className="text-ios-green font-mono font-bold">
                   {result.climbTimeMinutes} {language === 'zh-TW' ? '分鐘' : '分钟'}
                 </span>
               </div>
@@ -658,27 +638,26 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Resistance Breakdown Bar */}
-          {/* Resistance Breakdown Bar */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
-            <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">
+          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
+            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
               {language === 'zh-TW' ? '三大物理阻力占比分解' : '三大物理阻力占比分解'}
             </span>
-            <div className="h-3.5 w-full bg-slate-200 dark:bg-slate-900 rounded-full overflow-hidden flex">
-              <div style={{ width: `${result.aeroPct}%` }} className="bg-cyan-500 h-full transition-all duration-300" title={`Aero: ${result.aeroPct}%`}></div>
-              <div style={{ width: `${result.rollingPct}%` }} className="bg-emerald-500 h-full transition-all duration-300" title={`Rolling: ${result.rollingPct}%`}></div>
-              <div style={{ width: `${result.gravityPct}%` }} className="bg-amber-500 h-full transition-all duration-300" title={`Gravity: ${result.gravityPct}%`}></div>
+            <div className="h-3 w-full bg-black/[0.05] dark:bg-white/[0.08] rounded-full overflow-hidden flex">
+              <div style={{ width: `${result.aeroPct}%` }} className="bg-ios-blue h-full transition-all duration-300" title={`Aero: ${result.aeroPct}%`} />
+              <div style={{ width: `${result.rollingPct}%` }} className="bg-ios-green h-full transition-all duration-300" title={`Rolling: ${result.rollingPct}%`} />
+              <div style={{ width: `${result.gravityPct}%` }} className="bg-ios-orange h-full transition-all duration-300" title={`Gravity: ${result.gravityPct}%`} />
             </div>
 
             <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
-              <span className="text-cyan-600 dark:text-cyan-400 font-bold flex items-center gap-1">
+              <span className="text-ios-blue font-semibold flex items-center gap-1">
                 <Wind className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
               </span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+              <span className="text-ios-green font-semibold flex items-center gap-1">
                 <Disc className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '滾阻' : '滚阻'} {result.rollingPct}% ({result.fRolling}N)</span>
               </span>
-              <span className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
+              <span className="text-ios-orange font-semibold flex items-center gap-1">
                 <Mountain className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '重力' : '重力'} {result.gravityPct}% ({result.fGravity}N)</span>
               </span>
@@ -686,28 +665,28 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Coggan 7-Zone FTP Table */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-900 dark:text-slate-200">
+              <span className="text-xs font-semibold text-slate-900 dark:text-white">
                 {language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                  <tr className="border-b border-black/[0.04] dark:border-white/[0.06] text-slate-500 dark:text-slate-400">
                     <th className="pb-2 font-medium">{language === 'zh-TW' ? '訓練區間' : '训练区间'}</th>
                     <th className="pb-2 font-medium">{'FTP 比例'}</th>
                     <th className="pb-2 font-medium">{language === 'zh-TW' ? '目標功率 (W)' : '目标功率 (W)'}</th>
                     <th className="pb-2 font-medium">{language === 'zh-TW' ? '主要訓練效益' : '主要训练效益'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300 font-mono">
+                <tbody className="divide-y divide-black/[0.03] dark:divide-white/[0.04] text-slate-700 dark:text-slate-300 font-mono">
                   {result.ftpZones.map((z, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
-                      <td className="py-2 font-sans font-semibold text-slate-900 dark:text-slate-200">{z.zone}</td>
+                    <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
+                      <td className="py-2 font-sans font-semibold text-slate-900 dark:text-white">{z.zone}</td>
                       <td>{z.pct}</td>
-                      <td className="text-cyan-600 dark:text-cyan-400 font-bold">{z.min} - {z.max === 9999 ? 'MAX' : `${z.max} W`}</td>
+                      <td className="text-ios-blue font-bold">{z.min} - {z.max === 9999 ? 'MAX' : `${z.max} W`}</td>
                       <td className="font-sans text-slate-500 dark:text-slate-400 text-[11px]">{z.desc}</td>
                     </tr>
                   ))}
@@ -717,25 +696,20 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Interactive Chart Tabs */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
+          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-4 shadow-ios-sm">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-semibold text-slate-800 dark:text-slate-300">
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {language === 'zh-TW' ? '多維動力學預測曲線' : '多维动力学预测曲线'}
               </span>
-              <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
-                <button
-                  onClick={() => setChartTab('speed')}
-                  className={`px-3 py-1 rounded-lg transition ${chartTab === 'speed' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
-                >
-                  {language === 'zh-TW' ? '速度-功率' : '速度-功率'}
-                </button>
-                <button
-                  onClick={() => setChartTab('weight')}
-                  className={`px-3 py-1 rounded-lg transition ${chartTab === 'weight' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
-                >
-                  {language === 'zh-TW' ? '體重-功率' : '体重-功率'}
-                </button>
-              </div>
+              <IOSSegmentedControl
+                options={[
+                  { id: 'speed', label: language === 'zh-TW' ? '速度-功率' : '速度-功率' },
+                  { id: 'weight', label: language === 'zh-TW' ? '體重-功率' : '体重-功率' },
+                ]}
+                value={chartTab}
+                onChange={(val) => setChartTab(val as any)}
+                size="sm"
+              />
             </div>
 
             <div className="h-56">

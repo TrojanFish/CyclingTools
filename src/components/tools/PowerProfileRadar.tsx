@@ -11,6 +11,8 @@ import {
   Legend
 } from 'chart.js';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -289,84 +291,90 @@ export const PowerProfileRadar: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Target className="w-3.5 h-3.5" />
-              生理动力学画像与现代极化训练
+              {language === 'zh-TW' ? '生理動力學畫像與現代極化訓練' : '生理动力学画像与现代极化训练'}
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">功率能力雷达与极化训练区间</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
-              基于 5s 冲刺、1min 无氧、5min VO2 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {language === 'zh-TW' ? '功率能力雷達與極化訓練區間' : '功率能力雷达与极化训练区间'}
+            </h1>
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+              {language === 'zh-TW'
+                ? '基於 5s 衝刺、1min 無氧、5min VO2 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'
+                : '基于 5s 冲刺、1min 无氧、5min VO2 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/90 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 cursor-pointer transition shadow-xs">
-              <Upload className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              <span>导入 CSV/JSON 功率表</span>
+          <div className="flex items-center gap-2.5">
+            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
+              <Upload className="w-4 h-4 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '匯入 CSV/JSON' : '导入 CSV/JSON'}</span>
               <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
             </label>
 
             <button
               onClick={() => setIsPasteModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
-              <FileText className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-              {language === 'zh-TW' ? '貼上功率' : '粘贴功率'}
+              <FileText className="w-3.5 h-3.5 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '貼上功率' : '粘贴功率'}</span>
             </button>
 
             <button
               onClick={copyReport}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
             >
-              <Copy className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-              复制报告
+              <Copy className="w-3.5 h-3.5 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '複製報告' : '复制报告'}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Preset Buttons & Quick Import Trigger */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      {/* Preset Buttons */}
+      <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-ios-card">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-slate-400">车手预设:</span>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {language === 'zh-TW' ? '車手預設:' : '车手预设:'}
+          </span>
           <button
             onClick={() => loadPreset('sprinter')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-500" />
+            <Zap className="w-3.5 h-3.5 text-ios-orange" />
             <span>{language === 'zh-TW' ? '衝刺手' : '冲刺手'}</span>
           </button>
           <button
             onClick={() => loadPreset('climber')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
           >
-            <Mountain className="w-3.5 h-3.5 text-emerald-500" />
+            <Mountain className="w-3.5 h-3.5 text-ios-green" />
             <span>{language === 'zh-TW' ? '爬坡手' : '爬坡手'}</span>
           </button>
           <button
             onClick={() => loadPreset('rouleur')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
           >
-            <Timer className="w-3.5 h-3.5 text-cyan-500" />
+            <Timer className="w-3.5 h-3.5 text-ios-blue" />
             <span>{language === 'zh-TW' ? '計時突圍' : '计时突围'}</span>
           </button>
           <button
             onClick={() => loadPreset('allrounder')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
           >
-            <Award className="w-3.5 h-3.5 text-purple-500" />
+            <Award className="w-3.5 h-3.5 text-ios-purple" />
             <span>{language === 'zh-TW' ? '全能型' : '全能型'}</span>
           </button>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <label className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 cursor-pointer font-medium flex items-center gap-1">
+          <label className="text-ios-blue hover:underline cursor-pointer font-medium flex items-center gap-1 apple-touch">
             <Upload className="w-3.5 h-3.5" />
-            上传功率表单
+            <span>{language === 'zh-TW' ? '上傳功率表單' : '上传功率表单'}</span>
             <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
@@ -453,18 +461,50 @@ export const PowerProfileRadar: React.FC = () => {
         </div>
       )}
 
+      {/* 4 Peak Power Metric Tiles */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '5秒 衝刺推重比' : '5秒 冲刺推重比'}
+          value={analytics.w5s}
+          unit="W/kg"
+          subValue={`${p5s} W`}
+          accent="red"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '1分鐘 無氧推重比' : '1分钟 无氧推重比'}
+          value={analytics.w1m}
+          unit="W/kg"
+          subValue={`${p1m} W`}
+          accent="orange"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '5分鐘 VO2 推重比' : '5分钟 VO2 推重比'}
+          value={analytics.w5m}
+          unit="W/kg"
+          subValue={`${p5m} W`}
+          accent="blue"
+        />
+        <IOSMetricTile
+          label={language === 'zh-TW' ? '20分鐘 閾值推重比' : '20分钟 阈值推重比'}
+          value={analytics.w20m}
+          unit="W/kg"
+          subValue={`${p20m} W`}
+          accent="green"
+        />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Activity className="w-4 h-4 text-ios-blue" />
               {language === 'zh-TW' ? '車手巔峰功率數據 (Peak Power)' : '车手巅峰功率数据 (Peak Power)'}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
@@ -478,50 +518,50 @@ export const PowerProfileRadar: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? 'FTP 閾值功率' : 'FTP 阈值功率'} (W)
                 </label>
                 <NumberStepper value={ftpWatts} onChange={setFtpWatts} step={5} min={100} max={500} unit="W" />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '5秒 衝刺峰值' : '5秒 冲刺峰值'} (W)
                 </label>
                 <NumberStepper value={p5s} onChange={setP5s} step={20} min={300} max={2200} unit="W" />
-                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                <span className="text-[11px] text-ios-red font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w5s} W/kg
                 </span>
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '1分鐘 無氧峰值' : '1分钟 无氧峰值'} (W)
                 </label>
                 <NumberStepper value={p1m} onChange={setP1m} step={10} min={200} max={1200} unit="W" />
-                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                <span className="text-[11px] text-ios-orange font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w1m} W/kg
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '5分鐘 VO2 Max' : '5分钟 VO2 Max'} (W)
                 </label>
                 <NumberStepper value={p5m} onChange={setP5m} step={5} min={150} max={700} unit="W" />
-                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                <span className="text-[11px] text-ios-blue font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w5m} W/kg
                 </span>
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '20分鐘 閾值測試' : '20分钟 阈值测试'} (W)
                 </label>
                 <NumberStepper value={p20m} onChange={setP20m} step={5} min={120} max={600} unit="W" />
-                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                <span className="text-[11px] text-ios-green font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w20m} W/kg
                 </span>
               </div>
@@ -532,9 +572,11 @@ export const PowerProfileRadar: React.FC = () => {
         {/* Right Radar Visual & Polarized Plan */}
         <div className="lg:col-span-7 space-y-6">
           {/* Phenotype Badge */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
+          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-2 shadow-ios-card">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-slate-500 dark:text-slate-400">车手生理表型判定 (Rider Phenotype)</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                {language === 'zh-TW' ? '車手生理表型判定 (Rider Phenotype)' : '车手生理表型判定 (Rider Phenotype)'}
+              </span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold border ${analytics.phenotypeColor}`}>
                 {analytics.phenotype}
               </span>
@@ -545,13 +587,13 @@ export const PowerProfileRadar: React.FC = () => {
           </div>
 
           {/* Radar Chart */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-                六维综合竞技能力雷达图 (Power Profile Radar)
+              <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-ios-blue" />
+                {language === 'zh-TW' ? '六維綜合競技能力雷達圖' : '六维综合竞技能力雷达图'}
               </span>
-              <span className="text-slate-400 dark:text-slate-500 text-[10px]">*基于 Coggan 竞技数据库标定</span>
+              <span className="text-slate-400 dark:text-slate-500 text-[10px]">*Coggan 竞技数据库标定</span>
             </div>
 
             <div className="h-64 flex justify-center">
@@ -579,34 +621,34 @@ export const PowerProfileRadar: React.FC = () => {
           </div>
 
           {/* Seiler Polarized 80/20 Table & Sweet Spot */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="flex justify-between items-center">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 flex items-center gap-1.5">
-                <Flame className="w-4 h-4 text-amber-500" />
-                Seiler 极化 80/20 现代训练模型与甜点靶心
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-ios-orange" />
+                {language === 'zh-TW' ? 'Seiler 極化 80/20 現代訓練模型與甜點' : 'Seiler 极化 80/20 现代训练模型与甜点'}
               </h3>
-              <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 font-semibold">
-                甜点 SweetSpot: {analytics.sweetSpotMin} - {analytics.sweetSpotMax} W
+              <span className="text-xs font-mono text-ios-blue font-semibold">
+                SweetSpot: {analytics.sweetSpotMin} - {analytics.sweetSpotMax} W
               </span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-                    <th className="pb-2">训练三区</th>
-                    <th className="pb-2">功率范围</th>
-                    <th className="pb-2">建议时间占比</th>
-                    <th className="pb-2">生理机制</th>
+                  <tr className="border-b border-slate-200/80 dark:border-white/10 text-slate-500 dark:text-slate-400">
+                    <th className="pb-2">{language === 'zh-TW' ? '訓練三區' : '训练三区'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '功率範圍' : '功率范围'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '建議時間佔比' : '建议时间占比'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '生理機制' : '生理机制'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300">
+                <tbody className="divide-y divide-slate-200/80 dark:divide-white/5 text-slate-700 dark:text-slate-300">
                   {analytics.polarizedZones.map((z, idx) => (
-                    <tr key={idx} className="hover:bg-slate-900/50">
-                      <td className="py-2.5 font-semibold text-slate-200">{z.zone}</td>
-                      <td className="font-mono text-cyan-400 font-bold">{z.range}</td>
-                      <td className="font-semibold text-emerald-400">{z.volume}</td>
-                      <td className="text-slate-400 text-[11px]">{z.desc}</td>
+                    <tr key={idx} className="hover:bg-black/5 dark:hover:bg-white/5 transition">
+                      <td className="py-2.5 font-semibold text-slate-900 dark:text-white">{z.zone}</td>
+                      <td className="font-mono text-ios-blue font-bold">{z.range}</td>
+                      <td className="font-semibold text-ios-green">{z.volume}</td>
+                      <td className="text-slate-500 dark:text-slate-400 text-[11px]">{z.desc}</td>
                     </tr>
                   ))}
                 </tbody>

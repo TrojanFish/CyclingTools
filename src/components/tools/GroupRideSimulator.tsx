@@ -11,6 +11,8 @@ import {
   Legend
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
@@ -238,22 +240,22 @@ export const GroupRideSimulator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Header Card */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Users className="w-3.5 h-3.5" />
               团队空气动力学与无氧能量仿真
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">公路车团骑/跟骑阻力与战术模拟器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">公路车团骑/跟骑阻力与战术模拟器</h1>
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
               模拟编队破风减阻（高达 35%~42% 瓦数节省）、轮转策略及各车手 $W'$ 无氧储备消耗与掉队预警。
             </p>
           </div>
           <button
             onClick={findOptimalCruiseSpeed}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/30 text-xs font-semibold transition shadow-xs"
+            className="flex items-center gap-2 px-4 py-2.5 bg-ios-green hover:bg-ios-green/90 text-white rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch"
           >
             <Sparkles className="w-4 h-4" />
             {language === 'zh-TW' ? '求解團隊均速' : '求解团队均速'}
@@ -263,85 +265,74 @@ export const GroupRideSimulator: React.FC = () => {
 
       {/* Highlights Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 shadow-xs">
-          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">领骑破风所需功率</span>
-          <div className="text-2xl font-bold font-mono text-rose-500 dark:text-rose-400 mt-1">
-            {Math.round(simulationResult.leadPower)} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W</span>
-          </div>
-          <span className="text-[11px] text-slate-500">1 号位 100% 迎风阻力</span>
-        </div>
-
-        <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 shadow-xs">
-          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">编队跟骑节省功率</span>
-          <div className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-            {Math.round(simulationResult.draftPower)} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W</span>
-          </div>
-          <span className="text-[11px] text-slate-500">
-            立省 {Math.round(simulationResult.leadPower - simulationResult.draftPower)} W (减阻 ~38%)
-          </span>
-        </div>
-
-        <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 shadow-xs">
-          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">团队巡航速度</span>
-          <div className="text-2xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-            {displayAvgSpeed} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{isImperial ? 'mph' : 'km/h'}</span>
-          </div>
-          <span className="text-[11px] text-slate-500">轮转间隔: {rotationMinutes} 分钟/人</span>
-        </div>
-
-        <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 shadow-xs">
-          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">车手生存状态</span>
-          <div className="text-lg font-bold mt-1 text-slate-900 dark:text-slate-200">
-            {simulationResult.droppedRiders.every(r => !r.isDropped) ? (
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">全员安全完赛</span>
-            ) : (
-              <span className="text-rose-500 dark:text-rose-400 font-semibold">
-                {simulationResult.droppedRiders.filter(r => r.isDropped).length} 人体力透支掉队
-              </span>
-            )}
-          </div>
-          <span className="text-[11px] text-slate-500">基于 W' 储备动态仿真</span>
-        </div>
+        <IOSMetricTile
+          label="领骑破风所需功率"
+          value={Math.round(simulationResult.leadPower)}
+          unit="W"
+          subValue="1 号位 100% 迎风阻力"
+          accent="red"
+        />
+        <IOSMetricTile
+          label="编队跟骑功率"
+          value={Math.round(simulationResult.draftPower)}
+          unit="W"
+          subValue={`立省 ${Math.round(simulationResult.leadPower - simulationResult.draftPower)} W (~38%)`}
+          accent="green"
+        />
+        <IOSMetricTile
+          label="团队巡航速度"
+          value={displayAvgSpeed}
+          unit={isImperial ? 'mph' : 'km/h'}
+          subValue={`轮转: ${rotationMinutes} 分钟/人`}
+          accent="blue"
+        />
+        <IOSMetricTile
+          label="车手体能生存状态"
+          value={simulationResult.droppedRiders.every(r => !r.isDropped) ? '全员完赛' : `${simulationResult.droppedRiders.filter(r => r.isDropped).length} 人掉队`}
+          unit=""
+          subValue="基于 W' 无氧动态储备"
+          accent={simulationResult.droppedRiders.every(r => !r.isDropped) ? 'mint' : 'orange'}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Settings & Rider List */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Sliders className="w-4 h-4 text-ios-blue" />
               编队巡航与环境设定
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
                   巡航总距离 ({isImperial ? 'mi' : 'km'})
                 </label>
                 <input
                   type="number"
                   value={displayDistance}
                   onChange={(e) => handleDistanceChange(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-slate-200 font-mono focus:border-cyan-500 focus:outline-none"
+                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
                   目标均速 ({isImperial ? 'mph' : 'km/h'})
                 </label>
                 <input
                   type="number"
                   value={displayAvgSpeed}
                   onChange={(e) => handleAvgSpeedChange(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-slate-200 font-mono focus:border-cyan-500 focus:outline-none"
+                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300">领骑轮转周期 (分钟/人)</label>
-                <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{rotationMinutes} 分钟</span>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">领骑轮转周期 (分钟/人)</label>
+                <span className="text-ios-blue font-mono font-bold text-xs">{rotationMinutes} 分钟</span>
               </div>
               <input
                 type="range"
@@ -350,47 +341,47 @@ export const GroupRideSimulator: React.FC = () => {
                 step="0.5"
                 value={rotationMinutes}
                 onChange={(e) => setRotationMinutes(Number(e.target.value))}
-                className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ios-blue"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+            <div className="space-y-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">坡度 (%)</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">道路坡度 (%)</label>
                 <input
                   type="number"
                   step="0.5"
                   value={gradePercent}
                   onChange={(e) => setGradePercent(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:border-cyan-500 focus:outline-none"
+                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">风向风速</label>
-                <select
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">风向风阻</label>
+                <IOSSegmentedControl
+                  options={[
+                    { value: 'headwind', label: `顶风 (${isImperial ? '6 mph' : '10 km/h'})` },
+                    { value: 'crosswind', label: `侧风 (${isImperial ? '6 mph' : '10 km/h'})` },
+                    { value: 'tailwind', label: `顺风 (${isImperial ? '6 mph' : '10 km/h'})` }
+                  ]}
                   value={windDirection}
-                  onChange={(e) => setWindDirection(e.target.value as any)}
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:border-cyan-500 focus:outline-none"
-                >
-                  <option value="headwind">顶风 ({isImperial ? '6 mph' : '10 km/h'})</option>
-                  <option value="crosswind">侧风 ({isImperial ? '6 mph' : '10 km/h'})</option>
-                  <option value="tailwind">顺风 ({isImperial ? '6 mph' : '10 km/h'})</option>
-                </select>
+                  onChange={(v) => setWindDirection(v as any)}
+                />
               </div>
             </div>
           </div>
 
           {/* Rider Roster Management */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <Users className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                <Users className="w-4 h-4 text-ios-blue" />
                 团队车手名单 ({riders.length} 人)
               </h2>
               {riders.length < 8 && (
                 <button
                   onClick={addRider}
-                  className="flex items-center gap-1 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 font-medium"
+                  className="flex items-center gap-1 text-xs text-ios-blue hover:opacity-80 font-medium apple-touch px-2.5 py-1 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   添加车手
@@ -400,7 +391,7 @@ export const GroupRideSimulator: React.FC = () => {
 
             <div className="space-y-3">
               {riders.map((r, idx) => (
-                <div key={r.id} className="p-3.5 rounded-xl bg-slate-50/90 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-2">
+                <div key={r.id} className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-2.5">
                   <div className="flex justify-between items-center">
                     <input
                       type="text"
@@ -410,7 +401,7 @@ export const GroupRideSimulator: React.FC = () => {
                         updated[idx].name = e.target.value;
                         setRiders(updated);
                       }}
-                      className="text-xs font-bold text-slate-900 dark:text-slate-200 bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-cyan-500 focus:outline-none"
+                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-white/20 focus:border-ios-blue focus:outline-none"
                     />
                     <div className="flex items-center gap-3">
                       <label className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 cursor-pointer">
@@ -422,14 +413,14 @@ export const GroupRideSimulator: React.FC = () => {
                             updated[idx].followOnly = e.target.checked;
                             setRiders(updated);
                           }}
-                          className="rounded accent-cyan-500"
+                          className="rounded accent-ios-blue"
                         />
                         纯跟骑
                       </label>
                       {riders.length > 2 && (
                         <button
                           onClick={() => removeRider(r.id)}
-                          className="text-slate-400 hover:text-rose-500 transition"
+                          className="text-slate-400 hover:text-ios-red transition apple-touch"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -439,7 +430,7 @@ export const GroupRideSimulator: React.FC = () => {
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
                         体重 ({isImperial ? 'lbs' : 'kg'})
                       </span>
                       <input
@@ -452,11 +443,11 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].weight = weightKg || 65;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-2 py-1 text-xs text-slate-900 dark:text-slate-200 font-mono focus:border-cyan-500 focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1.5 text-xs text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">FTP 功率 (W)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">FTP 功率 (W)</span>
                       <input
                         type="number"
                         value={r.ftp}
@@ -465,11 +456,11 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].ftp = parseFloat(e.target.value) || 250;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-2 py-1 text-xs text-cyan-600 dark:text-cyan-400 font-mono font-bold focus:border-cyan-500 focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1.5 text-xs text-ios-blue dark:text-ios-blue font-mono font-bold focus:border-ios-blue focus:outline-none"
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">W' 无氧储备 (kJ)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">W' 储备 (kJ)</span>
                       <input
                         type="number"
                         value={r.wPrime}
@@ -478,7 +469,7 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].wPrime = parseFloat(e.target.value) || 20;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded px-2 py-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:border-cyan-500 focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1.5 text-xs text-ios-green dark:text-ios-green font-mono font-bold focus:border-ios-blue focus:outline-none"
                       />
                     </div>
                   </div>
@@ -491,13 +482,13 @@ export const GroupRideSimulator: React.FC = () => {
         {/* Right Charts & Survival Panel */}
         <div className="lg:col-span-7 space-y-6">
           {/* W' Balance Timeline Chart */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-ios-blue" />
                 全员 W' 无氧能量储备消耗曲线 (W' Balance %)
               </h3>
-              <span className="text-xs text-slate-500">低于 0% 发生透支掉队</span>
+              <span className="text-xs text-slate-400">低于 0% 透支掉队</span>
             </div>
             <div className="h-64 w-full">
               <Line
@@ -535,31 +526,31 @@ export const GroupRideSimulator: React.FC = () => {
           </div>
 
           {/* Rider Survival Analysis Summary */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200">
+          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
               团队战术与体能负荷分析
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {simulationResult.droppedRiders.map((dr, idx) => (
-                <div key={idx} className="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1 shadow-xs">
+                <div key={idx} className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1.5 shadow-xs">
                   <div className="flex justify-between items-center">
-                    <span className={`text-[11px] font-medium flex items-center gap-1 ${dr.isDropped ? 'text-rose-500 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                    <span className={`text-[11px] font-medium flex items-center gap-1 ${dr.isDropped ? 'text-ios-red dark:text-ios-red font-bold' : 'text-ios-green dark:text-ios-green'}`}>
                       {dr.isDropped ? (
                         <>
-                          <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                          <AlertTriangle className="w-3.5 h-3.5 text-ios-red shrink-0" />
                           <span>{language === 'zh-TW' ? '嚴重透支掉隊' : '严重透支掉队'}</span>
                         </>
                       ) : (
                         <>
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-ios-green shrink-0" />
                           <span>{language === 'zh-TW' ? '穩定跟騎完賽' : '稳定跟骑完赛'}</span>
                         </>
                       )}
                     </span>
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between pt-1">
-                    <span>全程平均功率: <strong className="text-slate-700 dark:text-slate-300 font-mono">{dr.avgPowerW}W</strong></span>
-                    <span>最低剩余储备: <strong className="text-cyan-600 dark:text-cyan-400 font-mono">{dr.minWPrimePct}%</strong></span>
+                    <span>平均功率: <strong className="text-slate-700 dark:text-slate-300 font-mono">{dr.avgPowerW}W</strong></span>
+                    <span>最低储备: <strong className="text-ios-blue dark:text-ios-blue font-mono">{dr.minWPrimePct}%</strong></span>
                   </div>
                 </div>
               ))}

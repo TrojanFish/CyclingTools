@@ -19,10 +19,13 @@ import {
   Disc,
   ArrowRight,
   Sparkles,
-  Search
+  Search,
+  X,
+  Sliders
 } from 'lucide-react';
 import { ToolMetadata } from '../types';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
+import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 
 const ICONS_MAP: Record<string, React.ElementType> = {
   Zap,
@@ -44,6 +47,34 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   Disc,
 };
 
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
+  dynamics: {
+    bg: 'bg-ios-blue/10 dark:bg-ios-blue/20',
+    text: 'text-ios-blue',
+    ring: 'ring-ios-blue/20'
+  },
+  fitting: {
+    bg: 'bg-ios-purple/10 dark:bg-ios-purple/20',
+    text: 'text-ios-purple',
+    ring: 'ring-ios-purple/20'
+  },
+  route: {
+    bg: 'bg-ios-teal/10 dark:bg-ios-teal/20',
+    text: 'text-ios-teal',
+    ring: 'ring-ios-teal/20'
+  },
+  health: {
+    bg: 'bg-ios-red/10 dark:bg-ios-red/20',
+    text: 'text-ios-red',
+    ring: 'ring-ios-red/20'
+  },
+  utility: {
+    bg: 'bg-ios-orange/10 dark:bg-ios-orange/20',
+    text: 'text-ios-orange',
+    ring: 'ring-ios-orange/20'
+  }
+};
+
 interface DashboardProps {
   onSelectTool: (id: string) => void;
   filteredTools: ToolMetadata[];
@@ -63,8 +94,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { language, t } = useLanguageAndUnit();
 
-  const categories: { id: string; label: string; icon?: React.ElementType }[] = [
-    { id: 'all', label: '全部 (18)' },
+  const categoryOptions = [
+    { id: 'all', label: language === 'zh-TW' ? '全部 (18)' : '全部 (18)' },
     { id: 'dynamics', icon: Zap, label: language === 'zh-TW' ? '動力傳動' : '动力传动' },
     { id: 'fitting', icon: Ruler, label: 'Fitting' },
     { id: 'route', icon: MapPin, label: language === 'zh-TW' ? '路線氣象' : '路线气象' },
@@ -72,84 +103,88 @@ export const Dashboard: React.FC<DashboardProps> = ({
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Hero Banner */}
-      <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-cyan-50/60 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40">
-        <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-        <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
+    <div className="space-y-6">
+      {/* Apple Keynote Style Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl p-7 sm:p-9 border border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20 shadow-ios-sm">
+        <div className="absolute -right-16 -top-16 w-80 h-80 bg-ios-blue/10 dark:bg-ios-blue/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute right-32 bottom-0 w-64 h-64 bg-ios-purple/10 dark:bg-ios-purple/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-2xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold tracking-wide">
             <Sparkles className="w-3.5 h-3.5" />
-            {language === 'zh-TW'
-              ? '科學單車計算與動力學工坊 · 18 大全能專業工具工坊'
-              : '科学骑行计算与动力学工坊 · 18 大全能专业工具工坊'}
+            <span>
+              {language === 'zh-TW'
+                ? '科學單車計算與動力學工坊 · 18 大專業工具'
+                : '科学骑行计算与动力学工坊 · 18 大专业工具'}
+            </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
+
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
             {language === 'zh-TW' ? (
               <>
                 精準計算每一瓦 <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-ios-blue via-blue-500 to-ios-purple">
                   數據驅動的科學單車與擬合模擬
                 </span>
               </>
             ) : (
               <>
                 精准计算每一瓦 <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-ios-blue via-blue-500 to-ios-purple">
                   数据驱动的科学骑行与拟合仿真
                 </span>
               </>
             )}
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
             {t('heroSubtitle')}
           </p>
         </div>
       </div>
 
-      {/* Unified Single Category Navigation Bar */}
-      <div className="glass-panel p-2 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
-                selectedCategory === cat.id
-                  ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-            >
-              {cat.icon && <cat.icon className={`w-3.5 h-3.5 ${selectedCategory === cat.id ? 'text-slate-950' : 'text-cyan-500'}`} />}
-              <span>{cat.label}</span>
-            </button>
-          ))}
+      {/* iOS Segmented Navigation & Spotlight Search */}
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-2 bg-white/70 dark:bg-[#1C1C1E]/70 backdrop-blur-2xl rounded-2xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm">
+        <div className="overflow-x-auto py-0.5 no-scrollbar">
+          <IOSSegmentedControl
+            options={categoryOptions}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            size="md"
+          />
         </div>
 
-        {/* Quick Search on Dashboard */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={t('searchPrompt')}
-              className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
-            />
-          </div>
+        {/* Spotlight Quick Search */}
+        <div className="relative flex-1 lg:max-w-xs">
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t('searchPrompt')}
+            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-transparent focus:border-ios-blue rounded-xl pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:opacity-80 transition"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Tools Grid */}
       {filteredTools.length === 0 ? (
-        <div className="glass-panel p-12 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center mx-auto text-slate-500">
+        <div className="p-12 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl text-center space-y-3 shadow-ios-sm">
+          <div className="w-12 h-12 rounded-2xl bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center mx-auto text-slate-400">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-white">
             {language === 'zh-TW' ? '未找到匹配的單車工具' : '未找到匹配的骑行工具'}
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
             {language === 'zh-TW' ? '請嘗試清除搜尋關鍵字或切換分類查看。' : '请尝试清除搜索关键词或切换分类查看。'}
           </p>
           <button
@@ -157,54 +192,59 @@ export const Dashboard: React.FC<DashboardProps> = ({
               setSearchTerm('');
               setSelectedCategory('all');
             }}
-            className="px-4 py-1.5 rounded-xl bg-cyan-500 text-slate-950 text-xs font-semibold"
+            className="px-4 py-2 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:opacity-90 active:scale-95 transition apple-touch"
           >
             {language === 'zh-TW' ? '重設篩選條件' : '重置筛选条件'}
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
           {filteredTools.map((tool) => {
             const IconComp = ICONS_MAP[tool.icon] || Zap;
             const toolTitle = language === 'zh-TW' && tool.titleTw ? tool.titleTw : tool.title;
             const toolSubtitle = language === 'zh-TW' && tool.subtitleTw ? tool.subtitleTw : tool.subtitle;
             const toolBadge = language === 'zh-TW' && tool.badgeTw ? tool.badgeTw : tool.badge;
             const toolDesc = language === 'zh-TW' && tool.descriptionTw ? tool.descriptionTw : tool.description;
+            const colorTheme = CATEGORY_COLORS[tool.category] || CATEGORY_COLORS.dynamics;
 
             return (
               <div
                 key={tool.id}
                 onClick={() => onSelectTool(tool.id)}
-                className="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 cursor-pointer flex flex-col justify-between group relative overflow-hidden transition duration-300"
+                className="group relative flex flex-col justify-between p-6 rounded-3xl bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm hover:shadow-ios-card active:scale-[0.985] transition-all duration-200 cursor-pointer apple-touch"
               >
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                   <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white dark:group-hover:text-slate-950 transition duration-300 shadow-sm">
+                    <div className={`w-12 h-12 rounded-2xl ${colorTheme.bg} ${colorTheme.text} flex items-center justify-center ring-1 ${colorTheme.ring} group-hover:scale-105 transition duration-200`}>
                       <IconComp className="w-6 h-6" />
                     </div>
                     {toolBadge && (
-                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-slate-600 dark:text-slate-300 font-medium border border-black/[0.04] dark:border-white/[0.06]">
                         {toolBadge}
                       </span>
                     )}
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition">
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white tracking-tight group-hover:text-ios-blue transition">
                       {toolTitle}
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
                       {toolSubtitle}
                     </p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400/90 mt-2.5 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-slate-600 dark:text-slate-300/80 mt-2.5 leading-relaxed line-clamp-3">
                       {toolDesc}
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs text-cyan-600 dark:text-cyan-400 font-semibold group-hover:translate-x-1 transition duration-200">
-                  <span>{language === 'zh-TW' ? '進入使用該工具' : '进入使用该工具'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                <div className="pt-4 mt-4 border-t border-black/[0.04] dark:border-white/[0.06] flex items-center justify-between text-xs font-semibold text-ios-blue dark:text-blue-400">
+                  <span className="group-hover:translate-x-0.5 transition-transform">
+                    {language === 'zh-TW' ? '進入使用' : '进入使用'}
+                  </span>
+                  <div className="w-6 h-6 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 flex items-center justify-center text-ios-blue dark:text-blue-400 group-hover:translate-x-1 group-hover:bg-ios-blue group-hover:text-white transition-all duration-200">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
                 </div>
               </div>
             );

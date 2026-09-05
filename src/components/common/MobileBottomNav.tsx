@@ -56,7 +56,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/92 dark:bg-slate-950/92 border-t border-slate-200 dark:border-slate-800/80 backdrop-blur-xl px-2 py-1.5 shadow-lg shadow-black/10 no-print" style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 6px)' }}>
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-[#1C1C1E]/85 border-t border-black/[0.06] dark:border-white/[0.08] backdrop-blur-2xl saturate-180 px-3 py-1 shadow-[0_-1px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_-1px_16px_rgba(0,0,0,0.4)] no-print transition-colors"
+      style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)' }}
+    >
       <div className="flex items-center justify-around gap-1 max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -66,16 +69,16 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             <button
               key={item.id}
               onClick={item.onClick}
-              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition active:scale-90 ${
+              className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all apple-touch ${
                 active
-                  ? 'text-cyan-600 dark:text-cyan-400 font-bold'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? 'text-ios-blue dark:text-ios-blue-dark font-semibold'
+                  : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
               }`}
             >
-              <div className={`p-1 rounded-xl transition ${active ? 'bg-cyan-500/15' : ''}`}>
-                <Icon className={`w-4 h-4 ${active ? 'stroke-[2.5]' : 'stroke-2'}`} />
+              <div className={`p-1 rounded-xl transition-all duration-200 ${active ? 'bg-ios-blue/12 dark:bg-ios-blue/20 scale-105' : ''}`}>
+                <Icon className={`w-4 h-4 transition-all ${active ? 'stroke-[2.4]' : 'stroke-[1.8]'}`} />
               </div>
-              <span className="text-[10px] mt-0.5 tracking-tight">{item.label}</span>
+              <span className="text-[10px] mt-0.5 tracking-tight font-sans select-none">{item.label}</span>
             </button>
           );
         })}

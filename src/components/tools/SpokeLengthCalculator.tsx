@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 
 export const SpokeLengthCalculator: React.FC = () => {
   const { language, unitSystem } = useLanguageAndUnit();
@@ -238,18 +239,18 @@ export const SpokeLengthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-ios-blue/10 rounded-full blur-3xl pointer-events-none" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold">
               <Disc className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '技師級編輪幾何學' : '技师级编轮几何学'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
               {language === 'zh-TW' ? '單車編輪與輻條長度計算器' : '自行车编轮与辐条长度计算器'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
               {language === 'zh-TW'
                 ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
                 : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧 (DS) 与非驱动侧 (NDS) 毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'}
@@ -258,30 +259,20 @@ export const SpokeLengthCalculator: React.FC = () => {
 
           {/* Preset Buttons */}
           <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
-            <button
-              onClick={() => applyPreset('dt350_rear_50')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-            >
-              DT350 后轮
-            </button>
-            <button
-              onClick={() => applyPreset('dt350_front_50')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-            >
-              DT350 前轮
-            </button>
-            <button
-              onClick={() => applyPreset('gravel_asym_45')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-            >
-              偏心圈
-            </button>
-            <button
-              onClick={() => applyPreset('mtb_29_xc')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
-            >
-              山地 3X
-            </button>
+            {[
+              { id: 'dt350_rear_50', label: 'DT350 后轮' },
+              { id: 'dt350_front_50', label: 'DT350 前轮' },
+              { id: 'gravel_asym_45', label: '偏心圈' },
+              { id: 'mtb_29_xc', label: '山地 3X' },
+            ].map((p) => (
+              <button
+                key={p.id}
+                onClick={() => applyPreset(p.id as any)}
+                className="apple-touch px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition active:scale-95"
+              >
+                {p.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -307,71 +298,47 @@ export const SpokeLengthCalculator: React.FC = () => {
         {/* Left Inputs (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
           {/* Wheel Position & Brake System */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-cyan-500" />
+          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-4 shadow-ios-sm">
+            <div className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <Sliders className="w-4 h-4 text-ios-blue" />
               <span>轮组架构与制动形式</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">车轮位置</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    onClick={() => {
-                      setWheelPosition('rear');
+                <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1.5">车轮位置</label>
+                <IOSSegmentedControl
+                  options={[
+                    { id: 'rear', label: language === 'zh-TW' ? '後輪' : '后轮' },
+                    { id: 'front', label: language === 'zh-TW' ? '前輪' : '前轮' },
+                  ]}
+                  value={wheelPosition}
+                  onChange={(val) => {
+                    const pos = val as 'rear' | 'front';
+                    setWheelPosition(pos);
+                    if (pos === 'rear') {
                       setLeftCenterDistMm(34.5);
                       setRightCenterDistMm(19.2);
-                    }}
-                    className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                      wheelPosition === 'rear'
-                        ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                        : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}
-                  >
-                    {language === 'zh-TW' ? '後輪' : '后轮'}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setWheelPosition('front');
+                    } else {
                       setLeftCenterDistMm(22.5);
                       setRightCenterDistMm(35.5);
-                    }}
-                    className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                      wheelPosition === 'front'
-                        ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                        : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}
-                  >
-                    {language === 'zh-TW' ? '前輪' : '前轮'}
-                  </button>
-                </div>
+                    }
+                  }}
+                  size="sm"
+                />
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">制动形式</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    onClick={() => setBrakeType('disc')}
-                    className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                      brakeType === 'disc'
-                        ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                        : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}
-                  >
-                    {language === 'zh-TW' ? '碟煞' : '碟刹'}
-                  </button>
-                  <button
-                    onClick={() => setBrakeType('rim')}
-                    className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                      brakeType === 'rim'
-                        ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                        : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}
-                  >
-                    {language === 'zh-TW' ? '圈煞' : '圈刹'}
-                  </button>
-                </div>
+                <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1.5">制动形式</label>
+                <IOSSegmentedControl
+                  options={[
+                    { id: 'disc', label: language === 'zh-TW' ? '碟煞' : '碟刹' },
+                    { id: 'rim', label: language === 'zh-TW' ? '圈煞' : '圈刹' },
+                  ]}
+                  value={brakeType}
+                  onChange={(val) => setBrakeType(val as any)}
+                  size="sm"
+                />
               </div>
             </div>
           </div>

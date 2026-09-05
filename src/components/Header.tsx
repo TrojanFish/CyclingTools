@@ -59,26 +59,26 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 backdrop-blur-xl bg-white/85 dark:bg-slate-950/80 transition-colors shadow-xs dark:shadow-none">
+      <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-black/[0.05] dark:border-white/[0.08] backdrop-blur-2xl saturate-180 bg-white/75 dark:bg-[#1C1C1E]/80 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-[52px] sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Left: Clean Brand Logo with Bike Icon */}
-          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0 group" onClick={onNavigateHome}>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 shadow-md sm:shadow-lg shadow-cyan-500/25 group-hover:scale-105 transition shrink-0">
-              <Bike className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
+          <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none shrink-0 group apple-touch" onClick={onNavigateHome}>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-ios-blue to-blue-600 flex items-center justify-center text-white shadow-sm shadow-ios-blue/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
+              <Bike className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
             </div>
             <div>
-              <div className="flex items-center gap-1 sm:gap-1.5 font-mono">
-                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
-                <span className="text-cyan-500 dark:text-cyan-400 font-bold text-sm sm:text-base">{t('brandSuffix')}</span>
-                <span className="text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 font-mono">{t('brandPro')}</span>
+              <div className="flex items-center gap-1 sm:gap-1.5 font-sans">
+                <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">{t('brandName')}</span>
+                <span className="text-ios-blue dark:text-ios-blue-dark font-semibold text-sm sm:text-base">{t('brandSuffix')}</span>
+                <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark font-mono font-bold tracking-tight">{t('brandPro')}</span>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 tracking-wider hidden sm:block">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 tracking-normal hidden sm:block">
                 {t('slogan')}
               </div>
             </div>
           </div>
 
-          {/* Center Search Input (Desktop) */}
+          {/* Center Search Input (Desktop) - iOS Spotlight style */}
           <div className="hidden md:flex items-center flex-1 max-w-md mx-4 lg:mx-6">
             <div className="relative w-full">
               <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -88,9 +88,9 @@ export const Header: React.FC<HeaderProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-12 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
+                className="w-full bg-slate-200/50 dark:bg-[#2C2C2E]/80 border border-black/[0.04] dark:border-white/[0.08] rounded-xl pl-9 pr-12 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ios-blue/40 focus:bg-white dark:focus:bg-[#2C2C2E] transition-all"
               />
-              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono text-slate-500 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded select-none">
+              <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-400 dark:text-slate-400 bg-white dark:bg-[#3A3A3C] border border-black/[0.06] dark:border-white/[0.08] rounded-md shadow-xs select-none">
                 /
               </kbd>
             </div>
@@ -101,17 +101,17 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
               onClick={toggleUnitSystem}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-600 dark:text-slate-300 text-[11px] font-mono font-medium transition shrink-0"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-300 text-[11px] font-mono font-semibold transition-all apple-touch shrink-0 shadow-xs"
               title={unitSystem === 'metric' ? 'Switch to Imperial units (miles, lbs)' : 'Switch to Metric units (km, kg)'}
             >
-              <Gauge className="w-4 h-4 text-cyan-500" />
+              <Gauge className="w-3.5 h-3.5 text-ios-blue dark:text-ios-blue-dark" />
               <span>{unitSystem === 'metric' ? 'km/kg' : 'mi/lbs'}</span>
             </button>
 
             {/* Mobile Search Button - Uniform 32-36px button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 active:scale-95 transition shrink-0"
+              className="md:hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition shrink-0"
               title="Search Tools"
               aria-label="Search Tools"
             >
@@ -121,18 +121,18 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Rider Profile & Settings Button */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="w-8 h-8 sm:w-auto sm:h-9 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition gap-1.5 group shrink-0"
+              className="w-8 h-8 sm:w-auto sm:h-9 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 hover:text-ios-blue dark:hover:text-ios-blue-dark apple-touch transition gap-1.5 group shrink-0 shadow-xs"
               title={language === 'zh-TW' ? '系統設定與車手檔案' : '系统设置与车手档案'}
               aria-label="Settings & Rider Profile"
             >
-              <Settings className="w-4 h-4 text-cyan-500 group-hover:rotate-45 transition-transform duration-300" />
+              <Settings className="w-4 h-4 text-ios-blue dark:text-ios-blue-dark group-hover:rotate-45 transition-transform duration-300" />
               <span className="hidden lg:inline text-xs font-semibold">{profile.heightCm}cm / {formattedWeight.formatted}</span>
             </button>
 
-            {/* Streamlined Background Music Switch (Uniform 32-36px button) */}
+            {/* Streamlined Background Music Switch */}
             <BackgroundMusicControl />
 
-            {/* Theme Toggle Button (Uniform 32-36px button) */}
+            {/* Theme Toggle Button */}
             <button
               onClick={() => {
                 if (setThemeMode) {

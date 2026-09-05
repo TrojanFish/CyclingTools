@@ -3,6 +3,7 @@ import { Cog, Gauge, Info, Zap, AlertTriangle, ArrowUpDown, Layers, Copy, BarCha
 import { Line } from 'react-chartjs-2';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
@@ -180,16 +181,16 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
+        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Cog className="w-3.5 h-3.5" />
               传动比与踏频动力学
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">齿比-速度-踏频多功能计算器</h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">齿比-速度-踏频多功能计算器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。
             </p>
           </div>
@@ -197,73 +198,48 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={copyGearMatrix}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium border border-slate-200 dark:border-slate-700 transition shadow-xs"
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
             >
               <Copy className="w-3.5 h-3.5" />
               复制齿比表
             </button>
 
-            {/* View Tab Switchers */}
-            <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
-              <button
-                onClick={() => setActiveTab('matrix')}
-                className={`px-3 py-1 rounded-lg transition ${activeTab === 'matrix' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
-              >
-                档位矩阵
-              </button>
-              <button
-                onClick={() => setActiveTab('cadence_table')}
-                className={`px-3 py-1 rounded-lg transition ${activeTab === 'cadence_table' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
-              >
-                踏频对照
-              </button>
-              <button
-                onClick={() => setActiveTab('chart')}
-                className={`px-3 py-1 rounded-lg transition ${activeTab === 'chart' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
-              >
-                速度曲线
-              </button>
-            </div>
+            {/* Apple View Tab Switchers */}
+            <IOSSegmentedControl
+              options={[
+                { id: 'matrix', label: '档位矩阵' },
+                { id: 'cadence_table', label: '踏频对照' },
+                { id: 'chart', label: '速度曲线' },
+              ]}
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as any)}
+              size="sm"
+            />
           </div>
         </div>
       </div>
 
       {/* Inputs & Presets */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
+      <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
         {/* Gruppo Presets */}
         <div>
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
           <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => loadPresetGruppo('compact')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
-            >
-              公路 50/34T
-            </button>
-            <button
-              onClick={() => loadPresetGruppo('semi_compact')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
-            >
-              公路 52/36T
-            </button>
-            <button
-              onClick={() => loadPresetGruppo('pro_racing')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
-            >
-              竞速 54/40T
-            </button>
-            <button
-              onClick={() => loadPresetGruppo('sram_axs')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
-            >
-              AXS 48/35T
-            </button>
-            <button
-              onClick={() => loadPresetGruppo('gravel_1x')}
-              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
-            >
-              Gravel 40T
-            </button>
+            {[
+              { id: 'compact', label: '公路 50/34T' },
+              { id: 'semi_compact', label: '公路 52/36T' },
+              { id: 'pro_racing', label: '竞速 54/40T' },
+              { id: 'sram_axs', label: 'AXS 48/35T' },
+              { id: 'gravel_1x', label: 'Gravel 40T' },
+            ].map((preset) => (
+              <button
+                key={preset.id}
+                onClick={() => loadPresetGruppo(preset.id)}
+                className="apple-touch px-3 py-1.5 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-medium border border-black/[0.04] dark:border-white/[0.06] transition active:scale-95"
+              >
+                {preset.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -271,24 +247,15 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">牙盘制式</label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setChainringType('double')}
-                className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  chainringType === 'double' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                }`}
-              >
-                双盘 (2x)
-              </button>
-              <button
-                onClick={() => setChainringType('single')}
-                className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  chainringType === 'single' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                }`}
-              >
-                单盘 (1x)
-              </button>
-            </div>
+            <IOSSegmentedControl
+              options={[
+                { id: 'double', label: '双盘 (2x)' },
+                { id: 'single', label: '单盘 (1x)' },
+              ]}
+              value={chainringType}
+              onChange={(val) => setChainringType(val as any)}
+              size="sm"
+            />
           </div>
 
           <div>
