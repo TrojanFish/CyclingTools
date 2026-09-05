@@ -35,8 +35,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ToastContext.Provider value={{ showToast }}>
       {children}
 
-      {/* Floating Toasts Container */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4">
+      {/* Floating Toasts Container (Theme-aware and positioned above mobile bottom nav) */}
+      <div className="fixed bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2.5 pointer-events-none w-full max-w-sm px-4">
         {toasts.map(toast => {
           const isSuccess = toast.type === 'success';
           const isError = toast.type === 'error';
@@ -45,27 +45,51 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           return (
             <div
               key={toast.id}
-              className="pointer-events-auto glass-panel p-3.5 rounded-2xl border shadow-2xl backdrop-blur-2xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200"
-              style={{
-                borderColor: isSuccess ? 'rgba(16, 185, 129, 0.4)' : isError ? 'rgba(244, 63, 94, 0.4)' : isWarning ? 'rgba(245, 158, 11, 0.4)' : 'rgba(0, 175, 255, 0.4)',
-                backgroundColor: 'rgba(15, 23, 42, 0.95)'
-              }}
+              className={`pointer-events-auto p-3 sm:p-3.5 rounded-2xl border shadow-xl backdrop-blur-2xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200 transition-all ${
+                isSuccess
+                  ? 'bg-white/95 dark:bg-slate-950/95 border-emerald-500/35 dark:border-emerald-500/40 shadow-emerald-500/5'
+                  : isError
+                  ? 'bg-white/95 dark:bg-slate-950/95 border-rose-500/35 dark:border-rose-500/40 shadow-rose-500/5'
+                  : isWarning
+                  ? 'bg-white/95 dark:bg-slate-950/95 border-amber-500/35 dark:border-amber-500/40 shadow-amber-500/5'
+                  : 'bg-white/95 dark:bg-slate-950/95 border-cyan-500/35 dark:border-cyan-500/40 shadow-cyan-500/5'
+              }`}
             >
-              <div className="flex items-center gap-2.5">
-                {isSuccess && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
-                {isError && <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />}
-                {isWarning && <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />}
-                {!isSuccess && !isError && !isWarning && <Info className="w-4 h-4 text-cyan-400 shrink-0" />}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div
+                  className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
+                    isSuccess
+                      ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                      : isError
+                      ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
+                      : isWarning
+                      ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                      : 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400'
+                  }`}
+                >
+                  {isSuccess && <CheckCircle2 className="w-4 h-4" />}
+                  {isError && <AlertTriangle className="w-4 h-4" />}
+                  {isWarning && <AlertTriangle className="w-4 h-4" />}
+                  {!isSuccess && !isError && !isWarning && <Info className="w-4 h-4" />}
+                </div>
 
-                <div>
-                  <div className="text-xs font-bold text-slate-100">{toast.title}</div>
-                  {toast.message && <div className="text-[10px] text-slate-400 mt-0.5">{toast.message}</div>}
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
+                    {toast.title}
+                  </div>
+                  {toast.message && (
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight truncate">
+                      {toast.message}
+                    </div>
+                  )}
                 </div>
               </div>
 
               <button
                 onClick={() => removeToast(toast.id)}
-                className="p-1 rounded text-slate-400 hover:text-slate-200 transition"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
+                title="关闭提示"
+                aria-label="Close toast"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

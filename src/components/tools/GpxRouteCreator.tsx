@@ -334,32 +334,32 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
               <Navigation className="w-3.5 h-3.5" />
               GIS 地理拓扑与路书工坊
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">GPX 路线规划与路书工坊</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">GPX 路线规划与路书工坊</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
               地名智能搜索、已有 GPX 导入解析、海拔剖面图联动定位与专业标准 GPX 文件导出。
             </p>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 cursor-pointer transition">
-              <Upload className="w-3.5 h-3.5 text-cyan-400" />
+            <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 cursor-pointer transition">
+              <Upload className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
               导入 GPX
               <input type="file" accept=".gpx,.xml" onChange={handleGpxFileUpload} className="hidden" />
             </label>
             <button
               onClick={handleReverseRoute}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
               title="一键反转起点与终点"
             >
-              <ArrowRightLeft className="w-3.5 h-3.5 text-cyan-400" />
+              <ArrowRightLeft className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
               反转路线
             </button>
             <button
@@ -442,21 +442,21 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearchLocation()}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
               />
             </div>
             <button
               onClick={handleSearchLocation}
               disabled={isSearching}
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-cyan-400 rounded-xl text-xs font-semibold border border-slate-800 shrink-0 transition"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-cyan-600 dark:text-cyan-400 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 shrink-0 transition"
             >
               {isSearching ? '搜索中...' : '定位'}
             </button>
           </div>
 
           {/* Leaflet Map Canvas */}
-          <div className="glass-panel p-2 rounded-2xl border border-slate-800">
-            <div ref={mapContainerRef} className="w-full h-96 rounded-xl border border-slate-800"></div>
+          <div className="glass-panel p-2 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div ref={mapContainerRef} className="w-full h-96 rounded-xl border border-slate-200 dark:border-slate-800"></div>
           </div>
         </div>
 
@@ -464,39 +464,39 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         <div className="lg:col-span-5 space-y-6">
           {/* Key Distance & Elevation Stats */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">全程总距离</span>
-              <div className="text-2xl font-bold font-mono text-cyan-400 mt-1">
-                {routeStats.totalDistKm} <span className="text-xs text-slate-400 font-sans font-normal">km</span>
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">全程总距离</span>
+              <div className="text-2xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
+                {routeStats.totalDistKm} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">km</span>
               </div>
-              <span className="text-[10px] text-slate-500">{waypoints.length} 个航迹点</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">{waypoints.length} 个航迹点</span>
             </div>
 
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">累计爬升</span>
-              <div className="text-2xl font-bold font-mono text-emerald-400 mt-1">
-                +{routeStats.totalClimbM} <span className="text-xs text-slate-400 font-sans font-normal">m</span>
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">累计爬升</span>
+              <div className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
+                +{routeStats.totalClimbM} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m</span>
               </div>
-              <span className="text-[10px] text-slate-500">坡度海拔增益</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">坡度海拔增益</span>
             </div>
 
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">累计下降</span>
-              <div className="text-2xl font-bold font-mono text-amber-400 mt-1">
-                -{routeStats.totalDescentM} <span className="text-xs text-slate-400 font-sans font-normal">m</span>
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">累计下降</span>
+              <div className="text-2xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
+                -{routeStats.totalDescentM} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m</span>
               </div>
-              <span className="text-[10px] text-slate-500">下坡缓释段</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">下坡缓释段</span>
             </div>
           </div>
 
           {/* Elevation Profile Chart with Hover Sync */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <Mountain className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <Mountain className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
                 全路段海拔剖面与地图悬浮联动
               </span>
-              <span className="text-[10px] text-slate-500">*悬浮联动地图坐标</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">*悬浮联动地图坐标</span>
             </div>
 
             <div className="h-48">
@@ -518,8 +518,8 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                     }
                   },
                   scales: {
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: '海拔 (m)' } }
+                    x: { grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                    y: { grid: { color: 'rgba(148, 163, 184, 0.1)' }, title: { display: true, text: '海拔 (m)' } }
                   }
                 }}
               />
@@ -527,16 +527,16 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </div>
 
           {/* Waypoints List with Move/Delete Operations */}
-          <div className="glass-panel p-4 rounded-2xl border border-slate-800 space-y-2">
+          <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-300">航点序列明细:</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">航点序列明细:</span>
               <span className="text-slate-500 text-[11px]">可调整顺序或重命名</span>
             </div>
             <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1">
               {waypoints.map((w, idx) => (
-                <div key={w.id} className="p-2 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs gap-2">
+                <div key={w.id} className="p-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs gap-2">
                   <div className="flex items-center gap-2 truncate flex-1">
-                    <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-[10px] font-bold font-mono shrink-0">
+                    <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-[10px] font-bold font-mono shrink-0">
                       {idx + 1}
                     </span>
                     <input
@@ -546,20 +546,20 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                         const val = e.target.value;
                         setWaypoints(prev => prev.map(item => item.id === w.id ? { ...item, name: val } : item));
                       }}
-                      className="bg-transparent text-slate-200 text-xs truncate focus:outline-none focus:text-cyan-400 w-full"
+                      className="bg-transparent text-slate-800 dark:text-slate-200 text-xs truncate focus:outline-none focus:text-cyan-500 w-full"
                       placeholder={`航点 #${idx + 1}`}
                     />
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="font-mono text-cyan-400 font-semibold text-[11px]">
+                    <span className="font-mono text-cyan-600 dark:text-cyan-400 font-semibold text-[11px]">
                       {w.elevation}m
                     </span>
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => moveWaypoint(idx, 'up')}
                         disabled={idx === 0}
-                        className="p-1 rounded text-slate-500 hover:text-slate-200 disabled:opacity-20"
+                        className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-20 transition"
                         title="上移"
                       >
                         <ArrowUp className="w-3 h-3" />
@@ -567,14 +567,14 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                       <button
                         onClick={() => moveWaypoint(idx, 'down')}
                         disabled={idx === waypoints.length - 1}
-                        className="p-1 rounded text-slate-500 hover:text-slate-200 disabled:opacity-20"
+                        className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-20 transition"
                         title="下移"
                       >
                         <ArrowDown className="w-3 h-3" />
                       </button>
                       <button
                         onClick={() => deleteWaypoint(w.id)}
-                        className="p-1 rounded text-slate-500 hover:text-rose-400"
+                        className="p-1 rounded text-slate-400 hover:text-rose-500 transition"
                         title="删除"
                       >
                         <Trash2 className="w-3 h-3" />
