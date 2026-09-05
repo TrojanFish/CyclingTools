@@ -134,37 +134,37 @@ export const ChainLengthCalculator: React.FC = () => {
             className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition self-start md:self-auto shadow-xs"
           >
             <Copy className="w-3.5 h-3.5" />
-            复制链条报告
+            复制报告
           </button>
         </div>
       </div>
 
       {/* Preset Buttons */}
       <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2">
-        <span className="text-xs text-slate-500 dark:text-slate-400">常见规格一键填入:</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">规格预设:</span>
         <button
           onClick={() => loadPreset('compact_34')}
           className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
-          压缩盘 50/34T + 11-34T (410mm)
+          公路 50/34T
         </button>
         <button
           onClick={() => loadPreset('semi_30')}
           className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
-          半压缩 52/36T + 11-30T (410mm)
+          公路 52/36T
         </button>
         <button
           onClick={() => loadPreset('sram_axs')}
           className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
-          SRAM AXS 48/35T + 10-33T
+          AXS 48/35T
         </button>
         <button
           onClick={() => loadPreset('gravel_1x')}
           className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
-          Gravel 单盘 40T + 10-44T
+          Gravel 40T
         </button>
       </div>
 
@@ -240,7 +240,7 @@ export const ChainLengthCalculator: React.FC = () => {
                     : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                双盘系统 (2x)
+                双盘 (2x)
               </button>
               <button
                 onClick={() => setIsSingleRing(true)}
@@ -250,7 +250,7 @@ export const ChainLengthCalculator: React.FC = () => {
                     : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                单盘系统 (1x)
+                单盘 (1x)
               </button>
             </div>
 

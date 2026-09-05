@@ -284,7 +284,7 @@ export const CyclePowerCalculator: React.FC = () => {
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
               <Copy className="w-3.5 h-3.5" />
-              复制完整报告
+              复制报告
             </button>
 
             {/* Mode Selectors */}
@@ -295,7 +295,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   calcMode === 'speed' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
-                已知功率求速度
+                功率求速度
               </button>
               <button
                 onClick={() => setCalcMode('power')}
@@ -303,7 +303,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   calcMode === 'power' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
-                已知速度求功率
+                速度求功率
               </button>
               <button
                 onClick={() => setCalcMode('wkg')}
@@ -311,7 +311,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   calcMode === 'wkg' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
-                已知推重比推算
+                推重比求功率
               </button>
             </div>
           </div>
@@ -451,10 +451,10 @@ export const CyclePowerCalculator: React.FC = () => {
               </label>
               <div className="grid grid-cols-4 gap-1.5">
                 {[
-                  { id: 'tt', label: language === 'zh-TW' ? 'TT 破風姿態' : 'TT 计时姿势', cda: 0.22 },
-                  { id: 'drops', label: language === 'zh-TW' ? '下把位' : '下把破风位', cda: 0.28 },
-                  { id: 'hoods', label: language === 'zh-TW' ? '手變頭位' : '手变头位', cda: 0.32 },
-                  { id: 'tops', label: language === 'zh-TW' ? '橫把直立' : '横把直立位', cda: 0.38 },
+                  { id: 'tt', label: language === 'zh-TW' ? 'TT 破風' : 'TT 破风', cda: 0.22 },
+                  { id: 'drops', label: language === 'zh-TW' ? '下把位' : '下把位', cda: 0.28 },
+                  { id: 'hoods', label: language === 'zh-TW' ? '手變位' : '手变位', cda: 0.32 },
+                  { id: 'tops', label: language === 'zh-TW' ? '上把位' : '上把位', cda: 0.38 },
                 ].map((p) => (
                   <button
                     key={p.id}
@@ -513,7 +513,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   onClick={() => setAltitudeM(4200)}
                   className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 4200 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
                 >
-                  高原折多山 4200m
+                  折多山 4200m
                 </button>
               </div>
 

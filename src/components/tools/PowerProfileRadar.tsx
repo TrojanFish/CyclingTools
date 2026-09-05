@@ -315,7 +315,7 @@ export const PowerProfileRadar: React.FC = () => {
               className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
               <FileText className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-              粘贴功率文本
+              {language === 'zh-TW' ? '貼上功率' : '粘贴功率'}
             </button>
 
             <button
@@ -332,37 +332,37 @@ export const PowerProfileRadar: React.FC = () => {
       {/* Preset Buttons & Quick Import Trigger */}
       <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-slate-400">车手类型模型预设:</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">车手预设:</span>
           <button
             onClick={() => loadPreset('sprinter')}
             className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            🚀 爆发冲刺手 (Sprinter)
+            🚀 冲刺手
           </button>
           <button
             onClick={() => loadPreset('climber')}
             className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            ⛰️ 纯血爬坡手 (Climber)
+            ⛰️ 爬坡手
           </button>
           <button
             onClick={() => loadPreset('rouleur')}
             className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            ⏱️ 计时突围手 (Time Trialist)
+            ⏱️ 计时突围
           </button>
           <button
             onClick={() => loadPreset('allrounder')}
             className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            💎 均衡全能型 (All-Rounder)
+            💎 全能型
           </button>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
           <label className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 cursor-pointer font-medium flex items-center gap-1">
             <Upload className="w-3.5 h-3.5" />
-            上传 Garmin/Intervals.icu 表单
+            上传功率表单
             <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
@@ -442,7 +442,7 @@ export const PowerProfileRadar: React.FC = () => {
                 disabled={!liveParsed}
                 className="px-5 py-2 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition shadow-lg shadow-cyan-500/20 disabled:opacity-50"
               >
-                一键载入并生成功率雷达
+                {language === 'zh-TW' ? '載入並生成雷達' : '载入并生成雷达'}
               </button>
             </div>
           </div>

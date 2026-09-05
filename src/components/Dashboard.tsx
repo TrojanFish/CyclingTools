@@ -64,11 +64,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { language, t } = useLanguageAndUnit();
 
   const categories = [
-    { id: 'all', label: language === 'zh-TW' ? '全部 17 項工具' : '全部 17 项工具' },
-    { id: 'dynamics', label: language === 'zh-TW' ? '⚡ 動力學與傳動' : '⚡ 动力学与传动' },
-    { id: 'fitting', label: language === 'zh-TW' ? '📐 Fitting 與人體工學' : '📐 Fitting 与工效' },
-    { id: 'route', label: language === 'zh-TW' ? '🗺️ 路線、戰術與氣象' : '🗺️ 路线、战术与气象' },
-    { id: 'health', label: language === 'zh-TW' ? '❤️ 生理、心率與代謝' : '❤️ 生理、心率与代谢' },
+    { id: 'all', label: '全部 (18)' },
+    { id: 'dynamics', label: language === 'zh-TW' ? '⚡ 動力傳動' : '⚡ 动力传动' },
+    { id: 'fitting', label: '📐 Fitting' },
+    { id: 'route', label: language === 'zh-TW' ? '🗺️ 路線氣象' : '🗺️ 路线气象' },
+    { id: 'health', label: language === 'zh-TW' ? '❤️ 生理代謝' : '❤️ 生理代谢' },
   ];
 
   return (
@@ -80,8 +80,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
             {language === 'zh-TW'
-              ? '科學單車計算與動力學工坊 · 17 大全能專業工具工坊'
-              : '科学骑行计算与动力学工坊 · 17 大全能专业工具工坊'}
+              ? '科學單車計算與動力學工坊 · 18 大全能專業工具工坊'
+              : '科学骑行计算与动力学工坊 · 18 大全能专业工具工坊'}
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
             {language === 'zh-TW' ? (

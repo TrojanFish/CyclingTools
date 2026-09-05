@@ -128,7 +128,7 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
               className="flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-xs transition shadow-lg shadow-cyan-500/20"
             >
               <Download className="w-4 h-4" />
-              导出排查指南
+              导出指南
             </button>
           </div>
         </div>
@@ -221,7 +221,7 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
                   className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-rose-500 self-start sm:self-auto transition"
                 >
                   <RotateCcw className="w-3 h-3" />
-                  重置本部位勾选
+                  重置勾选
                 </button>
               )}
             </div>

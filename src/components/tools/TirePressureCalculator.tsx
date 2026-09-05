@@ -155,12 +155,12 @@ export const TirePressureCalculator: React.FC = () => {
 
             {/* Bike Type Selector */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">车辆类型 (Bike Type)</label>
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">{language === 'zh-TW' ? '車輛類型' : '车辆类型'}</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'road', label: '公路车 (Road)', defaultTire: 28 },
-                  { id: 'gravel', label: '全地形 (Gravel)', defaultTire: 40 },
-                  { id: 'mtb', label: '山地车 (MTB)', defaultTire: 55 }
+                  { id: 'road', label: language === 'zh-TW' ? '公路車' : '公路车', defaultTire: 28 },
+                  { id: 'gravel', label: 'Gravel', defaultTire: 40 },
+                  { id: 'mtb', label: language === 'zh-TW' ? '山地車' : '山地车', defaultTire: 55 }
                 ].map((b) => (
                   <button
                     key={b.id}
@@ -252,12 +252,12 @@ export const TirePressureCalculator: React.FC = () => {
 
             {/* Tire Setup */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">轮胎系统 (Tire Setup)</label>
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">{language === 'zh-TW' ? '外胎系統' : '轮胎系统'}</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'tubeless', label: '真空胎 (Tubeless)', desc: '更低滚阻与防刺' },
-                  { id: 'tube', label: '普通内胎 (Clincher)', desc: 'TPU/丁基胶' },
-                  { id: 'tubular', label: '管胎 (Tubular)', desc: '专业竞赛管胎' },
+                  { id: 'tubeless', label: language === 'zh-TW' ? '真空胎' : '真空胎', desc: '低滚阻/防刺' },
+                  { id: 'tube', label: language === 'zh-TW' ? '普通內胎' : '普通内胎', desc: 'TPU/丁基胶' },
+                  { id: 'tubular', label: language === 'zh-TW' ? '管胎' : '管胎', desc: '竞赛管胎' },
                 ].map((t) => (
                   <button
                     key={t.id}

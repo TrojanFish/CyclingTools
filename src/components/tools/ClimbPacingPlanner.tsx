@@ -451,47 +451,51 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           <button
             onClick={() => loadPreset('longjing')}
             className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            title="杭州龙井 (3.2km)"
           >
-            杭州龙井 (3.2km)
+            杭州龙井
           </button>
           <button
             onClick={() => loadPreset('miaofeng')}
             className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            title="北京妙峰山 (20.5km)"
           >
-            北京妙峰山 (20.5km)
+            北京妙峰山
           </button>
           <button
             onClick={() => loadPreset('tianhuang')}
             className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            title="安吉天荒坪 (18km)"
           >
-            安吉天荒坪 (18km)
+            安吉天荒坪
           </button>
           <button
             onClick={() => loadPreset('balang')}
             className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
+            title="巴朗山 (30km)"
           >
-            巴朗山 (30km)
+            巴朗山
           </button>
           <button
             onClick={() => loadPreset('alpedhuez')}
             className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
-            title="环法殿堂 Alpe d'Huez 21道拐"
+            title="环法殿堂 Alpe d'Huez 21道拐 (13.8km)"
           >
-            🇫🇷 阿尔普迪埃 (13.8km)
+            🇫🇷 阿尔普迪埃
           </button>
           <button
             onClick={() => loadPreset('stelvio')}
             className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
-            title="环意最高峰 Passo dello Stelvio 48弯"
+            title="环意最高峰 Passo dello Stelvio 48弯 (24.3km)"
           >
-            🇮🇹 斯泰尔维奥 (24.3km)
+            🇮🇹 斯泰尔维奥
           </button>
           <button
             onClick={() => loadPreset('sacalobra')}
             className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
-            title="马略卡骑行圣地 Sa Calobra"
+            title="马略卡骑行圣地 Sa Calobra (9.4km)"
           >
-            🇪🇸 卡洛布拉 (9.4km)
+            🇪🇸 卡洛布拉
           </button>
         </div>
 

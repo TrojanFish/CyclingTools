@@ -35,7 +35,7 @@ interface Rider {
 
 export const GroupRideSimulator: React.FC = () => {
   const { profile } = useRiderProfile();
-  const { unitSystem } = useLanguageAndUnit();
+  const { unitSystem, language } = useLanguageAndUnit();
   const isImperial = unitSystem === 'imperial';
 
   const [distanceKm, setDistanceKm] = useState<number>(80);
@@ -256,7 +256,7 @@ export const GroupRideSimulator: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/30 text-xs font-semibold transition shadow-xs"
           >
             <Sparkles className="w-4 h-4" />
-            一键求解团队最佳不掉队均速
+            {language === 'zh-TW' ? '求解團隊均速' : '求解团队均速'}
           </button>
         </div>
       </div>

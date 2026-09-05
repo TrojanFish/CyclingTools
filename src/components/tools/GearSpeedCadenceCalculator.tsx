@@ -209,19 +209,19 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                 onClick={() => setActiveTab('matrix')}
                 className={`px-3 py-1 rounded-lg transition ${activeTab === 'matrix' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
               >
-                全档位矩阵
+                档位矩阵
               </button>
               <button
                 onClick={() => setActiveTab('cadence_table')}
                 className={`px-3 py-1 rounded-lg transition ${activeTab === 'cadence_table' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
               >
-                多踏频对照
+                踏频对照
               </button>
               <button
                 onClick={() => setActiveTab('chart')}
                 className={`px-3 py-1 rounded-lg transition ${activeTab === 'chart' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
               >
-                速度-踏频图
+                速度曲线
               </button>
             </div>
           </div>
@@ -232,37 +232,37 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
         {/* Gruppo Presets */}
         <div>
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-2">经典套件规格一键预设:</span>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => loadPresetGruppo('compact')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
-              压缩盘 50/34T + 11-34T
+              公路 50/34T
             </button>
             <button
               onClick={() => loadPresetGruppo('semi_compact')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
-              半压缩 52/36T + 11-30T
+              公路 52/36T
             </button>
             <button
               onClick={() => loadPresetGruppo('pro_racing')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
-              竞技标准 54/40T + 11-30T
+              竞速 54/40T
             </button>
             <button
               onClick={() => loadPresetGruppo('sram_axs')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
-              SRAM AXS 48/35T + 10-33T
+              AXS 48/35T
             </button>
             <button
               onClick={() => loadPresetGruppo('gravel_1x')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
-              Gravel 单盘 40T + 10-44T
+              Gravel 40T
             </button>
           </div>
         </div>

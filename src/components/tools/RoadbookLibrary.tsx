@@ -478,7 +478,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 cursor-pointer transition shadow-sm">
               <Upload className="w-4 h-4 text-cyan-500" />
-              <span>{language === 'zh-TW' ? '匯入我的 GPX 路書' : '导入我的 GPX 路书'}</span>
+              <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
             </label>
 
@@ -487,7 +487,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               className="flex items-center gap-2 px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-xs transition shadow-lg shadow-cyan-500/20"
             >
               <Download className="w-4 h-4" />
-              {language === 'zh-TW' ? '匯出當前路書 GPX' : '导出当前路书 GPX'}
+              {language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}
             </button>
           </div>
         </div>
@@ -505,7 +505,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              {language === 'zh-TW' ? `精選經典路書 (${ROADBOOK_DATABASE.length})` : `精选经典路书 (${ROADBOOK_DATABASE.length})`}
+              {language === 'zh-TW' ? `精選路書 (${ROADBOOK_DATABASE.length})` : `精选路书 (${ROADBOOK_DATABASE.length})`}
             </button>
             <button
               onClick={() => setActiveTab('personal')}
@@ -516,7 +516,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               }`}
             >
               <Bookmark className="w-3.5 h-3.5" />
-              {language === 'zh-TW' ? `我的本地匯入路書 (${personalRoutes.length})` : `我的本地导入路书 (${personalRoutes.length})`}
+              {language === 'zh-TW' ? `本地匯入 (${personalRoutes.length})` : `本地导入 (${personalRoutes.length})`}
             </button>
           </div>
 
@@ -817,14 +817,14 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition"
                     >
                       <Compass className="w-3.5 h-3.5 text-cyan-500" />
-                      {'去查实时沿途天气'}
+                      {language === 'zh-TW' ? '沿途天氣' : '沿途天气'}
                     </button>
                     <button
                       onClick={() => onNavigateTool('climb-pacing')}
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition"
                     >
                       <Mountain className="w-3.5 h-3.5 text-amber-500" />
-                      {'去规划爬坡功率'}
+                      {language === 'zh-TW' ? '爬坡規劃' : '爬坡规划'}
                     </button>
                   </>
                 )}
@@ -835,7 +835,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 className="flex items-center gap-1.5 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-md shadow-cyan-500/20"
               >
                 <Download className="w-3.5 h-3.5" />
-                {'下载本路书 GPX 码表文件'}
+                {language === 'zh-TW' ? '下載 GPX 檔' : '下载 GPX 文件'}
               </button>
             </div>
           </div>

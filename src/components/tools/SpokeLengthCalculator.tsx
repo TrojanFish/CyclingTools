@@ -261,25 +261,25 @@ export const SpokeLengthCalculator: React.FC = () => {
               onClick={() => applyPreset('dt350_rear_50')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
             >
-              DT350碟刹后轮
+              DT350 后轮
             </button>
             <button
               onClick={() => applyPreset('dt350_front_50')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
             >
-              DT350碟刹前轮
+              DT350 前轮
             </button>
             <button
               onClick={() => applyPreset('gravel_asym_45')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
             >
-              偏心圈 (Asym)
+              偏心圈
             </button>
             <button
               onClick={() => applyPreset('mtb_29_xc')}
               className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
             >
-              29er 山地 3X
+              山地 3X
             </button>
           </div>
         </div>
@@ -328,7 +328,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                         : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
-                    后轮 (Rear)
+                    {language === 'zh-TW' ? '後輪' : '后轮'}
                   </button>
                   <button
                     onClick={() => {
@@ -342,7 +342,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                         : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
-                    前轮 (Front)
+                    {language === 'zh-TW' ? '前輪' : '前轮'}
                   </button>
                 </div>
               </div>
@@ -358,7 +358,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                         : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
-                    碟刹 (Disc)
+                    {language === 'zh-TW' ? '碟煞' : '碟刹'}
                   </button>
                   <button
                     onClick={() => setBrakeType('rim')}
@@ -368,7 +368,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                         : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
-                    圈刹 (Rim)
+                    {language === 'zh-TW' ? '圈煞' : '圈刹'}
                   </button>
                 </div>
               </div>

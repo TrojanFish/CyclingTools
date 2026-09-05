@@ -135,7 +135,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              公制 Metric
+              公制
             </button>
             <button
               onClick={() => setUnitSystem('imperial')}
@@ -145,7 +145,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              英制 Imperial
+              英制
             </button>
           </div>
         </div>
@@ -354,7 +354,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            {language === 'zh-TW' ? '重置預設' : '重置默认'}
+            {'重置'}
           </button>
           <button
             onClick={() => {
@@ -369,7 +369,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-cyan-500/20"
           >
             <Check className="w-4 h-4" />
-            {language === 'zh-TW' ? '保存並同步全站' : '保存并同步全站'}
+            {language === 'zh-TW' ? '保存設定' : '保存设置'}
           </button>
         </div>
       </div>

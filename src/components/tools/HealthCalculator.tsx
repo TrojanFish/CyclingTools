@@ -216,7 +216,7 @@ export const HealthCalculator: React.FC = () => {
                 activeTab === 'fueling' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              🍌 碳水能量补给
+              🍌 能量补给
             </button>
             <button
               onClick={() => setActiveTab('hr_zones')}
@@ -224,7 +224,7 @@ export const HealthCalculator: React.FC = () => {
                 activeTab === 'hr_zones' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              💓 Karvonen 靶心率
+              💓 靶心率
             </button>
             <button
               onClick={() => setActiveTab('bmr')}
@@ -232,7 +232,7 @@ export const HealthCalculator: React.FC = () => {
                 activeTab === 'bmr' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              BMR & TDEE 能耗
+              🔥 代谢能耗
             </button>
             <button
               onClick={() => setActiveTab('bmi')}
@@ -240,7 +240,7 @@ export const HealthCalculator: React.FC = () => {
                 activeTab === 'bmi' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              BMI 指数
+              ⚖️ BMI
             </button>
             <button
               onClick={() => setActiveTab('bfp')}
@@ -248,7 +248,7 @@ export const HealthCalculator: React.FC = () => {
                 activeTab === 'bfp' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              BFP 体脂率
+              📊 体脂率
             </button>
           </div>
         </div>
@@ -279,7 +279,7 @@ export const HealthCalculator: React.FC = () => {
                         : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    {language === 'zh-TW' ? '男 (Male)' : '男 (Male)'}
+                    {language === 'zh-TW' ? '男' : '男'}
                   </button>
                   <button
                     onClick={() => setGender('female')}
@@ -289,7 +289,7 @@ export const HealthCalculator: React.FC = () => {
                         : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    {language === 'zh-TW' ? '女 (Female)' : '女 (Female)'}
+                    {language === 'zh-TW' ? '女' : '女'}
                   </button>
                 </div>
               </div>

@@ -484,14 +484,14 @@ export const FitActivityAnalyzer: React.FC = () => {
               className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5"
             >
               <Printer className="w-4 h-4" />
-              <span>{'打印分析报告'}</span>
+              <span>{language === 'zh-TW' ? '列印報告' : '打印报告'}</span>
             </button>
             <button
               onClick={handleLoadDemo}
               className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{'加载实测样本数据'}</span>
+              <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
             </button>
           </div>
         </div>
@@ -587,7 +587,7 @@ export const FitActivityAnalyzer: React.FC = () => {
             className="w-full py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>{'更新并刷新分析'}</span>
+            <span>{language === 'zh-TW' ? '更新分析' : '更新分析'}</span>
           </button>
         </div>
       </div>
@@ -730,7 +730,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <LineChartIcon className="w-4 h-4" />
-              <span>{'全景时序趋势'}</span>
+              <span>{language === 'zh-TW' ? '時序趨勢' : '时序趋势'}</span>
             </button>
 
             <button
@@ -742,7 +742,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <BarChart3 className="w-4 h-4" />
-              <span>{'功率/心率区间驻留'}</span>
+              <span>{language === 'zh-TW' ? '區間駐留' : '区间驻留'}</span>
             </button>
 
             <button
@@ -754,7 +754,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <Layers className="w-4 h-4" />
-              <span>{'峰值功率曲线 (MMP)'}</span>
+              <span>{language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线'}</span>
             </button>
 
             <button
@@ -766,7 +766,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <Sparkles className="w-4 h-4" />
-              <span>{'训练生理学诊断'}</span>
+              <span>{language === 'zh-TW' ? '生理診斷' : '生理诊断'}</span>
             </button>
           </div>
 

@@ -348,9 +348,9 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <label className="text-[11px] text-slate-500 block mb-1.5">{'外胎胎体构造'}</label>
                 <div className="space-y-1.5">
                   {[
-                    { id: 'race', label: '超轻棉线 / 黄边竞速胎 (多微孔吸胶)' },
-                    { id: 'standard', label: '标准真空胎 TLR (主流平衡型)' },
-                    { id: 'heavy', label: '重型防穿刺 / 丁基加强层 (气密极佳)' }
+                    { id: 'race', label: '超轻棉线 / 黄边竞速胎' },
+                    { id: 'standard', label: '标准真空胎 TLR' },
+                    { id: 'heavy', label: '重型防穿刺 / 丁基加强层' }
                   ].map((c) => (
                     <button
                       key={c.id}
@@ -373,9 +373,9 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <label className="text-[11px] text-slate-500 block mb-1.5">{'当地骑行气候环境'}</label>
                 <div className="space-y-1.5">
                   {[
-                    { id: 'hot_dry', label: '炎热干燥 (>28°C，挥发迅速)' },
-                    { id: 'moderate', label: '温和适宜 (15-25°C，常规挥发)' },
-                    { id: 'cool_humid', label: '湿润阴冷 (<15°C，挥发较慢)' }
+                    { id: 'hot_dry', label: '炎热干燥 (>28°C)' },
+                    { id: 'moderate', label: '温和适宜 (15-25°C)' },
+                    { id: 'cool_humid', label: '湿润阴冷 (<15°C)' }
                   ].map((cl) => (
                     <button
                       key={cl.id}

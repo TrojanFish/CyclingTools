@@ -56,8 +56,8 @@ export const BackgroundMusicControl: React.FC = () => {
               ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-600 dark:text-cyan-400 shadow-xs'
               : 'bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
           }`}
-          title={isPlaying ? `正在播放: ${currentTrack?.name} (点击调控)` : '点击开启骑行背景音乐'}
-          aria-label="背景音乐"
+          title={isPlaying ? `正在播放: ${currentTrack?.name}` : '骑行音乐'}
+          aria-label="骑行音乐"
         >
           <Music className={`w-4 h-4 ${isPlaying ? 'text-cyan-500 animate-pulse' : ''}`} />
           {isPlaying && (
