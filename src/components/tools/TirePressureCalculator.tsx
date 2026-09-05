@@ -5,10 +5,13 @@ import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 export const TirePressureCalculator: React.FC = () => {
   const { showToast } = useToast();
   const { profile } = useRiderProfile();
+  const { unitSystem, language } = useLanguageAndUnit();
+  const isImperial = unitSystem === 'imperial';
 
   const [bikeType, setBikeType] = useState<'road' | 'gravel' | 'mtb'>('road');
   const [riderWeight, setRiderWeight] = useState<number>(profile.weightKg || 68);
@@ -20,13 +23,18 @@ export const TirePressureCalculator: React.FC = () => {
   const [isHookless, setIsHookless] = useState<boolean>(false);
   const [weightDistFront, setWeightDistFront] = useState<number>(44);
   const [surfaceKey, setSurfaceKey] = useState<string>('smooth_asphalt');
-  const [pressureUnit, setPressureUnit] = useState<'psi' | 'bar' | 'kpa'>('psi');
+  const [pressureUnit, setPressureUnit] = useState<'psi' | 'bar' | 'kpa'>(isImperial ? 'psi' : 'bar');
 
   // Reactively sync with global rider profile
   useEffect(() => {
     if (profile.weightKg) setRiderWeight(profile.weightKg);
     if (profile.bikeWeightKg) setBikeGearWeight(profile.bikeWeightKg);
   }, [profile.weightKg, profile.bikeWeightKg]);
+
+  // Reactively sync default unit with global unit system
+  useEffect(() => {
+    setPressureUnit(unitSystem === 'imperial' ? 'psi' : 'bar');
+  }, [unitSystem]);
 
   const totalSystemWeight = riderWeight + bikeGearWeight;
   const weightDistRear = 100 - weightDistFront;
@@ -178,31 +186,45 @@ export const TirePressureCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                    车手净体重
+                    {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨體重' : '车手净体重'}
                     {profile.weightKg ? (
-                      <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-normal">已同步档案</span>
+                      <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-normal">
+                        {language === 'en' ? 'Synced' : '已同步档案'}
+                      </span>
                     ) : null}
                   </label>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{riderWeight} kg</span>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
+                    {isImperial ? `${(riderWeight * 2.20462).toFixed(1)} lbs` : `${riderWeight} kg`}
+                  </span>
                 </div>
                 <input
                   type="number"
-                  step="0.5"
-                  value={riderWeight}
-                  onChange={(e) => setRiderWeight(parseFloat(e.target.value) || 65)}
+                  step={isImperial ? '1' : '0.5'}
+                  value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0;
+                    setRiderWeight(isImperial ? parseFloat((val / 2.20462).toFixed(1)) : val);
+                  }}
                   className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
                 />
               </div>
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">车重 + 装备水壶</label>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{bikeGearWeight} kg</span>
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    {language === 'en' ? 'Bike + Gear' : language === 'zh-TW' ? '車重 + 裝備水壺' : '车重 + 装备水壶'}
+                  </label>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
+                    {isImperial ? `${(bikeGearWeight * 2.20462).toFixed(1)} lbs` : `${bikeGearWeight} kg`}
+                  </span>
                 </div>
                 <input
                   type="number"
-                  step="0.5"
-                  value={bikeGearWeight}
-                  onChange={(e) => setBikeGearWeight(parseFloat(e.target.value) || 8)}
+                  step={isImperial ? '0.2' : '0.5'}
+                  value={isImperial ? parseFloat((bikeGearWeight * 2.20462).toFixed(1)) : bikeGearWeight}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0;
+                    setBikeGearWeight(isImperial ? parseFloat((val / 2.20462).toFixed(1)) : val);
+                  }}
                   className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
                 />
               </div>

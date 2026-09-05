@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Copy, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -148,15 +148,29 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
 ];
 
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+
 export const UpgradeRoiCalculator: React.FC = () => {
   const { profile } = useRiderProfile();
+  const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
+  const isImperial = unitSystem === 'imperial';
 
   const [totalSystemWeightKg, setTotalSystemWeightKg] = useState<number>((profile.weightKg || 68) + (profile.bikeWeightKg || 8.5));
   const [flatCruiseSpeedKmh, setFlatCruiseSpeedKmh] = useState<number>(35);
   const [climbPowerWatts, setClimbPowerWatts] = useState<number>(profile.ftpWatts || 240);
   const [climbGradePct, setClimbGradePct] = useState<number>(7.5);
-  const [currency, setCurrency] = useState<'CNY' | 'USD' | 'EUR' | 'GBP'>('CNY');
+  const [currency, setCurrency] = useState<'CNY' | 'USD' | 'EUR' | 'GBP'>(isImperial ? 'USD' : 'CNY');
+
+  // Reactively synchronize with global rider profile and unit system
+  useEffect(() => {
+    const totalW = (profile.weightKg || 68) + (profile.bikeWeightKg || 8.5);
+    setTotalSystemWeightKg(totalW);
+    if (profile.ftpWatts) setClimbPowerWatts(profile.ftpWatts);
+    if (unitSystem === 'imperial' && currency === 'CNY') {
+      setCurrency('USD');
+    }
+  }, [profile.weightKg, profile.bikeWeightKg, profile.ftpWatts, unitSystem]);
 
   const currencySymbol = useMemo(() => {
     switch (currency) {
@@ -375,7 +389,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1">
             <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-            基准巡航车速:
+            {language === 'en' ? 'Baseline Cruise Speed' : language === 'zh-TW' ? '基準巡航車速' : '基准巡航车速'}:
           </span>
           <div className="w-36">
             <NumberStepper
@@ -388,20 +402,22 @@ export const UpgradeRoiCalculator: React.FC = () => {
             />
           </div>
           <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
-            (省瓦按 P ∝ v³ 随车速动态折算: ×{(speedScalingFactor).toFixed(2)})
+            {isImperial ? `(${(flatCruiseSpeedKmh * 0.621371).toFixed(1)} mph)` : ''} (P ∝ v³: ×{(speedScalingFactor).toFixed(2)})
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">人车总重:</span>
+          <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
+            {language === 'en' ? 'Total System Weight' : language === 'zh-TW' ? '人車總重' : '人车总重'} ({isImperial ? 'lbs' : 'kg'}):
+          </span>
           <div className="w-36">
             <NumberStepper
-              value={totalSystemWeightKg}
-              onChange={setTotalSystemWeightKg}
-              step={0.5}
-              min={45}
-              max={150}
-              unit="kg"
+              value={isImperial ? parseFloat((totalSystemWeightKg * 2.20462).toFixed(1)) : totalSystemWeightKg}
+              onChange={(v) => setTotalSystemWeightKg(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+              step={isImperial ? 1 : 0.5}
+              min={isImperial ? 99 : 45}
+              max={isImperial ? 330 : 150}
+              unit={isImperial ? 'lbs' : 'kg'}
               decimals={1}
             />
           </div>

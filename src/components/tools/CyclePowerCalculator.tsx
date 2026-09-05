@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Copy, Award, Sliders, ChevronDown } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -16,6 +16,7 @@ import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +31,10 @@ ChartJS.register(
 
 export const CyclePowerCalculator: React.FC = () => {
   const { profile, updateProfile } = useRiderProfile();
+  const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
+
+  const isImperial = unitSystem === 'imperial';
 
   const [calcMode, setCalcMode] = useState<'speed' | 'power' | 'wkg'>('speed');
   const [powerInput, setPowerInput] = useState<number>(profile.ftpWatts || 220);
@@ -42,6 +46,13 @@ export const CyclePowerCalculator: React.FC = () => {
   const [grade, setGrade] = useState<number>(0);
   const [windSpeedKmh, setWindSpeedKmh] = useState<number>(0);
   const [windDirection, setWindDirection] = useState<'headwind' | 'tailwind'>('headwind');
+
+  // Reactively synchronize whenever global rider profile updates
+  useEffect(() => {
+    if (profile.weightKg) setRiderWeight(profile.weightKg);
+    if (profile.bikeWeightKg) setBikeWeight(profile.bikeWeightKg);
+    if (profile.ftpWatts) setPowerInput(profile.ftpWatts);
+  }, [profile.weightKg, profile.bikeWeightKg, profile.ftpWatts]);
 
   // Advanced aero & physics parameters
   const [altitudeM, setAltitudeM] = useState<number>(50);
@@ -199,10 +210,10 @@ export const CyclePowerCalculator: React.FC = () => {
     });
 
     return {
-      labels: speeds.map(s => `${s} km/h`),
+      labels: speeds.map(s => (isImperial ? `${(s * 0.621371).toFixed(0)} mph` : `${s} km/h`)),
       datasets: [
         {
-          label: '平路/坡道所需功率 (Watts)',
+          label: isImperial ? 'Required Power (Watts)' : '平路/坡道所需功率 (Watts)',
           data: powers,
           borderColor: '#00AFFF',
           backgroundColor: 'rgba(0, 175, 255, 0.12)',
@@ -213,7 +224,7 @@ export const CyclePowerCalculator: React.FC = () => {
         }
       ]
     };
-  }, [riderWeight, bikeWeight, grade, airDensityRho, customCda, customCrr]);
+  }, [riderWeight, bikeWeight, grade, airDensityRho, customCda, customCrr, isImperial]);
 
   const weightChartData = useMemo(() => {
     const weights = [55, 60, 65, 70, 75, 80, 85];
@@ -228,10 +239,10 @@ export const CyclePowerCalculator: React.FC = () => {
     });
 
     return {
-      labels: weights.map(w => `${w} kg`),
+      labels: weights.map(w => (isImperial ? `${Math.round(w * 2.20462)} lbs` : `${w} kg`)),
       datasets: [
         {
-          label: '在 35km/h 巡航下不同体重所需功率 (Watts)',
+          label: isImperial ? 'Power vs Weight at 22mph (Watts)' : '在 35km/h 巡航下不同体重所需功率 (Watts)',
           data: powers,
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.12)',
@@ -242,7 +253,7 @@ export const CyclePowerCalculator: React.FC = () => {
         }
       ]
     };
-  }, [bikeWeight, grade, airDensityRho, customCda, customCrr]);
+  }, [bikeWeight, grade, airDensityRho, customCda, customCrr, isImperial]);
 
   const copyFullReport = () => {
     const text = `🚴 SoloRiderTools 科学骑行功率与推重比报告:\n- 输出功率: ${result.power} W\n- 推重比: ${result.wkg} W/kg (${result.levelTitle})\n- 巡航车速: ${result.speedKmh} km/h\n- 坡度: ${grade}% | 空气密度: ${airDensityRho} kg/m³\n- 能耗代谢: ${result.kcalPerHour} kcal/h\n- 爬坡 VAM: ${result.vam} m/h (预计 ${climbElevationGainM}m 耗时: ${result.climbTimeMinutes} 分钟)`;
@@ -319,32 +330,66 @@ export const CyclePowerCalculator: React.FC = () => {
             {/* Target Input */}
             {calcMode === 'speed' && (
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">输入骑行功率 (Watts)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Cycling Power Input' : language === 'zh-TW' ? '輸入騎行功率' : '输入骑行功率'} (Watts)
+                </label>
                 <NumberStepper value={powerInput} onChange={setPowerInput} step={5} min={20} max={1500} unit="W" />
               </div>
             )}
             {calcMode === 'power' && (
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">目标巡航速度 (km/h)</label>
-                <NumberStepper value={targetSpeedKmh} onChange={setTargetSpeedKmh} step={0.5} min={5} max={90} unit="km/h" decimals={1} />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Target Cruise Speed' : language === 'zh-TW' ? '目標巡航速度' : '目标巡航速度'} ({isImperial ? 'mph' : 'km/h'})
+                </label>
+                <NumberStepper
+                  value={isImperial ? parseFloat((targetSpeedKmh * 0.621371).toFixed(1)) : targetSpeedKmh}
+                  onChange={(v) => setTargetSpeedKmh(isImperial ? parseFloat((v / 0.621371).toFixed(1)) : v)}
+                  step={0.5}
+                  min={isImperial ? 3 : 5}
+                  max={isImperial ? 55 : 90}
+                  unit={isImperial ? 'mph' : 'km/h'}
+                  decimals={1}
+                />
               </div>
             )}
             {calcMode === 'wkg' && (
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">目标推重比 (W/kg)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Target Power-to-Weight' : language === 'zh-TW' ? '目標推重比' : '目标推重比'} (W/kg)
+                </label>
                 <NumberStepper value={targetWkg} onChange={setTargetWkg} step={0.1} min={1.0} max={8.0} unit="W/kg" decimals={1} />
               </div>
             )}
 
-            {/* Rider & Bike Weight */}
+            {/* Rider & Bike Weight with imperial support */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">车手体重 (kg)</label>
-                <NumberStepper value={riderWeight} onChange={setRiderWeight} step={0.5} min={30} max={150} unit="kg" decimals={1} />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨重' : '车手体重'} ({isImperial ? 'lbs' : 'kg'})
+                </label>
+                <NumberStepper
+                  value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
+                  onChange={(v) => setRiderWeight(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+                  step={isImperial ? 1 : 0.5}
+                  min={isImperial ? 66 : 30}
+                  max={isImperial ? 330 : 150}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
+                />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">整车装备重 (kg)</label>
-                <NumberStepper value={bikeWeight} onChange={setBikeWeight} step={0.1} min={4} max={25} unit="kg" decimals={1} />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Bike + Gear' : language === 'zh-TW' ? '整車裝備重' : '整车装备重'} ({isImperial ? 'lbs' : 'kg'})
+                </label>
+                <NumberStepper
+                  value={isImperial ? parseFloat((bikeWeight * 2.20462).toFixed(1)) : bikeWeight}
+                  onChange={(v) => setBikeWeight(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+                  step={isImperial ? 0.2 : 0.1}
+                  min={isImperial ? 9 : 4}
+                  max={isImperial ? 55 : 25}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
+                />
               </div>
             </div>
 
@@ -352,8 +397,10 @@ export const CyclePowerCalculator: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-xs font-medium text-slate-300">道路坡度 (Grade %)</label>
-                  <span className="text-cyan-400 font-mono font-semibold text-xs">{grade}%</span>
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    {language === 'en' ? 'Grade' : language === 'zh-TW' ? '道路坡度' : '道路坡度'} (%)
+                  </label>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{grade}%</span>
                 </div>
                 <input
                   type="range"
@@ -362,15 +409,18 @@ export const CyclePowerCalculator: React.FC = () => {
                   step="0.5"
                   value={grade}
                   onChange={(e) => setGrade(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-400"
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
                 />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-xs font-medium text-slate-300">风速与方向</label>
-                  <span className="text-cyan-400 font-mono font-semibold text-xs">
-                    {windSpeedKmh} km/h ({windDirection === 'headwind' ? '顶风' : '顺风'})
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    {language === 'en' ? 'Wind Speed' : language === 'zh-TW' ? '風速與方向' : '风速与方向'}
+                  </label>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
+                    {isImperial ? `${(windSpeedKmh * 0.621371).toFixed(1)} mph` : `${windSpeedKmh} km/h`}{' '}
+                    ({windDirection === 'headwind' ? (language === 'en' ? 'Head' : language === 'zh-TW' ? '頂風' : '顶风') : (language === 'en' ? 'Tail' : language === 'zh-TW' ? '順風' : '顺风')})
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -381,13 +431,13 @@ export const CyclePowerCalculator: React.FC = () => {
                     step="1"
                     value={windSpeedKmh}
                     onChange={(e) => setWindSpeedKmh(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-400"
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
                   />
                   <button
                     onClick={() => setWindDirection(windDirection === 'headwind' ? 'tailwind' : 'headwind')}
-                    className="px-2 py-1 bg-slate-900 border border-slate-800 rounded-lg text-[10px] text-cyan-400 shrink-0"
+                    className="px-2 py-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg text-[10px] text-cyan-600 dark:text-cyan-400 shrink-0 font-medium"
                   >
-                    {windDirection === 'headwind' ? '顶风' : '顺风'}
+                    {windDirection === 'headwind' ? (language === 'en' ? 'Head' : language === 'zh-TW' ? '頂風' : '顶风') : (language === 'en' ? 'Tail' : language === 'zh-TW' ? '順風' : '顺风')}
                   </button>
                 </div>
               </div>
@@ -395,24 +445,24 @@ export const CyclePowerCalculator: React.FC = () => {
 
             {/* Aero Posture Presets */}
             <div>
-              <label className="text-xs font-medium text-slate-300 block mb-2 flex items-center">
-                骑行姿态与风阻迎风面积 (CdA)
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2 flex items-center">
+                {language === 'en' ? 'Aero Posture & CdA' : language === 'zh-TW' ? '騎行姿態與風阻迎風面積 (CdA)' : '骑行姿态与风阻迎风面积 (CdA)'}
                 <Tooltip content="CdA 代表风阻系数乘以正面投影迎风面积，值越小越气动省力。" />
               </label>
               <div className="grid grid-cols-4 gap-1.5">
                 {[
-                  { id: 'tt', label: 'TT 计时姿势', cda: 0.22 },
-                  { id: 'drops', label: '下把破风位', cda: 0.28 },
-                  { id: 'hoods', label: '手变头位', cda: 0.32 },
-                  { id: 'tops', label: '横把直立位', cda: 0.38 },
+                  { id: 'tt', label: language === 'en' ? 'TT Aerobars' : language === 'zh-TW' ? 'TT 破風姿態' : 'TT 计时姿势', cda: 0.22 },
+                  { id: 'drops', label: language === 'en' ? 'Drops' : language === 'zh-TW' ? '下把位' : '下把破风位', cda: 0.28 },
+                  { id: 'hoods', label: language === 'en' ? 'Brake Hoods' : language === 'zh-TW' ? '手變頭位' : '手变头位', cda: 0.32 },
+                  { id: 'tops', label: language === 'en' ? 'Tops / Upright' : language === 'zh-TW' ? '橫把直立' : '横把直立位', cda: 0.38 },
                 ].map((p) => (
                   <button
                     key={p.id}
                     onClick={() => handleCdaPresetChange(p.id as any)}
                     className={`py-2 px-1 rounded-xl border text-center transition ${
                       cdaPreset === p.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400 font-semibold'
-                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
+                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
                     <div className="text-[11px] font-bold">{p.label}</div>
@@ -423,17 +473,19 @@ export const CyclePowerCalculator: React.FC = () => {
             </div>
 
             {/* Precision Altitude & Temperature Air Density */}
-            <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-300 font-medium flex items-center gap-1">
-                  <Wind className="w-3.5 h-3.5 text-cyan-400" />
-                  海拔与气温密度校正
+                <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
+                  <Wind className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                  {language === 'en' ? 'Altitude & Air Density' : language === 'zh-TW' ? '海拔與氣溫密度校正' : '海拔与气温密度校正'}
                 </span>
-                <span className="text-cyan-400 font-mono font-bold">ρ = {airDensityRho} kg/m³</span>
+                <span className="text-cyan-600 dark:text-cyan-400 font-mono font-bold">ρ = {airDensityRho} kg/m³</span>
               </div>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">骑行海拔: {altitudeM} m</label>
+                  <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
+                    {language === 'en' ? 'Altitude' : language === 'zh-TW' ? '海拔' : '骑行海拔'}: {altitudeM} m {isImperial ? `(${Math.round(altitudeM * 3.28084)} ft)` : ''}
+                  </label>
                   <input
                     type="range"
                     min="0"
@@ -441,11 +493,13 @@ export const CyclePowerCalculator: React.FC = () => {
                     step="50"
                     value={altitudeM}
                     onChange={(e) => setAltitudeM(Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-400"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">环境气温: {tempC} °C</label>
+                  <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
+                    {language === 'en' ? 'Ambient Temp' : language === 'zh-TW' ? '環境氣溫' : '环境气温'}: {tempC} °C {isImperial ? `(${Math.round((tempC * 9)/5 + 32)} °F)` : ''}
+                  </label>
                   <input
                     type="range"
                     min="-10"
@@ -453,7 +507,7 @@ export const CyclePowerCalculator: React.FC = () => {
                     step="1"
                     value={tempC}
                     onChange={(e) => setTempC(Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-400"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
                   />
                 </div>
               </div>
@@ -465,44 +519,55 @@ export const CyclePowerCalculator: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           {/* Main Hero Metric Cards */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-400 font-medium block">估算骑行速度</span>
-              <div className="text-3xl font-extrabold font-mono text-cyan-400 mt-1">
-                {result.speedKmh} <span className="text-xs text-slate-400 font-sans font-normal">km/h</span>
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
+                {language === 'en' ? 'Estimated Speed' : language === 'zh-TW' ? '估算騎行速度' : '估算骑行速度'}
+              </span>
+              <div className="text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
+                {isImperial ? (result.speedKmh * 0.621371).toFixed(1) : result.speedKmh}
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal ml-1">
+                  {isImperial ? 'mph' : 'km/h'}
+                </span>
               </div>
-              <span className="text-[10px] text-slate-500 font-mono">
-                {(result.speedKmh / 1.609).toFixed(1)} mph
+              <span className="text-[10px] text-slate-500 font-mono block mt-0.5">
+                {isImperial ? `${result.speedKmh} km/h` : `${(result.speedKmh * 0.621371).toFixed(1)} mph`}
               </span>
             </div>
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-400 font-medium block">推重比 (W/kg)</span>
-              <div className="text-3xl font-extrabold font-mono text-emerald-400 mt-1">
-                {result.wkg} <span className="text-xs text-slate-400 font-sans font-normal">W/kg</span>
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
+                {language === 'en' ? 'Power / Weight' : language === 'zh-TW' ? '推重比 (W/kg)' : '推重比 (W/kg)'}
+              </span>
+              <div className="text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
+                {result.wkg} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W/kg</span>
               </div>
-              <span className="text-[10px] text-slate-500">
-                {result.power} 瓦实际总输出
+              <span className="text-[10px] text-slate-500 block mt-0.5">
+                {result.power} {language === 'en' ? 'W total mechanical output' : language === 'zh-TW' ? '瓦實際總輸出' : '瓦实际总输出'}
               </span>
             </div>
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-400 font-medium block">人体能耗代谢</span>
-              <div className="text-3xl font-extrabold font-mono text-amber-400 mt-1">
-                {result.kcalPerHour} <span className="text-xs text-slate-400 font-sans font-normal">kcal/h</span>
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
+                {language === 'en' ? 'Metabolic Burn' : language === 'zh-TW' ? '人體能耗代謝' : '人体能耗代谢'}
+              </span>
+              <div className="text-3xl font-extrabold font-mono text-amber-600 dark:text-amber-400 mt-1">
+                {result.kcalPerHour} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">kcal/h</span>
               </div>
-              <span className="text-[10px] text-slate-500">
-                24% 机械效率推算
+              <span className="text-[10px] text-slate-500 block mt-0.5">
+                {language === 'en' ? '24% gross efficiency' : '24% 机械效率推算'}
               </span>
             </div>
           </div>
 
           {/* Coggan Level Badge */}
-          <div className="glass-panel p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div className="glass-panel p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2.5">
-              <Award className="w-5 h-5 text-cyan-400" />
+              <Award className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
               <div>
-                <span className="text-xs text-slate-400 block">车手竞技水平评估 (Coggan Power Profile)</span>
-                <span className="text-sm font-bold text-slate-100">{result.levelTitle}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block">
+                  {language === 'en' ? 'Coggan Power Profile Category' : language === 'zh-TW' ? '車手競技水平評估 (Coggan Power Profile)' : '车手竞技水平评估 (Coggan Power Profile)'}
+                </span>
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{result.levelTitle}</span>
               </div>
             </div>
             <span className={`text-xs px-3 py-1 rounded-full font-mono font-bold border ${result.levelBadgeColor}`}>
@@ -511,75 +576,94 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* VAM Climbing Estimator Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 bg-cyan-950/20 space-y-4">
+          <div className="glass-panel p-5 rounded-2xl border border-cyan-500/20 bg-cyan-500/5 dark:bg-cyan-950/20 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                <Mountain className="w-4 h-4 text-cyan-400" />
-                爬坡性能与 VAM (垂直上升速度) 推算
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+                <Mountain className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                {language === 'en' ? 'Climbing Performance & VAM Estimator' : language === 'zh-TW' ? '爬坡性能與 VAM (垂直上升速度) 推算' : '爬坡性能与 VAM (垂直上升速度) 推算'}
               </h3>
-              <span className="text-xs font-mono text-cyan-300 font-bold">
-                VAM: {result.vam} m/h
+              <span className="text-xs font-mono text-cyan-600 dark:text-cyan-300 font-bold">
+                VAM: {result.vam} m/h {isImperial ? `(${Math.round(result.vam * 3.28084)} ft/h)` : ''}
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 block text-[10px]">爬坡路程</span>
-                <span className="text-slate-200 font-mono font-bold">{climbDistanceKm} km</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                  {language === 'en' ? 'Climb Distance' : language === 'zh-TW' ? '爬坡路程' : '爬坡路程'}
+                </span>
+                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">
+                  {climbDistanceKm} km {isImperial ? `(${(climbDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
+                </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px]">累计爬升</span>
-                <span className="text-slate-200 font-mono font-bold">+{climbElevationGainM} m</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                  {language === 'en' ? 'Elevation Gain' : language === 'zh-TW' ? '累計爬升' : '累计爬升'}
+                </span>
+                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">
+                  +{climbElevationGainM} m {isImperial ? `(+${Math.round(climbElevationGainM * 3.28084)} ft)` : ''}
+                </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px]">平均坡度</span>
-                <span className="text-slate-200 font-mono font-bold">{result.avgClimbGrade}%</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                  {language === 'en' ? 'Average Grade' : language === 'zh-TW' ? '平均坡度' : '平均坡度'}
+                </span>
+                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">{result.avgClimbGrade}%</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px]">预计登顶耗时</span>
-                <span className="text-emerald-400 font-mono font-bold">{result.climbTimeMinutes} 分钟</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                  {language === 'en' ? 'Est. Summit Time' : language === 'zh-TW' ? '預計登頂耗時' : '预计登顶耗时'}
+                </span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                  {result.climbTimeMinutes} {language === 'en' ? 'min' : language === 'zh-TW' ? '分鐘' : '分钟'}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Resistance Breakdown Bar */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
-            <span className="text-xs font-semibold text-slate-300 block">三大物理阻力占比分解</span>
-            <div className="h-3.5 w-full bg-slate-900 rounded-full overflow-hidden flex">
-              <div style={{ width: `${result.aeroPct}%` }} className="bg-cyan-500 h-full transition-all duration-300" title={`风阻: ${result.aeroPct}%`}></div>
-              <div style={{ width: `${result.rollingPct}%` }} className="bg-emerald-500 h-full transition-all duration-300" title={`滚阻: ${result.rollingPct}%`}></div>
-              <div style={{ width: `${result.gravityPct}%` }} className="bg-amber-500 h-full transition-all duration-300" title={`重力阻力: ${result.gravityPct}%`}></div>
+          {/* Resistance Breakdown Bar */}
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+            <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">
+              {language === 'en' ? 'Three Physical Resistance Forces Breakdown' : language === 'zh-TW' ? '三大物理阻力占比分解' : '三大物理阻力占比分解'}
+            </span>
+            <div className="h-3.5 w-full bg-slate-200 dark:bg-slate-900 rounded-full overflow-hidden flex">
+              <div style={{ width: `${result.aeroPct}%` }} className="bg-cyan-500 h-full transition-all duration-300" title={`Aero: ${result.aeroPct}%`}></div>
+              <div style={{ width: `${result.rollingPct}%` }} className="bg-emerald-500 h-full transition-all duration-300" title={`Rolling: ${result.rollingPct}%`}></div>
+              <div style={{ width: `${result.gravityPct}%` }} className="bg-amber-500 h-full transition-all duration-300" title={`Gravity: ${result.gravityPct}%`}></div>
             </div>
 
-            <div className="flex justify-between text-[11px] font-mono text-slate-400">
-              <span className="text-cyan-400 font-bold">💨 风阻 {result.aeroPct}% ({result.fAero}N)</span>
-              <span className="text-emerald-400 font-bold">🚲 滚阻 {result.rollingPct}% ({result.fRolling}N)</span>
-              <span className="text-amber-400 font-bold">⛰️ 重力 {result.gravityPct}% ({result.fGravity}N)</span>
+            <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+              <span className="text-cyan-600 dark:text-cyan-400 font-bold">💨 {language === 'en' ? 'Aero' : language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚲 {language === 'en' ? 'Rolling' : language === 'zh-TW' ? '滾阻' : '滚阻'} {result.rollingPct}% ({result.fRolling}N)</span>
+              <span className="text-amber-600 dark:text-amber-400 font-bold">⛰️ {language === 'en' ? 'Gravity' : language === 'zh-TW' ? '重力' : '重力'} {result.gravityPct}% ({result.fGravity}N)</span>
             </div>
           </div>
 
           {/* Coggan 7-Zone FTP Table */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold text-slate-200">Coggan 7 区间功率训练参考 (FTP: {profile.ftpWatts || 220}W)</span>
+              <span className="text-xs font-bold text-slate-900 dark:text-slate-200">
+                {language === 'en' ? `Coggan 7 Training Zones (FTP: ${profile.ftpWatts || 220}W)` : language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
+              </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
-                  <tr className="border-b border-slate-800 text-slate-400">
-                    <th className="pb-2 font-medium">训练区间</th>
-                    <th className="pb-2 font-medium">FTP 比例</th>
-                    <th className="pb-2 font-medium">目标功率 (W)</th>
-                    <th className="pb-2 font-medium">主要训练效益</th>
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                    <th className="pb-2 font-medium">{language === 'en' ? 'Zone' : language === 'zh-TW' ? '訓練區間' : '训练区间'}</th>
+                    <th className="pb-2 font-medium">{language === 'en' ? '% of FTP' : 'FTP 比例'}</th>
+                    <th className="pb-2 font-medium">{language === 'en' ? 'Target Watts' : language === 'zh-TW' ? '目標功率 (W)' : '目标功率 (W)'}</th>
+                    <th className="pb-2 font-medium">{language === 'en' ? 'Primary Training Benefit' : language === 'zh-TW' ? '主要訓練效益' : '主要训练效益'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 text-slate-300 font-mono">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300 font-mono">
                   {result.ftpZones.map((z, idx) => (
-                    <tr key={idx} className="hover:bg-slate-900/40">
-                      <td className="py-2 font-sans font-semibold text-slate-200">{z.zone}</td>
+                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
+                      <td className="py-2 font-sans font-semibold text-slate-900 dark:text-slate-200">{z.zone}</td>
                       <td>{z.pct}</td>
-                      <td className="text-cyan-400 font-bold">{z.min} - {z.max === 9999 ? 'MAX' : `${z.max} W`}</td>
-                      <td className="font-sans text-slate-400 text-[11px]">{z.desc}</td>
+                      <td className="text-cyan-600 dark:text-cyan-400 font-bold">{z.min} - {z.max === 9999 ? 'MAX' : `${z.max} W`}</td>
+                      <td className="font-sans text-slate-500 dark:text-slate-400 text-[11px]">{z.desc}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -588,21 +672,23 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Interactive Chart Tabs */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-semibold text-slate-300">多维动力学预测曲线</span>
-              <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-300">
+                {language === 'en' ? 'Multidimensional Dynamics Curves' : language === 'zh-TW' ? '多維動力學預測曲線' : '多维动力学预测曲线'}
+              </span>
+              <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
                 <button
                   onClick={() => setChartTab('speed')}
-                  className={`px-3 py-1 rounded-lg transition ${chartTab === 'speed' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400'}`}
+                  className={`px-3 py-1 rounded-lg transition ${chartTab === 'speed' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
                 >
-                  速度-功率
+                  {language === 'en' ? 'Speed vs Power' : language === 'zh-TW' ? '速度-功率' : '速度-功率'}
                 </button>
                 <button
                   onClick={() => setChartTab('weight')}
-                  className={`px-3 py-1 rounded-lg transition ${chartTab === 'weight' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-400'}`}
+                  className={`px-3 py-1 rounded-lg transition ${chartTab === 'weight' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
                 >
-                  体重-功率
+                  {language === 'en' ? 'Weight vs Power' : language === 'zh-TW' ? '體重-功率' : '体重-功率'}
                 </button>
               </div>
             </div>

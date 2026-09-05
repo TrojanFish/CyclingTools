@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, Copy, CheckCircle2, TrendingUp, Upload } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -16,6 +16,7 @@ import {
 import { NumberStepper } from '../common/NumberStepper';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 ChartJS.register(
   CategoryScale,
@@ -39,11 +40,21 @@ interface ClimbSegment {
 
 export const ClimbPacingPlanner: React.FC = () => {
   const { profile } = useRiderProfile();
+  const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
+
+  const isImperial = unitSystem === 'imperial';
 
   const [riderWeight, setRiderWeight] = useState<number>(profile.weightKg || 68);
   const [bikeWeight, setBikeWeight] = useState<number>(profile.bikeWeightKg || 8.5);
   const [ftpWatts, setFtpWatts] = useState<number>(profile.ftpWatts || 240);
+
+  // Reactively synchronize with global rider profile
+  useEffect(() => {
+    if (profile.weightKg) setRiderWeight(profile.weightKg);
+    if (profile.bikeWeightKg) setBikeWeight(profile.bikeWeightKg);
+    if (profile.ftpWatts) setFtpWatts(profile.ftpWatts);
+  }, [profile.weightKg, profile.bikeWeightKg, profile.ftpWatts]);
 
   const [pacingStrategy, setPacingStrategy] = useState<'conservative' | 'balanced' | 'aggressive'>('balanced');
 
@@ -492,39 +503,65 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
         {/* Left Inputs & Segments */}
         <div className="lg:col-span-5 space-y-6">
           {/* Rider Parameters */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-cyan-400" />
-              车手功率与爬坡攻坚策略
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              {language === 'en' ? 'Rider Power & Climbing Strategy' : language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">车手 FTP 阈值功率 (W)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'FTP Threshold' : language === 'zh-TW' ? '車手 FTP 閾值功率' : '车手 FTP 阈值功率'} (W)
+                </label>
                 <NumberStepper value={ftpWatts} onChange={setFtpWatts} step={5} min={100} max={500} unit="W" />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">车手净重 (kg)</label>
-                <NumberStepper value={riderWeight} onChange={setRiderWeight} step={0.5} min={40} max={120} unit="kg" decimals={1} />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
+                </label>
+                <NumberStepper
+                  value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
+                  onChange={(v) => setRiderWeight(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+                  step={isImperial ? 1 : 0.5}
+                  min={isImperial ? 66 : 40}
+                  max={isImperial ? 330 : 120}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
+                />
               </div>
             </div>
 
             {/* Pacing Strategy Buttons */}
             <div>
-              <label className="text-xs font-medium text-slate-300 block mb-2">攀爬攻坚策略激进度</label>
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
+                {language === 'en' ? 'Pacing Aggressiveness' : language === 'zh-TW' ? '攀爬攻堅策略激進度' : '攀爬攻坚策略激进度'}
+              </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'conservative', label: '稳妥完赛', desc: '88% FTP (长距离)' },
-                  { id: 'balanced', label: '均衡均速', desc: '96% FTP (甜点攻坚)' },
-                  { id: 'aggressive', label: '极限刷PR', desc: '105% FTP (短陡坡)' },
+                  {
+                    id: 'conservative',
+                    label: language === 'en' ? 'Conservative' : language === 'zh-TW' ? '穩妥完賽' : '稳妥完赛',
+                    desc: '88% FTP'
+                  },
+                  {
+                    id: 'balanced',
+                    label: language === 'en' ? 'Balanced' : language === 'zh-TW' ? '均衡均速' : '均衡均速',
+                    desc: '96% FTP'
+                  },
+                  {
+                    id: 'aggressive',
+                    label: language === 'en' ? 'Aggressive' : language === 'zh-TW' ? '極限刷PR' : '极限刷PR',
+                    desc: '105% FTP'
+                  },
                 ].map((s) => (
                   <button
                     key={s.id}
                     onClick={() => setPacingStrategy(s.id as any)}
                     className={`p-2.5 rounded-xl border text-center transition ${
                       pacingStrategy === s.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400 font-semibold'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
+                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     <div className="text-xs font-semibold">{s.label}</div>
@@ -536,24 +573,24 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </div>
 
           {/* Segments Editor */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-                <Mountain className="w-4 h-4 text-cyan-400" />
-                爬坡路段分段拆解 ({segments.length} 个分段)
+              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+                <Mountain className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+                {language === 'en' ? `Route Breakdown (${segments.length} segments)` : language === 'zh-TW' ? `爬坡路段分段拆解 (${segments.length} 個分段)` : `爬坡路段分段拆解 (${segments.length} 个分段)`}
               </h2>
               <button
                 onClick={addSegment}
-                className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
+                className="flex items-center gap-1 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 font-semibold"
               >
                 <Plus className="w-3.5 h-3.5" />
-                添加分段
+                {language === 'en' ? 'Add Segment' : language === 'zh-TW' ? '添加分段' : '添加分段'}
               </button>
             </div>
 
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
               {segments.map((seg, idx) => (
-                <div key={seg.id} className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2.5">
+                <div key={seg.id} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2.5">
                   <div className="flex justify-between items-center">
                     <input
                       type="text"
@@ -563,12 +600,12 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                         copy[idx].name = e.target.value;
                         setSegments(copy);
                       }}
-                      className="text-xs font-bold text-slate-200 bg-transparent focus:outline-none focus:text-cyan-400 flex-1 mr-2"
+                      className="text-xs font-bold text-slate-900 dark:text-slate-200 bg-transparent focus:outline-none focus:text-cyan-500 flex-1 mr-2"
                     />
                     {segments.length > 1 && (
                       <button
                         onClick={() => removeSegment(seg.id)}
-                        className="text-slate-500 hover:text-rose-400 transition"
+                        className="text-slate-400 hover:text-rose-500 transition"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -577,7 +614,9 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <span className="text-[10px] text-slate-400 block mb-1">分段长度 (km)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
+                        {language === 'en' ? 'Distance' : language === 'zh-TW' ? '分段長度' : '分段长度'} (km) {isImperial ? `(${(seg.distanceKm * 0.621371).toFixed(1)} mi)` : ''}
+                      </span>
                       <NumberStepper
                         value={seg.distanceKm}
                         onChange={(v) => {
@@ -593,7 +632,9 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 block mb-1">平均坡度 (%)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
+                        {language === 'en' ? 'Avg Gradient' : language === 'zh-TW' ? '平均坡度' : '平均坡度'} (%)
+                      </span>
                       <NumberStepper
                         value={seg.gradePct}
                         onChange={(v) => {
@@ -619,55 +660,65 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
         <div className="lg:col-span-7 space-y-6">
           {/* High Level Climb Blueprint Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">预计登顶总耗时</span>
-              <div className="text-xl font-bold font-mono text-cyan-400 mt-1">
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
+                {language === 'en' ? 'Estimated Total Time' : language === 'zh-TW' ? '預計登頂總耗時' : '预计登顶总耗时'}
+              </span>
+              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                 {planResults.overallTimeStr}
               </div>
               <span className="text-[10px] text-slate-500">
-                全程 {planResults.totalDistanceKm} km
+                {language === 'en' ? 'Total' : '全程'} {planResults.totalDistanceKm} km {isImperial ? `(${(planResults.totalDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
               </span>
             </div>
 
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">建议全程平均功率</span>
-              <div className="text-xl font-bold font-mono text-emerald-400 mt-1">
-                {planResults.avgWatts} <span className="text-xs text-slate-400 font-sans font-normal">W</span>
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
+                {language === 'en' ? 'Avg Target Power' : language === 'zh-TW' ? '建議全程平均功率' : '建议全程平均功率'}
+              </span>
+              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
+                {planResults.avgWatts} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                推重比: {planResults.avgWkg} W/kg
+                {language === 'en' ? 'Ratio' : '推重比'}: {planResults.avgWkg} W/kg
               </span>
             </div>
 
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">累计爬升 / 均坡</span>
-              <div className="text-xl font-bold font-mono text-amber-400 mt-1">
-                +{planResults.totalElevationM} <span className="text-xs text-slate-400 font-sans font-normal">m</span>
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
+                {language === 'en' ? 'Elevation / Grade' : language === 'zh-TW' ? '累計爬升 / 均坡' : '累计爬升 / 均坡'}
+              </span>
+              <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
+                +{planResults.totalElevationM} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                平均坡度: {planResults.avgGrade}%
+                {isImperial ? `+${Math.round(planResults.totalElevationM * 3.28084)} ft | ` : ''}{language === 'en' ? 'Avg' : '平均'}: {planResults.avgGrade}%
               </span>
             </div>
 
-            <div className="glass-card p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-xs font-medium block">平均垂直上升 VAM</span>
-              <div className="text-xl font-bold font-mono text-purple-400 mt-1">
-                {planResults.overallVam} <span className="text-xs text-slate-400 font-sans font-normal">m/h</span>
+            <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
+                {language === 'en' ? 'Average VAM' : language === 'zh-TW' ? '平均垂直上升 VAM' : '平均垂直上升 VAM'}
+              </span>
+              <div className="text-xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1">
+                {planResults.overallVam} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m/h</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                垂直爬升速度
+                {isImperial ? `${Math.round(planResults.overallVam * 3.28084)} ft/h` : (language === 'en' ? 'Climbing speed' : '垂直爬升速度')}
               </span>
             </div>
           </div>
 
           {/* Visual Chart: Elevation Profile & Target Watts */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
-                各分段坡度与目标配速功率阶梯曲线
+              <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+                {language === 'en' ? 'Gradient & Power Pacing Step Chart' : language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
               </span>
-              <span className="text-slate-500 text-[10px]">*双坐标轴动态拟合</span>
+              <span className="text-slate-400 dark:text-slate-500 text-[10px]">
+                {language === 'en' ? '*Dual axis dynamic fit' : '*双坐标轴动态拟合'}
+              </span>
             </div>
 
             <div className="h-56">
@@ -699,31 +750,36 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </div>
 
           {/* Segment Details Table */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
-            <h3 className="text-xs font-bold text-slate-200">
-              各路段功率执行方案与预计耗时明细表
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+            <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200">
+              {language === 'en' ? 'Pacing Execution & Segment Splits Blueprint' : language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
-                  <tr className="border-b border-slate-800 text-slate-400">
-                    <th className="pb-2">分段名</th>
-                    <th className="pb-2">距离 / 坡度</th>
-                    <th className="pb-2">建议功率 (W)</th>
-                    <th className="pb-2">推重比 / FTP%</th>
-                    <th className="pb-2">预估耗时</th>
-                    <th className="pb-2">预估 VAM</th>
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                    <th className="pb-2">{language === 'en' ? 'Segment' : language === 'zh-TW' ? '分段名' : '分段名'}</th>
+                    <th className="pb-2">{language === 'en' ? 'Dist / Grade' : language === 'zh-TW' ? '距離 / 坡度' : '距离 / 坡度'}</th>
+                    <th className="pb-2">{language === 'en' ? 'Target Watts' : language === 'zh-TW' ? '建議功率' : '建议功率'}</th>
+                    <th className="pb-2">{language === 'en' ? 'W/kg (FTP%)' : '推重比 / FTP%'}</th>
+                    <th className="pb-2">{language === 'en' ? 'Est. Time' : language === 'zh-TW' ? '預估耗時' : '预估耗时'}</th>
+                    <th className="pb-2">{language === 'en' ? 'Est. VAM' : '预估 VAM'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 font-mono text-slate-300">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono text-slate-700 dark:text-slate-300">
                   {planResults.segmentOutputs.map((s, idx) => (
-                    <tr key={idx} className="hover:bg-slate-900/50">
-                      <td className="py-2.5 font-sans font-semibold text-slate-200">{s.name}</td>
-                      <td>{s.distanceKm}km / <span className="text-amber-400 font-bold">{s.gradePct}%</span></td>
-                      <td className="text-cyan-400 font-bold">{s.targetWatts} W</td>
+                    <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                      <td className="py-2.5 font-sans font-semibold text-slate-900 dark:text-slate-200">{s.name}</td>
+                      <td>
+                        {s.distanceKm}km {isImperial ? `(${(s.distanceKm * 0.621371).toFixed(1)}mi)` : ''} /{' '}
+                        <span className="text-amber-600 dark:text-amber-400 font-bold">{s.gradePct}%</span>
+                      </td>
+                      <td className="text-cyan-600 dark:text-cyan-400 font-bold">{s.targetWatts} W</td>
                       <td>{s.targetWkg} W/kg ({s.targetFtpPct}%)</td>
-                      <td className="text-emerald-400 font-semibold">{s.timeStr}</td>
-                      <td className="text-purple-400">{s.vam} m/h</td>
+                      <td className="text-emerald-600 dark:text-emerald-400 font-semibold">{s.timeStr}</td>
+                      <td className="text-purple-600 dark:text-purple-400">
+                        {s.vam} m/h {isImperial ? `(${Math.round(s.vam * 3.28084)} ft/h)` : ''}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

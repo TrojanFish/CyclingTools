@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Copy, Info, Upload, FileText, Check, X, FileSpreadsheet } from 'lucide-react';
 import { Radar } from 'react-chartjs-2';
 import {
@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import { NumberStepper } from '../common/NumberStepper';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 
 ChartJS.register(
@@ -25,10 +26,18 @@ ChartJS.register(
 
 export const PowerProfileRadar: React.FC = () => {
   const { profile } = useRiderProfile();
+  const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
+  const isImperial = unitSystem === 'imperial';
 
   const [weightKg, setWeightKg] = useState<number>(profile.weightKg || 68);
   const [ftpWatts, setFtpWatts] = useState<number>(profile.ftpWatts || 240);
+
+  // Reactively synchronize with global rider profile
+  useEffect(() => {
+    if (profile.weightKg) setWeightKg(profile.weightKg);
+    if (profile.ftpWatts) setFtpWatts(profile.ftpWatts);
+  }, [profile.weightKg, profile.ftpWatts]);
 
   // Peak Power Durations
   const [p5s, setP5s] = useState<number>(950);
@@ -443,46 +452,74 @@ export const PowerProfileRadar: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-cyan-400" />
-              车手巅峰功率数据 (Peak Power)
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              {language === 'en' ? 'Rider Peak Power Profile' : language === 'zh-TW' ? '車手巔峰功率數據 (Peak Power)' : '车手巅峰功率数据 (Peak Power)'}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">车手净重 (kg)</label>
-                <NumberStepper value={weightKg} onChange={setWeightKg} step={0.5} min={40} max={120} unit="kg" decimals={1} />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
+                </label>
+                <NumberStepper
+                  value={isImperial ? parseFloat((weightKg * 2.20462).toFixed(1)) : weightKg}
+                  onChange={(v) => setWeightKg(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+                  step={isImperial ? 1 : 0.5}
+                  min={isImperial ? 66 : 40}
+                  max={isImperial ? 330 : 120}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
+                />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">FTP 阈值功率 (W)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'FTP Threshold' : language === 'zh-TW' ? 'FTP 閾值功率' : 'FTP 阈值功率'} (W)
+                </label>
                 <NumberStepper value={ftpWatts} onChange={setFtpWatts} step={5} min={100} max={500} unit="W" />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">5秒 冲刺峰值 (W)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? '5s Neuromuscular Peak' : language === 'zh-TW' ? '5秒 衝刺峰值' : '5秒 冲刺峰值'} (W)
+                </label>
                 <NumberStepper value={p5s} onChange={setP5s} step={20} min={300} max={2200} unit="W" />
-                <span className="text-[10px] text-cyan-400 font-mono block mt-1">推重比: {analytics.w5s} W/kg</span>
+                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                  {language === 'en' ? 'W/kg' : '推重比'}: {analytics.w5s} W/kg
+                </span>
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">1分钟 无氧峰值 (W)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? '1m Anaerobic Capacity' : language === 'zh-TW' ? '1分鐘 無氧峰值' : '1分钟 无氧峰值'} (W)
+                </label>
                 <NumberStepper value={p1m} onChange={setP1m} step={10} min={200} max={1200} unit="W" />
-                <span className="text-[10px] text-cyan-400 font-mono block mt-1">推重比: {analytics.w1m} W/kg</span>
+                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                  {language === 'en' ? 'W/kg' : '推重比'}: {analytics.w1m} W/kg
+                </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">5分钟 VO2 Max (W)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? '5m VO2 Max Aerobic' : language === 'zh-TW' ? '5分鐘 VO2 Max' : '5分钟 VO2 Max'} (W)
+                </label>
                 <NumberStepper value={p5m} onChange={setP5m} step={5} min={150} max={700} unit="W" />
-                <span className="text-[10px] text-cyan-400 font-mono block mt-1">推重比: {analytics.w5m} W/kg</span>
+                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                  {language === 'en' ? 'W/kg' : '推重比'}: {analytics.w5m} W/kg
+                </span>
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">20分钟 阈值测试 (W)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? '20m Threshold' : language === 'zh-TW' ? '20分鐘 閾值測試' : '20分钟 阈值测试'} (W)
+                </label>
                 <NumberStepper value={p20m} onChange={setP20m} step={5} min={120} max={600} unit="W" />
-                <span className="text-[10px] text-cyan-400 font-mono block mt-1">推重比: {analytics.w20m} W/kg</span>
+                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono block mt-1">
+                  {language === 'en' ? 'W/kg' : '推重比'}: {analytics.w20m} W/kg
+                </span>
               </div>
             </div>
           </div>

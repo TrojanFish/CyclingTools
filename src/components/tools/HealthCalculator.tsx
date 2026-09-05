@@ -1,10 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { HeartPulse, Flame, Activity, User, Scale, Shield, Sparkles, Droplet, Apple, Heart } from 'lucide-react';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { NumberStepper } from '../common/NumberStepper';
 
 export const HealthCalculator: React.FC = () => {
   const { profile } = useRiderProfile();
+  const { unitSystem, language } = useLanguageAndUnit();
+  const isImperial = unitSystem === 'imperial';
+
   const [activeTab, setActiveTab] = useState<'fueling' | 'hr_zones' | 'bmr' | 'bmi' | 'bfp'>('fueling');
 
   // Universal Inputs (Linked with Rider Profile)
@@ -17,6 +21,16 @@ export const HealthCalculator: React.FC = () => {
   // Heart Rate Inputs
   const [restingHr, setRestingHr] = useState<number>(profile.restingHr || 58);
   const [maxHr, setMaxHr] = useState<number>(profile.maxHr || 190);
+
+  // Reactively synchronize with global rider profile
+  useEffect(() => {
+    if (profile.heightCm) setHeightCm(profile.heightCm);
+    if (profile.weightKg) setWeightKg(profile.weightKg);
+    if (profile.age) setAge(profile.age);
+    if (profile.gender) setGender(profile.gender);
+    if (profile.restingHr) setRestingHr(profile.restingHr);
+    if (profile.maxHr) setMaxHr(profile.maxHr);
+  }, [profile.heightCm, profile.weightKg, profile.age, profile.gender, profile.restingHr, profile.maxHr]);
 
   // In-ride Fueling Inputs
   const [rideDurationHours, setRideDurationHours] = useState<number>(3.0);
@@ -238,72 +252,105 @@ export const HealthCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-              <User className="w-4 h-4 text-cyan-400" />
-              个人身体与心率数据 (自动同步车手档案)
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+              <User className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              {language === 'en' ? 'Personal Biometrics & HR (Synced with Rider Profile)' : language === 'zh-TW' ? '個人身體與心率數據 (自動同步車手檔案)' : '个人身体与心率数据 (自动同步车手档案)'}
             </h2>
 
             {/* Gender & Age */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1">生理性别</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  {language === 'en' ? 'Gender' : language === 'zh-TW' ? '生理性別' : '生理性别'}
+                </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setGender('male')}
                     className={`py-2 rounded-xl border text-xs font-medium transition ${
-                      gender === 'male' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400 font-semibold' : 'bg-slate-900 border-slate-800 text-slate-400'
+                      gender === 'male'
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    男 (Male)
+                    {language === 'en' ? 'Male' : language === 'zh-TW' ? '男 (Male)' : '男 (Male)'}
                   </button>
                   <button
                     onClick={() => setGender('female')}
                     className={`py-2 rounded-xl border text-xs font-medium transition ${
-                      gender === 'female' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400 font-semibold' : 'bg-slate-900 border-slate-800 text-slate-400'
+                      gender === 'female'
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    女 (Female)
+                    {language === 'en' ? 'Female' : language === 'zh-TW' ? '女 (Female)' : '女 (Female)'}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">年龄 (Age)</label>
-                <NumberStepper value={age} onChange={setAge} min={10} max={100} unit="岁" />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Age' : language === 'zh-TW' ? '年齡' : '年龄'}
+                </label>
+                <NumberStepper value={age} onChange={setAge} min={10} max={100} unit={language === 'en' ? 'yrs' : '岁'} />
               </div>
             </div>
 
             {/* Height & Weight */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">身高 (cm)</label>
+                <div className="flex justify-between items-center mb-1.5">
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    {language === 'en' ? 'Height' : language === 'zh-TW' ? '身高' : '身高'} (cm)
+                  </label>
+                  {isImperial && (
+                    <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-medium">
+                      {Math.floor(heightCm / 30.48)}'{Math.round((heightCm % 30.48) / 2.54)}"
+                    </span>
+                  )}
+                </div>
                 <NumberStepper value={heightCm} onChange={setHeightCm} step={0.5} min={120} max={220} unit="cm" decimals={1} />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">体重 (kg)</label>
-                <NumberStepper value={weightKg} onChange={setWeightKg} step={0.5} min={30} max={150} unit="kg" decimals={1} />
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Weight' : language === 'zh-TW' ? '體重' : '体重'} ({isImperial ? 'lbs' : 'kg'})
+                </label>
+                <NumberStepper
+                  value={isImperial ? parseFloat((weightKg * 2.20462).toFixed(1)) : weightKg}
+                  onChange={(v) => setWeightKg(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+                  step={isImperial ? 1 : 0.5}
+                  min={isImperial ? 66 : 30}
+                  max={isImperial ? 330 : 150}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
+                />
               </div>
             </div>
 
             {/* Heart Rate Inputs */}
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">静息心率 (Rest HR)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Resting HR' : language === 'zh-TW' ? '靜息心率' : '静息心率'} (bpm)
+                </label>
                 <NumberStepper value={restingHr} onChange={setRestingHr} min={35} max={100} unit="bpm" />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">最大心率 (Max HR)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                  {language === 'en' ? 'Max HR' : language === 'zh-TW' ? '最大心率' : '最大心率'} (bpm)
+                </label>
                 <NumberStepper value={maxHr} onChange={setMaxHr} min={140} max={230} unit="bpm" />
               </div>
             </div>
 
             {/* Activity Level */}
             <div>
-              <label className="text-xs font-medium text-slate-300 block mb-2">每周运动活动强度 (Activity Level)</label>
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
+                {language === 'en' ? 'Weekly Physical Activity Factor' : language === 'zh-TW' ? '每週運動活動強度' : '每周运动活动强度'}
+              </label>
               <select
                 value={activityFactor}
                 onChange={(e) => setActivityFactor(parseFloat(e.target.value))}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-cyan-500"
               >
                 <option value={1.2}>久坐不动 (办公室办公，极少运动) × 1.2</option>
                 <option value={1.375}>轻度活跃 (每周轻度骑行 1-3 天) × 1.375</option>

@@ -4,9 +4,12 @@ import { Line } from 'react-chartjs-2';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { useToast } from '../../context/ToastContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 export const GearSpeedCadenceCalculator: React.FC = () => {
   const { showToast } = useToast();
+  const { unitSystem } = useLanguageAndUnit();
+  const isImperial = unitSystem === 'imperial';
 
   const [chainringType, setChainringType] = useState<'double' | 'single'>('double');
   const [bigRing, setBigRing] = useState<number>(50);
@@ -115,10 +118,13 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     const ring = bigRing;
     return cogsList.map(cog => {
       const ratio = ring / cog;
-      const speeds = cadences.map(cad => parseFloat(((ratio * cad * tireCircumferenceMm * 60) / 1000000).toFixed(1)));
+      const speeds = cadences.map(cad => {
+        const kmh = (ratio * cad * tireCircumferenceMm * 60) / 1000000;
+        return parseFloat((isImperial ? kmh * 0.621371 : kmh).toFixed(1));
+      });
       return { cog, ratio: ratio.toFixed(2), speeds };
     });
-  }, [bigRing, cogsList, tireCircumferenceMm]);
+  }, [bigRing, cogsList, tireCircumferenceMm, isImperial]);
 
   // Chart data for Speed vs Cadence
   const chartData = useMemo(() => {
@@ -128,7 +134,8 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     const climbingCog = cogsList[cogsList.length - 1] || 34;
 
     const calcSpeed = (ring: number, cog: number, cad: number) => {
-      return parseFloat(((ring / cog * cad * tireCircumferenceMm * 60) / 1000000).toFixed(1));
+      const kmh = (ring / cog * cad * tireCircumferenceMm * 60) / 1000000;
+      return parseFloat((isImperial ? kmh * 0.621371 : kmh).toFixed(1));
     };
 
     return {
@@ -157,10 +164,15 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         }
       ]
     };
-  }, [bigRing, smallRing, chainringType, cogsList, tireCircumferenceMm]);
+  }, [bigRing, smallRing, chainringType, cogsList, tireCircumferenceMm, isImperial]);
 
   const copyGearMatrix = () => {
-    const text = `🚴 齿比计算报告 (${chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`} + ${cogsStr} @ ${cadenceRpm} RPM):\n- 最大极速: ${speedMatrix[0]?.row[0]?.speedKmh} km/h (齿比: ${speedMatrix[0]?.row[0]?.ratio})\n- 最小爬坡: ${speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.speedKmh} km/h (齿比: ${speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio})`;
+    const unitStr = isImperial ? 'mph' : 'km/h';
+    const maxKmh = speedMatrix[0]?.row[0]?.speedKmh || 0;
+    const maxSpd = isImperial ? (maxKmh * 0.621371).toFixed(1) : maxKmh;
+    const minKmh = speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.speedKmh || 0;
+    const minSpd = isImperial ? (minKmh * 0.621371).toFixed(1) : minKmh;
+    const text = `🚴 齿比计算报告 (${chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`} + ${cogsStr} @ ${cadenceRpm} RPM):\n- 最大极速: ${maxSpd} ${unitStr} (齿比: ${speedMatrix[0]?.row[0]?.ratio})\n- 最小爬坡: ${minSpd} ${unitStr} (齿比: ${speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio})`;
     navigator.clipboard.writeText(text);
     showToast('齿比与速度矩阵报告已复制到剪贴板！', 'success');
   };
@@ -258,12 +270,12 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         {/* Inputs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5">牙盘制式</label>
+            <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">牙盘制式</label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setChainringType('double')}
                 className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  chainringType === 'double' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-400'
+                  chainringType === 'double' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                 }`}
               >
                 双盘 (2x)
@@ -271,7 +283,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               <button
                 onClick={() => setChainringType('single')}
                 className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  chainringType === 'single' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-400'
+                  chainringType === 'single' ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                 }`}
               >
                 单盘 (1x)
@@ -280,7 +292,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5">
+            <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
               {chainringType === 'double' ? '大盘 / 小盘齿数' : '单盘齿数 (T)'}
             </label>
             {chainringType === 'double' ? (
@@ -294,17 +306,17 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5">飞轮齿数片组合</label>
+            <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮齿数片组合</label>
             <input
               type="text"
               value={cogsStr}
               onChange={(e) => setCogsStr(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-cyan-400 font-mono focus:border-cyan-500 focus:outline-none"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-cyan-600 dark:text-cyan-400 font-mono focus:border-cyan-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-300 block mb-1.5">目标基准踏频 (RPM)</label>
+            <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">目标基准踏频 (RPM)</label>
             <NumberStepper
               value={cadenceRpm}
               onChange={setCadenceRpm}
@@ -317,16 +329,16 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         </div>
 
         {/* Tire preset picker */}
-        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-800/80">
-          <span className="text-xs text-slate-400">外胎周长规格:</span>
+        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-800/80">
+          <span className="text-xs text-slate-500 dark:text-slate-400">外胎周长规格:</span>
           {TIRE_PRESETS.map((p) => (
             <button
               key={p.value}
               onClick={() => setTireCircumferenceMm(p.value)}
               className={`px-2.5 py-1 rounded-lg text-xs font-mono transition ${
                 tireCircumferenceMm === p.value
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold'
-                  : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 font-semibold'
+                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800'
               }`}
             >
               {p.label}
@@ -336,7 +348,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       </div>
 
       {/* Step % Difference Analysis */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 bg-slate-900/60 space-y-2">
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 space-y-2">
         <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block flex items-center gap-1.5">
           <ArrowUpDown className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
           相邻档位齿比变动阶梯 (Gear Step % Jump)
@@ -361,7 +373,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
             <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
-              在 {cadenceRpm} RPM 踏频下的全档位速度 (km/h) 与前进米数 (m) 矩阵
+              在 {cadenceRpm} RPM 踏频下的全档位速度 ({isImperial ? 'mph' : 'km/h'}) 与前进距离 ({isImperial ? 'gear in' : 'm'}) 矩阵
             </span>
             <div className="flex items-center gap-2 text-[11px]">
               <span className="text-cyan-600 dark:text-cyan-400 sm:hidden font-medium">↔ 可横向滑动查看</span>
@@ -395,10 +407,14 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                             ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/30 font-bold'
                             : 'text-slate-800 dark:text-slate-200'
                         }`}
-                        title={cell.crossType || `齿比 ${cell.ratio} | 单脚前进 ${cell.devMeters}m`}
+                        title={cell.crossType || `齿比 ${cell.ratio} | 前进 ${isImperial ? `${cell.gearInches}"` : `${cell.devMeters}m`}`}
                       >
-                        <div className="text-sm font-bold">{cell.speedKmh}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400/80">{cell.ratio} / {cell.devMeters}m</div>
+                        <div className="text-sm font-bold">
+                          {isImperial ? (cell.speedKmh * 0.621371).toFixed(1) : cell.speedKmh}
+                        </div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400/80">
+                          {cell.ratio} / {isImperial ? `${cell.gearInches}"` : `${cell.devMeters}m`}
+                        </div>
                       </td>
                     ))}
                   </tr>
@@ -414,7 +430,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
             <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
-              大盘 {bigRing}T 在不同踏频 (70 ~ 110 RPM) 下的速度对照 (km/h)
+              大盘 {bigRing}T 在不同踏频 (70 ~ 110 RPM) 下的速度对照 ({isImperial ? 'mph' : 'km/h'})
             </span>
             <span className="text-[11px] text-cyan-600 dark:text-cyan-400 sm:hidden font-medium">↔ 可横向滑动查看</span>
           </div>
@@ -434,13 +450,13 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 font-mono">
                 {multiCadenceData.map((row, idx) => (
                   <tr key={idx} className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition">
-                    <td className="p-2.5 text-left font-bold text-slate-200 font-sans">{bigRing}x{row.cog}T</td>
-                    <td className="p-2.5 text-slate-400">{row.ratio}</td>
-                    <td className="p-2.5">{row.speeds[0]}</td>
-                    <td className="p-2.5">{row.speeds[1]}</td>
-                    <td className="p-2.5 font-bold text-cyan-400 bg-cyan-500/5">{row.speeds[2]}</td>
-                    <td className="p-2.5">{row.speeds[3]}</td>
-                    <td className="p-2.5 text-emerald-400 font-semibold">{row.speeds[4]}</td>
+                    <td className="p-2.5 text-left font-bold text-slate-800 dark:text-slate-200 font-sans">{bigRing}x{row.cog}T</td>
+                    <td className="p-2.5 text-slate-500 dark:text-slate-400">{row.ratio}</td>
+                    <td className="p-2.5 text-slate-800 dark:text-slate-200">{row.speeds[0]}</td>
+                    <td className="p-2.5 text-slate-800 dark:text-slate-200">{row.speeds[1]}</td>
+                    <td className="p-2.5 font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/5">{row.speeds[2]}</td>
+                    <td className="p-2.5 text-slate-800 dark:text-slate-200">{row.speeds[3]}</td>
+                    <td className="p-2.5 text-emerald-600 dark:text-emerald-400 font-semibold">{row.speeds[4]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -451,8 +467,8 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* TAB 3: Speed vs Cadence Visual Chart */}
       {activeTab === 'chart' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
-          <span className="text-xs font-semibold text-slate-200 block">
+        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
             高速档、中盘巡航与爬坡极限档 踏频-车速线性曲线
           </span>
           <div className="h-64">
@@ -472,7 +488,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                 },
                 scales: {
                   x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                  y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: '速度 (km/h)' } }
+                  y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: `速度 (${isImperial ? 'mph' : 'km/h'})` } }
                 }
               }}
             />
