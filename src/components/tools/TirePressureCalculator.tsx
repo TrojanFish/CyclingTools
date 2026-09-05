@@ -186,10 +186,10 @@ export const TirePressureCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                    {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨體重' : '车手净体重'}
+                    {language === 'zh-TW' ? '車手淨體重' : '车手净体重'}
                     {profile.weightKg ? (
                       <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-normal">
-                        {language === 'en' ? 'Synced' : '已同步档案'}
+                        {language === 'zh-TW' ? '已同步檔案' : '已同步档案'}
                       </span>
                     ) : null}
                   </label>
@@ -211,7 +211,7 @@ export const TirePressureCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {language === 'en' ? 'Bike + Gear' : language === 'zh-TW' ? '車重 + 裝備水壺' : '车重 + 装备水壶'}
+                    {language === 'zh-TW' ? '車重 + 裝備水壺' : '车重 + 装备水壶'}
                   </label>
                   <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
                     {isImperial ? `${(bikeGearWeight * 2.20462).toFixed(1)} lbs` : `${bikeGearWeight} kg`}

@@ -167,7 +167,7 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <User className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              {language === 'en' ? 'Core Biometric Measurements' : language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
+              {language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
             </h2>
 
             {/* Height & Inseam */}
@@ -175,7 +175,7 @@ export const RoadBikeFitter: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {language === 'en' ? 'Height' : language === 'zh-TW' ? '身高' : '身高'} (cm)
+                    {language === 'zh-TW' ? '身高' : '身高'} (cm)
                   </label>
                   {isImperial && (
                     <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-medium">
@@ -188,7 +188,7 @@ export const RoadBikeFitter: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center">
-                    {language === 'en' ? 'Inseam' : language === 'zh-TW' ? '跨高' : '跨高'} (cm)
+                    {language === 'zh-TW' ? '跨高' : '跨高'} (cm)
                     <Tooltip content="赤脚靠墙站立，双脚间距15cm，用硬皮书夹紧会阴部测量地面到书顶垂直距离。" />
                   </label>
                   {isImperial && (
@@ -205,13 +205,13 @@ export const RoadBikeFitter: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Torso' : language === 'zh-TW' ? '軀幹長' : '躯干长'} (cm)
+                  {language === 'zh-TW' ? '軀幹長' : '躯干长'} (cm)
                 </label>
                 <NumberStepper value={torso} onChange={setTorso} step={0.5} min={40} max={85} unit="cm" decimals={1} />
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Arm Length' : language === 'zh-TW' ? '臂長' : '臂长'} (cm)
+                  {language === 'zh-TW' ? '臂長' : '臂长'} (cm)
                 </label>
                 <NumberStepper value={armLength} onChange={setArmLength} step={0.5} min={45} max={90} unit="cm" decimals={1} />
               </div>
@@ -220,7 +220,7 @@ export const RoadBikeFitter: React.FC = () => {
             {/* Shoulder Width */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                {language === 'en' ? 'Shoulder Width' : language === 'zh-TW' ? '肩寬' : '肩宽'} (cm)
+                {language === 'zh-TW' ? '肩寬' : '肩宽'} (cm)
               </label>
               <NumberStepper value={shoulderWidth} onChange={setShoulderWidth} step={0.5} min={34} max={50} unit="cm" decimals={1} />
             </div>
@@ -228,24 +228,24 @@ export const RoadBikeFitter: React.FC = () => {
             {/* Riding Style */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
-                {language === 'en' ? 'Riding Objective Preference' : language === 'zh-TW' ? '騎行目標偏好' : '骑行目标偏好'}
+                {language === 'zh-TW' ? '騎行目標偏好' : '骑行目标偏好'}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   {
                     id: 'recreational',
-                    label: language === 'en' ? 'Recreational' : language === 'zh-TW' ? '休閒騎遊' : '休闲骑游',
-                    desc: language === 'en' ? 'Comfort upright' : '舒适直立'
+                    label: language === 'zh-TW' ? '休閒騎遊' : '休闲骑游',
+                    desc: '舒适直立'
                   },
                   {
                     id: 'endurance',
-                    label: language === 'en' ? 'Endurance' : language === 'zh-TW' ? '長途耐力' : '长途耐力',
-                    desc: language === 'en' ? 'Balanced' : '均衡适中'
+                    label: language === 'zh-TW' ? '長途耐力' : '长途耐力',
+                    desc: '均衡适中'
                   },
                   {
                     id: 'racing',
-                    label: language === 'en' ? 'Racing' : language === 'zh-TW' ? '競技突圍' : '竞技突围',
-                    desc: language === 'en' ? 'Aero aggressive' : '破风激进'
+                    label: language === 'zh-TW' ? '競技突圍' : '竞技突围',
+                    desc: '破风激进'
                   },
                 ].map((s) => (
                   <button
@@ -267,13 +267,13 @@ export const RoadBikeFitter: React.FC = () => {
             {/* Flexibility */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
-                {language === 'en' ? 'Body Flexibility' : language === 'zh-TW' ? '身體柔韌度' : '身体柔韧度'}
+                {language === 'zh-TW' ? '身體柔韌度' : '身体柔韧度'}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'low', label: language === 'en' ? 'Low' : language === 'zh-TW' ? '較低' : '较低 (指触不到地)' },
-                  { id: 'medium', label: language === 'en' ? 'Medium' : language === 'zh-TW' ? '正常' : '正常 (指尖触地)' },
-                  { id: 'high', label: language === 'en' ? 'High' : language === 'zh-TW' ? '極佳' : '极佳 (手掌触地)' }
+                  { id: 'low', label: language === 'zh-TW' ? '較低' : '较低 (指触不到地)' },
+                  { id: 'medium', label: language === 'zh-TW' ? '正常' : '正常 (指尖触地)' },
+                  { id: 'high', label: language === 'zh-TW' ? '極佳' : '极佳 (手掌触地)' }
                 ].map((f) => (
                   <button
                     key={f.id}
@@ -298,7 +298,7 @@ export const RoadBikeFitter: React.FC = () => {
               >
                 <span className="flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-                  {language === 'en' ? 'Advanced Body Proportions (Sitting height, Thigh, Foot)' : language === 'zh-TW' ? '進階身體比例測量（坐高、大腿、小腿）' : '进阶身体比例测量（坐高、大腿、小腿）'}
+                  {language === 'zh-TW' ? '進階身體比例測量（坐高、大腿、小腿）' : '进阶身体比例测量（坐高、大腿、小腿）'}
                 </span>
                 <span className="text-cyan-600 dark:text-cyan-400 font-mono text-[11px]">{showAdvancedInputs ? '▲' : '▼'}</span>
               </button>
@@ -307,25 +307,25 @@ export const RoadBikeFitter: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3 mt-3 animate-in fade-in duration-200">
                   <div>
                     <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                      {language === 'en' ? 'Sitting Height' : language === 'zh-TW' ? '坐高' : '坐高'} (cm)
+                      {language === 'zh-TW' ? '坐高' : '坐高'} (cm)
                     </label>
                     <NumberStepper value={sittingHeight} onChange={setSittingHeight} min={70} max={115} unit="cm" />
                   </div>
                   <div>
                     <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                      {language === 'en' ? 'Thigh Length' : language === 'zh-TW' ? '大腿長' : '大腿长'} (cm)
+                      {language === 'zh-TW' ? '大腿長' : '大腿长'} (cm)
                     </label>
                     <NumberStepper value={thighLength} onChange={setThighLength} min={30} max={65} unit="cm" />
                   </div>
                   <div>
                     <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                      {language === 'en' ? 'Lower Leg' : language === 'zh-TW' ? '小腿長' : '小腿长'} (cm)
+                      {language === 'zh-TW' ? '小腿長' : '小腿长'} (cm)
                     </label>
                     <NumberStepper value={lowerLegLength} onChange={setLowerLegLength} min={30} max={65} unit="cm" />
                   </div>
                   <div>
                     <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                      {language === 'en' ? 'Foot Length' : language === 'zh-TW' ? '腳長' : '脚长'} (cm)
+                      {language === 'zh-TW' ? '腳長' : '脚长'} (cm)
                     </label>
                     <NumberStepper value={footLength} onChange={setFootLength} min={20} max={35} unit="cm" />
                   </div>
@@ -341,10 +341,10 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                {language === 'en' ? 'Real-time Vector Geometry Blueprint' : language === 'zh-TW' ? '公路車關鍵擬合幾何實時矢量圖譜' : '公路车关键拟合几何实时矢量图谱'}
+                {language === 'zh-TW' ? '公路車關鍵擬合幾何實時矢量圖譜' : '公路车关键拟合几何实时矢量图谱'}
               </span>
               <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 font-bold">
-                {language === 'en' ? 'Recommended Size' : '推荐车架标号'}: {result.conceptualFrameSize}
+                {'推荐车架标号'}: {result.conceptualFrameSize}
               </span>
             </div>
             <BikeDiagram
@@ -361,49 +361,49 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Saddle Height' : language === 'zh-TW' ? '推薦坐高' : '推荐坐高'}
+                {language === 'zh-TW' ? '推薦坐高' : '推荐坐高'}
               </span>
               <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                 {result.saddleHeight} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {isImperial ? `${(result.saddleHeight / 2.54).toFixed(1)} in | ` : ''}{language === 'en' ? 'BB center to top' : '中轴中心至坐垫顶'}
+                {isImperial ? `${(result.saddleHeight / 2.54).toFixed(1)} in | ` : ''}{'中轴中心至坐垫顶'}
               </span>
             </div>
 
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Top Tube (ETT)' : language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
+                {language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
               </span>
               <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                 {result.effectiveTopTube} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | ` : ''}{language === 'en' ? 'Horizontal ETT' : '水平有效上管长'}
+                {isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | ` : ''}{'水平有效上管长'}
               </span>
             </div>
 
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Saddle Setback' : language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
+                {language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
               </span>
               <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
                 {result.saddleSetback} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {language === 'en' ? 'Tip behind BB line' : '鼻头距离五通垂线'}
+                {'鼻头距离五通垂线'}
               </span>
             </div>
 
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Cockpit Drop' : language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
+                {language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
               </span>
               <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
                 {result.saddleDrop} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">cm</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {language === 'en' ? 'Saddle to bar delta' : '坐垫顶与车把高差'}
+                {'坐垫顶与车把高差'}
               </span>
             </div>
           </div>
@@ -412,12 +412,12 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              {language === 'en' ? 'Stack & Reach and Body Morphology Insights' : language === 'zh-TW' ? '車架堆高與前伸量 (Stack & Reach) 與身材特徵推斷' : '车架堆高与前伸量 (Stack & Reach) 与身材特征推断'}
+              {language === 'zh-TW' ? '車架堆高與前伸量 (Stack & Reach) 與身材特徵推斷' : '车架堆高与前伸量 (Stack & Reach) 与身材特征推断'}
             </h3>
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
-                  {language === 'en' ? 'Suggested Frame Stack' : '建议车架 Stack (堆高)'}
+                  {'建议车架 Stack (堆高)'}
                 </span>
                 <span className="text-base font-bold font-mono text-cyan-600 dark:text-cyan-400">
                   ~{result.estimatedStack} mm {isImperial ? `(${(result.estimatedStack / 25.4).toFixed(1)} in)` : ''}
@@ -425,7 +425,7 @@ export const RoadBikeFitter: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
-                  {language === 'en' ? 'Suggested Frame Reach' : '建议车架 Reach (前伸)'}
+                  {'建议车架 Reach (前伸)'}
                 </span>
                 <span className="text-base font-bold font-mono text-cyan-600 dark:text-cyan-400">
                   ~{result.estimatedReach} mm {isImperial ? `(${(result.estimatedReach / 25.4).toFixed(1)} in)` : ''}
@@ -448,49 +448,45 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 space-y-3 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <Footprints className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              {language === 'en' ? 'KOPS Plumb-Line & Cleat Biomechanics' : language === 'zh-TW' ? 'KOPS 膝關節鉛垂線檢測與鎖片生物力學' : 'KOPS 膝关节铅垂线检测与锁片生物力学'}
+              {language === 'zh-TW' ? 'KOPS 膝關節鉛垂線檢測與鎖片生物力學' : 'KOPS 膝关节铅垂线检测与锁片生物力学'}
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
                 <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <Activity className="w-3.5 h-3.5" />
-                  {language === 'en' ? 'KOPS Plumb-Line Check' : 'KOPS 膝盖铅垂线校准'}
+                  {'KOPS 膝盖铅垂线校准'}
                 </span>
                 <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
-                  {language === 'en'
-                    ? 'Rotate crank to horizontal 3 o\'clock. Drop a plumb line from the anterior patellar tendon; it should pass directly through the pedal axle center (±5mm) for balanced quad/glute power.'
-                    : '曲柄旋转至水平 3 点钟方向，用重物铅垂线自膝盖骨前缘（髌骨窝）垂直下放：铅垂线应精确穿过脚踏轴心（±5mm）。前移过多加重髌骨压迫，后移过多加重腘绳肌负荷。'}
+                  {'曲柄旋转至水平 3 点钟方向，用重物铅垂线自膝盖骨前缘（髌骨窝）垂直下放：铅垂线应精确穿过脚踏轴心（±5mm）。前移过多加重髌骨压迫，后移过多加重腘绳肌负荷。'}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
                 <span className="font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
                   <Footprints className="w-3.5 h-3.5" />
-                  {language === 'en' ? 'Cleat Fore-Aft & Muscle Recruitment' : '锁片前后位与肌群负荷'}
+                  {'锁片前后位与肌群负荷'}
                 </span>
                 <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
-                  {language === 'en'
-                    ? 'Align cleat 2-4mm behind 1st/5th metatarsal line. Rearward placement unloads calves and Achilles tendon, ideal for gran fondos; forward placement improves instant sprint responsiveness.'
-                    : '锁片基准位为第一与第五跖骨关节中线向后 2~5mm。偏后安装（中足发力）可卸载小腿腓肠肌与跟腱压力，降低抽筋率并利于长距离耐力；偏前冲刺反应快但加重足弓负荷。'}
+                  {'锁片基准位为第一与第五跖骨关节中线向后 2~5mm。偏后安装（中足发力）可卸载小腿腓肠肌与跟腱压力，降低抽筋率并利于长距离耐力；偏前冲刺反应快但加重足弓负荷。'}
                 </p>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1">
                 <span className="font-semibold text-purple-600 dark:text-purple-300 block">
-                  {language === 'en' ? `Stem: ${result.stemLength}mm | Bar Width: ${result.handlebarWidth}cm` : `推荐把立: ${result.stemLength}mm | 弯把宽: ${result.handlebarWidth}cm`}
+                  {`推荐把立: ${result.stemLength}mm | 弯把宽: ${result.handlebarWidth}cm`}
                 </span>
                 <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
-                  {language === 'en' ? 'Maintain neutral wrist angle on hoods. Compact bars with 70-80mm reach recommended.' : '上把位手变安装应保持手腕自然平直，弯把 Reach 建议选用 70~80mm 紧凑小弯把。'}
+                  {'上把位手变安装应保持手腕自然平直，弯把 Reach 建议选用 70~80mm 紧凑小弯把。'}
                 </p>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1">
                 <span className="font-semibold text-amber-600 dark:text-amber-300 block">
-                  {language === 'en' ? `Crank: ${result.crankLength} | Floating Cleats` : `推荐曲柄: ${result.crankLength} | 浮动锁片`}
+                  {`推荐曲柄: ${result.crankLength} | 浮动锁片`}
                 </span>
                 <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
-                  {language === 'en' ? 'Shorter cranks open hip angle at top dead center. 4.5°~6° float protects knees.' : '较短曲柄可改善上止点髋关节闭合角，降低膝盖屈曲压力；建议搭配 4.5°~6° 浮动锁片。'}
+                  {'较短曲柄可改善上止点髋关节闭合角，降低膝盖屈曲压力；建议搭配 4.5°~6° 浮动锁片。'}
                 </p>
               </div>
             </div>

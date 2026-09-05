@@ -20,35 +20,35 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   const navItems = [
     {
       id: 'home',
-      label: language === 'en' ? 'Home' : language === 'zh-TW' ? '首頁' : '首页',
+      label: language === 'zh-TW' ? '首頁' : '首页',
       icon: Home,
       isActive: currentToolId === null,
       onClick: onNavigateHome
     },
     {
       id: 'power-calc',
-      label: language === 'en' ? 'Power' : language === 'zh-TW' ? '功率' : '功率',
+      label: '功率',
       icon: Zap,
       isActive: currentToolId === 'power-calc',
       onClick: () => onSelectTool('power-calc')
     },
     {
       id: 'tire-pressure',
-      label: language === 'en' ? 'Tire' : language === 'zh-TW' ? '胎壓' : '胎压',
+      label: language === 'zh-TW' ? '胎壓' : '胎压',
       icon: Gauge,
       isActive: currentToolId === 'tire-pressure',
       onClick: () => onSelectTool('tire-pressure')
     },
     {
       id: 'roadbook-library',
-      label: language === 'en' ? 'Routes' : language === 'zh-TW' ? '路書' : '路书',
+      label: language === 'zh-TW' ? '路書' : '路书',
       icon: Compass,
       isActive: currentToolId === 'roadbook-library',
       onClick: () => onSelectTool('roadbook-library')
     },
     {
       id: 'bike-fitter',
-      label: language === 'en' ? 'Fit' : 'Fitting',
+      label: 'Fitting',
       icon: Ruler,
       isActive: currentToolId === 'bike-fitter',
       onClick: () => onSelectTool('bike-fitter')

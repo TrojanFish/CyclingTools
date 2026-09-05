@@ -64,11 +64,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { language, t } = useLanguageAndUnit();
 
   const categories = [
-    { id: 'all', label: language === 'en' ? 'All 17 Tools' : language === 'zh-TW' ? '全部 17 項工具' : '全部 17 项工具' },
-    { id: 'dynamics', label: language === 'en' ? '⚡ Dynamics & Gearing' : language === 'zh-TW' ? '⚡ 動力學與傳動' : '⚡ 动力学与传动' },
-    { id: 'fitting', label: language === 'en' ? '📐 Fitting & Ergonomics' : language === 'zh-TW' ? '📐 Fitting 與人體工學' : '📐 Fitting 与工效' },
-    { id: 'route', label: language === 'en' ? '🗺️ Tactics & Routes' : language === 'zh-TW' ? '🗺️ 路線、戰術與氣象' : '🗺️ 路线、战术与气象' },
-    { id: 'health', label: language === 'en' ? '❤️ Physiology & Health' : language === 'zh-TW' ? '❤️ 生理、心率與代謝' : '❤️ 生理、心率与代谢' },
+    { id: 'all', label: language === 'zh-TW' ? '全部 17 項工具' : '全部 17 项工具' },
+    { id: 'dynamics', label: language === 'zh-TW' ? '⚡ 動力學與傳動' : '⚡ 动力学与传动' },
+    { id: 'fitting', label: language === 'zh-TW' ? '📐 Fitting 與人體工學' : '📐 Fitting 与工效' },
+    { id: 'route', label: language === 'zh-TW' ? '🗺️ 路線、戰術與氣象' : '🗺️ 路线、战术与气象' },
+    { id: 'health', label: language === 'zh-TW' ? '❤️ 生理、心率與代謝' : '❤️ 生理、心率与代谢' },
   ];
 
   return (
@@ -79,21 +79,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
-            {language === 'en'
-              ? 'Cycling Science & Dynamics Suite · 17 Professional Tools'
-              : language === 'zh-TW'
+            {language === 'zh-TW'
               ? '科學單車計算與動力學工坊 · 17 大全能專業工具工坊'
               : '科学骑行计算与动力学工坊 · 17 大全能专业工具工坊'}
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
-            {language === 'en' ? (
-              <>
-                Precision Science for Every Watt <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">
-                  Data-Driven Cycling Dynamics & Ergonomic Fitting
-                </span>
-              </>
-            ) : language === 'zh-TW' ? (
+            {language === 'zh-TW' ? (
               <>
                 精準計算每一瓦 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
@@ -155,10 +146,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Search className="w-6 h-6" />
           </div>
           <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">
-            {language === 'en' ? 'No matching cycling tools found' : language === 'zh-TW' ? '未找到匹配的單車工具' : '未找到匹配的骑行工具'}
+            {language === 'zh-TW' ? '未找到匹配的單車工具' : '未找到匹配的骑行工具'}
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            {language === 'en' ? 'Try clearing search keywords or selecting another category.' : language === 'zh-TW' ? '請嘗試清除搜尋關鍵字或切換分類查看。' : '请尝试清除搜索关键词或切换分类查看。'}
+            {language === 'zh-TW' ? '請嘗試清除搜尋關鍵字或切換分類查看。' : '请尝试清除搜索关键词或切换分类查看。'}
           </p>
           <button
             onClick={() => {
@@ -167,17 +158,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
             }}
             className="px-4 py-1.5 rounded-xl bg-cyan-500 text-slate-950 text-xs font-semibold"
           >
-            {language === 'en' ? 'Reset Filters' : language === 'zh-TW' ? '重設篩選條件' : '重置筛选条件'}
+            {language === 'zh-TW' ? '重設篩選條件' : '重置筛选条件'}
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {filteredTools.map((tool) => {
             const IconComp = ICONS_MAP[tool.icon] || Zap;
-            const toolTitle = language === 'en' && tool.titleEn ? tool.titleEn : (language === 'zh-TW' && tool.titleTw ? tool.titleTw : tool.title);
-            const toolSubtitle = language === 'en' && tool.subtitleEn ? tool.subtitleEn : (language === 'zh-TW' && tool.subtitleTw ? tool.subtitleTw : tool.subtitle);
-            const toolBadge = language === 'en' && tool.badgeEn ? tool.badgeEn : (language === 'zh-TW' && tool.badgeTw ? tool.badgeTw : tool.badge);
-            const toolDesc = language === 'en' && tool.descriptionEn ? tool.descriptionEn : (language === 'zh-TW' && tool.descriptionTw ? tool.descriptionTw : tool.description);
+            const toolTitle = language === 'zh-TW' && tool.titleTw ? tool.titleTw : tool.title;
+            const toolSubtitle = language === 'zh-TW' && tool.subtitleTw ? tool.subtitleTw : tool.subtitle;
+            const toolBadge = language === 'zh-TW' && tool.badgeTw ? tool.badgeTw : tool.badge;
+            const toolDesc = language === 'zh-TW' && tool.descriptionTw ? tool.descriptionTw : tool.description;
 
             return (
               <div
@@ -211,7 +202,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs text-cyan-600 dark:text-cyan-400 font-semibold group-hover:translate-x-1 transition duration-200">
-                  <span>{language === 'en' ? 'Open Calculator' : language === 'zh-TW' ? '進入使用該工具' : '进入使用该工具'}</span>
+                  <span>{language === 'zh-TW' ? '進入使用該工具' : '进入使用该工具'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </div>
               </div>

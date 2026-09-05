@@ -1,12 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { en } from '../locales/en';
 import { zh } from '../locales/zh';
 import { zhTW } from '../locales/zh-TW';
 
-export type Language = 'en' | 'zh' | 'zh-TW';
+export type Language = 'zh' | 'zh-TW';
 export type UnitSystem = 'metric' | 'imperial';
 
-type TranslationKey = keyof typeof en;
+type TranslationKey = keyof typeof zh;
 
 interface LanguageAndUnitContextType {
   language: Language;
@@ -27,22 +26,19 @@ interface LanguageAndUnitContextType {
 const LanguageAndUnitContext = createContext<LanguageAndUnitContextType | undefined>(undefined);
 
 export const LanguageAndUnitProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Detect language: use stored preference or auto-detect based on browser
+  // Detect language: use stored preference or auto-detect based on browser (Simplified or Traditional Chinese)
   const [language, setLanguageState] = useState<Language>(() => {
     try {
       const saved = localStorage.getItem('solorider_lang');
-      if (saved === 'en' || saved === 'zh' || saved === 'zh-TW') return saved;
+      if (saved === 'zh' || saved === 'zh-TW') return saved;
       // Auto-detect browser language
       const navLang = (navigator.language || '').toLowerCase();
       if (navLang.includes('tw') || navLang.includes('hk') || navLang.includes('mo') || navLang.includes('hant')) {
         return 'zh-TW';
       }
-      if (navLang.startsWith('zh')) {
-        return 'zh';
-      }
-      return 'en';
+      return 'zh';
     } catch {
-      return 'en';
+      return 'zh';
     }
   });
 
@@ -77,11 +73,7 @@ export const LanguageAndUnitProvider: React.FC<{ children: React.ReactNode }> = 
 
   const setLanguage = (lang: Language) => setLanguageState(lang);
   const toggleLanguage = () => {
-    setLanguageState(prev => {
-      if (prev === 'zh') return 'zh-TW';
-      if (prev === 'zh-TW') return 'en';
-      return 'zh';
-    });
+    setLanguageState(prev => (prev === 'zh' ? 'zh-TW' : 'zh'));
   };
 
   const setUnitSystem = (unit: UnitSystem) => setUnitSystemState(unit);
@@ -89,8 +81,8 @@ export const LanguageAndUnitProvider: React.FC<{ children: React.ReactNode }> = 
 
   // Translation lookup
   const t = (key: TranslationKey, replacements?: Record<string, string | number>): string => {
-    const dict = language === 'en' ? en : language === 'zh-TW' ? zhTW : zh;
-    let str: string = (dict as any)[key] || (en as any)[key] || key;
+    const dict = language === 'zh-TW' ? zhTW : zh;
+    let str: string = (dict as any)[key] || (zh as any)[key] || key;
 
     if (replacements) {
       Object.entries(replacements).forEach(([rKey, rVal]) => {

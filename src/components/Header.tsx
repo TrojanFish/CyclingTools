@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => setProfileOpen(true)}
               className="w-8 h-8 sm:w-auto sm:h-9 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition gap-1.5 group shrink-0"
-              title={language === 'en' ? 'Settings & Rider Profile (⚙)' : language === 'zh-TW' ? '系統設定與車手檔案 (⚙)' : '系统设置与车手档案 (⚙)'}
+              title={language === 'zh-TW' ? '系統設定與車手檔案 (⚙)' : '系统设置与车手档案 (⚙)'}
               aria-label="Settings & Rider Profile"
             >
               <Settings className="w-4 h-4 text-cyan-500 group-hover:rotate-45 transition-transform duration-300" />
@@ -145,11 +145,11 @@ export const Header: React.FC<HeaderProps> = ({
               title={
                 themeMode === 'system'
                   ? (isDark
-                      ? (language === 'en' ? 'System Theme (Dark) - Click for Light' : language === 'zh-TW' ? '跟隨手機(深色) - 點擊切換為淺色' : '跟随手机(深色) - 点击切换为浅色')
-                      : (language === 'en' ? 'System Theme (Light) - Click for Dark' : language === 'zh-TW' ? '跟隨手機(淺色) - 點擊切換為深色' : '跟随手机(浅色) - 点击切换为深色'))
+                      ? (language === 'zh-TW' ? '跟隨手機(深色) - 點擊切換為淺色' : '跟随手机(深色) - 点击切换为浅色')
+                      : (language === 'zh-TW' ? '跟隨手機(淺色) - 點擊切換為深色' : '跟随手机(浅色) - 点击切换为深色'))
                   : (isDark
-                      ? (language === 'en' ? 'Dark Mode - Click for Light' : language === 'zh-TW' ? '深色模式 - 點擊切換為淺色' : '深色模式 - 点击切换为浅色')
-                      : (language === 'en' ? 'Light Mode - Click for Dark' : language === 'zh-TW' ? '淺色模式 - 點擊切換為深色' : '浅色模式 - 点击切换为深色'))
+                      ? (language === 'zh-TW' ? '深色模式 - 點擊切換為淺色' : '深色模式 - 点击切换为浅色')
+                      : (language === 'zh-TW' ? '淺色模式 - 點擊切換為深色' : '浅色模式 - 点击切换为深色'))
               }
               aria-label="Toggle Theme"
             >

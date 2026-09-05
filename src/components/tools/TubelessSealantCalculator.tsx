@@ -43,42 +43,42 @@ export const TubelessSealantCalculator: React.FC = () => {
       setTireWidthMm(28);
       setInnerRimWidthMm(21);
       setCasingType('standard');
-      showToast(language === 'en' ? 'Loaded Road 700x28c Preset' : '已载入主流公路 700x28c 预设', 'info');
+      showToast('已载入主流公路 700x28c 预设', 'info');
     } else if (preset === 'road32') {
       setWheelStandard('700c');
       setTireCategory('road');
       setTireWidthMm(32);
       setInnerRimWidthMm(23);
       setCasingType('standard');
-      showToast(language === 'en' ? 'Loaded Road All-Weather 700x32c' : '已载入宽胎公路 700x32c 预设', 'info');
+      showToast('已载入宽胎公路 700x32c 预设', 'info');
     } else if (preset === 'gravel40') {
       setWheelStandard('700c');
       setTireCategory('gravel');
       setTireWidthMm(40);
       setInnerRimWidthMm(25);
       setCasingType('standard');
-      showToast(language === 'en' ? 'Loaded Gravel 700x40c Preset' : '已载入全地形 Gravel 700x40c 预设', 'info');
+      showToast('已载入全地形 Gravel 700x40c 预设', 'info');
     } else if (preset === 'gravel45') {
       setWheelStandard('700c');
       setTireCategory('gravel');
       setTireWidthMm(45);
       setInnerRimWidthMm(25);
       setCasingType('heavy');
-      showToast(language === 'en' ? 'Loaded Adventure Gravel 45c' : '已载入重载探险 700x45c 预设', 'info');
+      showToast('已载入重载探险 700x45c 预设', 'info');
     } else if (preset === 'mtb225') {
       setWheelStandard('29er');
       setTireCategory('mtb');
       setTireWidthMm(57); // 2.25"
       setInnerRimWidthMm(28);
       setCasingType('standard');
-      showToast(language === 'en' ? 'Loaded MTB XC 29x2.25" Preset' : '已载入山地 XC 29x2.25" 预设', 'info');
+      showToast('已载入山地 XC 29x2.25" 预设', 'info');
     } else if (preset === 'mtb24') {
       setWheelStandard('29er');
       setTireCategory('mtb');
       setTireWidthMm(61); // 2.4"
       setInnerRimWidthMm(30);
       setCasingType('heavy');
-      showToast(language === 'en' ? 'Loaded MTB Trail/Enduro 29x2.4"' : '已载入山地 Enduro 29x2.4" 预设', 'info');
+      showToast('已载入山地 Enduro 29x2.4" 预设', 'info');
     }
   };
 
@@ -183,15 +183,13 @@ export const TubelessSealantCalculator: React.FC = () => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
               <Droplets className="w-3.5 h-3.5" />
-              <span>{language === 'en' ? 'Tubeless Engineering & Maintenance' : '真空胎系统工程与养护'}</span>
+              <span>{'真空胎系统工程与养护'}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-              {language === 'en' ? 'Tubeless Sealant Volume & Interval Calculator' : '真空胎自补液加注量与补液周期计算器'}
+              {'真空胎自补液加注量与补液周期计算器'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-              {language === 'en'
-                ? 'Accurately calculate single-wheel & pair initial sealant doses, evaporation maintenance intervals, and top-up amounts based on tire torus geometry, casing porosity, rim width, and climate conditions.'
-                : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量，兼顾防扎自封能力与转动惯量轻量化。'}
+              {'基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量，兼顾防扎自封能力与转动惯量轻量化。'}
             </p>
           </div>
 
@@ -233,13 +231,13 @@ export const TubelessSealantCalculator: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Gauge className="w-4 h-4 text-cyan-500" />
-              <span>{language === 'en' ? 'Wheel & Casing Geometry' : '轮组规格与几何参数'}</span>
+              <span>{'轮组规格与几何参数'}</span>
             </div>
 
             {/* Wheel Standard & Category */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Wheel Standard' : '轮径规格'}</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{'轮径规格'}</label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {(['700c', '650b', '29er', '26er'] as const).map((std) => (
                     <button
@@ -258,12 +256,12 @@ export const TubelessSealantCalculator: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Tire Discipline' : '车型分类'}</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{'车型分类'}</label>
                 <div className="grid grid-cols-3 gap-1">
                   {[
-                    { id: 'road', label: language === 'en' ? 'Road' : '公路' },
-                    { id: 'gravel', label: language === 'en' ? 'Gravel' : '全地形' },
-                    { id: 'mtb', label: language === 'en' ? 'MTB' : '山地' }
+                    { id: 'road', label: '公路' },
+                    { id: 'gravel', label: '全地形' },
+                    { id: 'mtb', label: '山地' }
                   ].map((cat) => (
                     <button
                       key={cat.id}
@@ -291,7 +289,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               {/* Tire Width */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-600 dark:text-slate-400">{language === 'en' ? 'Nominal Tire Width' : '标称外胎胎宽'}</span>
+                  <span className="text-slate-600 dark:text-slate-400">{'标称外胎胎宽'}</span>
                   <span className="font-mono font-bold text-cyan-500">
                     {tireWidthMm} mm {tireCategory === 'mtb' ? `(~${(tireWidthMm / 25.4).toFixed(2)}")` : `${tireWidthMm}c`}
                   </span>
@@ -315,7 +313,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               {/* Inner Rim Width */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-600 dark:text-slate-400">{language === 'en' ? 'Internal Rim Width (IW)' : '车圈内部宽度 (IW)'}</span>
+                  <span className="text-slate-600 dark:text-slate-400">{'车圈内部宽度 (IW)'}</span>
                   <span className="font-mono font-bold text-cyan-500">{innerRimWidthMm} mm</span>
                 </div>
                 <input
@@ -340,18 +338,18 @@ export const TubelessSealantCalculator: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Thermometer className="w-4 h-4 text-rose-500" />
-              <span>{language === 'en' ? 'Casing Porosity & Environmental Evaporation' : '胎体孔隙率与环境挥发工况'}</span>
+              <span>{'胎体孔隙率与环境挥发工况'}</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Casing Construction */}
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Casing Construction' : '外胎胎体构造'}</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{'外胎胎体构造'}</label>
                 <div className="space-y-1.5">
                   {[
-                    { id: 'race', label: language === 'en' ? 'Ultra-light / Cotton Skinwall' : '超轻棉线 / 黄边竞速胎 (多微孔吸胶)' },
-                    { id: 'standard', label: language === 'en' ? 'Standard Tubeless Ready (TLR)' : '标准真空胎 TLR (主流平衡型)' },
-                    { id: 'heavy', label: language === 'en' ? 'Reinforced Enduro / Downhill' : '重型防穿刺 / 丁基加强层 (气密极佳)' }
+                    { id: 'race', label: '超轻棉线 / 黄边竞速胎 (多微孔吸胶)' },
+                    { id: 'standard', label: '标准真空胎 TLR (主流平衡型)' },
+                    { id: 'heavy', label: '重型防穿刺 / 丁基加强层 (气密极佳)' }
                   ].map((c) => (
                     <button
                       key={c.id}
@@ -371,12 +369,12 @@ export const TubelessSealantCalculator: React.FC = () => {
 
               {/* Climate & Temperature */}
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Riding Climate' : '当地骑行气候环境'}</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{'当地骑行气候环境'}</label>
                 <div className="space-y-1.5">
                   {[
-                    { id: 'hot_dry', label: language === 'en' ? 'Hot & Arid (>28°C, fast evaporation)' : '炎热干燥 (>28°C，挥发迅速)' },
-                    { id: 'moderate', label: language === 'en' ? 'Moderate (15-25°C, standard)' : '温和适宜 (15-25°C，常规挥发)' },
-                    { id: 'cool_humid', label: language === 'en' ? 'Cool & Humid (<15°C, slow dry)' : '湿润阴冷 (<15°C，挥发较慢)' }
+                    { id: 'hot_dry', label: '炎热干燥 (>28°C，挥发迅速)' },
+                    { id: 'moderate', label: '温和适宜 (15-25°C，常规挥发)' },
+                    { id: 'cool_humid', label: '湿润阴冷 (<15°C，挥发较慢)' }
                   ].map((cl) => (
                     <button
                       key={cl.id}
@@ -398,7 +396,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             {/* Sealant Formula & Riding Frequency */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Sealant Formulation' : '自补液配方类型'}</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{'自补液配方类型'}</label>
                 <select
                   value={sealantType}
                   onChange={(e) => setSealantType(e.target.value as any)}
@@ -411,7 +409,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Riding & Storage Pattern' : '骑行与停放习惯'}</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{'骑行与停放习惯'}</label>
                 <select
                   value={rideFrequency}
                   onChange={(e) => setRideFrequency(e.target.value as any)}
@@ -433,7 +431,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
                 <Droplets className="w-4 h-4" />
-                {language === 'en' ? 'Recommended Dosage' : '推荐首次加注量'}
+                {'推荐首次加注量'}
               </span>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 font-mono">
                 {calculation.effectiveTireWidth}mm 实测充气胎宽
@@ -443,7 +441,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             {/* Single Wheel Hero Number */}
             <div className="space-y-1">
               <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {language === 'en' ? 'Single Wheel Initial Dose' : '单轮首次加注推荐量'}
+                {'单轮首次加注推荐量'}
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
@@ -461,7 +459,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               <div className="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
                 <div className="text-[11px] text-slate-500 flex items-center gap-1">
                   <Layers className="w-3.5 h-3.5 text-blue-500" />
-                  <span>{language === 'en' ? 'Pair Total (F+R)' : '整车前后双轮总量'}</span>
+                  <span>{'整车前后双轮总量'}</span>
                 </div>
                 <div className="text-lg font-extrabold text-blue-500">
                   {calculation.pairTotalMl} ml
@@ -474,7 +472,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               <div className="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
                 <div className="text-[11px] text-slate-500 flex items-center gap-1">
                   <RotateCcw className="w-3.5 h-3.5 text-purple-500" />
-                  <span>{language === 'en' ? 'Top-Up Maintenance' : '单轮补液补充量'}</span>
+                  <span>{'单轮补液补充量'}</span>
                 </div>
                 <div className="text-lg font-extrabold text-purple-500">
                   {calculation.topUpDoseMl} ml
@@ -490,20 +488,18 @@ export const TubelessSealantCalculator: React.FC = () => {
               <div className="font-bold flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-amber-500" />
-                  <span>{language === 'en' ? 'Next Inspection & Top-Up' : '建议检查与补液周期'}</span>
+                  <span>{'建议检查与补液周期'}</span>
                 </span>
                 <span className="font-mono text-amber-600 dark:text-amber-400 text-sm">
                   {calculation.inspectionDays} 天 (~{calculation.inspectionMonths} 个月)
                 </span>
               </div>
               <p className="text-[11px] opacity-90 leading-relaxed">
-                {language === 'en'
-                  ? `Based on ${climate === 'hot_dry' ? 'hot arid weather' : 'your climate'} and ${casingType} casing. Please perform a slosh-test or top up around this date to maintain puncture protection.`
-                  : `受当地${climate === 'hot_dry' ? '高温炎热' : '常温'}气候与${casingType === 'race' ? '竞速薄胎壁' : '标准'}胎体影响，乳胶在此周期后将逐渐胶化脱水，请提前摇轮听声自查。`}
+                {`受当地${climate === 'hot_dry' ? '高温炎热' : '常温'}气候与${casingType === 'race' ? '竞速薄胎壁' : '标准'}胎体影响，乳胶在此周期后将逐渐胶化脱水，请提前摇轮听声自查。`}
               </p>
               <div className="pt-1.5 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-amber-800 dark:text-amber-300 font-medium">
-                <span>{language === 'en' ? 'Unopened Shelf Life: 24-36 Mo.' : '原装避光未开封保质期: 24-36个月'}</span>
-                <span>{language === 'en' ? 'Open Bottle: Use in 6-12 Mo.' : '开封后建议: 6-12个月内用毕'}</span>
+                <span>{'原装避光未开封保质期: 24-36个月'}</span>
+                <span>{'开封后建议: 6-12个月内用毕'}</span>
               </div>
             </div>
 
@@ -511,7 +507,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             <div className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-900">
               <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>{language === 'en' ? 'Max Self-Sealing Puncture' : '最大刺穿自封孔径能力'}</span>
+                <span>{'最大刺穿自封孔径能力'}</span>
               </span>
               <strong className="text-emerald-500 font-mono text-sm">≤ {calculation.maxPunctureMm} mm</strong>
             </div>
@@ -520,7 +516,7 @@ export const TubelessSealantCalculator: React.FC = () => {
           {/* Interactive Cross-Section SVG Diagram */}
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
-              <span>{language === 'en' ? 'Tire & Rim Cross Section Simulation' : '真空轮胎截面与注胶池物理示意'}</span>
+              <span>{'真空轮胎截面与注胶池物理示意'}</span>
               <span className="text-[10px] text-slate-400">容积 ~{calculation.volumeLiters} L</span>
             </div>
 
@@ -594,7 +590,7 @@ export const TubelessSealantCalculator: React.FC = () => {
         <div className="flex items-center gap-2">
           <Wrench className="w-5 h-5 text-cyan-500" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-            {language === 'en' ? 'Professional Workshop Tubeless Setup & Diagnostic Tips' : '专业技师真空胎装调与免拆胎自查秘笈'}
+            {'专业技师真空胎装调与免拆胎自查秘笈'}
           </h3>
         </div>
 

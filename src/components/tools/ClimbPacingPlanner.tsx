@@ -514,19 +514,19 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <Zap className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              {language === 'en' ? 'Rider Power & Climbing Strategy' : language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
+              {language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'FTP Threshold' : language === 'zh-TW' ? '車手 FTP 閾值功率' : '车手 FTP 阈值功率'} (W)
+                  {language === 'zh-TW' ? '車手 FTP 閾值功率' : '车手 FTP 阈值功率'} (W)
                 </label>
                 <NumberStepper value={ftpWatts} onChange={setFtpWatts} step={5} min={100} max={500} unit="W" />
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
@@ -543,23 +543,23 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
             {/* Pacing Strategy Buttons */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
-                {language === 'en' ? 'Pacing Aggressiveness' : language === 'zh-TW' ? '攀爬攻堅策略激進度' : '攀爬攻坚策略激进度'}
+                {language === 'zh-TW' ? '攀爬攻堅策略激進度' : '攀爬攻坚策略激进度'}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   {
                     id: 'conservative',
-                    label: language === 'en' ? 'Conservative' : language === 'zh-TW' ? '穩妥完賽' : '稳妥完赛',
+                    label: language === 'zh-TW' ? '穩妥完賽' : '稳妥完赛',
                     desc: '88% FTP'
                   },
                   {
                     id: 'balanced',
-                    label: language === 'en' ? 'Balanced' : language === 'zh-TW' ? '均衡均速' : '均衡均速',
+                    label: language === 'zh-TW' ? '均衡均速' : '均衡均速',
                     desc: '96% FTP'
                   },
                   {
                     id: 'aggressive',
-                    label: language === 'en' ? 'Aggressive' : language === 'zh-TW' ? '極限刷PR' : '极限刷PR',
+                    label: language === 'zh-TW' ? '極限刷PR' : '极限刷PR',
                     desc: '105% FTP'
                   },
                 ].map((s) => (
@@ -585,14 +585,14 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
             <div className="flex justify-between items-center">
               <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-                {language === 'en' ? `Route Breakdown (${segments.length} segments)` : language === 'zh-TW' ? `爬坡路段分段拆解 (${segments.length} 個分段)` : `爬坡路段分段拆解 (${segments.length} 个分段)`}
+                {language === 'zh-TW' ? `爬坡路段分段拆解 (${segments.length} 個分段)` : `爬坡路段分段拆解 (${segments.length} 个分段)`}
               </h2>
               <button
                 onClick={addSegment}
                 className="flex items-center gap-1 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 font-semibold"
               >
                 <Plus className="w-3.5 h-3.5" />
-                {language === 'en' ? 'Add Segment' : language === 'zh-TW' ? '添加分段' : '添加分段'}
+                {language === 'zh-TW' ? '添加分段' : '添加分段'}
               </button>
             </div>
 
@@ -623,7 +623,7 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
-                        {language === 'en' ? 'Distance' : language === 'zh-TW' ? '分段長度' : '分段长度'} (km) {isImperial ? `(${(seg.distanceKm * 0.621371).toFixed(1)} mi)` : ''}
+                        {language === 'zh-TW' ? '分段長度' : '分段长度'} (km) {isImperial ? `(${(seg.distanceKm * 0.621371).toFixed(1)} mi)` : ''}
                       </span>
                       <NumberStepper
                         value={seg.distanceKm}
@@ -641,7 +641,7 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
-                        {language === 'en' ? 'Avg Gradient' : language === 'zh-TW' ? '平均坡度' : '平均坡度'} (%)
+                        {language === 'zh-TW' ? '平均坡度' : '平均坡度'} (%)
                       </span>
                       <NumberStepper
                         value={seg.gradePct}
@@ -670,49 +670,49 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Estimated Total Time' : language === 'zh-TW' ? '預計登頂總耗時' : '预计登顶总耗时'}
+                {language === 'zh-TW' ? '預計登頂總耗時' : '预计登顶总耗时'}
               </span>
               <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                 {planResults.overallTimeStr}
               </div>
               <span className="text-[10px] text-slate-500">
-                {language === 'en' ? 'Total' : '全程'} {planResults.totalDistanceKm} km {isImperial ? `(${(planResults.totalDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
+                {'全程'} {planResults.totalDistanceKm} km {isImperial ? `(${(planResults.totalDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
               </span>
             </div>
 
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Avg Target Power' : language === 'zh-TW' ? '建議全程平均功率' : '建议全程平均功率'}
+                {language === 'zh-TW' ? '建議全程平均功率' : '建议全程平均功率'}
               </span>
               <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
                 {planResults.avgWatts} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {language === 'en' ? 'Ratio' : '推重比'}: {planResults.avgWkg} W/kg
+                {'推重比'}: {planResults.avgWkg} W/kg
               </span>
             </div>
 
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Elevation / Grade' : language === 'zh-TW' ? '累計爬升 / 均坡' : '累计爬升 / 均坡'}
+                {language === 'zh-TW' ? '累計爬升 / 均坡' : '累计爬升 / 均坡'}
               </span>
               <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
                 +{planResults.totalElevationM} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {isImperial ? `+${Math.round(planResults.totalElevationM * 3.28084)} ft | ` : ''}{language === 'en' ? 'Avg' : '平均'}: {planResults.avgGrade}%
+                {isImperial ? `+${Math.round(planResults.totalElevationM * 3.28084)} ft | ` : ''}{'平均'}: {planResults.avgGrade}%
               </span>
             </div>
 
             <div className="glass-card p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-slate-500 dark:text-slate-400 text-xs font-medium block">
-                {language === 'en' ? 'Average VAM' : language === 'zh-TW' ? '平均垂直上升 VAM' : '平均垂直上升 VAM'}
+                {language === 'zh-TW' ? '平均垂直上升 VAM' : '平均垂直上升 VAM'}
               </span>
               <div className="text-xl font-bold font-mono text-purple-600 dark:text-purple-400 mt-1">
                 {planResults.overallVam} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">m/h</span>
               </div>
               <span className="text-[10px] text-slate-500">
-                {isImperial ? `${Math.round(planResults.overallVam * 3.28084)} ft/h` : (language === 'en' ? 'Climbing speed' : '垂直爬升速度')}
+                {isImperial ? `${Math.round(planResults.overallVam * 3.28084)} ft/h` : ('垂直爬升速度')}
               </span>
             </div>
           </div>
@@ -722,10 +722,10 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                 <TrendingUp className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-                {language === 'en' ? 'Gradient & Power Pacing Step Chart' : language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
+                {language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
               </span>
               <span className="text-slate-400 dark:text-slate-500 text-[10px]">
-                {language === 'en' ? '*Dual axis dynamic fit' : '*双坐标轴动态拟合'}
+                {'*双坐标轴动态拟合'}
               </span>
             </div>
 
@@ -763,9 +763,9 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
               <ShieldAlert className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
               <div className="space-y-1 text-xs">
                 <div className="font-bold text-rose-800 dark:text-rose-300 flex items-center gap-2">
-                  <span>{language === 'en' ? 'Steep Gradient Torque & Low Cadence Fatigue Alert' : '陡坡极低踏频与肌力负荷预警'}</span>
+                  <span>{'陡坡极低踏频与肌力负荷预警'}</span>
                   <span className="font-mono px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-300 rounded text-[10px]">
-                    {language === 'en' ? 'Cadence < 65 RPM' : '推算踏频 < 65 RPM'}
+                    {'推算踏频 < 65 RPM'}
                   </span>
                 </div>
                 <p className="text-rose-950/90 dark:text-rose-200/90 leading-relaxed">
@@ -780,19 +780,19 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           {/* Segment Details Table */}
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200">
-              {language === 'en' ? 'Pacing Execution & Segment Splits Blueprint' : language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
+              {language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-                    <th className="pb-2">{language === 'en' ? 'Segment' : language === 'zh-TW' ? '分段名' : '分段名'}</th>
-                    <th className="pb-2">{language === 'en' ? 'Dist / Grade' : language === 'zh-TW' ? '距離 / 坡度' : '距离 / 坡度'}</th>
-                    <th className="pb-2">{language === 'en' ? 'Target Watts' : language === 'zh-TW' ? '建議功率' : '建议功率'}</th>
-                    <th className="pb-2">{language === 'en' ? 'W/kg (FTP%)' : '推重比 / FTP%'}</th>
-                    <th className="pb-2">{language === 'en' ? 'Est. Cadence' : '预估踏频'}</th>
-                    <th className="pb-2">{language === 'en' ? 'Est. Time' : language === 'zh-TW' ? '預估耗時' : '预估耗时'}</th>
-                    <th className="pb-2">{language === 'en' ? 'Est. VAM' : '预估 VAM'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '分段名' : '分段名'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '距離 / 坡度' : '距离 / 坡度'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '建議功率' : '建议功率'}</th>
+                    <th className="pb-2">{'推重比 / FTP%'}</th>
+                    <th className="pb-2">{'预估踏频'}</th>
+                    <th className="pb-2">{language === 'zh-TW' ? '預估耗時' : '预估耗时'}</th>
+                    <th className="pb-2">{'预估 VAM'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono text-slate-700 dark:text-slate-300">

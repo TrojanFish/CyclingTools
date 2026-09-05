@@ -97,13 +97,13 @@ const MainAppContent: React.FC = () => {
 
       const matchSearch =
         tool.title.toLowerCase().includes(q) ||
-        (tool.titleEn && tool.titleEn.toLowerCase().includes(q)) ||
+        (tool.titleTw && tool.titleTw.toLowerCase().includes(q)) ||
         tool.subtitle.toLowerCase().includes(q) ||
-        (tool.subtitleEn && tool.subtitleEn.toLowerCase().includes(q)) ||
+        (tool.subtitleTw && tool.subtitleTw.toLowerCase().includes(q)) ||
         tool.description.toLowerCase().includes(q) ||
-        (tool.descriptionEn && tool.descriptionEn.toLowerCase().includes(q)) ||
+        (tool.descriptionTw && tool.descriptionTw.toLowerCase().includes(q)) ||
         tool.tags.some(tag => tag.toLowerCase().includes(q)) ||
-        (tool.tagsEn && tool.tagsEn.some(tag => tag.toLowerCase().includes(q)));
+        (tool.tagsTw && tool.tagsTw.some(tag => tag.toLowerCase().includes(q)));
 
       return matchCat && matchSearch;
     });
@@ -184,17 +184,13 @@ const MainAppContent: React.FC = () => {
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
                     <span>
-                      {language === 'en' && currentToolMeta.categoryLabelEn
-                        ? currentToolMeta.categoryLabelEn
-                        : language === 'zh-TW' && currentToolMeta.categoryLabelTw
+                      {language === 'zh-TW' && currentToolMeta.categoryLabelTw
                         ? currentToolMeta.categoryLabelTw
                         : currentToolMeta.categoryLabel}
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
                     <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[160px]">
-                      {language === 'en' && currentToolMeta.titleEn
-                        ? currentToolMeta.titleEn
-                        : language === 'zh-TW' && currentToolMeta.titleTw
+                      {language === 'zh-TW' && currentToolMeta.titleTw
                         ? currentToolMeta.titleTw
                         : currentToolMeta.title}
                     </span>
@@ -223,9 +219,7 @@ const MainAppContent: React.FC = () => {
                     className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2 sm:px-3 py-1 text-xs text-slate-800 dark:text-slate-300 font-medium focus:outline-none focus:border-cyan-500 w-full sm:w-auto max-w-full sm:max-w-[240px] truncate"
                   >
                     {TOOLS_LIST.map((tItem) => {
-                      const displayTitle = language === 'en' && tItem.titleEn
-                        ? tItem.titleEn
-                        : language === 'zh-TW' && tItem.titleTw
+                      const displayTitle = language === 'zh-TW' && tItem.titleTw
                         ? tItem.titleTw
                         : tItem.title;
                       return (

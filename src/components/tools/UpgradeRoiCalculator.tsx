@@ -389,7 +389,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1">
             <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-            {language === 'en' ? 'Baseline Cruise Speed' : language === 'zh-TW' ? '基準巡航車速' : '基准巡航车速'}:
+            {language === 'zh-TW' ? '基準巡航車速' : '基准巡航车速'}:
           </span>
           <div className="w-36">
             <NumberStepper
@@ -408,7 +408,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
-            {language === 'en' ? 'Total System Weight' : language === 'zh-TW' ? '人車總重' : '人车总重'} ({isImperial ? 'lbs' : 'kg'}):
+            {language === 'zh-TW' ? '人車總重' : '人车总重'} ({isImperial ? 'lbs' : 'kg'}):
           </span>
           <div className="w-36">
             <NumberStepper

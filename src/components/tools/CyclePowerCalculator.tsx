@@ -331,7 +331,7 @@ export const CyclePowerCalculator: React.FC = () => {
             {calcMode === 'speed' && (
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Cycling Power Input' : language === 'zh-TW' ? '輸入騎行功率' : '输入骑行功率'} (Watts)
+                  {language === 'zh-TW' ? '輸入騎行功率' : '输入骑行功率'} (Watts)
                 </label>
                 <NumberStepper value={powerInput} onChange={setPowerInput} step={5} min={20} max={1500} unit="W" />
               </div>
@@ -339,7 +339,7 @@ export const CyclePowerCalculator: React.FC = () => {
             {calcMode === 'power' && (
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Target Cruise Speed' : language === 'zh-TW' ? '目標巡航速度' : '目标巡航速度'} ({isImperial ? 'mph' : 'km/h'})
+                  {language === 'zh-TW' ? '目標巡航速度' : '目标巡航速度'} ({isImperial ? 'mph' : 'km/h'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((targetSpeedKmh * 0.621371).toFixed(1)) : targetSpeedKmh}
@@ -355,7 +355,7 @@ export const CyclePowerCalculator: React.FC = () => {
             {calcMode === 'wkg' && (
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Target Power-to-Weight' : language === 'zh-TW' ? '目標推重比' : '目标推重比'} (W/kg)
+                  {language === 'zh-TW' ? '目標推重比' : '目标推重比'} (W/kg)
                 </label>
                 <NumberStepper value={targetWkg} onChange={setTargetWkg} step={0.1} min={1.0} max={8.0} unit="W/kg" decimals={1} />
               </div>
@@ -365,7 +365,7 @@ export const CyclePowerCalculator: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨重' : '车手体重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '車手淨重' : '车手体重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
@@ -379,7 +379,7 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Bike + Gear' : language === 'zh-TW' ? '整車裝備重' : '整车装备重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '整車裝備重' : '整车装备重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((bikeWeight * 2.20462).toFixed(1)) : bikeWeight}
@@ -398,7 +398,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {language === 'en' ? 'Grade' : language === 'zh-TW' ? '道路坡度' : '道路坡度'} (%)
+                    {language === 'zh-TW' ? '道路坡度' : '道路坡度'} (%)
                   </label>
                   <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{grade}%</span>
                 </div>
@@ -416,11 +416,11 @@ export const CyclePowerCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {language === 'en' ? 'Wind Speed' : language === 'zh-TW' ? '風速與方向' : '风速与方向'}
+                    {language === 'zh-TW' ? '風速與方向' : '风速与方向'}
                   </label>
                   <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
                     {isImperial ? `${(windSpeedKmh * 0.621371).toFixed(1)} mph` : `${windSpeedKmh} km/h`}{' '}
-                    ({windDirection === 'headwind' ? (language === 'en' ? 'Head' : language === 'zh-TW' ? '頂風' : '顶风') : (language === 'en' ? 'Tail' : language === 'zh-TW' ? '順風' : '顺风')})
+                    ({windDirection === 'headwind' ? (language === 'zh-TW' ? '頂風' : '顶风') : (language === 'zh-TW' ? '順風' : '顺风')})
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -437,7 +437,7 @@ export const CyclePowerCalculator: React.FC = () => {
                     onClick={() => setWindDirection(windDirection === 'headwind' ? 'tailwind' : 'headwind')}
                     className="px-2 py-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg text-[10px] text-cyan-600 dark:text-cyan-400 shrink-0 font-medium"
                   >
-                    {windDirection === 'headwind' ? (language === 'en' ? 'Head' : language === 'zh-TW' ? '頂風' : '顶风') : (language === 'en' ? 'Tail' : language === 'zh-TW' ? '順風' : '顺风')}
+                    {windDirection === 'headwind' ? (language === 'zh-TW' ? '頂風' : '顶风') : (language === 'zh-TW' ? '順風' : '顺风')}
                   </button>
                 </div>
               </div>
@@ -446,15 +446,15 @@ export const CyclePowerCalculator: React.FC = () => {
             {/* Aero Posture Presets */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2 flex items-center">
-                {language === 'en' ? 'Aero Posture & CdA' : language === 'zh-TW' ? '騎行姿態與風阻迎風面積 (CdA)' : '骑行姿态与风阻迎风面积 (CdA)'}
+                {language === 'zh-TW' ? '騎行姿態與風阻迎風面積 (CdA)' : '骑行姿态与风阻迎风面积 (CdA)'}
                 <Tooltip content="CdA 代表风阻系数乘以正面投影迎风面积，值越小越气动省力。" />
               </label>
               <div className="grid grid-cols-4 gap-1.5">
                 {[
-                  { id: 'tt', label: language === 'en' ? 'TT Aerobars' : language === 'zh-TW' ? 'TT 破風姿態' : 'TT 计时姿势', cda: 0.22 },
-                  { id: 'drops', label: language === 'en' ? 'Drops' : language === 'zh-TW' ? '下把位' : '下把破风位', cda: 0.28 },
-                  { id: 'hoods', label: language === 'en' ? 'Brake Hoods' : language === 'zh-TW' ? '手變頭位' : '手变头位', cda: 0.32 },
-                  { id: 'tops', label: language === 'en' ? 'Tops / Upright' : language === 'zh-TW' ? '橫把直立' : '横把直立位', cda: 0.38 },
+                  { id: 'tt', label: language === 'zh-TW' ? 'TT 破風姿態' : 'TT 计时姿势', cda: 0.22 },
+                  { id: 'drops', label: language === 'zh-TW' ? '下把位' : '下把破风位', cda: 0.28 },
+                  { id: 'hoods', label: language === 'zh-TW' ? '手變頭位' : '手变头位', cda: 0.32 },
+                  { id: 'tops', label: language === 'zh-TW' ? '橫把直立' : '横把直立位', cda: 0.38 },
                 ].map((p) => (
                   <button
                     key={p.id}
@@ -477,7 +477,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
                   <Wind className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-                  {language === 'en' ? 'Altitude & Air Density' : language === 'zh-TW' ? '海拔與氣壓密度校正' : '海拔与气压密度校正'}
+                  {language === 'zh-TW' ? '海拔與氣壓密度校正' : '海拔与气压密度校正'}
                 </span>
                 <div className="flex items-center gap-1.5 font-mono">
                   <span className="text-cyan-600 dark:text-cyan-400 font-bold text-xs">ρ = {airDensityRho} kg/m³</span>
@@ -520,7 +520,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
                   <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                    {language === 'en' ? 'Altitude' : language === 'zh-TW' ? '海拔' : '骑行海拔'}: {altitudeM} m {isImperial ? `(${Math.round(altitudeM * 3.28084)} ft)` : ''}
+                    {language === 'zh-TW' ? '海拔' : '骑行海拔'}: {altitudeM} m {isImperial ? `(${Math.round(altitudeM * 3.28084)} ft)` : ''}
                   </label>
                   <input
                     type="range"
@@ -534,7 +534,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 </div>
                 <div>
                   <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                    {language === 'en' ? 'Ambient Temp' : language === 'zh-TW' ? '環境氣溫' : '环境气温'}: {tempC} °C {isImperial ? `(${Math.round((tempC * 9)/5 + 32)} °F)` : ''}
+                    {language === 'zh-TW' ? '環境氣溫' : '环境气温'}: {tempC} °C {isImperial ? `(${Math.round((tempC * 9)/5 + 32)} °F)` : ''}
                   </label>
                   <input
                     type="range"
@@ -557,7 +557,7 @@ export const CyclePowerCalculator: React.FC = () => {
           <div className="grid grid-cols-3 gap-3">
             <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                {language === 'en' ? 'Estimated Speed' : language === 'zh-TW' ? '估算騎行速度' : '估算骑行速度'}
+                {language === 'zh-TW' ? '估算騎行速度' : '估算骑行速度'}
               </span>
               <div className="text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                 {isImperial ? (result.speedKmh * 0.621371).toFixed(1) : result.speedKmh}
@@ -572,25 +572,25 @@ export const CyclePowerCalculator: React.FC = () => {
 
             <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                {language === 'en' ? 'Power / Weight' : language === 'zh-TW' ? '推重比 (W/kg)' : '推重比 (W/kg)'}
+                {language === 'zh-TW' ? '推重比 (W/kg)' : '推重比 (W/kg)'}
               </span>
               <div className="text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
                 {result.wkg} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">W/kg</span>
               </div>
               <span className="text-[10px] text-slate-500 block mt-0.5">
-                {result.power} {language === 'en' ? 'W total mechanical output' : language === 'zh-TW' ? '瓦實際總輸出' : '瓦实际总输出'}
+                {result.power} {language === 'zh-TW' ? '瓦實際總輸出' : '瓦实际总输出'}
               </span>
             </div>
 
             <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 text-center shadow-xs">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                {language === 'en' ? 'Metabolic Burn' : language === 'zh-TW' ? '人體能耗代謝' : '人体能耗代谢'}
+                {language === 'zh-TW' ? '人體能耗代謝' : '人体能耗代谢'}
               </span>
               <div className="text-3xl font-extrabold font-mono text-amber-600 dark:text-amber-400 mt-1">
                 {result.kcalPerHour} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">kcal/h</span>
               </div>
               <span className="text-[10px] text-slate-500 block mt-0.5">
-                {language === 'en' ? '24% gross efficiency' : '24% 机械效率推算'}
+                {'24% 机械效率推算'}
               </span>
             </div>
           </div>
@@ -601,7 +601,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <Award className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
               <div>
                 <span className="text-xs text-slate-500 dark:text-slate-400 block">
-                  {language === 'en' ? 'Coggan Power Profile Category' : language === 'zh-TW' ? '車手競技水平評估 (Coggan Power Profile)' : '车手竞技水平评估 (Coggan Power Profile)'}
+                  {language === 'zh-TW' ? '車手競技水平評估 (Coggan Power Profile)' : '车手竞技水平评估 (Coggan Power Profile)'}
                 </span>
                 <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{result.levelTitle}</span>
               </div>
@@ -616,7 +616,7 @@ export const CyclePowerCalculator: React.FC = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                {language === 'en' ? 'Climbing Performance & VAM Estimator' : language === 'zh-TW' ? '爬坡性能與 VAM (垂直上升速度) 推算' : '爬坡性能与 VAM (垂直上升速度) 推算'}
+                {language === 'zh-TW' ? '爬坡性能與 VAM (垂直上升速度) 推算' : '爬坡性能与 VAM (垂直上升速度) 推算'}
               </h3>
               <span className="text-xs font-mono text-cyan-600 dark:text-cyan-300 font-bold">
                 VAM: {result.vam} m/h {isImperial ? `(${Math.round(result.vam * 3.28084)} ft/h)` : ''}
@@ -626,7 +626,7 @@ export const CyclePowerCalculator: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
-                  {language === 'en' ? 'Climb Distance' : language === 'zh-TW' ? '爬坡路程' : '爬坡路程'}
+                  {language === 'zh-TW' ? '爬坡路程' : '爬坡路程'}
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">
                   {climbDistanceKm} km {isImperial ? `(${(climbDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
@@ -634,7 +634,7 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
-                  {language === 'en' ? 'Elevation Gain' : language === 'zh-TW' ? '累計爬升' : '累计爬升'}
+                  {language === 'zh-TW' ? '累計爬升' : '累计爬升'}
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">
                   +{climbElevationGainM} m {isImperial ? `(+${Math.round(climbElevationGainM * 3.28084)} ft)` : ''}
@@ -642,16 +642,16 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
-                  {language === 'en' ? 'Average Grade' : language === 'zh-TW' ? '平均坡度' : '平均坡度'}
+                  {language === 'zh-TW' ? '平均坡度' : '平均坡度'}
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">{result.avgClimbGrade}%</span>
               </div>
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
-                  {language === 'en' ? 'Est. Summit Time' : language === 'zh-TW' ? '預計登頂耗時' : '预计登顶耗时'}
+                  {language === 'zh-TW' ? '預計登頂耗時' : '预计登顶耗时'}
                 </span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">
-                  {result.climbTimeMinutes} {language === 'en' ? 'min' : language === 'zh-TW' ? '分鐘' : '分钟'}
+                  {result.climbTimeMinutes} {language === 'zh-TW' ? '分鐘' : '分钟'}
                 </span>
               </div>
             </div>
@@ -661,7 +661,7 @@ export const CyclePowerCalculator: React.FC = () => {
           {/* Resistance Breakdown Bar */}
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">
-              {language === 'en' ? 'Three Physical Resistance Forces Breakdown' : language === 'zh-TW' ? '三大物理阻力占比分解' : '三大物理阻力占比分解'}
+              {language === 'zh-TW' ? '三大物理阻力占比分解' : '三大物理阻力占比分解'}
             </span>
             <div className="h-3.5 w-full bg-slate-200 dark:bg-slate-900 rounded-full overflow-hidden flex">
               <div style={{ width: `${result.aeroPct}%` }} className="bg-cyan-500 h-full transition-all duration-300" title={`Aero: ${result.aeroPct}%`}></div>
@@ -670,9 +670,9 @@ export const CyclePowerCalculator: React.FC = () => {
             </div>
 
             <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
-              <span className="text-cyan-600 dark:text-cyan-400 font-bold">💨 {language === 'en' ? 'Aero' : language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚲 {language === 'en' ? 'Rolling' : language === 'zh-TW' ? '滾阻' : '滚阻'} {result.rollingPct}% ({result.fRolling}N)</span>
-              <span className="text-amber-600 dark:text-amber-400 font-bold">⛰️ {language === 'en' ? 'Gravity' : language === 'zh-TW' ? '重力' : '重力'} {result.gravityPct}% ({result.fGravity}N)</span>
+              <span className="text-cyan-600 dark:text-cyan-400 font-bold">💨 {language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚲 {language === 'zh-TW' ? '滾阻' : '滚阻'} {result.rollingPct}% ({result.fRolling}N)</span>
+              <span className="text-amber-600 dark:text-amber-400 font-bold">⛰️ {language === 'zh-TW' ? '重力' : '重力'} {result.gravityPct}% ({result.fGravity}N)</span>
             </div>
           </div>
 
@@ -680,17 +680,17 @@ export const CyclePowerCalculator: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <div className="flex justify-between items-center">
               <span className="text-xs font-bold text-slate-900 dark:text-slate-200">
-                {language === 'en' ? `Coggan 7 Training Zones (FTP: ${profile.ftpWatts || 220}W)` : language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
+                {language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-                    <th className="pb-2 font-medium">{language === 'en' ? 'Zone' : language === 'zh-TW' ? '訓練區間' : '训练区间'}</th>
-                    <th className="pb-2 font-medium">{language === 'en' ? '% of FTP' : 'FTP 比例'}</th>
-                    <th className="pb-2 font-medium">{language === 'en' ? 'Target Watts' : language === 'zh-TW' ? '目標功率 (W)' : '目标功率 (W)'}</th>
-                    <th className="pb-2 font-medium">{language === 'en' ? 'Primary Training Benefit' : language === 'zh-TW' ? '主要訓練效益' : '主要训练效益'}</th>
+                    <th className="pb-2 font-medium">{language === 'zh-TW' ? '訓練區間' : '训练区间'}</th>
+                    <th className="pb-2 font-medium">{'FTP 比例'}</th>
+                    <th className="pb-2 font-medium">{language === 'zh-TW' ? '目標功率 (W)' : '目标功率 (W)'}</th>
+                    <th className="pb-2 font-medium">{language === 'zh-TW' ? '主要訓練效益' : '主要训练效益'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300 font-mono">
@@ -711,20 +711,20 @@ export const CyclePowerCalculator: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-300">
-                {language === 'en' ? 'Multidimensional Dynamics Curves' : language === 'zh-TW' ? '多維動力學預測曲線' : '多维动力学预测曲线'}
+                {language === 'zh-TW' ? '多維動力學預測曲線' : '多维动力学预测曲线'}
               </span>
               <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
                 <button
                   onClick={() => setChartTab('speed')}
                   className={`px-3 py-1 rounded-lg transition ${chartTab === 'speed' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
                 >
-                  {language === 'en' ? 'Speed vs Power' : language === 'zh-TW' ? '速度-功率' : '速度-功率'}
+                  {language === 'zh-TW' ? '速度-功率' : '速度-功率'}
                 </button>
                 <button
                   onClick={() => setChartTab('weight')}
                   className={`px-3 py-1 rounded-lg transition ${chartTab === 'weight' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
                 >
-                  {language === 'en' ? 'Weight vs Power' : language === 'zh-TW' ? '體重-功率' : '体重-功率'}
+                  {language === 'zh-TW' ? '體重-功率' : '体重-功率'}
                 </button>
               </div>
             </div>

@@ -61,7 +61,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       setRightPcdMm(58);
       setRightCenterDistMm(19.2);
       setRightCross(2);
-      showToast(language === 'en' ? 'Loaded DT 350 Disc Rear + 50mm Carbon Rim' : '已载入 DT350 碟刹后轮 + 50mm 碳圈预设', 'info');
+      showToast(language === 'zh-TW' ? '已載入 DT350 碟煞後輪 + 50mm 碳圈預設' : '已载入 DT350 碟刹后轮 + 50mm 碳圈预设', 'info');
     } else if (preset === 'dt350_front_50') {
       setWheelPosition('front');
       setBrakeType('disc');
@@ -74,7 +74,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       setRightPcdMm(58);
       setRightCenterDistMm(35.5);
       setRightCross(2);
-      showToast(language === 'en' ? 'Loaded DT 350 Disc Front + 50mm Carbon Rim' : '已载入 DT350 碟刹前轮 + 50mm 碳圈预设', 'info');
+      showToast(language === 'zh-TW' ? '已載入 DT350 碟煞前輪 + 50mm 碳圈預設' : '已载入 DT350 碟刹前轮 + 50mm 碳圈预设', 'info');
     } else if (preset === 'gravel_asym_45') {
       setWheelPosition('rear');
       setBrakeType('disc');
@@ -87,7 +87,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       setRightPcdMm(58);
       setRightCenterDistMm(19.2);
       setRightCross(2);
-      showToast(language === 'en' ? 'Loaded Gravel Asymmetric Rim (2.6mm Offset)' : '已载入 Gravel 偏心圈 (2.6mm 偏心)', 'info');
+      showToast(language === 'zh-TW' ? '已載入 Gravel 偏心圈 (2.6mm 偏心)' : '已载入 Gravel 偏心圈 (2.6mm 偏心)', 'info');
     } else if (preset === 'mtb_29_xc') {
       setWheelPosition('rear');
       setBrakeType('disc');
@@ -100,7 +100,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       setRightPcdMm(58);
       setRightCenterDistMm(22.0);
       setRightCross(3);
-      showToast(language === 'en' ? 'Loaded 29er MTB Boost Rear + 3X Cross' : '已载入 29er 山地 Boost 后轮 3X 交叉预设', 'info');
+      showToast(language === 'zh-TW' ? '已載入 29er 登山車 Boost 後輪 3X 交叉預設' : '已载入 29er 山地 Boost 后轮 3X 交叉预设', 'info');
     } else if (preset === 'rim_rear_classic') {
       setWheelPosition('rear');
       setBrakeType('rim');
@@ -113,7 +113,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       setRightPcdMm(45);
       setRightCenterDistMm(16.0);
       setRightCross(2); // 2X drive side
-      showToast(language === 'en' ? 'Loaded Rim Brake Classic (Radial L / 2X R)' : '已载入圈刹经典 (左侧直拉 / 右侧2X交叉)', 'info');
+      showToast(language === 'zh-TW' ? '已載入框煞經典 (左側直拉 / 右側2X交叉)' : '已载入圈刹经典 (左侧直拉 / 右侧2X交叉)', 'info');
     }
   };
 
@@ -242,14 +242,14 @@ export const SpokeLengthCalculator: React.FC = () => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
               <Disc className="w-3.5 h-3.5" />
-              <span>{language === 'en' ? 'Master Wheelbuilding Science' : '技师级编轮几何学'}</span>
+              <span>{language === 'zh-TW' ? '技師級編輪幾何學' : '技师级编轮几何学'}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-              {language === 'en' ? 'Wheelbuilding & Spoke Length Calculator' : '自行车编轮与辐条长度计算器'}
+              {language === 'zh-TW' ? '單車編輪與輻條長度計算器' : '自行车编轮与辐条长度计算器'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-              {language === 'en'
-                ? 'Based on Jobst Brandt trigonometry. Calculate exact drive-side (DS) and non-drive-side (NDS) spoke lengths, asymmetric rim offset compensations, tension balance ratios, and torque lacing safety warnings.'
+              {language === 'zh-TW'
+                ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
                 : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧 (DS) 与非驱动侧 (NDS) 毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'}
             </p>
           </div>

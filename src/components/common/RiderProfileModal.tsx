@@ -27,9 +27,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
   const handleReset = () => {
     resetProfile();
     showToast(
-      language === 'en'
-        ? 'Rider profile reset to standard defaults'
-        : language === 'zh-TW'
+      language === 'zh-TW'
         ? '車手檔案已重置為標準預設值'
         : '车手档案已重置为标准默认值',
       'info'
@@ -57,10 +55,10 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                {language === 'en' ? 'System Settings & Rider Profile' : language === 'zh-TW' ? '系統偏好與車手通用檔案' : '系统偏好与车手通用档案'}
+                {language === 'zh-TW' ? '系統偏好與車手通用檔案' : '系统偏好与车手通用档案'}
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                {language === 'en' ? 'Single Source of Truth: syncs across all 14 scientific tools' : language === 'zh-TW' ? '設定一次，全站 14 大計算引擎自動即時聯動' : '设定一次，全站 14 大计算引擎自动即时联动'}
+                {language === 'zh-TW' ? '設定一次，全站 14 大計算引擎自動即時聯動' : '设定一次，全站 14 大计算引擎自动即时联动'}
               </p>
             </div>
           </div>
@@ -80,10 +78,10 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             </div>
             <div>
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
-                {language === 'en' ? 'Language' : language === 'zh-TW' ? '語言設定' : '语言设置'}
+                {language === 'zh-TW' ? '語言設定' : '语言设置'}
               </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                {language === 'en' ? 'English (Global)' : language === 'zh-TW' ? '繁體中文 (正體)' : '简体中文 (默认)'}
+                {language === 'zh-TW' ? '繁體中文 (正體)' : '简体中文 (默认)'}
               </span>
             </div>
           </div>
@@ -91,7 +89,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
           <div className="flex items-center p-0.5 rounded-xl bg-slate-200/80 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs font-bold">
             <button
               onClick={() => setLanguage('zh')}
-              className={`px-2.5 py-1 rounded-lg transition ${
+              className={`px-3 py-1 rounded-lg transition ${
                 language === 'zh'
                   ? 'bg-cyan-500 text-slate-950 shadow-xs font-extrabold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -101,23 +99,13 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             </button>
             <button
               onClick={() => setLanguage('zh-TW')}
-              className={`px-2.5 py-1 rounded-lg transition ${
+              className={`px-3 py-1 rounded-lg transition ${
                 language === 'zh-TW'
                   ? 'bg-cyan-500 text-slate-950 shadow-xs font-extrabold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               繁體
-            </button>
-            <button
-              onClick={() => setLanguage('en')}
-              className={`px-2.5 py-1 rounded-lg transition ${
-                language === 'en'
-                  ? 'bg-cyan-500 text-slate-950 shadow-xs font-extrabold'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              EN
             </button>
           </div>
         </div>
@@ -130,7 +118,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             </div>
             <div>
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
-                {language === 'en' ? 'Global Unit System' : language === 'zh-TW' ? '全局度量衡制式' : '全局度量衡制式'}
+                {language === 'zh-TW' ? '全局度量衡制式' : '全局度量衡制式'}
               </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-400">
                 {isImperial ? 'Imperial (lbs, in/ft, mph, psi)' : 'Metric (kg, cm, km/h, bar)'}
@@ -177,14 +165,14 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               </div>
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
-                  {language === 'en' ? 'Display Theme' : language === 'zh-TW' ? '外觀明暗模式' : '外观明暗模式'}
+                  {language === 'zh-TW' ? '外觀明暗模式' : '外观明暗模式'}
                 </span>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400">
                   {themeMode === 'system'
-                    ? (language === 'en' ? 'Auto-synced with phone system' : '已开启：自动跟随手机系统')
+                    ? ('已开启：自动跟随手机系统')
                     : themeMode === 'dark'
-                    ? (language === 'en' ? 'Dark Mode (Always)' : '锁定为深色模式')
-                    : (language === 'en' ? 'Light Mode (Always)' : '锁定为明亮浅色模式')}
+                    ? ('锁定为深色模式')
+                    : ('锁定为明亮浅色模式')}
                 </span>
               </div>
             </div>
@@ -232,7 +220,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                {language === 'en' ? 'Height' : language === 'zh-TW' ? '身高' : '身高'}
+                {language === 'zh-TW' ? '身高' : '身高'}
               </label>
               {isImperial && (
                 <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono">
@@ -253,7 +241,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-              {language === 'en' ? 'Inseam' : language === 'zh-TW' ? '跨高' : '跨高'}
+              {language === 'zh-TW' ? '跨高' : '跨高'}
             </label>
             <NumberStepper
               value={profile.inseamCm}
@@ -268,7 +256,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-              {language === 'en' ? 'Rider Weight' : language === 'zh-TW' ? '車手淨重' : '车手净重'}
+              {language === 'zh-TW' ? '車手淨重' : '车手净重'}
             </label>
             {isImperial ? (
               <NumberStepper
@@ -295,7 +283,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-              {language === 'en' ? 'Bike + Gear' : language === 'zh-TW' ? '整車+裝備重' : '整车+装备重'}
+              {language === 'zh-TW' ? '整車+裝備重' : '整车+装备重'}
             </label>
             {isImperial ? (
               <NumberStepper
@@ -322,7 +310,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-              {language === 'en' ? 'Functional Threshold (FTP)' : language === 'zh-TW' ? '功能閾值功率 (FTP)' : '功能阈值功率 (FTP)'}
+              {language === 'zh-TW' ? '功能閾值功率 (FTP)' : '功能阈值功率 (FTP)'}
             </label>
             <NumberStepper
               value={profile.ftpWatts}
@@ -336,7 +324,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-              {language === 'en' ? 'Rider Age' : language === 'zh-TW' ? '車手年齡' : '车手年龄'}
+              {language === 'zh-TW' ? '車手年齡' : '车手年龄'}
             </label>
             <NumberStepper
               value={profile.age}
@@ -344,7 +332,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               step={1}
               min={10}
               max={99}
-              unit={language === 'en' ? 'yrs' : '岁'}
+              unit={'岁'}
             />
           </div>
         </div>
@@ -353,9 +341,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
         <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
           <ShieldCheck className="w-4 h-4 text-cyan-500 dark:text-cyan-400 shrink-0 mt-0.5" />
           <span className="leading-relaxed">
-            {language === 'en'
-              ? 'Rider parameters and unit system are persisted in local storage. All calculations (power, tire pressure, fitting, pacing) adapt automatically.'
-              : language === 'zh-TW'
+            {language === 'zh-TW'
               ? '檔案參數與度量衡已持久化保存在瀏覽器中。全站所有工具（功率、胎壓、Fitting、爬坡配速等）均已主動監聽並即時響應。'
               : '档案参数与度量衡已持久化保存在浏览器中。全站所有工具（功率、胎压、Fitting、爬坡配速等）均已主动监听并即时响应。'}
           </span>
@@ -368,15 +354,13 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            {language === 'en' ? 'Reset Defaults' : language === 'zh-TW' ? '重置預設' : '重置默认'}
+            {language === 'zh-TW' ? '重置預設' : '重置默认'}
           </button>
           <button
             onClick={() => {
               onClose();
               showToast(
-                language === 'en'
-                  ? 'Rider profile & units synced across all tools!'
-                  : language === 'zh-TW'
+                language === 'zh-TW'
                   ? '車手檔案與制式已更新並全站同步！'
                   : '车手档案与度量衡已更新并全站同步！',
                 'success'
@@ -385,7 +369,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-cyan-500/20"
           >
             <Check className="w-4 h-4" />
-            {language === 'en' ? 'Save & Sync All Tools' : language === 'zh-TW' ? '保存並同步全站' : '保存并同步全站'}
+            {language === 'zh-TW' ? '保存並同步全站' : '保存并同步全站'}
           </button>
         </div>
       </div>

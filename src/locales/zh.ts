@@ -22,7 +22,7 @@ export const zh = {
   catHealth: '生理与代谢',
 
   // Units & Toggles
-  langToggle: 'EN',
+  langToggle: '繁體',
   unitToggleMetric: '公制 (Metric)',
   unitToggleImperial: '英制 (Imperial)',
   unitWeightKg: 'kg',

@@ -80,9 +80,7 @@ export const PwaInstallPrompt: React.FC = () => {
               <Smartphone className="w-3.5 h-3.5" />
             </div>
             <span className="text-[11px] sm:text-xs font-medium truncate text-slate-700 dark:text-slate-300">
-              {language === 'en'
-                ? 'Add to Home Screen for full-screen offline use'
-                : language === 'zh-TW'
+              {language === 'zh-TW'
                 ? '加入主畫面，享全螢幕離線計算'
                 : '添加到主屏幕，享全屏离线体验'}
             </span>
@@ -95,11 +93,7 @@ export const PwaInstallPrompt: React.FC = () => {
             >
               <Download className="w-3 h-3 text-slate-950" />
               <span>
-                {language === 'en'
-                  ? 'Install'
-                  : language === 'zh-TW'
-                  ? '安裝'
-                  : '安装'}
+                {language === 'zh-TW' ? '安裝' : '安装'}
               </span>
             </button>
             <button
@@ -124,7 +118,7 @@ export const PwaInstallPrompt: React.FC = () => {
                   <Smartphone className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-sm">
-                  {language === 'en' ? 'Add to Home Screen' : language === 'zh-TW' ? '加入主畫面說明' : '添加到手机主屏幕'}
+                  {language === 'zh-TW' ? '加入主畫面說明' : '添加到手机主屏幕'}
                 </h3>
               </div>
               <button onClick={() => setShowIosGuide(false)} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
@@ -133,9 +127,7 @@ export const PwaInstallPrompt: React.FC = () => {
             </div>
 
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              {language === 'en'
-                ? 'iOS Safari does not support one-click install, but you can easily add it manually:'
-                : language === 'zh-TW'
+              {language === 'zh-TW'
                 ? 'iOS 系統請透過 Safari 瀏覽器加入主畫面：'
                 : 'iOS 系统请通过 Safari 浏览器添加至主屏幕：'}
             </p>
@@ -144,17 +136,15 @@ export const PwaInstallPrompt: React.FC = () => {
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                 <span className="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
                 <span>
-                  {language === 'en' ? 'Tap the ' : '点击 Safari 底部的 '}
+                  {language === 'zh-TW' ? '點擊 Safari 底部的 ' : '点击 Safari 底部的 '}
                   <Share className="w-3.5 h-3.5 inline mx-1 text-cyan-500" />
-                  {language === 'en' ? 'Share button at the bottom.' : '分享按钮'}
+                  {language === 'zh-TW' ? '分享按鈕' : '分享按钮'}
                 </span>
               </div>
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                 <span className="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
                 <span>
-                  {language === 'en'
-                    ? 'Scroll down and select "Add to Home Screen".'
-                    : language === 'zh-TW'
+                  {language === 'zh-TW'
                     ? '下滑選取「加入主畫面」標籤。'
                     : '下滑选择「添加到主屏幕」图标。'}
                 </span>
@@ -162,7 +152,7 @@ export const PwaInstallPrompt: React.FC = () => {
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                 <span className="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
                 <span>
-                  {language === 'en' ? 'Tap "Add" in the top-right corner.' : '点击右上角「添加」，即可从桌面启动！'}
+                  {language === 'zh-TW' ? '點擊右上角「加入」，即可從桌面啟動！' : '点击右上角「添加」，即可从桌面启动！'}
                 </span>
               </div>
             </div>
@@ -171,7 +161,7 @@ export const PwaInstallPrompt: React.FC = () => {
               onClick={() => setShowIosGuide(false)}
               className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-xs transition shadow-md shadow-cyan-500/20"
             >
-              {language === 'en' ? 'Got It' : '我知道了'}
+              {language === 'zh-TW' ? '我知道了' : '我知道了'}
             </button>
           </div>
         </div>

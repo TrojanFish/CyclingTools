@@ -113,9 +113,7 @@ export const FitActivityAnalyzer: React.FC = () => {
       );
       setAnalysis(updated);
       showToast(
-        language === 'en'
-          ? 'Metrics updated with new rider profile'
-          : '已基于调整后的车手生理指标重新计算所有数据',
+        '已基于调整后的车手生理指标重新计算所有数据',
         'success'
       );
     } catch (err: any) {
@@ -138,17 +136,13 @@ export const FitActivityAnalyzer: React.FC = () => {
         result = await parseTcxFile(file, ftpWatts, weightKg, maxHr);
       } else {
         throw new Error(
-          language === 'en'
-            ? 'Unsupported format! Please upload .fit, .gpx, or .tcx'
-            : '格式不支持！仅支持上传 .fit, .gpx, 或 .tcx 文件'
+          '格式不支持！仅支持上传 .fit, .gpx, 或 .tcx 文件'
         );
       }
 
       setAnalysis(result);
       showToast(
-        language === 'en'
-          ? `Successfully parsed ${file.name} (${result.totalDistanceKm}km)`
-          : `解析成功！共包含 ${result.totalDistanceKm}km 骑行数据`,
+        `解析成功！共包含 ${result.totalDistanceKm}km 骑行数据`,
         'success'
       );
     } catch (error: any) {
@@ -177,9 +171,7 @@ export const FitActivityAnalyzer: React.FC = () => {
       setAnalysis(demo);
       setIsLoading(false);
       showToast(
-        language === 'en'
-          ? 'Loaded demo Grand Tour classic climbing ride!'
-          : '已成功加载千岛湖丘陵经典实测样本航迹！',
+        '已成功加载千岛湖丘陵经典实测样本航迹！',
         'info'
       );
     }, 150);
@@ -212,7 +204,7 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (showPower) {
       datasets.push({
         type: 'line' as const,
-        label: language === 'en' ? 'Power (W)' : '功率 (W)',
+        label: '功率 (W)',
         data: pts.map(p => p.power ?? null),
         borderColor: '#06b6d4', // cyan-500
         backgroundColor: 'rgba(6, 182, 212, 0.08)',
@@ -227,7 +219,7 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (showHeartRate) {
       datasets.push({
         type: 'line' as const,
-        label: language === 'en' ? 'Heart Rate (bpm)' : '心率 (bpm)',
+        label: '心率 (bpm)',
         data: pts.map(p => p.heartRate ?? null),
         borderColor: '#f43f5e', // rose-500
         backgroundColor: 'transparent',
@@ -241,7 +233,7 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (showElevation) {
       datasets.push({
         type: 'line' as const,
-        label: language === 'en' ? 'Elevation (m)' : '海拔 (m)',
+        label: '海拔 (m)',
         data: pts.map(p => p.altitude ?? null),
         borderColor: '#10b981', // emerald-500
         backgroundColor: 'rgba(16, 185, 129, 0.12)',
@@ -256,7 +248,7 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (showSpeed) {
       datasets.push({
         type: 'line' as const,
-        label: language === 'en' ? 'Speed (km/h)' : '速度 (km/h)',
+        label: '速度 (km/h)',
         data: pts.map(p => p.speed ?? null),
         borderColor: '#3b82f6', // blue-500
         backgroundColor: 'transparent',
@@ -270,7 +262,7 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (showCadence) {
       datasets.push({
         type: 'line' as const,
-        label: language === 'en' ? 'Cadence (rpm)' : '踏频 (rpm)',
+        label: '踏频 (rpm)',
         data: pts.map(p => p.cadence ?? null),
         borderColor: '#eab308', // yellow-500
         backgroundColor: 'transparent',
@@ -356,10 +348,10 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (!analysis) return { labels: [], datasets: [] };
     const zones = analysis.timeInPowerZones;
     return {
-      labels: zones.map(z => `${z.zone} ${language === 'en' ? z.labelEn : z.label}`),
+      labels: zones.map(z => `${z.zone} ${z.label}`),
       datasets: [
         {
-          label: language === 'en' ? 'Time %' : '占比 (%)',
+          label: '占比 (%)',
           data: zones.map(z => z.percent),
           backgroundColor: zones.map(z => z.color),
           borderRadius: 6
@@ -373,10 +365,10 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (!analysis) return { labels: [], datasets: [] };
     const zones = analysis.timeInHrZones;
     return {
-      labels: zones.map(z => `${z.zone} ${language === 'en' ? z.labelEn : z.label}`),
+      labels: zones.map(z => `${z.zone} ${z.label}`),
       datasets: [
         {
-          label: language === 'en' ? 'Time %' : '占比 (%)',
+          label: '占比 (%)',
           data: zones.map(z => z.percent),
           backgroundColor: zones.map(z => z.color),
           borderRadius: 6
@@ -393,7 +385,7 @@ export const FitActivityAnalyzer: React.FC = () => {
       datasets: [
         {
           type: 'line' as const,
-          label: language === 'en' ? 'Peak Power (Watts)' : '峰值平均功率 (W)',
+          label: '峰值平均功率 (W)',
           data: analysis.mmp.map(m => m.watts),
           borderColor: '#8b5cf6',
           backgroundColor: 'rgba(139, 92, 246, 0.12)',
@@ -415,26 +407,20 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (analysis.intensityFactor < 0.75) {
       notes.push({
         type: 'info',
-        title: language === 'en' ? 'Recovery / Endurance Ride' : '恢复与基础耐力骑行 (L2为主)',
-        desc: language === 'en'
-          ? `IF is ${analysis.intensityFactor}. Great for aerobic base building with low muscular fatigue.`
-          : `本次骑行强度系数 IF 为 ${analysis.intensityFactor}，属于标准的有氧低压耐力骑行，促进线粒体增生且对肌肉神经系统破坏小。`
+        title: '恢复与基础耐力骑行 (L2为主)',
+        desc: `本次骑行强度系数 IF 为 ${analysis.intensityFactor}，属于标准的有氧低压耐力骑行，促进线粒体增生且对肌肉神经系统破坏小。`
       });
     } else if (analysis.intensityFactor <= 0.90) {
       notes.push({
         type: 'success',
-        title: language === 'en' ? 'Solid Tempo & SweetSpot' : '高效节奏与甜点训练 (Tempo / SweetSpot)',
-        desc: language === 'en'
-          ? `IF is ${analysis.intensityFactor}. High stimulus for FTP development with manageable fatigue.`
-          : `本次骑行强度系数 IF 为 ${analysis.intensityFactor}，训练刺激充分，是提升巡航能力与推重比的黄金区间。`
+        title: '高效节奏与甜点训练 (Tempo / SweetSpot)',
+        desc: `本次骑行强度系数 IF 为 ${analysis.intensityFactor}，训练刺激充分，是提升巡航能力与推重比的黄金区间。`
       });
     } else {
       notes.push({
         type: 'warning',
-        title: language === 'en' ? 'High Intensity Race Pace' : '高负荷竞赛 / 极限抗乳酸骑行',
-        desc: language === 'en'
-          ? `IF reached ${analysis.intensityFactor}. High glycogen expenditure. Full recovery needed.`
-          : `本次骑行强度系数达到 ${analysis.intensityFactor}，接近或超越比赛工况，糖原消耗剧烈，建议 36-48 小时内以恢复骑或休息为主。`
+        title: '高负荷竞赛 / 极限抗乳酸骑行',
+        desc: `本次骑行强度系数达到 ${analysis.intensityFactor}，接近或超越比赛工况，糖原消耗剧烈，建议 36-48 小时内以恢复骑或休息为主。`
       });
     }
 
@@ -442,18 +428,14 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (analysis.variabilityIndex > 1.20) {
       notes.push({
         type: 'info',
-        title: language === 'en' ? 'High Variability (Punchy Profile)' : '高波动性输出 (VI > 1.20)',
-        desc: language === 'en'
-          ? `VI is ${analysis.variabilityIndex}. Suggests aggressive climbs, drafting surges, or race criterium style.`
-          : `变化指数 VI 达 ${analysis.variabilityIndex}，说明存在大量突围、陡坡踩踏与下坡滑行，属于典型的起伏赛道或绕圈进攻战术。`
+        title: '高波动性输出 (VI > 1.20)',
+        desc: `变化指数 VI 达 ${analysis.variabilityIndex}，说明存在大量突围、陡坡踩踏与下坡滑行，属于典型的起伏赛道或绕圈进攻战术。`
       });
     } else if (analysis.variabilityIndex <= 1.06) {
       notes.push({
         type: 'success',
-        title: language === 'en' ? 'Very Steady Pacing (TT Style)' : '极平稳巡航配速 (VI ≤ 1.06)',
-        desc: language === 'en'
-          ? `VI is ${analysis.variabilityIndex}. Outstanding steady power pacing typical of pure Time Trialists.`
-          : `变化指数 VI 仅为 ${analysis.variabilityIndex}，动力输出平稳如钟摆，堪称计时赛（TT）教科书般的配速掌控。`
+        title: '极平稳巡航配速 (VI ≤ 1.06)',
+        desc: `变化指数 VI 仅为 ${analysis.variabilityIndex}，动力输出平稳如钟摆，堪称计时赛（TT）教科书般的配速掌控。`
       });
     }
 
@@ -462,18 +444,14 @@ export const FitActivityAnalyzer: React.FC = () => {
       if (Math.abs(analysis.aerobicDecoupling) <= 5.0) {
         notes.push({
           type: 'success',
-          title: language === 'en' ? 'Minimal Aerobic Drift (Pw:HR < 5%)' : '极佳有氧耐力稳定性 (心率漂移 < 5%)',
-          desc: language === 'en'
-            ? `Decoupling is ${analysis.aerobicDecoupling}%. Your cardiovascular engine maintained efficiency throughout the ride.`
-            : `有氧解耦率仅为 ${analysis.aerobicDecoupling}%，后半段同等功率下心率几乎未发生代偿性漂移，说明有氧底子扎实、脱水控制极佳。`
+          title: '极佳有氧耐力稳定性 (心率漂移 < 5%)',
+          desc: `有氧解耦率仅为 ${analysis.aerobicDecoupling}%，后半段同等功率下心率几乎未发生代偿性漂移，说明有氧底子扎实、脱水控制极佳。`
         });
       } else {
         notes.push({
           type: 'warning',
-          title: language === 'en' ? 'Significant Cardiac Drift (Pw:HR > 5%)' : '后半程存在显著心率漂移 (Pw:HR > 5%)',
-          desc: language === 'en'
-            ? `Decoupling reached ${analysis.aerobicDecoupling}%. Consider hydration, core cooling, or longer base miles.`
-            : `后半程有氧解耦率达到 ${analysis.aerobicDecoupling}%，相同瓦数下心率显著爬升，可能由长距离疲劳、环境高温或电解质水化不足引起。`
+          title: '后半程存在显著心率漂移 (Pw:HR > 5%)',
+          desc: `后半程有氧解耦率达到 ${analysis.aerobicDecoupling}%，相同瓦数下心率显著爬升，可能由长距离疲劳、环境高温或电解质水化不足引起。`
         });
       }
     }
@@ -489,15 +467,13 @@ export const FitActivityAnalyzer: React.FC = () => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
               <LineChartIcon className="w-3.5 h-3.5" />
-              <span>{language === 'en' ? 'Data Analytics Suite' : '数据复盘与运动生理学'}</span>
+              <span>{'数据复盘与运动生理学'}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-              {language === 'en' ? 'Cycling Activity & FIT Deep Analyzer' : '码表活动与 FIT 航迹深度解析器'}
+              {'码表活动与 FIT 航迹深度解析器'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-              {language === 'en'
-                ? 'Offline parse .FIT, .GPX, and .TCX files directly in your browser. Calculate Normalized Power (NP), Intensity Factor (IF), TSS, Variability Index, Mean Maximal Power (MMP), and Coggan 7-Zone distributions with zero data upload.'
-                : '纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。'}
+              {'纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。'}
             </p>
           </div>
 
@@ -507,14 +483,14 @@ export const FitActivityAnalyzer: React.FC = () => {
               className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5"
             >
               <Printer className="w-4 h-4" />
-              <span>{language === 'en' ? 'Print Report' : '打印分析报告'}</span>
+              <span>{'打印分析报告'}</span>
             </button>
             <button
               onClick={handleLoadDemo}
               className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{language === 'en' ? 'Load Demo Ride' : '加载实测样本数据'}</span>
+              <span>{'加载实测样本数据'}</span>
             </button>
           </div>
         </div>
@@ -544,12 +520,10 @@ export const FitActivityAnalyzer: React.FC = () => {
           </div>
 
           <div className="font-bold text-sm text-slate-800 dark:text-slate-200">
-            {language === 'en' ? 'Drop .FIT / .GPX / .TCX file here or click to browse' : '点击选择或拖拽码表文件至此 (.fit / .gpx / .tcx)'}
+            {'点击选择或拖拽码表文件至此 (.fit / .gpx / .tcx)'}
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {language === 'en'
-              ? 'Works seamlessly with Garmin, Wahoo, IGPSPORT, Magene, Strava & Bryton'
-              : '全面兼容佳明 Garmin、Wahoo、迈金、行者、iGPSPORT、百锐腾等各大主流品牌'}
+            {'全面兼容佳明 Garmin、Wahoo、迈金、行者、iGPSPORT、百锐腾等各大主流品牌'}
           </div>
 
           {analysis && (
@@ -566,9 +540,9 @@ export const FitActivityAnalyzer: React.FC = () => {
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
               <Gauge className="w-4 h-4 text-cyan-500" />
-              {language === 'en' ? 'Rider Baseline Anchors' : '车手基准生理参数'}
+              {'车手基准生理参数'}
             </span>
-            <span className="text-[10px] text-slate-500">{language === 'en' ? 'For IF & TSS' : '用于推算 IF/TSS'}</span>
+            <span className="text-[10px] text-slate-500">{'用于推算 IF/TSS'}</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -584,7 +558,7 @@ export const FitActivityAnalyzer: React.FC = () => {
 
             <div>
               <label className="text-[11px] text-slate-500 block mb-1">
-                {language === 'en' ? 'Weight (kg)' : '体重 (kg)'}
+                {'体重 (kg)'}
               </label>
               <input
                 type="number"
@@ -596,7 +570,7 @@ export const FitActivityAnalyzer: React.FC = () => {
 
             <div>
               <label className="text-[11px] text-slate-500 block mb-1">
-                {language === 'en' ? 'Max HR' : '最大心率'}
+                {'最大心率'}
               </label>
               <input
                 type="number"
@@ -612,7 +586,7 @@ export const FitActivityAnalyzer: React.FC = () => {
             className="w-full py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>{language === 'en' ? 'Update & Recalculate' : '更新并刷新分析'}</span>
+            <span>{'更新并刷新分析'}</span>
           </button>
         </div>
       </div>
@@ -625,49 +599,49 @@ export const FitActivityAnalyzer: React.FC = () => {
             {/* Normalized Power */}
             <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{language === 'en' ? 'Normalized Power' : '标准化功率 NP'}</span>
+                <span>{'标准化功率 NP'}</span>
                 <Zap className="w-3.5 h-3.5 text-cyan-500" />
               </div>
               <div className="text-xl sm:text-2xl font-extrabold text-cyan-500">
                 {analysis.normalizedPower} <span className="text-xs font-normal text-slate-400">W</span>
               </div>
               <div className="text-[10px] text-slate-500">
-                {(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · {language === 'en' ? 'Avg' : '均功率'} {analysis.avgPower}W
+                {(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · {'均功率'} {analysis.avgPower}W
               </div>
             </div>
 
             {/* Intensity Factor */}
             <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{language === 'en' ? 'Intensity Factor' : '强度系数 IF'}</span>
+                <span>{'强度系数 IF'}</span>
                 <Flame className="w-3.5 h-3.5 text-amber-500" />
               </div>
               <div className="text-xl sm:text-2xl font-extrabold text-amber-500">
                 {analysis.intensityFactor}
               </div>
               <div className="text-[10px] text-slate-500">
-                {Math.round(analysis.intensityFactor * 100)}% {language === 'en' ? 'of FTP' : 'FTP负荷'}
+                {Math.round(analysis.intensityFactor * 100)}% {'FTP负荷'}
               </div>
             </div>
 
             {/* Training Stress Score */}
             <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{language === 'en' ? 'Training Stress' : '训练压力 TSS'}</span>
+                <span>{'训练压力 TSS'}</span>
                 <Award className="w-3.5 h-3.5 text-purple-500" />
               </div>
               <div className="text-xl sm:text-2xl font-extrabold text-purple-500">
                 {analysis.tss}
               </div>
               <div className="text-[10px] text-slate-500">
-                {analysis.tss < 150 ? (language === 'en' ? 'Low Fatigue' : '低度疲劳') : analysis.tss < 300 ? (language === 'en' ? 'Moderate Fatigue' : '中度疲劳') : (language === 'en' ? 'High Fatigue' : '重度负荷')}
+                {analysis.tss < 150 ? ('低度疲劳') : analysis.tss < 300 ? ('中度疲劳') : ('重度负荷')}
               </div>
             </div>
 
             {/* Variability Index */}
             <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{language === 'en' ? 'Variability Index' : '变化指数 VI'}</span>
+                <span>{'变化指数 VI'}</span>
                 <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
               </div>
               <div className="text-xl sm:text-2xl font-extrabold text-blue-500">
@@ -681,7 +655,7 @@ export const FitActivityAnalyzer: React.FC = () => {
             {/* Distance & Moving Time */}
             <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{language === 'en' ? 'Distance & Moving' : '里程与净骑行'}</span>
+                <span>{'里程与净骑行'}</span>
                 <Timer className="w-3.5 h-3.5 text-emerald-500" />
               </div>
               <div className="text-xl sm:text-2xl font-extrabold text-emerald-500">
@@ -695,7 +669,7 @@ export const FitActivityAnalyzer: React.FC = () => {
             {/* Elevation & Work Done */}
             <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between">
-                <span>{language === 'en' ? 'Climbing & Energy' : '累计爬升与做功'}</span>
+                <span>{'累计爬升与做功'}</span>
                 <Mountain className="w-3.5 h-3.5 text-rose-500" />
               </div>
               <div className="text-xl sm:text-2xl font-extrabold text-rose-500">
@@ -712,35 +686,35 @@ export const FitActivityAnalyzer: React.FC = () => {
             <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
               <span className="flex items-center gap-1.5">
                 <Heart className="w-4 h-4 text-rose-500" />
-                <span>{language === 'en' ? 'Avg HR' : '平均心率'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
-                <span className="text-slate-400 text-[10px]">({language === 'en' ? 'Max' : '最高'} {analysis.maxHeartRate ?? '--'})</span>
+                <span>{'平均心率'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
+                <span className="text-slate-400 text-[10px]">({'最高'} {analysis.maxHeartRate ?? '--'})</span>
               </span>
 
               <span className="flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-amber-500" />
-                <span>{language === 'en' ? 'Avg Cadence' : '平均踏频'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgCadence ?? '--'} rpm</strong></span>
+                <span>{'平均踏频'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgCadence ?? '--'} rpm</strong></span>
                 <span className="text-slate-400 text-[10px]">
-                  ({language === 'en' ? 'Pedal' : '踩踏'} {analysis.pedalingPercent ?? 100}% · {language === 'en' ? 'Coast' : '滑行'} {100 - (analysis.pedalingPercent ?? 100)}%)
+                  ({'踩踏'} {analysis.pedalingPercent ?? 100}% · {'滑行'} {100 - (analysis.pedalingPercent ?? 100)}%)
                 </span>
               </span>
 
               {analysis.efficiencyFactor && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
                   <Gauge className="w-4 h-4 text-cyan-500" />
-                  <span>{language === 'en' ? 'Efficiency Factor (EF)' : '效率因子 (EF)'}: <strong className="text-cyan-500">{analysis.efficiencyFactor} W/bpm</strong></span>
+                  <span>{'效率因子 (EF)'}: <strong className="text-cyan-500">{analysis.efficiencyFactor} W/bpm</strong></span>
                 </span>
               )}
 
               {analysis.aerobicDecoupling !== undefined && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4 text-purple-500" />
-                  <span>{language === 'en' ? 'Pw:HR Decoupling' : '有氧解耦率 (Pw:HR)'}: <strong className={analysis.aerobicDecoupling > 5 ? 'text-amber-500' : 'text-emerald-500'}>{analysis.aerobicDecoupling}%</strong></span>
+                  <span>{'有氧解耦率 (Pw:HR)'}: <strong className={analysis.aerobicDecoupling > 5 ? 'text-amber-500' : 'text-emerald-500'}>{analysis.aerobicDecoupling}%</strong></span>
                 </span>
               )}
             </div>
 
             <div className="text-[11px] text-slate-500 dark:text-slate-400">
-              {language === 'en' ? 'Elapsed' : '总历时'}: {formatDuration(analysis.totalDurationSec)} · {analysis.points.length} {language === 'en' ? 'records' : '个秒级采样点'}
+              {'总历时'}: {formatDuration(analysis.totalDurationSec)} · {analysis.points.length} {'个秒级采样点'}
             </div>
           </div>
 
@@ -755,7 +729,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <LineChartIcon className="w-4 h-4" />
-              <span>{language === 'en' ? 'Time-Series Trends' : '全景时序趋势'}</span>
+              <span>{'全景时序趋势'}</span>
             </button>
 
             <button
@@ -767,7 +741,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <BarChart3 className="w-4 h-4" />
-              <span>{language === 'en' ? 'Time in Zones' : '功率/心率区间驻留'}</span>
+              <span>{'功率/心率区间驻留'}</span>
             </button>
 
             <button
@@ -779,7 +753,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <Layers className="w-4 h-4" />
-              <span>{language === 'en' ? 'MMP Power Curve' : '峰值功率曲线 (MMP)'}</span>
+              <span>{'峰值功率曲线 (MMP)'}</span>
             </button>
 
             <button
@@ -791,7 +765,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               }`}
             >
               <Sparkles className="w-4 h-4" />
-              <span>{language === 'en' ? 'Physiological Insights' : '训练生理学诊断'}</span>
+              <span>{'训练生理学诊断'}</span>
             </button>
           </div>
 
@@ -800,7 +774,7 @@ export const FitActivityAnalyzer: React.FC = () => {
             <div className="glass-panel p-4 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                  {language === 'en' ? 'Multi-Channel Telemetry (Time in mm:ss)' : '多轨遥测曲线 (时间轴：分:秒)'}
+                  {'多轨遥测曲线 (时间轴：分:秒)'}
                 </div>
 
                 {/* Channel Visibility Switches */}
@@ -811,7 +785,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                       showPower ? 'bg-cyan-500/20 text-cyan-500 border border-cyan-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    ⚡ {language === 'en' ? 'Power' : '功率'}
+                    ⚡ {'功率'}
                   </button>
 
                   <button
@@ -820,7 +794,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                       showHeartRate ? 'bg-rose-500/20 text-rose-500 border border-rose-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    ❤️ {language === 'en' ? 'HR' : '心率'}
+                    ❤️ {'心率'}
                   </button>
 
                   <button
@@ -829,7 +803,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                       showElevation ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    ⛰️ {language === 'en' ? 'Elevation' : '海拔'}
+                    ⛰️ {'海拔'}
                   </button>
 
                   <button
@@ -838,7 +812,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                       showSpeed ? 'bg-blue-500/20 text-blue-500 border border-blue-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    🚴 {language === 'en' ? 'Speed' : '速度'}
+                    🚴 {'速度'}
                   </button>
 
                   <button
@@ -847,7 +821,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                       showCadence ? 'bg-amber-500/20 text-amber-500 border border-amber-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    🔄 {language === 'en' ? 'Cadence' : '踏频'}
+                    🔄 {'踏频'}
                   </button>
                 </div>
               </div>
@@ -866,7 +840,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-cyan-500" />
-                    {language === 'en' ? 'Coggan 7 Power Zones' : 'Coggan 功率 7 区分布'}
+                    {'Coggan 功率 7 区分布'}
                   </span>
                   <span className="text-xs text-slate-400">FTP: {ftpWatts}W</span>
                 </div>
@@ -891,7 +865,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                     <div key={z.zone} className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-slate-50 dark:bg-slate-900/60">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
-                        <strong className="text-slate-800 dark:text-slate-200">{z.zone} {language === 'en' ? z.labelEn : z.label}</strong>
+                        <strong className="text-slate-800 dark:text-slate-200">{z.zone} {z.label}</strong>
                         <span className="text-slate-400 text-[10px]">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
@@ -908,9 +882,9 @@ export const FitActivityAnalyzer: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-rose-500" />
-                    {language === 'en' ? 'Heart Rate 5 Zones' : '心率 5 区分布'}
+                    {'心率 5 区分布'}
                   </span>
-                  <span className="text-xs text-slate-400">{language === 'en' ? 'Max HR' : '最大心率'}: {maxHr}bpm</span>
+                  <span className="text-xs text-slate-400">{'最大心率'}: {maxHr}bpm</span>
                 </div>
 
                 <div className="h-56">
@@ -933,7 +907,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                     <div key={z.zone} className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-slate-50 dark:bg-slate-900/60">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
-                        <strong className="text-slate-800 dark:text-slate-200">{z.zone} {language === 'en' ? z.labelEn : z.label}</strong>
+                        <strong className="text-slate-800 dark:text-slate-200">{z.zone} {z.label}</strong>
                         <span className="text-slate-400 text-[10px]">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
@@ -953,12 +927,10 @@ export const FitActivityAnalyzer: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                    {language === 'en' ? 'Mean Maximal Power (MMP) Curve' : '最佳平均峰值功率 (MMP) 曲线'}
+                    {'最佳平均峰值功率 (MMP) 曲线'}
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {language === 'en'
-                      ? 'Highest average power maintained over specific durations during this ride'
-                      : '本次骑行中车手在各个标准时段内所维持的最高平均输出（瓦特与推重比）'}
+                    {'本次骑行中车手在各个标准时段内所维持的最高平均输出（瓦特与推重比）'}
                   </p>
                 </div>
               </div>
@@ -997,7 +969,7 @@ export const FitActivityAnalyzer: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-500" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                  {language === 'en' ? 'Automated Physiological Diagnostics & Recovery Window' : '自动化运动生理学诊断与复原窗口评估'}
+                  {'自动化运动生理学诊断与复原窗口评估'}
                 </h3>
               </div>
 
@@ -1032,12 +1004,10 @@ export const FitActivityAnalyzer: React.FC = () => {
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
                 <div className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                   <Flame className="w-4 h-4 text-rose-500" />
-                  {language === 'en' ? 'Post-Ride Nutrition & Glycogen Replenishment' : '赛后糖原与肌肉超量恢复建议'}
+                  {'赛后糖原与肌肉超量恢复建议'}
                 </div>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {language === 'en'
-                    ? `Estimated mechanical expenditure was ${analysis.workKj} kJ (~${analysis.caloriesKcal} kcal). We recommend consuming ~${Math.round(analysis.totalDistanceKm * 0.8)}g of rapid carbohydrates within 45 minutes, accompanied by 20-30g of whey protein to promote myofibrillar protein synthesis.`
-                    : `本次骑行累计机械做功 ${analysis.workKj} kJ（约消耗 ${analysis.caloriesKcal} kcal 热量）。建议骑行结束后 45 分钟黄金恢复窗口内摄入约 ${(analysis.caloriesKcal * 0.4 / 4).toFixed(0)}g 易吸收碳水化合物，配合 25g 优质乳清蛋白，促进肌糖原重组与肌原纤维合成。`}
+                  {`本次骑行累计机械做功 ${analysis.workKj} kJ（约消耗 ${analysis.caloriesKcal} kcal 热量）。建议骑行结束后 45 分钟黄金恢复窗口内摄入约 ${(analysis.caloriesKcal * 0.4 / 4).toFixed(0)}g 易吸收碳水化合物，配合 25g 优质乳清蛋白，促进肌糖原重组与肌原纤维合成。`}
                 </p>
               </div>
             </div>

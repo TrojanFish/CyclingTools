@@ -261,14 +261,14 @@ export const HealthCalculator: React.FC = () => {
           <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <User className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              {language === 'en' ? 'Personal Biometrics & HR (Synced with Rider Profile)' : language === 'zh-TW' ? '個人身體與心率數據 (自動同步車手檔案)' : '个人身体与心率数据 (自动同步车手档案)'}
+              {language === 'zh-TW' ? '個人身體與心率數據 (自動同步車手檔案)' : '个人身体与心率数据 (自动同步车手档案)'}
             </h2>
 
             {/* Gender & Age */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                  {language === 'en' ? 'Gender' : language === 'zh-TW' ? '生理性別' : '生理性别'}
+                  {language === 'zh-TW' ? '生理性別' : '生理性别'}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -279,7 +279,7 @@ export const HealthCalculator: React.FC = () => {
                         : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    {language === 'en' ? 'Male' : language === 'zh-TW' ? '男 (Male)' : '男 (Male)'}
+                    {language === 'zh-TW' ? '男 (Male)' : '男 (Male)'}
                   </button>
                   <button
                     onClick={() => setGender('female')}
@@ -289,15 +289,15 @@ export const HealthCalculator: React.FC = () => {
                         : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    {language === 'en' ? 'Female' : language === 'zh-TW' ? '女 (Female)' : '女 (Female)'}
+                    {language === 'zh-TW' ? '女 (Female)' : '女 (Female)'}
                   </button>
                 </div>
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Age' : language === 'zh-TW' ? '年齡' : '年龄'}
+                  {language === 'zh-TW' ? '年齡' : '年龄'}
                 </label>
-                <NumberStepper value={age} onChange={setAge} min={10} max={100} unit={language === 'en' ? 'yrs' : '岁'} />
+                <NumberStepper value={age} onChange={setAge} min={10} max={100} unit={'岁'} />
               </div>
             </div>
 
@@ -306,7 +306,7 @@ export const HealthCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {language === 'en' ? 'Height' : language === 'zh-TW' ? '身高' : '身高'} (cm)
+                    {language === 'zh-TW' ? '身高' : '身高'} (cm)
                   </label>
                   {isImperial && (
                     <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-medium">
@@ -318,7 +318,7 @@ export const HealthCalculator: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Weight' : language === 'zh-TW' ? '體重' : '体重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '體重' : '体重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((weightKg * 2.20462).toFixed(1)) : weightKg}
@@ -336,13 +336,13 @@ export const HealthCalculator: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Resting HR' : language === 'zh-TW' ? '靜息心率' : '静息心率'} (bpm)
+                  {language === 'zh-TW' ? '靜息心率' : '静息心率'} (bpm)
                 </label>
                 <NumberStepper value={restingHr} onChange={setRestingHr} min={35} max={100} unit="bpm" />
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'en' ? 'Max HR' : language === 'zh-TW' ? '最大心率' : '最大心率'} (bpm)
+                  {language === 'zh-TW' ? '最大心率' : '最大心率'} (bpm)
                 </label>
                 <NumberStepper value={maxHr} onChange={setMaxHr} min={140} max={230} unit="bpm" />
               </div>
@@ -351,7 +351,7 @@ export const HealthCalculator: React.FC = () => {
             {/* Activity Level */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
-                {language === 'en' ? 'Weekly Physical Activity Factor' : language === 'zh-TW' ? '每週運動活動強度' : '每周运动活动强度'}
+                {language === 'zh-TW' ? '每週運動活動強度' : '每周运动活动强度'}
               </label>
               <select
                 value={activityFactor}

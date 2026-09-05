@@ -22,7 +22,7 @@ export const zhTW = {
   catHealth: '生理與代謝',
 
   // Units & Toggles
-  langToggle: 'EN',
+  langToggle: '簡體',
   unitToggleMetric: '公制 (Metric)',
   unitToggleImperial: '英制 (Imperial)',
   unitWeightKg: 'kg',
