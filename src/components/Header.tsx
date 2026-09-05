@@ -59,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 backdrop-blur-xl bg-white/85 dark:bg-slate-950/80 transition-colors shadow-xs dark:shadow-none">
+      <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 backdrop-blur-xl bg-white/85 dark:bg-slate-950/80 transition-colors shadow-xs dark:shadow-none">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-[52px] sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Left: Clean Brand Logo with Bike Icon */}
           <div className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0 group" onClick={onNavigateHome}>
@@ -97,22 +97,23 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Actions: Unit Switch + Search + Rider Settings (⚙) + BGM + Theme Switch */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
               onClick={toggleUnitSystem}
-              className="hidden sm:flex items-center gap-1 px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-600 dark:text-slate-300 text-[11px] font-mono font-medium transition"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-600 dark:text-slate-300 text-[11px] font-mono font-medium transition shrink-0"
               title={unitSystem === 'metric' ? 'Switch to Imperial units (miles, lbs)' : 'Switch to Metric units (km, kg)'}
             >
-              <Gauge className="w-3 h-3 text-cyan-500" />
+              <Gauge className="w-4 h-4 text-cyan-500" />
               <span>{unitSystem === 'metric' ? 'km/kg' : 'mi/lbs'}</span>
             </button>
 
-            {/* Mobile Search Button */}
+            {/* Mobile Search Button - Uniform 32-36px button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 active:scale-95 transition"
+              className="md:hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 active:scale-95 transition shrink-0"
               title="Search Tools"
+              aria-label="Search Tools"
             >
               {mobileSearchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             </button>
@@ -120,17 +121,18 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Rider Profile & Settings Button (Gear ⚙ Icon for both Mobile & Desktop) */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition flex items-center gap-1.5 group"
+              className="w-8 h-8 sm:w-auto sm:h-9 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition gap-1.5 group shrink-0"
               title={language === 'en' ? 'Settings & Rider Profile (⚙)' : language === 'zh-TW' ? '系統設定與車手檔案 (⚙)' : '系统设置与车手档案 (⚙)'}
+              aria-label="Settings & Rider Profile"
             >
               <Settings className="w-4 h-4 text-cyan-500 group-hover:rotate-45 transition-transform duration-300" />
               <span className="hidden lg:inline text-xs font-semibold">{profile.heightCm}cm / {formattedWeight.formatted}</span>
             </button>
 
-            {/* Streamlined Background Music Switch */}
+            {/* Streamlined Background Music Switch (Uniform 32-36px button) */}
             <BackgroundMusicControl />
 
-            {/* Theme Toggle Button (Syncs with Auto/Light/Dark) */}
+            {/* Theme Toggle Button (Uniform 32-36px button) */}
             <button
               onClick={() => {
                 if (setThemeMode) {
@@ -139,7 +141,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setIsDark(!isDark);
                 }
               }}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 active:scale-95 transition"
+              className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 active:scale-95 transition shrink-0"
               title={
                 themeMode === 'system'
                   ? (isDark
@@ -149,6 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
                       ? (language === 'en' ? 'Dark Mode - Click for Light' : language === 'zh-TW' ? '深色模式 - 點擊切換為淺色' : '深色模式 - 点击切换为浅色')
                       : (language === 'en' ? 'Light Mode - Click for Dark' : language === 'zh-TW' ? '淺色模式 - 點擊切換為深色' : '浅色模式 - 点击切换为深色'))
               }
+              aria-label="Toggle Theme"
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
             </button>
@@ -172,6 +175,9 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         )}
       </header>
+
+      {/* Header spacer to prevent content underlap when fixed at top */}
+      <div className="h-[calc(52px+env(safe-area-inset-top,0px))] sm:h-[calc(64px+env(safe-area-inset-top,0px))] w-full shrink-0" aria-hidden="true" />
 
       {/* Global Rider Profile Modal */}
       <RiderProfileModal

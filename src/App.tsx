@@ -132,10 +132,7 @@ const MainAppContent: React.FC = () => {
   return (
     <div className={`min-h-screen flex flex-col justify-between ${isDark ? 'dark bg-[#0b0f19] text-slate-100' : 'light bg-slate-50 text-slate-900'}`}>
       <div>
-        {/* PWA Installation Prompt Bar (Mobile & Desktop) */}
-        <PwaInstallPrompt />
-
-        {/* Top Header */}
+        {/* Top Header (Fixed at top: 0 with built-in height spacer) */}
         <Header
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -152,6 +149,9 @@ const MainAppContent: React.FC = () => {
           profileModalOpen={profileModalOpen}
           setProfileModalOpen={setProfileModalOpen}
         />
+
+        {/* PWA Installation Prompt Bar (Mobile & Desktop, positioned below header) */}
+        <PwaInstallPrompt />
 
         {/* Main Container with extra bottom padding on mobile for MobileBottomNav */}
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 pb-24 md:pb-8">
