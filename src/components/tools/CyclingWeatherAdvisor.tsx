@@ -336,11 +336,11 @@ export const CyclingWeatherAdvisor: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold mb-2">
               <CloudSun className="w-3.5 h-3.5" />
               高精度气象与风向研判
             </div>
@@ -351,7 +351,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
           </div>
           <div className="flex items-center gap-2.5">
             <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
-              <Upload className="w-4 h-4 text-ios-blue" />
+              <Upload className="w-4 h-4 text-ios-mint" />
               <span>导入 GPX / TCX 路线</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxUpload} className="hidden" />
             </label>
@@ -359,7 +359,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             <button
               onClick={fetchWeatherAdvice}
               disabled={isLoading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-2xl font-bold text-sm transition shadow-ios-md apple-touch disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2.5 bg-ios-mint hover:bg-ios-mint/90 text-white rounded-2xl font-bold text-sm transition shadow-ios-md apple-touch disabled:opacity-50"
             >
               <Play className="w-4 h-4 fill-current" />
               {isLoading ? '正在获取沿途气象...' : '生成全路段天气顾问'}

@@ -196,9 +196,9 @@ export const HealthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="p-6 sm:p-7 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl relative overflow-hidden shadow-ios-sm">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-red/10 rounded-full blur-3xl -z-10 pointer-events-none" />
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
               <HeartPulse className="w-3.5 h-3.5" />

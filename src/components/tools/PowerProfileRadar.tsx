@@ -291,11 +291,11 @@ export const PowerProfileRadar: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
               <Target className="w-3.5 h-3.5" />
               {language === 'zh-TW' ? '生理動力學畫像與現代極化訓練' : '生理动力学画像与现代极化训练'}
             </div>
@@ -311,7 +311,7 @@ export const PowerProfileRadar: React.FC = () => {
 
           <div className="flex items-center gap-2.5">
             <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
-              <Upload className="w-4 h-4 text-ios-blue" />
+              <Upload className="w-4 h-4 text-ios-red" />
               <span>{language === 'zh-TW' ? '匯入 CSV/JSON' : '导入 CSV/JSON'}</span>
               <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
             </label>

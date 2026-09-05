@@ -180,8 +180,8 @@ export const TubelessSealantCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-ios-blue/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold">

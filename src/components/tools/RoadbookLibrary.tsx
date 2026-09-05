@@ -461,11 +461,11 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden shadow-ios-card">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-ios-blue/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold mb-2">
               <Compass className="w-3.5 h-3.5" />
               {language === 'zh-TW' ? '精選世界與全國經典單車路書工坊' : '行者实测·全国及世界经典骑行路书精选工坊'}
             </div>
