@@ -21,7 +21,9 @@ import {
   FileCode,
   Copy,
   Trash2,
-  Play
+  Play,
+  Sun,
+  Lightbulb
 } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
@@ -776,8 +778,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="text-[11px] text-slate-400 font-semibold block">
-                  {'🛣️ 路况与通行情况:'}
+                <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-cyan-500" />
+                  <span>{language === 'zh-TW' ? '路況與通行情況:' : '路况与通行情况:'}</span>
                 </span>
                 <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed block">
                   {activeRoute.roadCondition}
@@ -785,8 +788,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="text-[11px] text-slate-400 font-semibold block">
-                  {'☀️ 最佳骑行季节与时段:'}
+                <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5">
+                  <Sun className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{language === 'zh-TW' ? '最佳騎行季節與時段:' : '最佳骑行季节与时段:'}</span>
                 </span>
                 <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed block">
                   {activeRoute.bestSeason}
@@ -796,8 +800,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             {/* Practical Advice Tips */}
             <div className="space-y-2 pt-1">
-              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 block">
-                {'💡 老鸟车手避坑与补给经验:'}
+              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                <span>{language === 'zh-TW' ? '老鳥車手避坑與補給經驗:' : '老鸟车手避坑与补给经验:'}</span>
               </span>
               {activeRoute.tips.map((tip, idx) => (
                 <div key={idx} className="flex items-start gap-2 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/10 text-xs text-slate-700 dark:text-slate-300">

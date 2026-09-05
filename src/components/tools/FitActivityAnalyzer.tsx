@@ -782,47 +782,52 @@ export const FitActivityAnalyzer: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px]">
                   <button
                     onClick={() => setShowPower(!showPower)}
-                    className={`px-2.5 py-1 rounded-lg font-semibold transition ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
                       showPower ? 'bg-cyan-500/20 text-cyan-500 border border-cyan-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    ⚡ {'功率'}
+                    <Zap className="w-3 h-3" />
+                    <span>{language === 'zh-TW' ? '功率' : '功率'}</span>
                   </button>
 
                   <button
                     onClick={() => setShowHeartRate(!showHeartRate)}
-                    className={`px-2.5 py-1 rounded-lg font-semibold transition ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
                       showHeartRate ? 'bg-rose-500/20 text-rose-500 border border-rose-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    ❤️ {'心率'}
+                    <Heart className="w-3 h-3" />
+                    <span>{language === 'zh-TW' ? '心率' : '心率'}</span>
                   </button>
 
                   <button
                     onClick={() => setShowElevation(!showElevation)}
-                    className={`px-2.5 py-1 rounded-lg font-semibold transition ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
                       showElevation ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    ⛰️ {'海拔'}
+                    <Mountain className="w-3 h-3" />
+                    <span>{language === 'zh-TW' ? '海拔' : '海拔'}</span>
                   </button>
 
                   <button
                     onClick={() => setShowSpeed(!showSpeed)}
-                    className={`px-2.5 py-1 rounded-lg font-semibold transition ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
                       showSpeed ? 'bg-blue-500/20 text-blue-500 border border-blue-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    🚴 {'速度'}
+                    <Gauge className="w-3 h-3" />
+                    <span>{language === 'zh-TW' ? '速度' : '速度'}</span>
                   </button>
 
                   <button
                     onClick={() => setShowCadence(!showCadence)}
-                    className={`px-2.5 py-1 rounded-lg font-semibold transition ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-semibold transition ${
                       showCadence ? 'bg-amber-500/20 text-amber-500 border border-amber-500/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
                     }`}
                   >
-                    🔄 {'踏频'}
+                    <RotateCcw className="w-3 h-3" />
+                    <span>{language === 'zh-TW' ? '踏頻' : '踏频'}</span>
                   </button>
                 </div>
               </div>

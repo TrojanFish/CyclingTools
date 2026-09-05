@@ -172,7 +172,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     const maxSpd = isImperial ? (maxKmh * 0.621371).toFixed(1) : maxKmh;
     const minKmh = speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.speedKmh || 0;
     const minSpd = isImperial ? (minKmh * 0.621371).toFixed(1) : minKmh;
-    const text = `🚴 齿比计算报告 (${chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`} + ${cogsStr} @ ${cadenceRpm} RPM):\n- 最大极速: ${maxSpd} ${unitStr} (齿比: ${speedMatrix[0]?.row[0]?.ratio})\n- 最小爬坡: ${minSpd} ${unitStr} (齿比: ${speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio})`;
+    const text = `SoloRiderTools 齿比计算报告 (${chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`} + ${cogsStr} @ ${cadenceRpm} RPM):\n- 最大极速: ${maxSpd} ${unitStr} (齿比: ${speedMatrix[0]?.row[0]?.ratio})\n- 最小爬坡: ${minSpd} ${unitStr} (齿比: ${speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio})`;
     navigator.clipboard.writeText(text);
     showToast('齿比与速度矩阵报告已复制到剪贴板！', 'success');
   };

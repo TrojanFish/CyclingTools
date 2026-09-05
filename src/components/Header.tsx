@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Right Actions: Unit Switch + Search + Rider Settings (⚙) + BGM + Theme Switch */}
+          {/* Right Actions: Unit Switch + Search + Rider Settings + BGM + Theme Switch */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
@@ -118,11 +118,11 @@ export const Header: React.FC<HeaderProps> = ({
               {mobileSearchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             </button>
 
-            {/* Rider Profile & Settings Button (Gear ⚙ Icon for both Mobile & Desktop) */}
+            {/* Rider Profile & Settings Button */}
             <button
               onClick={() => setProfileOpen(true)}
               className="w-8 h-8 sm:w-auto sm:h-9 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition gap-1.5 group shrink-0"
-              title={language === 'zh-TW' ? '系統設定與車手檔案 (⚙)' : '系统设置与车手档案 (⚙)'}
+              title={language === 'zh-TW' ? '系統設定與車手檔案' : '系统设置与车手档案'}
               aria-label="Settings & Rider Profile"
             >
               <Settings className="w-4 h-4 text-cyan-500 group-hover:rotate-45 transition-transform duration-300" />

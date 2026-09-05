@@ -88,7 +88,7 @@ export const TirePressureCalculator: React.FC = () => {
         surfaceKey === 'wet_slick' ? '雨天/湿滑路面：建议胎压调低 5~8 PSI 提升橡胶抓地力与刹车循迹性。' : null,
         tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬(Pinch Flat)爆胎。',
         actualWidth > nominalWidth ? `实测胎宽(${actualWidth}mm)宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
-        hasHooklessWarning ? '⚠️ 无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压接近或超过上限，建议选用更宽外胎以降低气压！' : null
+        hasHooklessWarning ? '无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压接近或超过上限，建议选用更宽外胎以降低气压！' : null
       ].filter(Boolean) as string[]
     };
   }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, weightDistFront, weightDistRear, surfaceKey, pressureUnit]);
@@ -361,7 +361,7 @@ export const TirePressureCalculator: React.FC = () => {
             <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-900 dark:text-rose-200 text-xs space-y-1.5 shadow-sm">
               <div className="font-bold flex items-center gap-2 text-sm text-rose-600 dark:text-rose-400">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>⚠️ 突破无钩轮圈 (Hookless) ETRTO 极限安全红线！</span>
+                <span>突破无钩轮圈 (Hookless) ETRTO 极限安全红线！</span>
               </div>
               <p className="leading-relaxed opacity-95">
                 当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破或迫近国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI (5.0 Bar)</strong> 绝对强制安全上限！在无钩轮圈上超压骑行存在瞬间脱圈爆胎的严重安全隐患。强烈建议：<strong>选用 30c 或 32c 更宽规格外胎</strong>，即可在 55-65 PSI 黄金安全气压下享受更低滚阻与极佳抓地力。

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Copy, Award, Sliders, ChevronDown } from 'lucide-react';
+import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Copy, Award, Sliders, ChevronDown, Disc } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -256,7 +256,7 @@ export const CyclePowerCalculator: React.FC = () => {
   }, [bikeWeight, grade, airDensityRho, customCda, customCrr, isImperial]);
 
   const copyFullReport = () => {
-    const text = `🚴 SoloRiderTools 科学骑行功率与推重比报告:\n- 输出功率: ${result.power} W\n- 推重比: ${result.wkg} W/kg (${result.levelTitle})\n- 巡航车速: ${result.speedKmh} km/h\n- 坡度: ${grade}% | 空气密度: ${airDensityRho} kg/m³\n- 能耗代谢: ${result.kcalPerHour} kcal/h\n- 爬坡 VAM: ${result.vam} m/h (预计 ${climbElevationGainM}m 耗时: ${result.climbTimeMinutes} 分钟)`;
+    const text = `SoloRiderTools 科学骑行功率与推重比报告:\n- 输出功率: ${result.power} W\n- 推重比: ${result.wkg} W/kg (${result.levelTitle})\n- 巡航车速: ${result.speedKmh} km/h\n- 坡度: ${grade}% | 空气密度: ${airDensityRho} kg/m³\n- 能耗代谢: ${result.kcalPerHour} kcal/h\n- 爬坡 VAM: ${result.vam} m/h (预计 ${climbElevationGainM}m 耗时: ${result.climbTimeMinutes} 分钟)`;
     navigator.clipboard.writeText(text);
     showToast('完整功率与能力评估报告已复制到剪贴板！', 'success');
   };
@@ -670,9 +670,18 @@ export const CyclePowerCalculator: React.FC = () => {
             </div>
 
             <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
-              <span className="text-cyan-600 dark:text-cyan-400 font-bold">💨 {language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚲 {language === 'zh-TW' ? '滾阻' : '滚阻'} {result.rollingPct}% ({result.fRolling}N)</span>
-              <span className="text-amber-600 dark:text-amber-400 font-bold">⛰️ {language === 'zh-TW' ? '重力' : '重力'} {result.gravityPct}% ({result.fGravity}N)</span>
+              <span className="text-cyan-600 dark:text-cyan-400 font-bold flex items-center gap-1">
+                <Wind className="w-3.5 h-3.5" />
+                <span>{language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
+              </span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                <Disc className="w-3.5 h-3.5" />
+                <span>{language === 'zh-TW' ? '滾阻' : '滚阻'} {result.rollingPct}% ({result.fRolling}N)</span>
+              </span>
+              <span className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
+                <Mountain className="w-3.5 h-3.5" />
+                <span>{language === 'zh-TW' ? '重力' : '重力'} {result.gravityPct}% ({result.fGravity}N)</span>
+              </span>
             </div>
           </div>
 

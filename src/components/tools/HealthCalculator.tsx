@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { HeartPulse, Flame, Activity, User, Scale, Shield, Sparkles, Droplet, Apple, Heart } from 'lucide-react';
+import { HeartPulse, Flame, Activity, User, Scale, Shield, Sparkles, Droplet, Apple, Heart, Percent, TrendingDown, TrendingUp } from 'lucide-react';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { NumberStepper } from '../common/NumberStepper';
@@ -212,43 +212,48 @@ export const HealthCalculator: React.FC = () => {
           <div className="flex flex-wrap bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 gap-1">
             <button
               onClick={() => setActiveTab('fueling')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'fueling' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              🍌 能量补给
+              <Apple className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '能量補給' : '能量补给'}</span>
             </button>
             <button
               onClick={() => setActiveTab('hr_zones')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'hr_zones' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              💓 靶心率
+              <Heart className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '靶心率' : '靶心率'}</span>
             </button>
             <button
               onClick={() => setActiveTab('bmr')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'bmr' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              🔥 代谢能耗
+              <Flame className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '代謝能耗' : '代谢能耗'}</span>
             </button>
             <button
               onClick={() => setActiveTab('bmi')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'bmi' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              ⚖️ BMI
+              <Scale className="w-3.5 h-3.5" />
+              <span>BMI</span>
             </button>
             <button
               onClick={() => setActiveTab('bfp')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 activeTab === 'bfp' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              📊 体脂率
+              <Percent className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '體脂率' : '体脂率'}</span>
             </button>
           </div>
         </div>
@@ -514,19 +519,28 @@ export const HealthCalculator: React.FC = () => {
                 </h3>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="text-xs font-medium text-sky-500 dark:text-sky-400">🔥 减脂减重目标</div>
+                    <div className="text-xs font-medium text-sky-500 dark:text-sky-400 flex items-center gap-1.5">
+                      <TrendingDown className="w-3.5 h-3.5" />
+                      <span>{language === 'zh-TW' ? '減脂減重目標' : '减脂减重目标'}</span>
+                    </div>
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">{bmrResult.loseWeightCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">热量缺口 20%，稳步减脂保持肌肉</p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">⚖️ 体重维持平衡</div>
+                    <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                      <Scale className="w-3.5 h-3.5" />
+                      <span>{language === 'zh-TW' ? '體重維持平衡' : '体重维持平衡'}</span>
+                    </div>
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">{bmrResult.maintainCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">收支平衡，维持当前竞技体重</p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-1">
-                    <div className="text-xs font-medium text-purple-600 dark:text-purple-400">💪 增肌增力目标</div>
+                    <div className="text-xs font-medium text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      <span>{language === 'zh-TW' ? '增肌增力目標' : '增肌增力目标'}</span>
+                    </div>
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">{bmrResult.gainMuscleCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">轻微盈余 15%，配合力量训练</p>
                   </div>

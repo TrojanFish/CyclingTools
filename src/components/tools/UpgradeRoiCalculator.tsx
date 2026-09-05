@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Copy, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check } from 'lucide-react';
+import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Copy, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check, Star, Lightbulb } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -47,7 +47,7 @@ export interface UpgradeItem {
 const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   {
     id: '1',
-    name: '🎽 骑行服 / 连体服升级',
+    name: '骑行服 / 连体服升级',
     category: 'aero',
     weightSaveG: 0,
     powerSaveWatts: 7.5,
@@ -62,7 +62,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '2',
-    name: '🚴 内胎与滚阻系统升级',
+    name: '内胎与滚阻系统升级',
     category: 'rolling',
     weightSaveG: 140,
     powerSaveWatts: 3.2,
@@ -77,7 +77,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '3',
-    name: '🪖 头盔气动升级',
+    name: '头盔气动升级',
     category: 'aero',
     weightSaveG: 0,
     powerSaveWatts: 4.5,
@@ -92,7 +92,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '4',
-    name: '🛞 碳纤维气动轮组升级',
+    name: '碳纤维气动轮组升级',
     category: 'aero',
     weightSaveG: 280,
     powerSaveWatts: 6.0,
@@ -107,7 +107,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '5',
-    name: '🚀 车把与全内走线升级',
+    name: '车把与全内走线升级',
     category: 'aero',
     weightSaveG: 90,
     powerSaveWatts: 3.5,
@@ -121,7 +121,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '6',
-    name: '👟 锁鞋与脚部系统升级',
+    name: '锁鞋与脚部系统升级',
     category: 'weight',
     weightSaveG: 160,
     powerSaveWatts: 1.5,
@@ -135,7 +135,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '7',
-    name: '⚙️ 传动链条与导轮陶瓷化',
+    name: '传动链条与导轮陶瓷化',
     category: 'drivetrain',
     weightSaveG: -20,
     powerSaveWatts: 1.2,
@@ -279,13 +279,13 @@ export const UpgradeRoiCalculator: React.FC = () => {
     const costPerWatt = totalPowerSaveWatts > 0 ? Math.round(totalCostYuan / totalPowerSaveWatts) : 0;
     const costPerGram = totalWeightSaveG > 0 ? parseFloat((totalCostYuan / totalWeightSaveG).toFixed(1)) : 0;
 
-    let roiLevel = '⭐⭐⭐⭐⭐ 极高性价比 (神装首选)';
+    let roiLevel = '极高性价比 (神装首选)';
     let roiBadgeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
     if (costPerWatt > 1000) {
-      roiLevel = '⭐ 边际递减奢华件 (高溢价极限追瓦)';
+      roiLevel = '边际递减奢华件 (高溢价极限追瓦)';
       roiBadgeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/30';
     } else if (costPerWatt > 400) {
-      roiLevel = '⭐⭐⭐ 良好进阶升级 (适中性价比)';
+      roiLevel = '良好进阶升级 (适中性价比)';
       roiBadgeColor = 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30';
     }
 
@@ -319,7 +319,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
   }, [items]);
 
   const copyReport = () => {
-    const text = `⚖️ SoloRiderTools 零件减重与气动升级省瓦性价比报告:
+    const text = `SoloRiderTools 零件减重与气动升级省瓦性价比报告:
 - 选定升级件数: ${analysis.activeCount} 项
 - 总减重: -${analysis.totalWeightSaveG} g | 气动/滚阻总省瓦: +${analysis.totalPowerSaveWatts} W
 - 自定义总预算: ${currencySymbol}${analysis.totalCostYuan} (${currency})
@@ -495,8 +495,9 @@ export const UpgradeRoiCalculator: React.FC = () => {
                         ))}
                       </select>
                       {item.specs[item.selectedSpecIndex ?? 0]?.note && (
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400/90 pl-1 leading-relaxed">
-                          💡 {item.specs[item.selectedSpecIndex ?? 0].note}
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400/90 pl-1 leading-relaxed flex items-start gap-1">
+                          <Lightbulb className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
+                          <span>{item.specs[item.selectedSpecIndex ?? 0].note}</span>
                         </p>
                       )}
                     </div>
@@ -611,15 +612,19 @@ export const UpgradeRoiCalculator: React.FC = () => {
                 {currencySymbol}{analysis.costPerWatt} / W
               </span>
             </div>
-            <div className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              {analysis.roiLevel}
+            <div className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+              <Star className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
+              <span>{analysis.roiLevel}</span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              💡 <strong>风洞与改装避坑法则</strong>：
-              <br />• <strong>黄金第一阶 (&lt;{currencySymbol}200/W)</strong>：修身/破风骑行服、TPU 超轻内胎/真空胎，花费较低立省 7~10W。
-              <br />• <strong>进阶第二阶 ({currencySymbol}300~600/W)</strong>：50mm 综合气动碳轮、一体把、气动头盔，兼具巡航破风与整车颜值。
-              <br />• <strong>边际递减阶 (&gt;{currencySymbol}1000/W)</strong>：陶瓷大导轮、钛合金螺丝，适合发烧竞技车手追求极限边际增益。
-            </p>
+            <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed space-y-1">
+              <div className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
+                <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>风洞与改装避坑法则：</span>
+              </div>
+              <p>• <strong>黄金第一阶 (&lt;{currencySymbol}200/W)</strong>：修身/破风骑行服、TPU 超轻内胎/真空胎，花费较低立省 7~10W。</p>
+              <p>• <strong>进阶第二阶 ({currencySymbol}300~600/W)</strong>：50mm 综合气动碳轮、一体把、气动头盔，兼具巡航破风与整车颜值。</p>
+              <p>• <strong>边际递减阶 (&gt;{currencySymbol}1000/W)</strong>：陶瓷大导轮、钛合金螺丝，适合发烧竞技车手追求极限边际增益。</p>
+            </div>
           </div>
 
           {/* Single Item Wattage Contribution Chart */}

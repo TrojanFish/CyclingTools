@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Copy, Info, Upload, FileText, Check, X, FileSpreadsheet } from 'lucide-react';
+import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Copy, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer } from 'lucide-react';
 import { Radar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -277,7 +277,7 @@ export const PowerProfileRadar: React.FC = () => {
   }, [analytics]);
 
   const copyReport = () => {
-    const text = `🎯 SoloRiderTools 功率能力雷达与极化训练规划:
+    const text = `SoloRiderTools 功率能力雷达与极化训练规划:
 - 车手类型画像: ${analytics.phenotype}
 - 核心输出: 5秒 ${p5s}W (${analytics.w5s}W/kg) | 1分 ${p1m}W (${analytics.w1m}W/kg) | 5分 ${p5m}W (${analytics.w5m}W/kg) | 20分 ${p20m}W (${analytics.w20m}W/kg)
 - 甜点区间 (Sweet Spot): ${analytics.sweetSpotMin} - ${analytics.sweetSpotMax} W
@@ -335,27 +335,31 @@ export const PowerProfileRadar: React.FC = () => {
           <span className="text-xs text-slate-500 dark:text-slate-400">车手预设:</span>
           <button
             onClick={() => loadPreset('sprinter')}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            🚀 冲刺手
+            <Zap className="w-3.5 h-3.5 text-amber-500" />
+            <span>{language === 'zh-TW' ? '衝刺手' : '冲刺手'}</span>
           </button>
           <button
             onClick={() => loadPreset('climber')}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            ⛰️ 爬坡手
+            <Mountain className="w-3.5 h-3.5 text-emerald-500" />
+            <span>{language === 'zh-TW' ? '爬坡手' : '爬坡手'}</span>
           </button>
           <button
             onClick={() => loadPreset('rouleur')}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            ⏱️ 计时突围
+            <Timer className="w-3.5 h-3.5 text-cyan-500" />
+            <span>{language === 'zh-TW' ? '計時突圍' : '计时突围'}</span>
           </button>
           <button
             onClick={() => loadPreset('allrounder')}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
-            💎 全能型
+            <Award className="w-3.5 h-3.5 text-purple-500" />
+            <span>{language === 'zh-TW' ? '全能型' : '全能型'}</span>
           </button>
         </div>
 

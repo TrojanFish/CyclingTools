@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, Download, CheckSquare, Square, Search, RotateCcw, Copy, Sparkles } from 'lucide-react';
+import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, Download, CheckSquare, Square, Search, RotateCcw, Copy, Sparkles, PersonStanding, Shield, Hand, Disc, Footprints } from 'lucide-react';
 import { PAIN_AREAS, GENERAL_RECOVERY_TIPS } from '../../data/painCheckerData';
 import { BodyPainDiagram } from '../common/BodyPainDiagram';
 import { useToast } from '../../context/ToastContext';
+
+const areaIconMap: Record<string, React.FC<{ className?: string }>> = {
+  knee: Activity,
+  lower_back: PersonStanding,
+  neck_shoulder: Shield,
+  wrist_hand: Hand,
+  buttock: Disc,
+  foot: Footprints,
+};
 
 export const RoadBikePainChecker: React.FC = () => {
   const { showToast } = useToast();
@@ -171,7 +180,20 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
                 {isMatch && (
                   <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400"></span>
                 )}
-                <span className="text-xl">{item.icon}</span>
+                {(() => {
+                  const AreaIcon = areaIconMap[key] || Activity;
+                  return (
+                    <AreaIcon
+                      className={`w-5 h-5 transition-colors ${
+                        isSelected
+                          ? 'text-cyan-600 dark:text-cyan-400'
+                          : isMatch
+                          ? 'text-amber-500 dark:text-amber-400'
+                          : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                    />
+                  );
+                })()}
                 <span className="text-xs">{item.title.split(' ')[0]}</span>
               </button>
             );

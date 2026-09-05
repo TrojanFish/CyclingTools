@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { Link, CheckCircle2, AlertTriangle, Info, Copy, Settings, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Link, CheckCircle2, AlertTriangle, Info, Copy, Settings, ArrowRight, ShieldCheck, Zap, Lightbulb } from 'lucide-react';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { useToast } from '../../context/ToastContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 export const ChainLengthCalculator: React.FC = () => {
   const { showToast } = useToast();
+  const { language } = useLanguageAndUnit();
 
   const [chainstayLengthMm, setChainstayLengthMm] = useState<number>(410);
   const [bigRing, setBigRing] = useState<number>(50);
@@ -107,7 +109,7 @@ export const ChainLengthCalculator: React.FC = () => {
   }, [chainstayLengthMm, bigRing, smallRing, isSingleRing, bigCog, smallCog, pulleyTeeth]);
 
   const copyReport = () => {
-    const text = `⛓️ SoloRiderTools 链条长度与传动计算报告:\n- 后下叉 RC: ${chainstayLengthMm} mm\n- 传动搭配: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} + ${smallCog}-${bigCog}T 飞轮\n- 推荐链条截取节数: ${result.recommendedLinks} 节 (含魔术扣)\n- 链条总长: ${result.chainLengthInches} 英寸\n- 传动总齿容量需求: ${result.requiredCapacity}T (推荐 ${result.rearDerailleurRecommendation})`;
+    const text = `SoloRiderTools 链条长度与传动计算报告:\n- 后下叉 RC: ${chainstayLengthMm} mm\n- 传动搭配: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} + ${smallCog}-${bigCog}T 飞轮\n- 推荐链条截取节数: ${result.recommendedLinks} 节 (含魔术扣)\n- 链条总长: ${result.chainLengthInches} 英寸\n- 传动总齿容量需求: ${result.requiredCapacity}T (推荐 ${result.rearDerailleurRecommendation})`;
     navigator.clipboard.writeText(text);
     showToast('链条长度计算报告已复制到剪贴板！', 'success');
   };
@@ -223,8 +225,9 @@ export const ChainLengthCalculator: React.FC = () => {
                     onChange={(e) => setChainstayGrowthMm(Number(e.target.value))}
                     className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded"
                   />
-                  <span className="text-[10px] text-amber-600 dark:text-amber-400 block pt-0.5">
-                    💡 已自动在有效后下叉中计入 {chainstayGrowthMm}mm 拉伸并增加安全链节，杜绝大飞大盘冲击触底拉爆后拨！
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 flex items-start gap-1 pt-0.5">
+                    <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                    <span>{language === 'zh-TW' ? `已自動在有效後下叉中計入 ${chainstayGrowthMm}mm 拉伸並增加安全鏈節，杜絕大飛大盤衝擊觸底拉爆後撥！` : `已自动在有效后下叉中计入 ${chainstayGrowthMm}mm 拉伸并增加安全链节，杜绝大飞大盘冲击触底拉爆后拨！`}</span>
                   </span>
                 </div>
               )}

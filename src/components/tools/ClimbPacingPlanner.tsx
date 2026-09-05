@@ -219,7 +219,7 @@ export const ClimbPacingPlanner: React.FC = () => {
       ]);
       showToast('已加载巴朗山高原天路预设', 'info');
     } else if (key === 'alpedhuez') {
-      setClimbName('环法·阿尔普迪埃 (Alpe d\'Huez 🇫🇷)');
+      setClimbName('环法·阿尔普迪埃 (Alpe d\'Huez)');
       setSegments([
         { id: '1', name: '谷底起步急升弯 (Bourg d\'Oisans)', distanceKm: 2.5, gradePct: 10.2 },
         { id: '2', name: '圣尼古拉森林路段 (St. Nicolas)', distanceKm: 4.5, gradePct: 8.5 },
@@ -228,7 +228,7 @@ export const ClimbPacingPlanner: React.FC = () => {
       ]);
       showToast('已加载环法阿尔普迪埃 21道拐预设', 'info');
     } else if (key === 'stelvio') {
-      setClimbName('环意·斯泰尔维奥 (Passo dello Stelvio 🇮🇹)');
+      setClimbName('环意·斯泰尔维奥 (Passo dello Stelvio)');
       setSegments([
         { id: '1', name: '特劳福伊入山口 (Trafoi)', distanceKm: 8.0, gradePct: 5.8 },
         { id: '2', name: '48道高山发卡弯攻坚', distanceKm: 9.0, gradePct: 8.2 },
@@ -236,7 +236,7 @@ export const ClimbPacingPlanner: React.FC = () => {
       ]);
       showToast('已加载环意最高殿堂斯泰尔维奥预设', 'info');
     } else if (key === 'sacalobra') {
-      setClimbName('马略卡·卡洛布拉 (Sa Calobra 🇪🇸)');
+      setClimbName('马略卡·卡洛布拉 (Sa Calobra)');
       setSegments([
         { id: '1', name: '海港峡湾起点盘旋', distanceKm: 2.5, gradePct: 6.5 },
         { id: '2', name: '悬崖岩石发卡急坡', distanceKm: 4.0, gradePct: 7.8 },
@@ -398,7 +398,7 @@ export const ClimbPacingPlanner: React.FC = () => {
   };
 
   const copyPacingPlan = () => {
-    const text = `⛰️ SoloRiderTools 爬坡路段分段配速与功率规划 (${climbName}):
+    const text = `SoloRiderTools 爬坡路段分段配速与功率规划 (${climbName}):
 - 路线全长: ${planResults.totalDistanceKm} km | 累计爬升: +${planResults.totalElevationM} m (平均坡度 ${planResults.avgGrade}%)
 - 预计登顶总耗时: ${planResults.overallTimeStr}
 - 建议全程均瓦: ${planResults.avgWatts} W (${planResults.avgWkg} W/kg) | 平均 VAM: ${planResults.overallVam} m/h
@@ -478,24 +478,27 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </button>
           <button
             onClick={() => loadPreset('alpedhuez')}
-            className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
             title="环法殿堂 Alpe d'Huez 21道拐 (13.8km)"
           >
-            🇫🇷 阿尔普迪埃
+            <Mountain className="w-3 h-3 text-cyan-500" />
+            <span>阿尔普迪埃</span>
           </button>
           <button
             onClick={() => loadPreset('stelvio')}
-            className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
             title="环意最高峰 Passo dello Stelvio 48弯 (24.3km)"
           >
-            🇮🇹 斯泰尔维奥
+            <Mountain className="w-3 h-3 text-cyan-500" />
+            <span>斯泰尔维奥</span>
           </button>
           <button
             onClick={() => loadPreset('sacalobra')}
-            className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
             title="马略卡骑行圣地 Sa Calobra (9.4km)"
           >
-            🇪🇸 卡洛布拉
+            <Mountain className="w-3 h-3 text-cyan-500" />
+            <span>卡洛布拉</span>
           </button>
         </div>
 

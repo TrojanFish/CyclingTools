@@ -63,12 +63,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { language, t } = useLanguageAndUnit();
 
-  const categories = [
+  const categories: { id: string; label: string; icon?: React.ElementType }[] = [
     { id: 'all', label: '全部 (18)' },
-    { id: 'dynamics', label: language === 'zh-TW' ? '⚡ 動力傳動' : '⚡ 动力传动' },
-    { id: 'fitting', label: '📐 Fitting' },
-    { id: 'route', label: language === 'zh-TW' ? '🗺️ 路線氣象' : '🗺️ 路线气象' },
-    { id: 'health', label: language === 'zh-TW' ? '❤️ 生理代謝' : '❤️ 生理代谢' },
+    { id: 'dynamics', icon: Zap, label: language === 'zh-TW' ? '動力傳動' : '动力传动' },
+    { id: 'fitting', icon: Ruler, label: 'Fitting' },
+    { id: 'route', icon: MapPin, label: language === 'zh-TW' ? '路線氣象' : '路线气象' },
+    { id: 'health', icon: HeartPulse, label: language === 'zh-TW' ? '生理代謝' : '生理代谢' },
   ];
 
   return (
@@ -113,13 +113,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
                 selectedCategory === cat.id
                   ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60'
               }`}
             >
-              {cat.label}
+              {cat.icon && <cat.icon className={`w-3.5 h-3.5 ${selectedCategory === cat.id ? 'text-slate-950' : 'text-cyan-500'}`} />}
+              <span>{cat.label}</span>
             </button>
           ))}
         </div>

@@ -11,7 +11,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   knee: {
     id: 'knee',
     title: '膝盖疼痛 (Knee Pain)',
-    icon: '🦵',
+    icon: 'knee',
     symptoms: [
       '膝前痛（髌骨周围/髌腱酸痛，下楼梯或弯腿时明显）',
       '膝后痛（膝窝/腘绳肌腱拉扯感，蹬踏至最底端时明显）',
@@ -54,7 +54,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   lower_back: {
     id: 'lower_back',
     title: '下背与腰部酸痛 (Lower Back Pain)',
-    icon: '🚶',
+    icon: 'lower_back',
     symptoms: [
       '骑行 1 小时后下腰部僵硬、酸胀，直腰时吃力',
       '臀部深层肌肉酸胀或沿大腿后侧有放射性不适'
@@ -84,7 +84,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   neck_shoulder: {
     id: 'neck_shoulder',
     title: '颈部与肩部酸痛 (Neck & Shoulder Pain)',
-    icon: '💪',
+    icon: 'neck_shoulder',
     symptoms: [
       '颈后肌群僵硬、转头受限，肩胛骨内侧和斜方肌酸胀痛',
       '骑行途中频繁需要耸肩或甩头缓解'
@@ -114,7 +114,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   wrist_hand: {
     id: 'wrist_hand',
     title: '手腕与手部麻木 (Wrist & Hand Numbness)',
-    icon: '✋',
+    icon: 'wrist_hand',
     symptoms: [
       '手腕掌根部酸痛，手掌支撑点发红发热',
       '无名指与小指麻木（尺神经受压，车手手综合征）',
@@ -145,7 +145,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   buttock: {
     id: 'buttock',
     title: '臀部坐骨与会阴压痛 (Saddle Pain & Numbness)',
-    icon: '🧘',
+    icon: 'buttock',
     symptoms: [
       '坐骨结节处皮肤磨破、压痛或毛囊炎',
       '会阴部局部麻木、血流不畅（长途骑行后知觉迟钝）',
@@ -177,7 +177,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   foot: {
     id: 'foot',
     title: '足底麻木与灼热 (Foot Pain & Hot Foot)',
-    icon: '🦶',
+    icon: 'foot',
     symptoms: [
       '足前掌麻木刺痛、发热（Hot Foot 现象）',
       '足弓酸胀、足底筋膜紧绷，小腿后侧容易抽筋'

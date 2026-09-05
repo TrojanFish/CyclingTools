@@ -12,7 +12,8 @@ import {
   ShieldAlert,
   ArrowRight,
   Sliders,
-  Check
+  Check,
+  Lightbulb
 } from 'lucide-react';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -681,8 +682,9 @@ export const SpokeLengthCalculator: React.FC = () => {
               </div>
 
               {result.tensionRatioPercent < 60 && rimOffsetMm === 0 && (
-                <div className="text-[11px] text-amber-600 dark:text-amber-400 pt-1">
-                  💡 提示：当前对称圈非驱动侧张力偏低。若选用 2.5~3.0mm 偏心圈 (Asymmetric Rim)，张力比可大幅提升至 ~70%，显著增强轮组侧向刚性并减少断条几率！
+                <div className="text-[11px] text-amber-600 dark:text-amber-400 pt-1 flex items-start gap-1">
+                  <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <span>{language === 'zh-TW' ? '提示：當前對稱圈非驅動側張力偏低。若選用 2.5~3.0mm 偏心圈 (Asymmetric Rim)，張力比可大幅提升至 ~70%，顯著增強輪組側向剛性並減少斷條幾率！' : '提示：当前对称圈非驱动侧张力偏低。若选用 2.5~3.0mm 偏心圈 (Asymmetric Rim)，张力比可大幅提升至 ~70%，显著增强轮组侧向刚性并减少断条几率！'}</span>
                 </div>
               )}
             </div>

@@ -105,11 +105,11 @@ export const CyclingWeatherAdvisor: React.FC = () => {
   const getWindRelation = (ridingBearing: number, windFromDeg: number) => {
     const diff = Math.abs(ridingBearing - windFromDeg) % 360;
     const angle = diff > 180 ? 360 - diff : diff;
-    if (angle <= 45) return '💨 强烈顶风 (Headwind)';
-    if (angle <= 80) return '💨 侧顶风 (Cross-Headwind)';
-    if (angle <= 100) return '💨 垂直侧风 (Crosswind)';
-    if (angle <= 135) return '🚀 侧顺风 (Cross-Tailwind)';
-    return '🚀 顺风推进 (Tailwind)';
+    if (angle <= 45) return '强烈顶风 (Headwind)';
+    if (angle <= 80) return '侧顶风 (Cross-Headwind)';
+    if (angle <= 100) return '垂直侧风 (Crosswind)';
+    if (angle <= 135) return '侧顺风 (Cross-Tailwind)';
+    return '顺风推进 (Tailwind)';
   };
 
   // Handle Manual GPX / TCX Route File Upload
@@ -508,8 +508,9 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">
-                        {seg.windRelation}
+                      <div className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
+                        <Wind className="w-3.5 h-3.5" />
+                        <span>{seg.windRelation}</span>
                       </div>
                     </div>
 
