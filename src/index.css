@@ -41,16 +41,13 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  padding-top: env(safe-area-inset-top, 0px);
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
 }
 
-/* WebApp standalone specific safe area spacing */
-@media all and (display-mode: standalone) {
-  header {
-    padding-top: env(safe-area-inset-top, 0px);
-  }
+/* Header safe area spacing: allows header background to extend under Dynamic Island/notch */
+header {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Glassmorphic card & panel styling */

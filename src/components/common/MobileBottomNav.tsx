@@ -1,12 +1,12 @@
 import React from 'react';
-import { Home, Zap, Gauge, Compass, Ruler, User } from 'lucide-react';
+import { Home, Zap, Gauge, Compass, Ruler } from 'lucide-react';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 interface MobileBottomNavProps {
   currentToolId: string | null;
   onNavigateHome: () => void;
   onSelectTool: (id: string) => void;
-  onOpenProfile: () => void;
+  onOpenProfile?: () => void;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
@@ -52,13 +52,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       icon: Ruler,
       isActive: currentToolId === 'bike-fitter',
       onClick: () => onSelectTool('bike-fitter')
-    },
-    {
-      id: 'profile',
-      label: language === 'en' ? 'Rider' : language === 'zh-TW' ? '車手' : '车手',
-      icon: User,
-      isActive: false,
-      onClick: onOpenProfile
     }
   ];
 

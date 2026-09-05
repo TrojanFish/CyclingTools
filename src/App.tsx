@@ -101,21 +101,24 @@ const MainAppContent: React.FC = () => {
         />
 
         {/* Main Container with extra bottom padding on mobile for MobileBottomNav */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-28 md:pb-8">
-          <main className="space-y-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 pb-24 md:pb-8">
+          <main className="space-y-4 sm:space-y-6">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
-              <div className="glass-panel px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-sm no-print">
-                <div className="flex items-center gap-2">
+              <div className="glass-panel px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-xs no-print">
+                {/* Left: Simplified Back Button & Breadcrumbs */}
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onClick={() => setCurrentToolId(null)}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 active:scale-95"
+                    className="inline-flex items-center justify-center p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition active:scale-95 text-xs font-bold shrink-0"
+                    title={t('backToHome')}
+                    aria-label={t('backToHome')}
                   >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    {t('backToHome')}
+                    <ArrowLeft className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                    <span className="hidden sm:inline ml-1.5">{t('backToHome')}</span>
                   </button>
 
-                  <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium ml-2">
+                  <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
                     <span
                       className="cursor-pointer hover:text-cyan-500 flex items-center gap-1 transition"
                       onClick={() => setCurrentToolId(null)}
@@ -132,7 +135,7 @@ const MainAppContent: React.FC = () => {
                         : currentToolMeta.categoryLabel}
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
-                    <span className="text-slate-900 dark:text-slate-100 font-semibold">
+                    <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[160px]">
                       {language === 'en' && currentToolMeta.titleEn
                         ? currentToolMeta.titleEn
                         : language === 'zh-TW' && currentToolMeta.titleTw
@@ -142,16 +145,17 @@ const MainAppContent: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Sequential Tool Navigation (Prev / Next) + Jump Selector */}
-                <div className="flex items-center gap-2">
+                {/* Right: Sequential Tool Navigation (Prev / Next) + Fluid Jump Selector */}
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-end min-w-0">
                   <button
                     onClick={handlePrevTool}
                     disabled={currentToolIndex <= 0}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-cyan-500 disabled:opacity-30 disabled:hover:text-slate-400 transition"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-cyan-500 disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0"
                     title={t('prevTool')}
+                    aria-label={t('prevTool')}
                   >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">{t('prevTool')}</span>
+                    <ChevronLeft className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                    <span className="hidden sm:inline sm:ml-1">{t('prevTool')}</span>
                   </button>
 
                   <select
@@ -160,7 +164,7 @@ const MainAppContent: React.FC = () => {
                       setCurrentToolId(e.target.value);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1 text-xs text-slate-800 dark:text-slate-300 font-medium focus:outline-none focus:border-cyan-500 max-w-[180px] sm:max-w-[240px] truncate"
+                    className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2 sm:px-3 py-1 text-xs text-slate-800 dark:text-slate-300 font-medium focus:outline-none focus:border-cyan-500 w-full sm:w-auto max-w-full sm:max-w-[240px] truncate"
                   >
                     {TOOLS_LIST.map((tItem) => {
                       const displayTitle = language === 'en' && tItem.titleEn
@@ -179,11 +183,12 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handleNextTool}
                     disabled={currentToolIndex >= TOOLS_LIST.length - 1}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-cyan-500 disabled:opacity-30 disabled:hover:text-slate-400 transition"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-cyan-500 disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0"
                     title={t('nextTool')}
+                    aria-label={t('nextTool')}
                   >
-                    <span className="hidden sm:inline">{t('nextTool')}</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline sm:mr-1">{t('nextTool')}</span>
+                    <ChevronRight className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                   </button>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sun, Moon, Bike, User, X, Globe, Gauge } from 'lucide-react';
+import { Search, Sun, Moon, Bike, User, X, Globe, Gauge, Settings } from 'lucide-react';
 import { BackgroundMusicControl } from './BackgroundMusicControl';
 import { RiderProfileModal } from './common/RiderProfileModal';
 import { useRiderProfile } from '../context/RiderProfileContext';
@@ -56,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 backdrop-blur-xl bg-white/85 dark:bg-slate-950/80 transition-colors shadow-xs dark:shadow-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-[52px] sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Left: Clean Brand Logo with Bike Icon */}
           <div className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0 group" onClick={onNavigateHome}>
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 shadow-md sm:shadow-lg shadow-cyan-500/25 group-hover:scale-105 transition shrink-0">
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Right Actions: Language Switch + Unit Switch + Rider Profile + BGM + Theme Switch */}
+          {/* Right Actions: Language Switch + Unit Switch + Rider Settings (⚙) + Search + BGM + Theme Switch */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Mobile Compact Language Toggle Button */}
             <button
@@ -159,14 +159,14 @@ export const Header: React.FC<HeaderProps> = ({
               {mobileSearchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             </button>
 
-            {/* Desktop Rider Profile Button (Hidden on Mobile because MobileBottomNav already provides Profile) */}
+            {/* Rider Profile & Settings Button (Gear ⚙ Icon for both Mobile & Desktop) */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 text-xs font-semibold transition"
-              title="Rider Profile & Dimensions"
+              className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition flex items-center gap-1.5 group"
+              title={language === 'en' ? 'Rider Settings & Units (⚙)' : '车手档案与单位设定 (⚙)'}
             >
-              <User className="w-3.5 h-3.5 text-cyan-500" />
-              <span className="hidden lg:inline">{profile.heightCm}cm / {formattedWeight.formatted}</span>
+              <Settings className="w-4 h-4 text-cyan-500 group-hover:rotate-45 transition-transform duration-300" />
+              <span className="hidden lg:inline text-xs font-semibold">{profile.heightCm}cm / {formattedWeight.formatted}</span>
             </button>
 
             {/* Streamlined Background Music Switch */}
