@@ -603,13 +603,13 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   <div className="flex justify-between items-start gap-2">
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20">
                           {route.sourceCode}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">
+                        <span className="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">
                           {rRegion}
                         </span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-md font-semibold ${
+                        <span className={`text-[10px] px-2 py-0.5 rounded-lg font-semibold ${
                           route.difficulty === '终极硬核' ? 'bg-rose-500/15 text-rose-500' :
                           route.difficulty === '长途挑战' ? 'bg-amber-500/15 text-amber-500' :
                           route.difficulty === '进阶爬坡' ? 'bg-purple-500/15 text-purple-500' :
@@ -671,7 +671,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   {/* Highlights Pill Tags */}
                   <div className="flex flex-wrap gap-1.5 mt-2.5">
                     {route.highlights.slice(0, 4).map((h, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400">
+                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400">
                         #{h}
                       </span>
                     ))}

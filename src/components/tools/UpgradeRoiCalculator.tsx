@@ -427,13 +427,13 @@ export const UpgradeRoiCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Upgrade Items (Spec Picker + Custom In-place Inputs) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-cyan-400" />
+              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
                 备选改装清单（下拉选择规格自动带出实测参数）
               </h2>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                 已生效 {analysis.activeCount} / {items.length} 件
               </span>
             </div>

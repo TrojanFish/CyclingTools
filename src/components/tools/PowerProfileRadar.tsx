@@ -289,40 +289,40 @@ export const PowerProfileRadar: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
               <Target className="w-3.5 h-3.5" />
               生理动力学画像与现代极化训练
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">功率能力雷达与极化训练区间</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">功率能力雷达与极化训练区间</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
               基于 5s 冲刺、1min 无氧、5min VO2 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-400 text-xs font-semibold border border-cyan-500/30 cursor-pointer transition shadow-sm">
-              <Upload className="w-4 h-4 text-cyan-400" />
+            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/90 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 cursor-pointer transition shadow-xs">
+              <Upload className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
               <span>导入 CSV/JSON 功率表</span>
               <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
             </label>
 
             <button
               onClick={() => setIsPasteModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
-              <FileText className="w-3.5 h-3.5 text-cyan-400" />
+              <FileText className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
               粘贴功率文本
             </button>
 
             <button
               onClick={copyReport}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
               复制报告
             </button>
           </div>
@@ -330,37 +330,37 @@ export const PowerProfileRadar: React.FC = () => {
       </div>
 
       {/* Preset Buttons & Quick Import Trigger */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-400">车手类型模型预设:</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">车手类型模型预设:</span>
           <button
             onClick={() => loadPreset('sprinter')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
             🚀 爆发冲刺手 (Sprinter)
           </button>
           <button
             onClick={() => loadPreset('climber')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
             ⛰️ 纯血爬坡手 (Climber)
           </button>
           <button
             onClick={() => loadPreset('rouleur')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
             ⏱️ 计时突围手 (Time Trialist)
           </button>
           <button
             onClick={() => loadPreset('allrounder')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
           >
             💎 均衡全能型 (All-Rounder)
           </button>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <label className="text-cyan-400 hover:text-cyan-300 cursor-pointer font-medium flex items-center gap-1">
+          <label className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 cursor-pointer font-medium flex items-center gap-1">
             <Upload className="w-3.5 h-3.5" />
             上传 Garmin/Intervals.icu 表单
             <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
@@ -371,21 +371,21 @@ export const PowerProfileRadar: React.FC = () => {
       {/* Smart Text Paste Modal */}
       {isPasteModalOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-slate-100">智能功率文本一键识别与导入</h3>
+                <FileText className="w-5 h-5 text-cyan-500" />
+                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">智能功率文本一键识别与导入</h3>
               </div>
               <button
                 onClick={() => setIsPasteModalOpen(false)}
-                className="text-slate-400 hover:text-slate-200 p-1 rounded-lg hover:bg-slate-800 transition"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               支持直接粘贴车表摘要、微信聊天记录或 Intervals.icu 记录，系统将自动识别各时间段的瓦数。
             </p>
 
@@ -394,37 +394,37 @@ export const PowerProfileRadar: React.FC = () => {
               value={pasteText}
               onChange={(e) => setPasteText(e.target.value)}
               placeholder="例如：5秒: 1120W, 1分钟: 580W, 5分钟: 360W, 20分钟: 275W, FTP: 260W, 体重: 67kg"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
             />
 
             {/* Live Detected Preview */}
             {liveParsed && (
-              <div className="bg-slate-950/60 rounded-xl p-3 border border-slate-800 space-y-2">
-                <span className="text-[11px] font-semibold text-slate-400 block">实时识别结果预览:</span>
+              <div className="bg-slate-50 dark:bg-slate-950/60 rounded-xl p-3 border border-slate-200 dark:border-slate-800 space-y-2">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">实时识别结果预览:</span>
                 <div className="grid grid-cols-3 gap-2 text-xs font-mono">
-                  <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                    <span className="text-[10px] text-slate-500 block">5秒 冲刺</span>
-                    <span className="text-cyan-400 font-bold">{liveParsed.p5s ? `${liveParsed.p5s} W` : '未识别'}</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5秒 冲刺</span>
+                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p5s ? `${liveParsed.p5s} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                    <span className="text-[10px] text-slate-500 block">1分钟 无氧</span>
-                    <span className="text-cyan-400 font-bold">{liveParsed.p1m ? `${liveParsed.p1m} W` : '未识别'}</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">1分钟 无氧</span>
+                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p1m ? `${liveParsed.p1m} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                    <span className="text-[10px] text-slate-500 block">5分钟 VO2</span>
-                    <span className="text-cyan-400 font-bold">{liveParsed.p5m ? `${liveParsed.p5m} W` : '未识别'}</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5分钟 VO2</span>
+                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p5m ? `${liveParsed.p5m} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                    <span className="text-[10px] text-slate-500 block">20分钟 阈值</span>
-                    <span className="text-cyan-400 font-bold">{liveParsed.p20m ? `${liveParsed.p20m} W` : '未识别'}</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">20分钟 阈值</span>
+                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p20m ? `${liveParsed.p20m} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                    <span className="text-[10px] text-slate-500 block">FTP 阈值功率</span>
-                    <span className="text-emerald-400 font-bold">{liveParsed.ftp ? `${liveParsed.ftp} W` : '保持现值'}</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">FTP 阈值功率</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">{liveParsed.ftp ? `${liveParsed.ftp} W` : '保持现值'}</span>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                    <span className="text-[10px] text-slate-500 block">车手体重</span>
-                    <span className="text-amber-400 font-bold">{liveParsed.weight ? `${liveParsed.weight} kg` : '保持现值'}</span>
+                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">车手体重</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-bold">{liveParsed.weight ? `${liveParsed.weight} kg` : '保持现值'}</span>
                   </div>
                 </div>
               </div>
@@ -433,7 +433,7 @@ export const PowerProfileRadar: React.FC = () => {
             <div className="flex justify-end gap-2.5 pt-2">
               <button
                 onClick={() => setIsPasteModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 transition"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
               >
                 取消
               </button>
@@ -528,26 +528,26 @@ export const PowerProfileRadar: React.FC = () => {
         {/* Right Radar Visual & Polarized Plan */}
         <div className="lg:col-span-7 space-y-6">
           {/* Phenotype Badge */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-slate-400">车手生理表型判定 (Rider Phenotype)</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">车手生理表型判定 (Rider Phenotype)</span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold border ${analytics.phenotypeColor}`}>
                 {analytics.phenotype}
               </span>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               {analytics.phenotypeDesc}
             </p>
           </div>
 
           {/* Radar Chart */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
                 六维综合竞技能力雷达图 (Power Profile Radar)
               </span>
-              <span className="text-slate-500 text-[10px]">*基于 Coggan 竞技数据库标定</span>
+              <span className="text-slate-400 dark:text-slate-500 text-[10px]">*基于 Coggan 竞技数据库标定</span>
             </div>
 
             <div className="h-64 flex justify-center">
@@ -558,8 +558,8 @@ export const PowerProfileRadar: React.FC = () => {
                   maintainAspectRatio: false,
                   scales: {
                     r: {
-                      angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
-                      grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                      angleLines: { color: 'rgba(148, 163, 184, 0.15)' },
+                      grid: { color: 'rgba(148, 163, 184, 0.15)' },
                       pointLabels: { color: '#94a3b8', font: { size: 11 } },
                       ticks: { display: false, maxTicksLimit: 5 },
                       min: 0,
@@ -575,13 +575,13 @@ export const PowerProfileRadar: React.FC = () => {
           </div>
 
           {/* Seiler Polarized 80/20 Table & Sweet Spot */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
-                <Flame className="w-4 h-4 text-amber-400" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-amber-500" />
                 Seiler 极化 80/20 现代训练模型与甜点靶心
               </h3>
-              <span className="text-xs font-mono text-cyan-400 font-semibold">
+              <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 font-semibold">
                 甜点 SweetSpot: {analytics.sweetSpotMin} - {analytics.sweetSpotMax} W
               </span>
             </div>
@@ -589,14 +589,14 @@ export const PowerProfileRadar: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
-                  <tr className="border-b border-slate-800 text-slate-400">
+                  <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
                     <th className="pb-2">训练三区</th>
                     <th className="pb-2">功率范围</th>
                     <th className="pb-2">建议时间占比</th>
                     <th className="pb-2">生理机制</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300">
                   {analytics.polarizedZones.map((z, idx) => (
                     <tr key={idx} className="hover:bg-slate-900/50">
                       <td className="py-2.5 font-semibold text-slate-200">{z.zone}</td>

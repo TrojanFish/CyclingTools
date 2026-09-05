@@ -115,23 +115,23 @@ export const ChainLengthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
               <Link className="w-3.5 h-3.5" />
               传动系统装配与链条数学
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">链条长度与传动链节计算器</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">链条长度与传动链节计算器</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
               换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。
             </p>
           </div>
 
           <button
             onClick={copyReport}
-            className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition self-start md:self-auto"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition self-start md:self-auto shadow-xs"
           >
             <Copy className="w-3.5 h-3.5" />
             复制链条报告
@@ -140,29 +140,29 @@ export const ChainLengthCalculator: React.FC = () => {
       </div>
 
       {/* Preset Buttons */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center gap-2">
-        <span className="text-xs text-slate-400">常见规格一键填入:</span>
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-slate-500 dark:text-slate-400">常见规格一键填入:</span>
         <button
           onClick={() => loadPreset('compact_34')}
-          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
           压缩盘 50/34T + 11-34T (410mm)
         </button>
         <button
           onClick={() => loadPreset('semi_30')}
-          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
           半压缩 52/36T + 11-30T (410mm)
         </button>
         <button
           onClick={() => loadPreset('sram_axs')}
-          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
           SRAM AXS 48/35T + 10-33T
         </button>
         <button
           onClick={() => loadPreset('gravel_1x')}
-          className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition"
         >
           Gravel 单盘 40T + 10-44T
         </button>
@@ -171,15 +171,15 @@ export const ChainLengthCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
-            <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2">
-              <Settings className="w-4 h-4 text-cyan-400" />
+          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+              <Settings className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
               车架几何与齿盘参数
             </h2>
 
             {/* Chainstay Length */}
             <div>
-              <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center">
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5 flex items-center">
                 后下叉长度 Chainstay RC (mm)
                 <Tooltip content="五通中轴中心至后轮快拆/桶轴中心的直线距离，绝大多数公路车为 405~415mm，Gravel/耐力车为 420~435mm。" />
               </label>
@@ -194,11 +194,11 @@ export const ChainLengthCalculator: React.FC = () => {
             </div>
 
             {/* Frame Suspension Type */}
-            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2.5">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-slate-200 block">全避震软尾补偿 (Full Suspension)</span>
-                  <span className="text-[10px] text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">全避震软尾补偿 (Full Suspension)</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
                 </div>
                 <input
                   type="checkbox"
@@ -209,10 +209,10 @@ export const ChainLengthCalculator: React.FC = () => {
               </div>
 
               {isFullSuspension && (
-                <div className="pt-2 border-t border-slate-800 space-y-1">
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">压缩触底拉伸量 (Chainstay Growth)</span>
-                    <span className="font-mono text-cyan-400 font-bold">+{chainstayGrowthMm} mm</span>
+                    <span className="text-slate-500 dark:text-slate-400">压缩触底拉伸量 (Chainstay Growth)</span>
+                    <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">+{chainstayGrowthMm} mm</span>
                   </div>
                   <input
                     type="range"
@@ -221,9 +221,9 @@ export const ChainLengthCalculator: React.FC = () => {
                     step={1}
                     value={chainstayGrowthMm}
                     onChange={(e) => setChainstayGrowthMm(Number(e.target.value))}
-                    className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-800 rounded"
+                    className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded"
                   />
-                  <span className="text-[10px] text-amber-400 block pt-0.5">
+                  <span className="text-[10px] text-amber-600 dark:text-amber-400 block pt-0.5">
                     💡 已自动在有效后下叉中计入 {chainstayGrowthMm}mm 拉伸并增加安全链节，杜绝大飞大盘冲击触底拉爆后拨！
                   </span>
                 </div>
@@ -235,7 +235,9 @@ export const ChainLengthCalculator: React.FC = () => {
               <button
                 onClick={() => setIsSingleRing(false)}
                 className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  !isSingleRing ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-400'
+                  !isSingleRing
+                    ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400'
+                    : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
                 双盘系统 (2x)
@@ -243,7 +245,9 @@ export const ChainLengthCalculator: React.FC = () => {
               <button
                 onClick={() => setIsSingleRing(true)}
                 className={`py-2 rounded-xl border text-xs font-semibold transition ${
-                  isSingleRing ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400' : 'bg-slate-900 border-slate-800 text-slate-400'
+                  isSingleRing
+                    ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400'
+                    : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
                 单盘系统 (1x)
@@ -253,14 +257,14 @@ export const ChainLengthCalculator: React.FC = () => {
             {/* Chainrings */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
                   {isSingleRing ? '单盘齿数 (T)' : '最大大盘齿数 (T)'}
                 </label>
                 <NumberStepper value={bigRing} onChange={setBigRing} min={30} max={60} unit="T" />
               </div>
               {!isSingleRing && (
                 <div>
-                  <label className="text-xs font-medium text-slate-300 block mb-1.5">最小小盘齿数 (T)</label>
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">最小小盘齿数 (T)</label>
                   <NumberStepper value={smallRing} onChange={setSmallRing} min={28} max={46} unit="T" />
                 </div>
               )}
@@ -269,18 +273,18 @@ export const ChainLengthCalculator: React.FC = () => {
             {/* Cassette */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">飞轮最大片齿数 (T)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮最大片齿数 (T)</label>
                 <NumberStepper value={bigCog} onChange={setBigCog} min={25} max={52} unit="T" />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-300 block mb-1.5">飞轮最小片齿数 (T)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮最小片齿数 (T)</label>
                 <NumberStepper value={smallCog} onChange={setSmallCog} min={9} max={14} unit="T" />
               </div>
             </div>
 
             {/* Pulley Teeth */}
-            <div className="pt-2 border-t border-slate-800">
-              <label className="text-xs font-medium text-slate-300 block mb-1.5 flex items-center">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5 flex items-center">
                 后拨导轮规格 (Pulley Wheels)
                 <Tooltip content="标准原厂导轮一般为 11T/12T；若改装超大导轮系统（如 14T/16T/18T 大鸡腿），需相应补偿链节。" />
               </label>
@@ -295,8 +299,8 @@ export const ChainLengthCalculator: React.FC = () => {
                     onClick={() => setPulleyTeeth(p.teeth)}
                     className={`py-2 px-1 rounded-xl border text-center transition ${
                       pulleyTeeth === p.teeth
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400 font-semibold'
-                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
+                        : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     {p.label}
@@ -311,32 +315,32 @@ export const ChainLengthCalculator: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           {/* Main Key Link Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-400 font-medium block">标准截链推荐</span>
-              <div className="text-3xl font-extrabold font-mono text-cyan-400 mt-1">
-                {result.recommendedLinks} <span className="text-xs text-slate-400 font-sans font-normal">Links (节)</span>
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">标准截链推荐</span>
+              <div className="text-3xl font-extrabold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
+                {result.recommendedLinks} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">Links (节)</span>
               </div>
-              <span className="text-[10px] text-slate-500 font-mono">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
                 含 1 节魔术扣 (Quick Link)
               </span>
             </div>
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-400 font-medium block">链条理论总长度</span>
-              <div className="text-3xl font-extrabold font-mono text-emerald-400 mt-1">
-                {result.chainLengthInches} <span className="text-xs text-slate-400 font-sans font-normal">英寸</span>
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">链条理论总长度</span>
+              <div className="text-3xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
+                {result.chainLengthInches} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">英寸</span>
               </div>
-              <span className="text-[10px] text-slate-500">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">
                 约 {(parseFloat(result.chainLengthInches) * 25.4).toFixed(0)} mm
               </span>
             </div>
 
-            <div className="glass-card p-5 rounded-2xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-xs text-slate-400 font-medium block">后拨总齿容量需求</span>
-              <div className={`text-3xl font-extrabold font-mono mt-1 ${result.isCapacityWarning ? 'text-amber-400' : 'text-slate-100'}`}>
-                {result.requiredCapacity} <span className="text-xs text-slate-400 font-sans font-normal">T</span>
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 text-center">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">后拨总齿容量需求</span>
+              <div className={`text-3xl font-extrabold font-mono mt-1 ${result.isCapacityWarning ? 'text-amber-500 dark:text-amber-400' : 'text-slate-900 dark:text-slate-100'}`}>
+                {result.requiredCapacity} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">T</span>
               </div>
-              <span className="text-[10px] text-slate-500">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">
                 {result.rearDerailleurRecommendation}
               </span>
             </div>

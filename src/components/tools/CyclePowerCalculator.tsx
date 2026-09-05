@@ -435,7 +435,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   />
                   <button
                     onClick={() => setWindDirection(windDirection === 'headwind' ? 'tailwind' : 'headwind')}
-                    className="px-2 py-1 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg text-[10px] text-cyan-600 dark:text-cyan-400 shrink-0 font-medium"
+                    className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 rounded-xl text-[10px] text-cyan-600 dark:text-cyan-400 shrink-0 font-semibold transition"
                   >
                     {windDirection === 'headwind' ? (language === 'zh-TW' ? '頂風' : '顶风') : (language === 'zh-TW' ? '順風' : '顺风')}
                   </button>
