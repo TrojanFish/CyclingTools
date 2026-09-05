@@ -44,6 +44,8 @@ export const SpokeLengthCalculator: React.FC = () => {
   // Spoke & Hardware Nuances
   const [spokeHoleDiaMm, setSpokeHoleDiaMm] = useState<number>(2.5); // Hub spoke hole diameter
   const [spokeStretchCompensationMm, setSpokeStretchCompensationMm] = useState<number>(0.6); // Under 1200N tension
+  const [nippleLengthMm, setNippleLengthMm] = useState<number>(12); // 12mm standard, 14mm, 16mm
+  const [nippleWasherMm, setNippleWasherMm] = useState<number>(0); // 0mm, 0.5mm, 1.0mm DT/Sapim washers
 
   // Quick Hardware Presets
   const applyPreset = (preset: 'dt350_rear_50' | 'dt350_front_50' | 'gravel_asym_45' | 'mtb_29_xc' | 'rim_rear_classic') => {
@@ -117,7 +119,12 @@ export const SpokeLengthCalculator: React.FC = () => {
 
   // Jobst Brandt Mathematical Trigonometry
   const result = useMemo(() => {
-    const rRim = erdMm / 2;
+    // Hardware compensation:
+    // DT Swiss / Sapim standard: 12mm nipple is the standard baseline.
+    // 14mm nipple has deeper thread entry (~0.5mm shorter spoke needed), 16mm nipple (~1.0mm shorter).
+    // Nipple washer (e.g. DT Swiss PHR / Sapim washer) raises the nipple bed, effectively increasing ERD by 2 * washerThickness.
+    const effectiveErd = erdMm + (nippleWasherMm * 2) + (nippleLengthMm === 14 ? -0.5 : nippleLengthMm === 16 ? -1.0 : 0);
+    const rRim = effectiveErd / 2;
     const rLeftHub = leftPcdMm / 2;
     const rRightHub = rightPcdMm / 2;
 
@@ -196,6 +203,7 @@ export const SpokeLengthCalculator: React.FC = () => {
     }
 
     return {
+      effectiveErd: parseFloat(effectiveErd.toFixed(1)),
       netLeft: parseFloat(netLeft.toFixed(1)),
       netRight: parseFloat(netRight.toFixed(1)),
       roundedLeft,
@@ -220,6 +228,8 @@ export const SpokeLengthCalculator: React.FC = () => {
     rightCross,
     spokeHoleDiaMm,
     spokeStretchCompensationMm,
+    nippleLengthMm,
+    nippleWasherMm,
     wheelPosition,
     brakeType
   ]);
@@ -416,6 +426,59 @@ export const SpokeLengthCalculator: React.FC = () => {
                   <option value={36}>36 孔 (旅行车 / 经典重负荷)</option>
                 </select>
                 <span className="text-[10px] text-slate-400 block mt-1">碟刹后轮通常 24H 或 28H</span>
+              </div>
+            </div>
+
+            {/* 条帽与垫片规格 (Nipple & Washer Compensation) */}
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">条帽长度规格 (Nipple Length)</label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { val: 12, label: '12mm 标准' },
+                    { val: 14, label: '14mm 加长' },
+                    { val: 16, label: '16mm 深圈' }
+                  ].map((item) => (
+                    <button
+                      key={item.val}
+                      type="button"
+                      onClick={() => setNippleLengthMm(item.val)}
+                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
+                        nippleLengthMm === item.val
+                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
+                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-1">14/16mm 条帽咬合点更深，系统已自动补偿微调避底</span>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">辐条孔垫片 (Rim Washer)</label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { val: 0, label: '无垫片' },
+                    { val: 0.5, label: 'PHR 0.5mm' },
+                    { val: 1.0, label: '厚垫 1.0mm' }
+                  ].map((item) => (
+                    <button
+                      key={item.val}
+                      type="button"
+                      onClick={() => setNippleWasherMm(item.val)}
+                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
+                        nippleWasherMm === item.val
+                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
+                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-1">修正后有效 ERD: <strong className="font-mono text-cyan-600 dark:text-cyan-400">{result.effectiveErd} mm</strong></span>
               </div>
             </div>
           </div>

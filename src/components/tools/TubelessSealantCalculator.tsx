@@ -501,6 +501,10 @@ export const TubelessSealantCalculator: React.FC = () => {
                   ? `Based on ${climate === 'hot_dry' ? 'hot arid weather' : 'your climate'} and ${casingType} casing. Please perform a slosh-test or top up around this date to maintain puncture protection.`
                   : `受当地${climate === 'hot_dry' ? '高温炎热' : '常温'}气候与${casingType === 'race' ? '竞速薄胎壁' : '标准'}胎体影响，乳胶在此周期后将逐渐胶化脱水，请提前摇轮听声自查。`}
               </p>
+              <div className="pt-1.5 border-t border-amber-500/20 flex items-center justify-between text-[10px] text-amber-800 dark:text-amber-300 font-medium">
+                <span>{language === 'en' ? 'Unopened Shelf Life: 24-36 Mo.' : '原装避光未开封保质期: 24-36个月'}</span>
+                <span>{language === 'en' ? 'Open Bottle: Use in 6-12 Mo.' : '开封后建议: 6-12个月内用毕'}</span>
+              </div>
             </div>
 
             {/* Puncture Threshold Gauge */}
@@ -594,34 +598,44 @@ export const TubelessSealantCalculator: React.FC = () => {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>1. 摇轮听声法 (Slosh Test)</span>
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-              无需拆卸外胎！将车轮拆下在耳边快速前后晃动。若能清晰听到清脆的“哗啦哗啦”水撞击声，表明胶水充足活跃；若声音沉闷微弱或完全无声，说明乳胶已干涸结块，需立即补液。
+              无需拆卸外胎！将车轮拆下在耳边快速晃动。若能听到清脆的“哗啦哗啦”水撞击声，表明胶水充足活跃；若声音沉闷微弱或完全无声，说明乳胶已干涸结块，需立即补液。
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
-              <span>2. 气门嘴针筒注胶法</span>
+              <span>2. 气门嘴注胶与气芯防堵</span>
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-              首次安装推荐先干装并用储气罐爆充上圈（听到清脆的“嘭嘭”两声落槽），确认完全卡紧后，拆下法嘴气门芯，用专用注射器通过气门嘴注入补胎液，完全不脏手且不漏气。
+              拆下气门芯后用注射器注胶。注完后先空打数下气吹净管道残留乳胶，在气门芯螺牙涂抹微量硅油防粘连，防止乳胶干固锁死气门。车座包内建议备用 2 个铜制气门芯。
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              <span>3. 开封保质期与仓储</span>
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              原装密封自补液保质期通常为 24~36 个月；开封接触空气后溶剂缓慢挥发，建议在 6~12 个月内用完。每次注胶前务必剧烈摇匀瓶身 30 秒，确保天然微粒晶核完全悬浮分散。
             </p>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
-              <span>3. 扎胎与培根胶条配合</span>
+              <span>4. 扎钉与培根胶条配合</span>
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-              自补液对 2-3mm 以下微孔可在旋转中数秒自封；对于 3-5mm 较大划口，切忌长时间停车让气漏光，应迅速将车轮旋转至扎钉点朝下，并快速插入培根胶条（Tubeless Plug），瞬间止漏。
+              自补液对 2-3mm 以下微孔可在旋转中数秒自封；对于 3-5mm 较大划口，应迅速将破口朝下让液态胶水浸润，并立即插拔培根胶条（Tubeless Plug），机械填补瞬间止漏。
             </p>
           </div>
         </div>

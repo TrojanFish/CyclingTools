@@ -14,6 +14,8 @@ export const ChainLengthCalculator: React.FC = () => {
   const [bigCog, setBigCog] = useState<number>(34);
   const [smallCog, setSmallCog] = useState<number>(11);
   const [pulleyTeeth, setPulleyTeeth] = useState<number>(11); // 11T standard or 12/14T oversized
+  const [isFullSuspension, setIsFullSuspension] = useState<boolean>(false);
+  const [chainstayGrowthMm, setChainstayGrowthMm] = useState<number>(20);
 
   // Preset Configurations
   const loadPreset = (type: string) => {
@@ -58,8 +60,9 @@ export const ChainLengthCalculator: React.FC = () => {
 
   // Comprehensive Calculation
   const result = useMemo(() => {
-    // 1. Standard Rigby Equation: L = 2 * (C / 25.4) + (F / 4) + (R / 4) + 1
-    const cInches = chainstayLengthMm / 25.4;
+    // 1. Effective Chainstay (accounting for full-suspension bottom-out stretch)
+    const effectiveChainstayMm = isFullSuspension ? chainstayLengthMm + chainstayGrowthMm : chainstayLengthMm;
+    const cInches = effectiveChainstayMm / 25.4;
     const rawLinksRigby = 2 * cInches + bigRing / 4 + bigCog / 4 + 1;
     // Oversized pulley wheel compensation (if 14T+ add 1 link)
     const pulleyExtra = pulleyTeeth > 11 ? (pulleyTeeth - 11) * 0.3 : 0;
@@ -188,6 +191,43 @@ export const ChainLengthCalculator: React.FC = () => {
                 max={460}
                 unit="mm"
               />
+            </div>
+
+            {/* Frame Suspension Type */}
+            <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-slate-200 block">全避震软尾补偿 (Full Suspension)</span>
+                  <span className="text-[10px] text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={isFullSuspension}
+                  onChange={(e) => setIsFullSuspension(e.target.checked)}
+                  className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                />
+              </div>
+
+              {isFullSuspension && (
+                <div className="pt-2 border-t border-slate-800 space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-400">压缩触底拉伸量 (Chainstay Growth)</span>
+                    <span className="font-mono text-cyan-400 font-bold">+{chainstayGrowthMm} mm</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={10}
+                    max={35}
+                    step={1}
+                    value={chainstayGrowthMm}
+                    onChange={(e) => setChainstayGrowthMm(Number(e.target.value))}
+                    className="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-800 rounded"
+                  />
+                  <span className="text-[10px] text-amber-400 block pt-0.5">
+                    💡 已自动在有效后下叉中计入 {chainstayGrowthMm}mm 拉伸并增加安全链节，杜绝大飞大盘冲击触底拉爆后拨！
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Drivetrain 1x or 2x */}

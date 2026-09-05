@@ -18,7 +18,8 @@ import {
   RotateCcw,
   Gauge,
   Layers,
-  BarChart3
+  BarChart3,
+  Printer
 } from 'lucide-react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
@@ -500,13 +501,22 @@ export const FitActivityAnalyzer: React.FC = () => {
             </p>
           </div>
 
-          <button
-            onClick={handleLoadDemo}
-            className="self-start sm:self-center px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition flex items-center gap-2 shrink-0"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>{language === 'en' ? 'Load Demo Ride' : '加载实测样本数据'}</span>
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+            <button
+              onClick={() => window.print()}
+              className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5"
+            >
+              <Printer className="w-4 h-4" />
+              <span>{language === 'en' ? 'Print Report' : '打印分析报告'}</span>
+            </button>
+            <button
+              onClick={handleLoadDemo}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 active:scale-95 transition flex items-center gap-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>{language === 'en' ? 'Load Demo Ride' : '加载实测样本数据'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -709,7 +719,9 @@ export const FitActivityAnalyzer: React.FC = () => {
               <span className="flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-amber-500" />
                 <span>{language === 'en' ? 'Avg Cadence' : '平均踏频'}: <strong className="text-slate-900 dark:text-slate-100">{analysis.avgCadence ?? '--'} rpm</strong></span>
-                <span className="text-slate-400 text-[10px]">({language === 'en' ? 'Pedaling' : '踩踏率'} {analysis.pedalingPercent ?? 100}%)</span>
+                <span className="text-slate-400 text-[10px]">
+                  ({language === 'en' ? 'Pedal' : '踩踏'} {analysis.pedalingPercent ?? 100}% · {language === 'en' ? 'Coast' : '滑行'} {100 - (analysis.pedalingPercent ?? 100)}%)
+                </span>
               </span>
 
               {analysis.efficiencyFactor && (

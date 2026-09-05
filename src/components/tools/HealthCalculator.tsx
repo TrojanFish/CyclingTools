@@ -57,7 +57,10 @@ export const HealthCalculator: React.FC = () => {
     }
 
     const totalCarbsG = Math.round(carbsPerHour * rideDurationHours);
-    const totalFluidL = parseFloat(((fluidPerHour * rideDurationHours) / 1000).toFixed(1));
+    const totalFluidMl = fluidPerHour * rideDurationHours;
+    const totalFluidL = parseFloat((totalFluidMl / 1000).toFixed(1));
+    const bottles550 = parseFloat((totalFluidMl / 550).toFixed(1));
+    const bottles750 = parseFloat((totalFluidMl / 750).toFixed(1));
     const totalSodiumMg = Math.round(sodiumPerHour * rideDurationHours);
     const gelCount = Math.ceil(totalCarbsG / 25); // ~25g carbs per energy gel
 
@@ -67,6 +70,9 @@ export const HealthCalculator: React.FC = () => {
       sodiumPerHour,
       totalCarbsG,
       totalFluidL,
+      totalFluidMl,
+      bottles550,
+      bottles750,
       totalSodiumMg,
       gelCount
     };
@@ -423,8 +429,8 @@ export const HealthCalculator: React.FC = () => {
                   <div className="text-2xl font-bold font-mono text-emerald-400 mt-1">
                     {fuelingResult.totalFluidL} <span className="text-xs text-slate-400 font-sans font-normal">升</span>
                   </div>
-                  <span className="text-[11px] text-slate-500">
-                    {fuelingResult.fluidPerHour} ml / 小时
+                  <span className="text-[11px] text-slate-500 font-mono block">
+                    ≈ {fuelingResult.bottles550} 壶 (550ml) / {fuelingResult.bottles750} 壶 (750ml)
                   </span>
                 </div>
 

@@ -477,10 +477,46 @@ export const CyclePowerCalculator: React.FC = () => {
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
                   <Wind className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
-                  {language === 'en' ? 'Altitude & Air Density' : language === 'zh-TW' ? '海拔與氣溫密度校正' : '海拔与气温密度校正'}
+                  {language === 'en' ? 'Altitude & Air Density' : language === 'zh-TW' ? '海拔與氣壓密度校正' : '海拔与气压密度校正'}
                 </span>
-                <span className="text-cyan-600 dark:text-cyan-400 font-mono font-bold">ρ = {airDensityRho} kg/m³</span>
+                <div className="flex items-center gap-1.5 font-mono">
+                  <span className="text-cyan-600 dark:text-cyan-400 font-bold text-xs">ρ = {airDensityRho} kg/m³</span>
+                  {altitudeM > 100 && (
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
+                      气阻 -{Math.round((1 - airDensityRho / 1.225) * 100)}%
+                    </span>
+                  )}
+                </div>
               </div>
+
+              {/* Quick Altitude Presets */}
+              <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                <button
+                  onClick={() => setAltitudeM(0)}
+                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 0 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
+                >
+                  海平面 0m
+                </button>
+                <button
+                  onClick={() => setAltitudeM(500)}
+                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 500 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
+                >
+                  丘陵 500m
+                </button>
+                <button
+                  onClick={() => setAltitudeM(2200)}
+                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 2200 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
+                >
+                  青海湖 2200m
+                </button>
+                <button
+                  onClick={() => setAltitudeM(4200)}
+                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 4200 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
+                >
+                  高原折多山 4200m
+                </button>
+              </div>
+
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
                   <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">

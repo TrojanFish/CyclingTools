@@ -306,6 +306,10 @@ export const ClimbPacingPlanner: React.FC = () => {
 
       accumulatedDistanceKm += seg.distanceKm;
 
+      // Cadence calculation under compact 34-34T ratio (~2.15m rollout)
+      const estimatedCadenceRpm = Math.max(30, Math.round((speedKmh * 1000 / 60) / 2.15));
+      const isSteepTorqueHazard = seg.gradePct >= 11 && estimatedCadenceRpm < 65;
+
       return {
         ...seg,
         eleGain: Math.round(eleGain),
@@ -316,6 +320,8 @@ export const ClimbPacingPlanner: React.FC = () => {
         segSeconds,
         timeStr,
         vam,
+        estimatedCadenceRpm,
+        isSteepTorqueHazard,
         isOverThreshold: targetFtpPct > 102
       };
     });
@@ -331,6 +337,7 @@ export const ClimbPacingPlanner: React.FC = () => {
     const avgWkg = parseFloat((avgWatts / riderWeight).toFixed(2));
     const overallVam = totalSeconds > 0 ? Math.round((accumulatedElevationM / totalSeconds) * 3600) : 0;
     const avgGrade = accumulatedDistanceKm > 0 ? parseFloat(((accumulatedElevationM / (accumulatedDistanceKm * 1000)) * 100).toFixed(1)) : 0;
+    const hasSteepTorqueHazard = segmentOutputs.some(s => s.isSteepTorqueHazard);
 
     return {
       totalDistanceKm: parseFloat(accumulatedDistanceKm.toFixed(1)),
@@ -340,6 +347,7 @@ export const ClimbPacingPlanner: React.FC = () => {
       avgWatts,
       avgWkg,
       overallVam,
+      hasSteepTorqueHazard,
       segmentOutputs
     };
   }, [segments, riderWeight, bikeWeight, ftpWatts, baseStrategyFactor]);
@@ -749,6 +757,26 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
             </div>
           </div>
 
+          {/* Steep Slope Low-Cadence Torque Alert */}
+          {planResults.hasSteepTorqueHazard && (
+            <div className="glass-panel p-4 rounded-xl border border-rose-300 dark:border-rose-500/30 bg-rose-50 dark:bg-rose-950/25 flex items-start gap-3 shadow-xs">
+              <ShieldAlert className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+              <div className="space-y-1 text-xs">
+                <div className="font-bold text-rose-800 dark:text-rose-300 flex items-center gap-2">
+                  <span>{language === 'en' ? 'Steep Gradient Torque & Low Cadence Fatigue Alert' : '陡坡极低踏频与肌力负荷预警'}</span>
+                  <span className="font-mono px-2 py-0.5 bg-rose-500/20 text-rose-700 dark:text-rose-300 rounded text-[10px]">
+                    {language === 'en' ? 'Cadence < 65 RPM' : '推算踏频 < 65 RPM'}
+                  </span>
+                </div>
+                <p className="text-rose-950/90 dark:text-rose-200/90 leading-relaxed">
+                  检测到路线存在坡度 ≥11% 的攻坚分段！在常规 34-34T 齿比下，踩踏踏频将逼近 60 RPM 甚至更低。<strong>重踏（Grinding）危害：</strong>极低踏频将急剧加大膝盖髌股关节剪切压，并过早动员易疲劳的快肌纤维（Type IIb），引发局部肌酸暴增与抽筋。
+                  <br />
+                  <strong>战术建议：</strong>① 改装 36T / 40T 爬坡大飞轮；② 进坡前提前拉高踏频蓄势；③ 采取「坐骑踏频结合间歇站姿摇车（15-20次踏频轮换）」利用自重借力卸载股四头肌峰值扭矩。
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Segment Details Table */}
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200">
@@ -762,6 +790,7 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                     <th className="pb-2">{language === 'en' ? 'Dist / Grade' : language === 'zh-TW' ? '距離 / 坡度' : '距离 / 坡度'}</th>
                     <th className="pb-2">{language === 'en' ? 'Target Watts' : language === 'zh-TW' ? '建議功率' : '建议功率'}</th>
                     <th className="pb-2">{language === 'en' ? 'W/kg (FTP%)' : '推重比 / FTP%'}</th>
+                    <th className="pb-2">{language === 'en' ? 'Est. Cadence' : '预估踏频'}</th>
                     <th className="pb-2">{language === 'en' ? 'Est. Time' : language === 'zh-TW' ? '預估耗時' : '预估耗时'}</th>
                     <th className="pb-2">{language === 'en' ? 'Est. VAM' : '预估 VAM'}</th>
                   </tr>
@@ -776,6 +805,15 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                       </td>
                       <td className="text-cyan-600 dark:text-cyan-400 font-bold">{s.targetWatts} W</td>
                       <td>{s.targetWkg} W/kg ({s.targetFtpPct}%)</td>
+                      <td>
+                        <span className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
+                          s.isSteepTorqueHazard
+                            ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
+                            : 'text-slate-600 dark:text-slate-400'
+                        }`}>
+                          ~{s.estimatedCadenceRpm} RPM
+                        </span>
+                      </td>
                       <td className="text-emerald-600 dark:text-emerald-400 font-semibold">{s.timeStr}</td>
                       <td className="text-purple-600 dark:text-purple-400">
                         {s.vam} m/h {isImperial ? `(${Math.round(s.vam * 3.28084)} ft/h)` : ''}

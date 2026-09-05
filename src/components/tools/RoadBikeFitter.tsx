@@ -448,23 +448,49 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 space-y-3 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <Footprints className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              {language === 'en' ? 'Cleat Setup, Stem & Crankset Guidance' : language === 'zh-TW' ? '鎖片安裝、把立與曲柄搭配指南' : '锁片安装、把立与曲柄搭配指南'}
+              {language === 'en' ? 'KOPS Plumb-Line & Cleat Biomechanics' : language === 'zh-TW' ? 'KOPS 膝關節鉛垂線檢測與鎖片生物力學' : 'KOPS 膝关节铅垂线检测与锁片生物力学'}
             </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <Activity className="w-3.5 h-3.5" />
+                  {language === 'en' ? 'KOPS Plumb-Line Check' : 'KOPS 膝盖铅垂线校准'}
+                </span>
+                <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                  {language === 'en'
+                    ? 'Rotate crank to horizontal 3 o\'clock. Drop a plumb line from the anterior patellar tendon; it should pass directly through the pedal axle center (±5mm) for balanced quad/glute power.'
+                    : '曲柄旋转至水平 3 点钟方向，用重物铅垂线自膝盖骨前缘（髌骨窝）垂直下放：铅垂线应精确穿过脚踏轴心（±5mm）。前移过多加重髌骨压迫，后移过多加重腘绳肌负荷。'}
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                <span className="font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
+                  <Footprints className="w-3.5 h-3.5" />
+                  {language === 'en' ? 'Cleat Fore-Aft & Muscle Recruitment' : '锁片前后位与肌群负荷'}
+                </span>
+                <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                  {language === 'en'
+                    ? 'Align cleat 2-4mm behind 1st/5th metatarsal line. Rearward placement unloads calves and Achilles tendon, ideal for gran fondos; forward placement improves instant sprint responsiveness.'
+                    : '锁片基准位为第一与第五跖骨关节中线向后 2~5mm。偏后安装（中足发力）可卸载小腿腓肠肌与跟腱压力，降低抽筋率并利于长距离耐力；偏前冲刺反应快但加重足弓负荷。'}
+                </p>
+              </div>
+
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="font-semibold text-cyan-600 dark:text-cyan-300 block">
+                <span className="font-semibold text-purple-600 dark:text-purple-300 block">
                   {language === 'en' ? `Stem: ${result.stemLength}mm | Bar Width: ${result.handlebarWidth}cm` : `推荐把立: ${result.stemLength}mm | 弯把宽: ${result.handlebarWidth}cm`}
                 </span>
                 <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
                   {language === 'en' ? 'Maintain neutral wrist angle on hoods. Compact bars with 70-80mm reach recommended.' : '上把位手变安装应保持手腕自然平直，弯把 Reach 建议选用 70~80mm 紧凑小弯把。'}
                 </p>
               </div>
+
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="font-semibold text-emerald-600 dark:text-emerald-300 block">
+                <span className="font-semibold text-amber-600 dark:text-amber-300 block">
                   {language === 'en' ? `Crank: ${result.crankLength} | Floating Cleats` : `推荐曲柄: ${result.crankLength} | 浮动锁片`}
                 </span>
                 <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
-                  {language === 'en' ? 'Align cleat 2-4mm behind the 1st/5th metatarsal line. 4.5°~6° float protects knees.' : '锁片中线对齐第一与第五跖骨联线偏后 2~4mm，初学者推荐选用 4.5°~6° 浮动锁片保护膝盖。'}
+                  {language === 'en' ? 'Shorter cranks open hip angle at top dead center. 4.5°~6° float protects knees.' : '较短曲柄可改善上止点髋关节闭合角，降低膝盖屈曲压力；建议搭配 4.5°~6° 浮动锁片。'}
                 </p>
               </div>
             </div>

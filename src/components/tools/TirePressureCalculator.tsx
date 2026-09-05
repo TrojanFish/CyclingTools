@@ -356,6 +356,19 @@ export const TirePressureCalculator: React.FC = () => {
 
         {/* Right Output Results */}
         <div className="lg:col-span-6 space-y-6">
+          {/* Hookless Safety Limit Alert Banner */}
+          {result.hasHooklessWarning && (
+            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-900 dark:text-rose-200 text-xs space-y-1.5 shadow-sm">
+              <div className="font-bold flex items-center gap-2 text-sm text-rose-600 dark:text-rose-400">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>⚠️ 突破无钩轮圈 (Hookless) ETRTO 极限安全红线！</span>
+              </div>
+              <p className="leading-relaxed opacity-95">
+                当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破或迫近国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI (5.0 Bar)</strong> 绝对强制安全上限！在无钩轮圈上超压骑行存在瞬间脱圈爆胎的严重安全隐患。强烈建议：<strong>选用 30c 或 32c 更宽规格外胎</strong>，即可在 55-65 PSI 黄金安全气压下享受更低滚阻与极佳抓地力。
+              </p>
+            </div>
+          )}
+
           {/* Visual Dials Row */}
           <div className="grid grid-cols-2 gap-4">
             <TireGauge

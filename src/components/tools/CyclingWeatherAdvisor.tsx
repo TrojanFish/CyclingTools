@@ -323,6 +323,9 @@ export const CyclingWeatherAdvisor: React.FC = () => {
   // Weather overview summary
   const maxTemp = weatherSegments.length ? Math.max(...weatherSegments.map(s => s.temp)) : 25;
   const maxUv = weatherSegments.length ? Math.max(...weatherSegments.map(s => s.uvIndex)) : 5;
+  const maxCrosswindKmh = weatherSegments.length
+    ? Math.max(0, ...weatherSegments.filter(s => s.windRelation.includes('侧风')).map(s => s.windSpeedKmh))
+    : 0;
 
   const displayAvgSpeed = isImperial ? Math.round(avgSpeedKmh * 0.621371) : avgSpeedKmh;
   const handleAvgSpeedChange = (val: number) => {
@@ -469,6 +472,24 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Crosswind Gust Alert for Carbon Wheels */}
+              {maxCrosswindKmh >= 20 && (
+                <div className="glass-panel p-4 rounded-xl border border-amber-300 dark:border-amber-500/30 bg-amber-500/10 dark:bg-amber-950/25 flex items-start gap-3 shadow-xs">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div className="space-y-1 text-xs">
+                    <div className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                      <span>强侧风预警 (Crosswind Hazard Alert)</span>
+                      <span className="font-mono px-2 py-0.5 bg-amber-500/20 text-amber-700 dark:text-amber-300 rounded-md text-[10px]">
+                        侧向风速峰值 {isImperial ? `${Math.round(maxCrosswindKmh * 0.621371)} mph` : `${maxCrosswindKmh} km/h`}
+                      </span>
+                    </div>
+                    <p className="text-amber-900/90 dark:text-amber-200/90 leading-relaxed">
+                      监测到沿途存在明显侧向风/侧顶风！使用 <strong>≥50mm 高框碳纤维轮组</strong>（特别是前轮）在跨海大桥、山脊风口或遭遇大货车交汇时，将产生强烈的横向偏航力矩（Yaw Steering Moment）引起车头突发晃动。<strong>操稳建议：</strong>通过侧风区时请提前握牢下把位（Drops）以降低重心、拓宽臂展杠杆控制，切忌在此区间单手离把饮水或看表！
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 {weatherSegments.map((seg) => (
