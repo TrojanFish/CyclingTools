@@ -1,6 +1,8 @@
 import React from 'react';
-import { Home, Zap, Gauge, Compass, Ruler } from 'lucide-react';
+import { Home } from 'lucide-react';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useRiderProfile } from '../../context/RiderProfileContext';
+import { getNavToolById } from '../../utils/toolNavHelper';
 
 interface MobileBottomNavProps {
   currentToolId: string | null;
@@ -12,48 +14,42 @@ interface MobileBottomNavProps {
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   currentToolId,
   onNavigateHome,
-  onSelectTool,
-  onOpenProfile
+  onSelectTool
 }) => {
   const { language } = useLanguageAndUnit();
+  const { navShortcuts } = useRiderProfile();
 
-  const navItems = [
-    {
-      id: 'home',
-      label: language === 'zh-TW' ? '首頁' : '首页',
-      icon: Home,
-      isActive: currentToolId === null,
-      onClick: onNavigateHome
-    },
-    {
-      id: 'power-calc',
-      label: '功率',
-      icon: Zap,
-      isActive: currentToolId === 'power-calc',
-      onClick: () => onSelectTool('power-calc')
-    },
-    {
-      id: 'tire-pressure',
-      label: language === 'zh-TW' ? '胎壓' : '胎压',
-      icon: Gauge,
-      isActive: currentToolId === 'tire-pressure',
-      onClick: () => onSelectTool('tire-pressure')
-    },
-    {
-      id: 'roadbook-library',
-      label: language === 'zh-TW' ? '路書' : '路书',
-      icon: Compass,
-      isActive: currentToolId === 'roadbook-library',
-      onClick: () => onSelectTool('roadbook-library')
-    },
-    {
-      id: 'bike-fitter',
-      label: 'Fitting',
-      icon: Ruler,
-      isActive: currentToolId === 'bike-fitter',
-      onClick: () => onSelectTool('bike-fitter')
+  interface NavItem {
+    id: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    isActive: boolean;
+    onClick: () => void;
+  }
+
+  const homeItem: NavItem = {
+    id: 'home',
+    label: language === 'zh-TW' ? '首頁' : '首页',
+    icon: Home,
+    isActive: currentToolId === null,
+    onClick: onNavigateHome
+  };
+
+  const dynamicItems: NavItem[] = [];
+  navShortcuts.forEach((toolId) => {
+    const tool = getNavToolById(toolId);
+    if (tool) {
+      dynamicItems.push({
+        id: tool.id,
+        label: language === 'zh-TW' ? tool.shortTitleTw : tool.shortTitle,
+        icon: tool.icon,
+        isActive: currentToolId === tool.id,
+        onClick: () => onSelectTool(tool.id)
+      });
     }
-  ];
+  });
+
+  const navItems: NavItem[] = [homeItem, ...dynamicItems];
 
   return (
     <nav
