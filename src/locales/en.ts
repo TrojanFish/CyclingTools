@@ -58,7 +58,7 @@ export const en = {
 
   // Dashboard
   heroTitle: 'Modern Data-Driven Cycling Science Suite',
-  heroSubtitle: 'Built on classical mechanics, biomechanics, and sports physiology. Features 14 cutting-edge calculators for aerodynamics, gearing, fitting, pacing, and polarized training.',
+  heroSubtitle: 'Built on classical mechanics, biomechanics, and sports physiology. Features 17 cutting-edge calculators for aerodynamics, gearing, fitting, pacing, wheelbuilding, and FIT activity analysis.',
   featuredTools: 'Featured Science Tools Suite',
   searchResultCount: 'Found {count} matching tools'
 };

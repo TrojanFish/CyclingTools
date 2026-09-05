@@ -14,6 +14,9 @@ import {
   CloudSun,
   HeartPulse,
   Compass,
+  LineChart,
+  Droplets,
+  Disc,
   ArrowRight,
   Sparkles,
   Search
@@ -36,6 +39,9 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   CloudSun,
   HeartPulse,
   Compass,
+  LineChart,
+  Droplets,
+  Disc,
 };
 
 interface DashboardProps {
@@ -58,7 +64,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { language, t } = useLanguageAndUnit();
 
   const categories = [
-    { id: 'all', label: language === 'en' ? 'All 14 Tools' : language === 'zh-TW' ? '全部 14 項工具' : '全部 14 项工具' },
+    { id: 'all', label: language === 'en' ? 'All 17 Tools' : language === 'zh-TW' ? '全部 17 項工具' : '全部 17 项工具' },
     { id: 'dynamics', label: language === 'en' ? '⚡ Dynamics & Gearing' : language === 'zh-TW' ? '⚡ 動力學與傳動' : '⚡ 动力学与传动' },
     { id: 'fitting', label: language === 'en' ? '📐 Fitting & Ergonomics' : language === 'zh-TW' ? '📐 Fitting 與人體工學' : '📐 Fitting 与工效' },
     { id: 'route', label: language === 'en' ? '🗺️ Tactics & Routes' : language === 'zh-TW' ? '🗺️ 路線、戰術與氣象' : '🗺️ 路线、战术与气象' },
@@ -74,10 +80,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
             {language === 'en'
-              ? 'Cycling Science & Dynamics Suite · 14 Professional Tools'
+              ? 'Cycling Science & Dynamics Suite · 17 Professional Tools'
               : language === 'zh-TW'
-              ? '科學單車計算與動力學工坊 · 14 大全能專業工具工坊'
-              : '科学骑行计算与动力学工坊 · 14 大全能专业工具工坊'}
+              ? '科學單車計算與動力學工坊 · 17 大全能專業工具工坊'
+              : '科学骑行计算与动力学工坊 · 17 大全能专业工具工坊'}
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
             {language === 'en' ? (

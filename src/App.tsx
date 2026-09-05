@@ -21,6 +21,9 @@ import { GpxRouteCreator } from './components/tools/GpxRouteCreator';
 import { GroupRideSimulator } from './components/tools/GroupRideSimulator';
 import { CyclingWeatherAdvisor } from './components/tools/CyclingWeatherAdvisor';
 import { HealthCalculator } from './components/tools/HealthCalculator';
+import { FitActivityAnalyzer } from './components/tools/FitActivityAnalyzer';
+import { TubelessSealantCalculator } from './components/tools/TubelessSealantCalculator';
+import { SpokeLengthCalculator } from './components/tools/SpokeLengthCalculator';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { TOOLS_LIST } from './data/toolsList';
@@ -276,6 +279,9 @@ const MainAppContent: React.FC = () => {
             {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
             {currentToolId === 'power-radar' && <PowerProfileRadar />}
             {currentToolId === 'health-calculator' && <HealthCalculator />}
+            {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer />}
+            {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
+            {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
           </main>
         </div>
       </div>

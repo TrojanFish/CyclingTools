@@ -1,0 +1,631 @@
+import React, { useState, useMemo } from 'react';
+import {
+  Droplets,
+  Gauge,
+  Calendar,
+  ShieldCheck,
+  RotateCcw,
+  Sparkles,
+  Info,
+  CheckCircle2,
+  AlertCircle,
+  HelpCircle,
+  Wrench,
+  Thermometer,
+  Clock,
+  Layers
+} from 'lucide-react';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useToast } from '../../context/ToastContext';
+
+export const TubelessSealantCalculator: React.FC = () => {
+  const { language, unitSystem } = useLanguageAndUnit();
+  const { showToast } = useToast();
+  const isImperial = unitSystem === 'imperial';
+
+  // Wheel & Tire System
+  const [wheelStandard, setWheelStandard] = useState<'700c' | '650b' | '29er' | '26er'>('700c');
+  const [tireCategory, setTireCategory] = useState<'road' | 'gravel' | 'mtb'>('road');
+  const [tireWidthMm, setTireWidthMm] = useState<number>(28);
+  const [innerRimWidthMm, setInnerRimWidthMm] = useState<number>(21);
+
+  // Casing & Usage Environment
+  const [casingType, setCasingType] = useState<'race' | 'standard' | 'heavy'>('standard');
+  const [climate, setClimate] = useState<'hot_dry' | 'moderate' | 'cool_humid'>('moderate');
+  const [rideFrequency, setRideFrequency] = useState<'frequent' | 'occasional' | 'stored'>('frequent');
+  const [sealantType, setSealantType] = useState<'latex' | 'endurance' | 'synthetic'>('latex');
+
+  // Quick Preset Handlers
+  const handlePreset = (preset: 'road28' | 'road32' | 'gravel40' | 'gravel45' | 'mtb225' | 'mtb24') => {
+    if (preset === 'road28') {
+      setWheelStandard('700c');
+      setTireCategory('road');
+      setTireWidthMm(28);
+      setInnerRimWidthMm(21);
+      setCasingType('standard');
+      showToast(language === 'en' ? 'Loaded Road 700x28c Preset' : '已载入主流公路 700x28c 预设', 'info');
+    } else if (preset === 'road32') {
+      setWheelStandard('700c');
+      setTireCategory('road');
+      setTireWidthMm(32);
+      setInnerRimWidthMm(23);
+      setCasingType('standard');
+      showToast(language === 'en' ? 'Loaded Road All-Weather 700x32c' : '已载入宽胎公路 700x32c 预设', 'info');
+    } else if (preset === 'gravel40') {
+      setWheelStandard('700c');
+      setTireCategory('gravel');
+      setTireWidthMm(40);
+      setInnerRimWidthMm(25);
+      setCasingType('standard');
+      showToast(language === 'en' ? 'Loaded Gravel 700x40c Preset' : '已载入全地形 Gravel 700x40c 预设', 'info');
+    } else if (preset === 'gravel45') {
+      setWheelStandard('700c');
+      setTireCategory('gravel');
+      setTireWidthMm(45);
+      setInnerRimWidthMm(25);
+      setCasingType('heavy');
+      showToast(language === 'en' ? 'Loaded Adventure Gravel 45c' : '已载入重载探险 700x45c 预设', 'info');
+    } else if (preset === 'mtb225') {
+      setWheelStandard('29er');
+      setTireCategory('mtb');
+      setTireWidthMm(57); // 2.25"
+      setInnerRimWidthMm(28);
+      setCasingType('standard');
+      showToast(language === 'en' ? 'Loaded MTB XC 29x2.25" Preset' : '已载入山地 XC 29x2.25" 预设', 'info');
+    } else if (preset === 'mtb24') {
+      setWheelStandard('29er');
+      setTireCategory('mtb');
+      setTireWidthMm(61); // 2.4"
+      setInnerRimWidthMm(30);
+      setCasingType('heavy');
+      showToast(language === 'en' ? 'Loaded MTB Trail/Enduro 29x2.4"' : '已载入山地 Enduro 29x2.4" 预设', 'info');
+    }
+  };
+
+  // Scientific Torus Model & Sealant Dosage Calculation
+  const calculation = useMemo(() => {
+    // Wheel Major Radius R in mm
+    let majorR = 311; // 700c / 29er
+    if (wheelStandard === '650b') majorR = 292;
+    if (wheelStandard === '26er') majorR = 279;
+
+    // Actual inflated width adjusted for inner rim width
+    // Every 1mm wider inner rim adds approx 0.4mm to inflated tire width
+    const effectiveTireWidth = tireWidthMm + 0.4 * (innerRimWidthMm - 19);
+
+    // Minor Radius r in mm
+    // Casing thickness approx 1.2mm for road, 1.8mm for MTB
+    const casingThickness = tireCategory === 'mtb' ? 1.8 : 1.2;
+    const minorR = Math.max(8, (effectiveTireWidth - 2 * casingThickness) / 2);
+
+    // Tire internal volume in Liters: V = 2 * pi^2 * R * r^2
+    const volumeMm3 = 2 * Math.PI * Math.PI * majorR * (minorR * minorR);
+    const volumeLiters = volumeMm3 / 1000000;
+
+    // Baseline sealant required for coating internal surface area + fluid reservoir
+    // Surface Area A = 4 * pi^2 * R * r
+    const areaMm2 = 4 * Math.PI * Math.PI * majorR * minorR;
+    const areaCm2 = areaMm2 / 100;
+
+    // Film coating volume: approx 0.08mm layer across internal surface
+    const filmVolumeMl = (areaCm2 * 0.008);
+
+    // Dynamic fluid pool reservoir (for instant puncture plugging while rolling)
+    let poolVolumeMl = 18;
+    if (tireCategory === 'gravel') poolVolumeMl = 28;
+    if (tireCategory === 'mtb') poolVolumeMl = 42;
+
+    // Casing Porosity Factor: absorbs sealant during first 48 hours
+    let casingAddMl = 0;
+    if (casingType === 'race') casingAddMl = 15; // Thin cotton/skinwall breathes & absorbs
+    if (casingType === 'heavy') casingAddMl = 6;  // Robust butyl layer doesn't leak pores
+
+    // Base initial volume in ml
+    let initialDoseMl = Math.round(filmVolumeMl + poolVolumeMl + casingAddMl);
+
+    // Round to sensible workshop increments (multiples of 5ml)
+    initialDoseMl = Math.ceil(initialDoseMl / 5) * 5;
+
+    // Ensure safe minimums
+    if (tireCategory === 'road' && initialDoseMl < 35) initialDoseMl = 35;
+    if (tireCategory === 'gravel' && initialDoseMl < 55) initialDoseMl = 55;
+    if (tireCategory === 'mtb' && initialDoseMl < 85) initialDoseMl = 85;
+
+    // Maintenance Top-Up Dose (roughly 45-55% of initial dose)
+    const topUpDoseMl = Math.round(initialDoseMl * 0.5);
+
+    // Evaporation & Inspection Schedule
+    let baseDays = 120; // ~4 months baseline
+
+    // Climate adjustment
+    if (climate === 'hot_dry') baseDays *= 0.65; // ~75 days
+    if (climate === 'cool_humid') baseDays *= 1.35; // ~160 days
+
+    // Casing breathability adjustment
+    if (casingType === 'race') baseDays *= 0.8;
+    if (casingType === 'heavy') baseDays *= 1.15;
+
+    // Usage & storage adjustment
+    if (rideFrequency === 'stored') baseDays *= 0.75; // settles at bottom into solid rubber booger
+
+    // Sealant formula longevity
+    if (sealantType === 'endurance') baseDays *= 1.4;
+    if (sealantType === 'synthetic') baseDays *= 1.25;
+
+    const inspectionDays = Math.round(baseDays);
+    const inspectionMonths = parseFloat((inspectionDays / 30).toFixed(1));
+
+    // Puncture sealing capacity
+    let maxPunctureMm = 3;
+    if (sealantType === 'endurance') maxPunctureMm = 4.5;
+    if (tireCategory === 'mtb') maxPunctureMm = 6.0;
+
+    return {
+      volumeLiters: parseFloat(volumeLiters.toFixed(2)),
+      effectiveTireWidth: parseFloat(effectiveTireWidth.toFixed(1)),
+      initialDoseMl,
+      initialDoseFlOz: parseFloat((initialDoseMl * 0.033814).toFixed(1)),
+      pairTotalMl: initialDoseMl * 2,
+      pairTotalFlOz: parseFloat((initialDoseMl * 2 * 0.033814).toFixed(1)),
+      topUpDoseMl,
+      topUpDoseFlOz: parseFloat((topUpDoseMl * 0.033814).toFixed(1)),
+      inspectionDays,
+      inspectionMonths,
+      maxPunctureMm
+    };
+  }, [wheelStandard, tireCategory, tireWidthMm, innerRimWidthMm, casingType, climate, rideFrequency, sealantType]);
+
+  return (
+    <div className="space-y-6">
+      {/* Header Banner */}
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-cyan-50/60 dark:from-slate-900 dark:via-slate-950 dark:to-cyan-950/40">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold">
+              <Droplets className="w-3.5 h-3.5" />
+              <span>{language === 'en' ? 'Tubeless Engineering & Maintenance' : '真空胎系统工程与养护'}</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+              {language === 'en' ? 'Tubeless Sealant Volume & Interval Calculator' : '真空胎自补液加注量与补液周期计算器'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
+              {language === 'en'
+                ? 'Accurately calculate single-wheel & pair initial sealant doses, evaporation maintenance intervals, and top-up amounts based on tire torus geometry, casing porosity, rim width, and climate conditions.'
+                : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量，兼顾防扎自封能力与转动惯量轻量化。'}
+            </p>
+          </div>
+
+          {/* Quick Presets */}
+          <div className="flex flex-wrap items-center gap-1.5 self-start sm:self-center">
+            <button
+              onClick={() => handlePreset('road28')}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
+            >
+              公路 28c
+            </button>
+            <button
+              onClick={() => handlePreset('road32')}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
+            >
+              全路况 32c
+            </button>
+            <button
+              onClick={() => handlePreset('gravel40')}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
+            >
+              Gravel 40c
+            </button>
+            <button
+              onClick={() => handlePreset('mtb225')}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500/15 hover:text-cyan-500 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
+            >
+              山地 2.25"
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Interactive Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Input Configuration (7 cols) */}
+        <div className="lg:col-span-7 space-y-5">
+          {/* Section 1: Wheel & Tire Geometry */}
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <Gauge className="w-4 h-4 text-cyan-500" />
+              <span>{language === 'en' ? 'Wheel & Casing Geometry' : '轮组规格与几何参数'}</span>
+            </div>
+
+            {/* Wheel Standard & Category */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Wheel Standard' : '轮径规格'}</label>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {(['700c', '650b', '29er', '26er'] as const).map((std) => (
+                    <button
+                      key={std}
+                      onClick={() => setWheelStandard(std)}
+                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
+                        wheelStandard === std
+                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
+                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      {std}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Tire Discipline' : '车型分类'}</label>
+                <div className="grid grid-cols-3 gap-1">
+                  {[
+                    { id: 'road', label: language === 'en' ? 'Road' : '公路' },
+                    { id: 'gravel', label: language === 'en' ? 'Gravel' : '全地形' },
+                    { id: 'mtb', label: language === 'en' ? 'MTB' : '山地' }
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setTireCategory(cat.id as any);
+                        if (cat.id === 'road' && tireWidthMm > 35) setTireWidthMm(28);
+                        if (cat.id === 'gravel' && (tireWidthMm < 35 || tireWidthMm > 52)) setTireWidthMm(40);
+                        if (cat.id === 'mtb' && tireWidthMm < 50) setTireWidthMm(57);
+                      }}
+                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
+                        tireCategory === cat.id
+                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
+                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Tire Width & Inner Rim Width Sliders */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              {/* Tire Width */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-600 dark:text-slate-400">{language === 'en' ? 'Nominal Tire Width' : '标称外胎胎宽'}</span>
+                  <span className="font-mono font-bold text-cyan-500">
+                    {tireWidthMm} mm {tireCategory === 'mtb' ? `(~${(tireWidthMm / 25.4).toFixed(2)}")` : `${tireWidthMm}c`}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={23}
+                  max={66}
+                  step={1}
+                  value={tireWidthMm}
+                  onChange={(e) => setTireWidthMm(Number(e.target.value))}
+                  className="w-full accent-cyan-500 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-slate-400">
+                  <span>23c (公路细胎)</span>
+                  <span>40c (Gravel)</span>
+                  <span>2.6" (山地重胎)</span>
+                </div>
+              </div>
+
+              {/* Inner Rim Width */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-600 dark:text-slate-400">{language === 'en' ? 'Internal Rim Width (IW)' : '车圈内部宽度 (IW)'}</span>
+                  <span className="font-mono font-bold text-cyan-500">{innerRimWidthMm} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min={17}
+                  max={35}
+                  step={1}
+                  value={innerRimWidthMm}
+                  onChange={(e) => setInnerRimWidthMm(Number(e.target.value))}
+                  className="w-full accent-cyan-500 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-slate-400">
+                  <span>19mm (公路标配)</span>
+                  <span>25mm (全地形)</span>
+                  <span>30mm+ (宽圈)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Casing Type & Climate */}
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <Thermometer className="w-4 h-4 text-rose-500" />
+              <span>{language === 'en' ? 'Casing Porosity & Environmental Evaporation' : '胎体孔隙率与环境挥发工况'}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Casing Construction */}
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Casing Construction' : '外胎胎体构造'}</label>
+                <div className="space-y-1.5">
+                  {[
+                    { id: 'race', label: language === 'en' ? 'Ultra-light / Cotton Skinwall' : '超轻棉线 / 黄边竞速胎 (多微孔吸胶)' },
+                    { id: 'standard', label: language === 'en' ? 'Standard Tubeless Ready (TLR)' : '标准真空胎 TLR (主流平衡型)' },
+                    { id: 'heavy', label: language === 'en' ? 'Reinforced Enduro / Downhill' : '重型防穿刺 / 丁基加强层 (气密极佳)' }
+                  ].map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => setCasingType(c.id as any)}
+                      className={`w-full py-1.5 px-2.5 text-xs text-left rounded-xl border transition flex items-center justify-between ${
+                        casingType === c.id
+                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400 font-semibold'
+                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      <span>{c.label}</span>
+                      {casingType === c.id && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Climate & Temperature */}
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Riding Climate' : '当地骑行气候环境'}</label>
+                <div className="space-y-1.5">
+                  {[
+                    { id: 'hot_dry', label: language === 'en' ? 'Hot & Arid (>28°C, fast evaporation)' : '炎热干燥 (>28°C，挥发迅速)' },
+                    { id: 'moderate', label: language === 'en' ? 'Moderate (15-25°C, standard)' : '温和适宜 (15-25°C，常规挥发)' },
+                    { id: 'cool_humid', label: language === 'en' ? 'Cool & Humid (<15°C, slow dry)' : '湿润阴冷 (<15°C，挥发较慢)' }
+                  ].map((cl) => (
+                    <button
+                      key={cl.id}
+                      onClick={() => setClimate(cl.id as any)}
+                      className={`w-full py-1.5 px-2.5 text-xs text-left rounded-xl border transition flex items-center justify-between ${
+                        climate === cl.id
+                          ? 'bg-rose-500/15 border-rose-500/50 text-rose-600 dark:text-rose-400 font-semibold'
+                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      <span>{cl.label}</span>
+                      {climate === cl.id && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Sealant Formula & Riding Frequency */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Sealant Formulation' : '自补液配方类型'}</label>
+                <select
+                  value={sealantType}
+                  onChange={(e) => setSealantType(e.target.value as any)}
+                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-cyan-500"
+                >
+                  <option value="latex">天然水基乳胶 (Stan's / Orange Regular / 经典款)</option>
+                  <option value="endurance">微粒纤维强化长效版 (Orange Seal Endurance / Muc-Off)</option>
+                  <option value="synthetic">无氨合成环保液 (Effetto Mariposa / Finish Line)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-slate-500 block mb-1.5">{language === 'en' ? 'Riding & Storage Pattern' : '骑行与停放习惯'}</label>
+                <select
+                  value={rideFrequency}
+                  onChange={(e) => setRideFrequency(e.target.value as any)}
+                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-cyan-500"
+                >
+                  <option value="frequent">高频骑行 (每周 2-4 次，液体均匀附着流动)</option>
+                  <option value="occasional">中频骑行 (双周 1 次，偶尔停放)</option>
+                  <option value="stored">长期悬挂停放 (容易在胎底聚集成橡胶团块)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Output Scoreboard (5 cols) */}
+        <div className="lg:col-span-5 space-y-5">
+          {/* Main Dosage Recommendation Card */}
+          <div className="glass-panel p-6 rounded-3xl border border-cyan-500/30 dark:border-cyan-500/20 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 relative overflow-hidden space-y-5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Droplets className="w-4 h-4" />
+                {language === 'en' ? 'Recommended Dosage' : '推荐首次加注量'}
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 font-mono">
+                {calculation.effectiveTireWidth}mm 实测充气胎宽
+              </span>
+            </div>
+
+            {/* Single Wheel Hero Number */}
+            <div className="space-y-1">
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                {language === 'en' ? 'Single Wheel Initial Dose' : '单轮首次加注推荐量'}
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+                  {calculation.initialDoseMl}
+                </span>
+                <span className="text-lg font-bold text-cyan-500">ml</span>
+                <span className="text-sm font-mono text-slate-400 ml-1">
+                  ({calculation.initialDoseFlOz} fl oz)
+                </span>
+              </div>
+            </div>
+
+            {/* Secondary Output Grid */}
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200 dark:border-slate-800/80">
+              <div className="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-blue-500" />
+                  <span>{language === 'en' ? 'Pair Total (F+R)' : '整车前后双轮总量'}</span>
+                </div>
+                <div className="text-lg font-extrabold text-blue-500">
+                  {calculation.pairTotalMl} ml
+                </div>
+                <div className="text-[10px] text-slate-400">
+                  {calculation.pairTotalFlOz} fl oz (约备一小瓶)
+                </div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                  <RotateCcw className="w-3.5 h-3.5 text-purple-500" />
+                  <span>{language === 'en' ? 'Top-Up Maintenance' : '单轮补液补充量'}</span>
+                </div>
+                <div className="text-lg font-extrabold text-purple-500">
+                  {calculation.topUpDoseMl} ml
+                </div>
+                <div className="text-[10px] text-slate-400">
+                  {calculation.topUpDoseFlOz} fl oz (定期补充)
+                </div>
+              </div>
+            </div>
+
+            {/* Inspection & Expiry Timeline */}
+            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 space-y-1.5 text-xs">
+              <div className="font-bold flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-amber-500" />
+                  <span>{language === 'en' ? 'Next Inspection & Top-Up' : '建议检查与补液周期'}</span>
+                </span>
+                <span className="font-mono text-amber-600 dark:text-amber-400 text-sm">
+                  {calculation.inspectionDays} 天 (~{calculation.inspectionMonths} 个月)
+                </span>
+              </div>
+              <p className="text-[11px] opacity-90 leading-relaxed">
+                {language === 'en'
+                  ? `Based on ${climate === 'hot_dry' ? 'hot arid weather' : 'your climate'} and ${casingType} casing. Please perform a slosh-test or top up around this date to maintain puncture protection.`
+                  : `受当地${climate === 'hot_dry' ? '高温炎热' : '常温'}气候与${casingType === 'race' ? '竞速薄胎壁' : '标准'}胎体影响，乳胶在此周期后将逐渐胶化脱水，请提前摇轮听声自查。`}
+              </p>
+            </div>
+
+            {/* Puncture Threshold Gauge */}
+            <div className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-900">
+              <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span>{language === 'en' ? 'Max Self-Sealing Puncture' : '最大刺穿自封孔径能力'}</span>
+              </span>
+              <strong className="text-emerald-500 font-mono text-sm">≤ {calculation.maxPunctureMm} mm</strong>
+            </div>
+          </div>
+
+          {/* Interactive Cross-Section SVG Diagram */}
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
+              <span>{language === 'en' ? 'Tire & Rim Cross Section Simulation' : '真空轮胎截面与注胶池物理示意'}</span>
+              <span className="text-[10px] text-slate-400">容积 ~{calculation.volumeLiters} L</span>
+            </div>
+
+            <div className="h-44 w-full flex items-center justify-center bg-slate-50 dark:bg-slate-950/80 rounded-xl p-2 border border-slate-100 dark:border-slate-900 relative">
+              <svg viewBox="0 0 200 160" className="w-full h-full max-h-40">
+                {/* Tire Casing Outer Curve */}
+                <path
+                  d="M 50 130 C 20 80, 40 20, 100 20 C 160 20, 180 80, 150 130"
+                  fill="none"
+                  stroke={casingType === 'race' ? '#d97706' : '#334155'}
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                />
+
+                {/* Tire Inner Chamber */}
+                <path
+                  d="M 54 126 C 28 82, 46 28, 100 28 C 154 28, 172 82, 146 126"
+                  fill="rgba(6, 182, 212, 0.05)"
+                  stroke="#64748b"
+                  strokeWidth="1"
+                />
+
+                {/* Liquid Sealant Pool at bottom */}
+                <path
+                  d="M 68 126 Q 100 138 132 126 Q 100 118 68 126 Z"
+                  fill="#06b6d4"
+                  opacity="0.85"
+                />
+
+                {/* Liquid Droplets coating sidewalls */}
+                <circle cx="56" cy="70" r="2.5" fill="#06b6d4" opacity="0.7" />
+                <circle cx="144" cy="65" r="2" fill="#06b6d4" opacity="0.7" />
+                <circle cx="100" cy="35" r="1.8" fill="#06b6d4" opacity="0.6" />
+
+                {/* Rim Hook & Bed */}
+                <path
+                  d="M 40 130 L 52 130 L 60 145 L 140 145 L 148 130 L 160 130"
+                  fill="none"
+                  stroke="#94a3b8"
+                  strokeWidth="4"
+                  strokeLinejoin="round"
+                />
+
+                {/* Rim Tape (Yellow/Blue) */}
+                <path
+                  d="M 54 133 L 62 143 L 138 143 L 146 133"
+                  fill="none"
+                  stroke="#3b82f6"
+                  strokeWidth="2.5"
+                />
+
+                {/* Presta Valve Stem */}
+                <line x1="100" y1="145" x2="100" y2="158" stroke="#cbd5e1" strokeWidth="4" />
+                <circle cx="100" cy="143" r="2" fill="#0f172a" />
+
+                {/* Annotations */}
+                <text x="100" y="105" textAnchor="middle" fill="#06b6d4" fontSize="9" fontWeight="bold">
+                  {calculation.initialDoseMl}ml 液池
+                </text>
+                <text x="100" y="15" textAnchor="middle" fill="#94a3b8" fontSize="8">
+                  {tireWidthMm}mm 胎冠
+                </text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Workshop Pro Tips & Tubeless FAQ */}
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="flex items-center gap-2">
+          <Wrench className="w-5 h-5 text-cyan-500" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+            {language === 'en' ? 'Professional Workshop Tubeless Setup & Diagnostic Tips' : '专业技师真空胎装调与免拆胎自查秘笈'}
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>1. 摇轮听声法 (Slosh Test)</span>
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              无需拆卸外胎！将车轮拆下在耳边快速前后晃动。若能清晰听到清脆的“哗啦哗啦”水撞击声，表明胶水充足活跃；若声音沉闷微弱或完全无声，说明乳胶已干涸结块，需立即补液。
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>2. 气门嘴针筒注胶法</span>
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              首次安装推荐先干装并用储气罐爆充上圈（听到清脆的“嘭嘭”两声落槽），确认完全卡紧后，拆下法嘴气门芯，用专用注射器通过气门嘴注入补胎液，完全不脏手且不漏气。
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>3. 扎胎与培根胶条配合</span>
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              自补液对 2-3mm 以下微孔可在旋转中数秒自封；对于 3-5mm 较大划口，切忌长时间停车让气漏光，应迅速将车轮旋转至扎钉点朝下，并快速插入培根胶条（Tubeless Plug），瞬间止漏。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
