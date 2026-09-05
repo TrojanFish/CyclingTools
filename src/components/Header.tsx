@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sun, Moon, Bike, User, X, Globe, Gauge, Settings } from 'lucide-react';
+import { Search, Sun, Moon, Bike, User, X, Gauge, Settings } from 'lucide-react';
 import { BackgroundMusicControl } from './BackgroundMusicControl';
 import { RiderProfileModal } from './common/RiderProfileModal';
 import { useRiderProfile } from '../context/RiderProfileContext';
@@ -10,6 +10,8 @@ interface HeaderProps {
   setSearchTerm: (term: string) => void;
   isDark: boolean;
   setIsDark: (dark: boolean) => void;
+  themeMode?: 'system' | 'dark' | 'light';
+  setThemeMode?: (mode: 'system' | 'dark' | 'light') => void;
   onNavigateHome: () => void;
   currentToolId: string | null;
   onSelectTool: (id: string) => void;
@@ -22,6 +24,8 @@ export const Header: React.FC<HeaderProps> = ({
   setSearchTerm,
   isDark,
   setIsDark,
+  themeMode,
+  setThemeMode,
   onNavigateHome,
   profileModalOpen,
   setProfileModalOpen
@@ -32,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileSearchOpen, setMobileSearchOpen] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const { profile } = useRiderProfile();
-  const { language, setLanguage, toggleLanguage, unitSystem, toggleUnitSystem, t, convertWeight } = useLanguageAndUnit();
+  const { language, unitSystem, toggleUnitSystem, t, convertWeight } = useLanguageAndUnit();
 
   // Keyboard shortcut listener: '/' to focus search, 'Escape' to close modal
   useEffect(() => {
@@ -92,54 +96,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Right Actions: Language Switch + Unit Switch + Rider Settings (⚙) + Search + BGM + Theme Switch */}
+          {/* Right Actions: Unit Switch + Search + Rider Settings (⚙) + BGM + Theme Switch */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {/* Mobile Compact Language Toggle Button */}
-            <button
-              onClick={toggleLanguage}
-              className="sm:hidden px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-cyan-600 dark:text-cyan-400 text-xs font-bold font-mono active:scale-95 transition"
-              title="Toggle Language (简 / 繁 / EN)"
-            >
-              {language === 'zh' ? '简' : language === 'zh-TW' ? '繁' : 'EN'}
-            </button>
-
-            {/* Desktop 3-Language Segmented Switch (简 / 繁 / EN) */}
-            <div className="hidden sm:flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] font-bold">
-              <button
-                onClick={() => setLanguage('zh')}
-                className={`px-2 py-1 rounded-lg transition ${
-                  language === 'zh'
-                    ? 'bg-cyan-500 text-slate-950 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-                title="简体中文"
-              >
-                简
-              </button>
-              <button
-                onClick={() => setLanguage('zh-TW')}
-                className={`px-2 py-1 rounded-lg transition ${
-                  language === 'zh-TW'
-                    ? 'bg-cyan-500 text-slate-950 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-                title="繁體中文"
-              >
-                繁
-              </button>
-              <button
-                onClick={() => setLanguage('en')}
-                className={`px-2 py-1 rounded-lg transition ${
-                  language === 'en'
-                    ? 'bg-cyan-500 text-slate-950 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-                title="English"
-              >
-                EN
-              </button>
-            </div>
-
             {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
               onClick={toggleUnitSystem}
@@ -163,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => setProfileOpen(true)}
               className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 active:scale-95 transition flex items-center gap-1.5 group"
-              title={language === 'en' ? 'Rider Settings & Units (⚙)' : '车手档案与单位设定 (⚙)'}
+              title={language === 'en' ? 'Settings & Rider Profile (⚙)' : language === 'zh-TW' ? '系統設定與車手檔案 (⚙)' : '系统设置与车手档案 (⚙)'}
             >
               <Settings className="w-4 h-4 text-cyan-500 group-hover:rotate-45 transition-transform duration-300" />
               <span className="hidden lg:inline text-xs font-semibold">{profile.heightCm}cm / {formattedWeight.formatted}</span>
@@ -172,11 +130,25 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Streamlined Background Music Switch */}
             <BackgroundMusicControl />
 
-            {/* Theme Toggle Button */}
+            {/* Theme Toggle Button (Syncs with Auto/Light/Dark) */}
             <button
-              onClick={() => setIsDark(!isDark)}
+              onClick={() => {
+                if (setThemeMode) {
+                  setThemeMode(isDark ? 'light' : 'dark');
+                } else {
+                  setIsDark(!isDark);
+                }
+              }}
               className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 active:scale-95 transition"
-              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={
+                themeMode === 'system'
+                  ? (isDark
+                      ? (language === 'en' ? 'System Theme (Dark) - Click for Light' : language === 'zh-TW' ? '跟隨手機(深色) - 點擊切換為淺色' : '跟随手机(深色) - 点击切换为浅色')
+                      : (language === 'en' ? 'System Theme (Light) - Click for Dark' : language === 'zh-TW' ? '跟隨手機(淺色) - 點擊切換為深色' : '跟随手机(浅色) - 点击切换为深色'))
+                  : (isDark
+                      ? (language === 'en' ? 'Dark Mode - Click for Light' : language === 'zh-TW' ? '深色模式 - 點擊切換為淺色' : '深色模式 - 点击切换为浅色')
+                      : (language === 'en' ? 'Light Mode - Click for Dark' : language === 'zh-TW' ? '淺色模式 - 點擊切換為深色' : '浅色模式 - 点击切换为深色'))
+              }
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
             </button>
@@ -202,7 +174,12 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* Global Rider Profile Modal */}
-      <RiderProfileModal isOpen={isProfileOpen} onClose={() => setProfileOpen(false)} />
+      <RiderProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setProfileOpen(false)}
+        themeMode={themeMode}
+        setThemeMode={setThemeMode}
+      />
     </>
   );
 };

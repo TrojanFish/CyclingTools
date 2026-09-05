@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { AudioProvider } from './context/AudioContext';
 import { ToastProvider } from './context/ToastContext';
 import { RiderProfileProvider } from './context/RiderProfileContext';
@@ -30,7 +30,58 @@ const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [isDark, setIsDark] = useState<boolean>(true);
+  
+  // Theme Mode: 'system' | 'dark' | 'light'
+  // Auto-detect phone OS prefers-color-scheme, plus persistent manual toggle
+  const [themeMode, setThemeMode] = useState<'system' | 'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('solorider_theme_mode');
+      if (saved === 'system' || saved === 'dark' || saved === 'light') {
+        return saved;
+      }
+    }
+    return 'system'; // Default to automatic phone system detection
+  });
+
+  const [systemPrefersDark, setSystemPrefersDark] = useState<boolean>(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return true;
+  });
+
+  // Listen for mobile phone OS dark mode changes reactively
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemPrefersDark(e.matches);
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Compute active effective dark state
+  const isDark = themeMode === 'system' ? systemPrefersDark : themeMode === 'dark';
+
+  const handleSetThemeMode = (mode: 'system' | 'dark' | 'light') => {
+    setThemeMode(mode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('solorider_theme_mode', mode);
+    }
+  };
+
+  // Synchronize documentElement class for HTML and root CSS
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
+  }, [isDark]);
+
   const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const { language, t } = useLanguageAndUnit();
 
@@ -89,7 +140,9 @@ const MainAppContent: React.FC = () => {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           isDark={isDark}
-          setIsDark={setIsDark}
+          setIsDark={(dark) => handleSetThemeMode(dark ? 'dark' : 'light')}
+          themeMode={themeMode}
+          setThemeMode={handleSetThemeMode}
           onNavigateHome={() => {
             setCurrentToolId(null);
             setSelectedCategory('all');

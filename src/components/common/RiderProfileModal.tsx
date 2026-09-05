@@ -2,17 +2,24 @@ import React from 'react';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
-import { User, X, Check, RotateCcw, Activity, ShieldCheck, Gauge } from 'lucide-react';
+import { User, X, Check, RotateCcw, Activity, ShieldCheck, Gauge, Globe, Sun, Moon, Smartphone } from 'lucide-react';
 import { NumberStepper } from './NumberStepper';
 
 interface RiderProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  themeMode?: 'system' | 'dark' | 'light';
+  setThemeMode?: (mode: 'system' | 'dark' | 'light') => void;
 }
 
-export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({ isOpen, onClose }) => {
+export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
+  isOpen,
+  onClose,
+  themeMode,
+  setThemeMode
+}) => {
   const { profile, updateProfile, resetProfile } = useRiderProfile();
-  const { unitSystem, setUnitSystem, language } = useLanguageAndUnit();
+  const { unitSystem, setUnitSystem, language, setLanguage } = useLanguageAndUnit();
   const { showToast } = useToast();
 
   if (!isOpen) return null;
@@ -40,8 +47,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({ isOpen, on
   const heightInches = Math.round((profile.heightCm % 30.48) / 2.54);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl bg-white/95 dark:bg-slate-950/95 space-y-5 animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto glass-panel p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl bg-white/95 dark:bg-slate-950/95 space-y-4 sm:space-y-5 animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 pb-3">
           <div className="flex items-center gap-2.5">
@@ -50,7 +57,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({ isOpen, on
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                {language === 'en' ? 'Universal Rider Profile & Units' : language === 'zh-TW' ? '車手通用個人檔案與制式' : '车手通用个人档案与度量衡'}
+                {language === 'en' ? 'System Settings & Rider Profile' : language === 'zh-TW' ? '系統偏好與車手通用檔案' : '系统偏好与车手通用档案'}
               </h2>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 {language === 'en' ? 'Single Source of Truth: syncs across all 14 scientific tools' : language === 'zh-TW' ? '設定一次，全站 14 大計算引擎自動即時聯動' : '设定一次，全站 14 大计算引擎自动即时联动'}
@@ -65,8 +72,58 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({ isOpen, on
           </button>
         </div>
 
+        {/* Global Language Selector (Moved into Settings) */}
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-500">
+              <Globe className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
+                {language === 'en' ? 'Language' : language === 'zh-TW' ? '語言設定' : '语言设置'}
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                {language === 'en' ? 'English (Global)' : language === 'zh-TW' ? '繁體中文 (正體)' : '简体中文 (默认)'}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center p-0.5 rounded-xl bg-slate-200/80 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs font-bold">
+            <button
+              onClick={() => setLanguage('zh')}
+              className={`px-2.5 py-1 rounded-lg transition ${
+                language === 'zh'
+                  ? 'bg-cyan-500 text-slate-950 shadow-xs font-extrabold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              简体
+            </button>
+            <button
+              onClick={() => setLanguage('zh-TW')}
+              className={`px-2.5 py-1 rounded-lg transition ${
+                language === 'zh-TW'
+                  ? 'bg-cyan-500 text-slate-950 shadow-xs font-extrabold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              繁體
+            </button>
+            <button
+              onClick={() => setLanguage('en')}
+              className={`px-2.5 py-1 rounded-lg transition ${
+                language === 'en'
+                  ? 'bg-cyan-500 text-slate-950 shadow-xs font-extrabold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+
         {/* Global Unit System Control Bar (Single Source of Truth) */}
-        <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-500">
               <Gauge className="w-4 h-4" />
@@ -104,6 +161,71 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({ isOpen, on
             </button>
           </div>
         </div>
+
+        {/* Display Theme Mode (Auto System / Light / Dark) */}
+        {themeMode && setThemeMode && (
+          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-500">
+                {themeMode === 'system' ? (
+                  <Smartphone className="w-4 h-4 text-cyan-500" />
+                ) : themeMode === 'dark' ? (
+                  <Moon className="w-4 h-4 text-cyan-400" />
+                ) : (
+                  <Sun className="w-4 h-4 text-amber-500" />
+                )}
+              </div>
+              <div>
+                <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block">
+                  {language === 'en' ? 'Display Theme' : language === 'zh-TW' ? '外觀明暗模式' : '外观明暗模式'}
+                </span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                  {themeMode === 'system'
+                    ? (language === 'en' ? 'Auto-synced with phone system' : '已开启：自动跟随手机系统')
+                    : themeMode === 'dark'
+                    ? (language === 'en' ? 'Dark Mode (Always)' : '锁定为深色模式')
+                    : (language === 'en' ? 'Light Mode (Always)' : '锁定为明亮浅色模式')}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center p-0.5 rounded-xl bg-slate-200/80 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs font-bold">
+              <button
+                onClick={() => setThemeMode('system')}
+                className={`px-2.5 py-1 rounded-lg transition ${
+                  themeMode === 'system'
+                    ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+                title="跟随手机系统"
+              >
+                自动
+              </button>
+              <button
+                onClick={() => setThemeMode('light')}
+                className={`px-2 py-1 rounded-lg transition ${
+                  themeMode === 'light'
+                    ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+                title="明亮浅色"
+              >
+                浅色
+              </button>
+              <button
+                onClick={() => setThemeMode('dark')}
+                className={`px-2 py-1 rounded-lg transition ${
+                  themeMode === 'dark'
+                    ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+                title="深色模式"
+              >
+                深色
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Profile Inputs Grid */}
         <div className="grid grid-cols-2 gap-4">
