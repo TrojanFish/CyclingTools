@@ -171,7 +171,7 @@ export const ClimbPacingPlanner: React.FC = () => {
     e.target.value = '';
   };
 
-  // Classic Mountain Presets
+  // Classic Mountain Presets (Domestic & International Grand Tours)
   const loadPreset = (key: string) => {
     if (key === 'longjing') {
       setClimbName('杭州龙井问茶经典爬坡');
@@ -207,6 +207,31 @@ export const ClimbPacingPlanner: React.FC = () => {
         { id: '3', name: '巴朗山垭口冲顶 (海拔4487m)', distanceKm: 12.0, gradePct: 6.5 }
       ]);
       showToast('已加载巴朗山高原天路预设', 'info');
+    } else if (key === 'alpedhuez') {
+      setClimbName('环法·阿尔普迪埃 (Alpe d\'Huez 🇫🇷)');
+      setSegments([
+        { id: '1', name: '谷底起步急升弯 (Bourg d\'Oisans)', distanceKm: 2.5, gradePct: 10.2 },
+        { id: '2', name: '圣尼古拉森林路段 (St. Nicolas)', distanceKm: 4.5, gradePct: 8.5 },
+        { id: '3', name: '于埃村中间平缓段 (Huez Village)', distanceKm: 3.5, gradePct: 7.2 },
+        { id: '4', name: '终点滑雪场冲刺 (Alpe Station 1860m)', distanceKm: 3.3, gradePct: 8.9 }
+      ]);
+      showToast('已加载环法阿尔普迪埃 21道拐预设', 'info');
+    } else if (key === 'stelvio') {
+      setClimbName('环意·斯泰尔维奥 (Passo dello Stelvio 🇮🇹)');
+      setSegments([
+        { id: '1', name: '特劳福伊入山口 (Trafoi)', distanceKm: 8.0, gradePct: 5.8 },
+        { id: '2', name: '48道高山发卡弯攻坚', distanceKm: 9.0, gradePct: 8.2 },
+        { id: '3', name: '终点雪山垭口冲顶 (海拔2757m)', distanceKm: 7.3, gradePct: 8.6 }
+      ]);
+      showToast('已加载环意最高殿堂斯泰尔维奥预设', 'info');
+    } else if (key === 'sacalobra') {
+      setClimbName('马略卡·卡洛布拉 (Sa Calobra 🇪🇸)');
+      setSegments([
+        { id: '1', name: '海港峡湾起点盘旋', distanceKm: 2.5, gradePct: 6.5 },
+        { id: '2', name: '悬崖岩石发卡急坡', distanceKm: 4.0, gradePct: 7.8 },
+        { id: '3', name: '领带扣360度立交冲顶', distanceKm: 2.9, gradePct: 6.8 }
+      ]);
+      showToast('已加载马略卡骑行圣地卡洛布拉预设', 'info');
     }
   };
 
@@ -368,30 +393,30 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
               <Mountain className="w-3.5 h-3.5" />
               爬坡体能分配与动力学仿真
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">爬坡路段分段配速与功率规划器</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">爬坡路段分段配速与功率规划器</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
               挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-400 text-xs font-semibold border border-cyan-500/30 cursor-pointer transition shadow-sm">
-              <Upload className="w-4 h-4 text-cyan-400" />
+            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 cursor-pointer transition shadow-xs">
+              <Upload className="w-4 h-4 text-cyan-500" />
               <span>导入 GPX 爬坡路线</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxClimbUpload} className="hidden" />
             </label>
 
             <button
               onClick={copyPacingPlan}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
               <Copy className="w-3.5 h-3.5" />
               复制计划
@@ -401,42 +426,63 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
       </div>
 
       {/* Preset Mountains & Route Upload Bar */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">经典爬坡名山:</span>
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">精选名山:</span>
           <button
             onClick={() => loadPreset('longjing')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
           >
             杭州龙井 (3.2km)
           </button>
           <button
             onClick={() => loadPreset('miaofeng')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
           >
             北京妙峰山 (20.5km)
           </button>
           <button
             onClick={() => loadPreset('tianhuang')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
           >
-            安吉天荒坪 (18.0km)
+            安吉天荒坪 (18km)
           </button>
           <button
             onClick={() => loadPreset('balang')}
-            className="px-3 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+            className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
           >
-            川西巴朗山 (30km)
+            巴朗山 (30km)
+          </button>
+          <button
+            onClick={() => loadPreset('alpedhuez')}
+            className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            title="环法殿堂 Alpe d'Huez 21道拐"
+          >
+            🇫🇷 阿尔普迪埃 (13.8km)
+          </button>
+          <button
+            onClick={() => loadPreset('stelvio')}
+            className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            title="环意最高峰 Passo dello Stelvio 48弯"
+          >
+            🇮🇹 斯泰尔维奥 (24.3km)
+          </button>
+          <button
+            onClick={() => loadPreset('sacalobra')}
+            className="px-2.5 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-500/30 transition"
+            title="马略卡骑行圣地 Sa Calobra"
+          >
+            🇪🇸 卡洛布拉 (9.4km)
           </button>
         </div>
 
         <div className="flex items-center gap-2 flex-1 max-w-xs">
-          <label className="text-xs text-slate-400 shrink-0">当前爬坡:</label>
+          <label className="text-xs text-slate-500 dark:text-slate-400 shrink-0">当前爬坡:</label>
           <input
             type="text"
             value={climbName}
             onChange={(e) => setClimbName(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1 text-xs text-cyan-400 font-medium focus:outline-none focus:border-cyan-500"
+            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1 text-xs text-cyan-600 dark:text-cyan-400 font-medium focus:outline-none focus:border-cyan-500"
           />
         </div>
       </div>

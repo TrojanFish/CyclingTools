@@ -168,16 +168,16 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
               <Cog className="w-3.5 h-3.5" />
               传动比与踏频动力学
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">齿比-速度-踏频多功能计算器</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">齿比-速度-踏频多功能计算器</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
               全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。
             </p>
           </div>
@@ -185,29 +185,29 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={copyGearMatrix}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
               <Copy className="w-3.5 h-3.5" />
               复制齿比表
             </button>
 
             {/* View Tab Switchers */}
-            <div className="flex bg-slate-900 p-1.5 rounded-xl border border-slate-800 text-xs">
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
               <button
                 onClick={() => setActiveTab('matrix')}
-                className={`px-3 py-1 rounded-lg transition ${activeTab === 'matrix' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`px-3 py-1 rounded-lg transition ${activeTab === 'matrix' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
               >
                 全档位矩阵
               </button>
               <button
                 onClick={() => setActiveTab('cadence_table')}
-                className={`px-3 py-1 rounded-lg transition ${activeTab === 'cadence_table' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`px-3 py-1 rounded-lg transition ${activeTab === 'cadence_table' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
               >
                 多踏频对照
               </button>
               <button
                 onClick={() => setActiveTab('chart')}
-                className={`px-3 py-1 rounded-lg transition ${activeTab === 'chart' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`px-3 py-1 rounded-lg transition ${activeTab === 'chart' ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
               >
                 速度-踏频图
               </button>
@@ -217,38 +217,38 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       </div>
 
       {/* Inputs & Presets */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5">
         {/* Gruppo Presets */}
         <div>
-          <span className="text-xs font-medium text-slate-400 block mb-2">经典套件规格一键预设:</span>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-2">经典套件规格一键预设:</span>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => loadPresetGruppo('compact')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
               压缩盘 50/34T + 11-34T
             </button>
             <button
               onClick={() => loadPresetGruppo('semi_compact')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
               半压缩 52/36T + 11-30T
             </button>
             <button
               onClick={() => loadPresetGruppo('pro_racing')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
               竞技标准 54/40T + 11-30T
             </button>
             <button
               onClick={() => loadPresetGruppo('sram_axs')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
               SRAM AXS 48/35T + 10-33T
             </button>
             <button
               onClick={() => loadPresetGruppo('gravel_1x')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 transition"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs border border-slate-200 dark:border-slate-800 transition"
             >
               Gravel 单盘 40T + 10-44T
             </button>
@@ -337,18 +337,18 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* Step % Difference Analysis */}
       <div className="glass-panel p-4 rounded-2xl border border-slate-800 bg-slate-900/60 space-y-2">
-        <span className="text-xs font-bold text-slate-300 block flex items-center gap-1.5">
-          <ArrowUpDown className="w-3.5 h-3.5 text-cyan-400" />
+        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block flex items-center gap-1.5">
+          <ArrowUpDown className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
           相邻档位齿比变动阶梯 (Gear Step % Jump)
         </span>
         <div className="flex flex-wrap gap-2 text-xs font-mono">
           {gearSteps.map((s, idx) => (
-            <div key={idx} className="p-2 rounded-xl bg-slate-950/40 border border-slate-800 flex items-center gap-1.5">
-              <span className="font-bold text-slate-200">{s.cog}T</span>
+            <div key={idx} className="p-2 rounded-xl bg-slate-100 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
+              <span className="font-bold text-slate-800 dark:text-slate-200">{s.cog}T</span>
               {s.nextCog && (
                 <>
-                  <span className="text-slate-500">→</span>
-                  <span className="text-cyan-400 font-semibold">+{s.jumpPct}%</span>
+                  <span className="text-slate-400 dark:text-slate-500">→</span>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-semibold">+{s.jumpPct}%</span>
                 </>
               )}
             </div>
@@ -358,30 +358,33 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* TAB 1: Speed & Gear Ratio Matrix */}
       {activeTab === 'matrix' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-xs font-semibold text-slate-200">
+        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+            <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
               在 {cadenceRpm} RPM 踏频下的全档位速度 (km/h) 与前进米数 (m) 矩阵
             </span>
-            <span className="text-[11px] text-slate-500">
-              *黄色标记为极限斜链位 (Crossed-Chaining)
-            </span>
+            <div className="flex items-center gap-2 text-[11px]">
+              <span className="text-cyan-600 dark:text-cyan-400 sm:hidden font-medium">↔ 可横向滑动查看</span>
+              <span className="text-slate-500">
+                *黄色标记为极限斜链位 (Crossed-Chaining)
+              </span>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-center border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 font-mono">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono">
                   <th className="p-2.5 text-left font-sans">牙盘</th>
                   {cogsList.map(c => (
-                    <th key={c} className="p-2.5 font-bold text-slate-300">{c}T</th>
+                    <th key={c} className="p-2.5 font-bold text-slate-700 dark:text-slate-300">{c}T</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 font-mono">
                 {speedMatrix.map((item, rowIdx) => (
-                  <tr key={rowIdx} className="hover:bg-slate-900/50 transition">
-                    <td className="p-2.5 text-left font-bold text-cyan-400 font-sans">
+                  <tr key={rowIdx} className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition">
+                    <td className="p-2.5 text-left font-bold text-cyan-600 dark:text-cyan-400 font-sans">
                       {item.ring}T
                     </td>
                     {item.row.map((cell, cIdx) => (
@@ -389,13 +392,13 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                         key={cIdx}
                         className={`p-2.5 transition ${
                           cell.isCrossChained
-                            ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30 font-bold'
-                            : 'text-slate-200'
+                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/30 font-bold'
+                            : 'text-slate-800 dark:text-slate-200'
                         }`}
                         title={cell.crossType || `齿比 ${cell.ratio} | 单脚前进 ${cell.devMeters}m`}
                       >
                         <div className="text-sm font-bold">{cell.speedKmh}</div>
-                        <div className="text-[10px] text-slate-400/80">{cell.ratio} / {cell.devMeters}m</div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400/80">{cell.ratio} / {cell.devMeters}m</div>
                       </td>
                     ))}
                   </tr>
@@ -408,26 +411,29 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* TAB 2: Multi-Cadence Sweep Table */}
       {activeTab === 'cadence_table' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
-          <span className="text-xs font-semibold text-slate-200 block">
-            大盘 {bigRing}T 在不同踏频 (70 ~ 110 RPM) 下的速度对照 (km/h)
-          </span>
+        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+            <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
+              大盘 {bigRing}T 在不同踏频 (70 ~ 110 RPM) 下的速度对照 (km/h)
+            </span>
+            <span className="text-[11px] text-cyan-600 dark:text-cyan-400 sm:hidden font-medium">↔ 可横向滑动查看</span>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-center border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 font-mono">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono">
                   <th className="p-2.5 text-left font-sans">飞轮齿片</th>
                   <th className="p-2.5">传动比</th>
                   <th className="p-2.5">70 RPM</th>
                   <th className="p-2.5">80 RPM</th>
-                  <th className="p-2.5 font-bold text-cyan-400">90 RPM (基准)</th>
+                  <th className="p-2.5 font-bold text-cyan-600 dark:text-cyan-400">90 RPM (基准)</th>
                   <th className="p-2.5">100 RPM</th>
                   <th className="p-2.5">110 RPM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 font-mono">
                 {multiCadenceData.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-900/50 transition">
+                  <tr key={idx} className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition">
                     <td className="p-2.5 text-left font-bold text-slate-200 font-sans">{bigRing}x{row.cog}T</td>
                     <td className="p-2.5 text-slate-400">{row.ratio}</td>
                     <td className="p-2.5">{row.speeds[0]}</td>

@@ -58,15 +58,15 @@ export const Header: React.FC<HeaderProps> = ({
       <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 backdrop-blur-xl bg-white/85 dark:bg-slate-950/80 transition-colors shadow-xs dark:shadow-none">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
           {/* Left: Clean Brand Logo with Bike Icon */}
-          <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none shrink-0 group" onClick={onNavigateHome}>
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 shadow-lg shadow-cyan-500/25 group-hover:scale-105 transition">
-              <Bike className="w-5 h-5 stroke-[2.5]" />
+          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0 group" onClick={onNavigateHome}>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 shadow-md sm:shadow-lg shadow-cyan-500/25 group-hover:scale-105 transition shrink-0">
+              <Bike className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5 font-mono">
-                <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
-                <span className="text-cyan-500 dark:text-cyan-400 font-bold text-base">{t('brandSuffix')}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 font-mono">{t('brandPro')}</span>
+              <div className="flex items-center gap-1 sm:gap-1.5 font-mono">
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
+                <span className="text-cyan-500 dark:text-cyan-400 font-bold text-sm sm:text-base">{t('brandSuffix')}</span>
+                <span className="text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 font-mono">{t('brandPro')}</span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 tracking-wider hidden sm:block">
                 {t('slogan')}
@@ -93,9 +93,18 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Actions: Language Switch + Unit Switch + Rider Profile + BGM + Theme Switch */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* 3-Language Segmented Switch (简 / 繁 / EN) */}
-            <div className="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] font-bold">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Mobile Compact Language Toggle Button */}
+            <button
+              onClick={toggleLanguage}
+              className="sm:hidden px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-cyan-600 dark:text-cyan-400 text-xs font-bold font-mono active:scale-95 transition"
+              title="Toggle Language (简 / 繁 / EN)"
+            >
+              {language === 'zh' ? '简' : language === 'zh-TW' ? '繁' : 'EN'}
+            </button>
+
+            {/* Desktop 3-Language Segmented Switch (简 / 繁 / EN) */}
+            <div className="hidden sm:flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px] font-bold">
               <button
                 onClick={() => setLanguage('zh')}
                 className={`px-2 py-1 rounded-lg transition ${
@@ -131,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* Unit System Toggle (Metric / Imperial) */}
+            {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
               onClick={toggleUnitSystem}
               className="hidden sm:flex items-center gap-1 px-2 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500/50 text-slate-600 dark:text-slate-300 text-[11px] font-mono font-medium transition"
@@ -144,16 +153,16 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Search Button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 active:scale-95 transition"
               title="Search Tools"
             >
               {mobileSearchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             </button>
 
-            {/* Universal Rider Profile Button */}
+            {/* Desktop Rider Profile Button (Hidden on Mobile because MobileBottomNav already provides Profile) */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 text-xs font-semibold transition"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 text-xs font-semibold transition"
               title="Rider Profile & Dimensions"
             >
               <User className="w-3.5 h-3.5 text-cyan-500" />
@@ -166,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Theme Toggle Button */}
             <button
               onClick={() => setIsDark(!isDark)}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 transition"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700 active:scale-95 transition"
               title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}

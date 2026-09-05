@@ -156,6 +156,16 @@ export const UpgradeRoiCalculator: React.FC = () => {
   const [flatCruiseSpeedKmh, setFlatCruiseSpeedKmh] = useState<number>(35);
   const [climbPowerWatts, setClimbPowerWatts] = useState<number>(profile.ftpWatts || 240);
   const [climbGradePct, setClimbGradePct] = useState<number>(7.5);
+  const [currency, setCurrency] = useState<'CNY' | 'USD' | 'EUR' | 'GBP'>('CNY');
+
+  const currencySymbol = useMemo(() => {
+    switch (currency) {
+      case 'USD': return '$';
+      case 'EUR': return '€';
+      case 'GBP': return '£';
+      default: return '¥';
+    }
+  }, [currency]);
 
   const [items, setItems] = useState<UpgradeItem[]>(DEFAULT_ITEMS_WITH_SPECS);
 
@@ -298,10 +308,10 @@ export const UpgradeRoiCalculator: React.FC = () => {
     const text = `⚖️ SoloRiderTools 零件减重与气动升级省瓦性价比报告:
 - 选定升级件数: ${analysis.activeCount} 项
 - 总减重: -${analysis.totalWeightSaveG} g | 气动/滚阻总省瓦: +${analysis.totalPowerSaveWatts} W
-- 自定义总预算: ¥${analysis.totalCostYuan} 元
+- 自定义总预算: ${currencySymbol}${analysis.totalCostYuan} (${currency})
 - 40km 平路预计节省: ${analysis.flatTimeSavedSec} 秒 (~${(analysis.flatTimeSavedSec / 60).toFixed(1)} 分钟)
 - 10km 爬坡预计节省: ${analysis.climbTimeSavedSec} 秒 (~${(analysis.climbTimeSavedSec / 60).toFixed(1)} 分钟)
-- 每省 1 瓦成本: ¥${analysis.costPerWatt} 元/W (${analysis.roiLevel})`;
+- 每省 1 瓦成本: ${currencySymbol}${analysis.costPerWatt} /W (${analysis.roiLevel})`;
     navigator.clipboard.writeText(text);
     showToast('改装升级性价比报告已复制到剪贴板！', 'success');
   };
@@ -309,31 +319,49 @@ export const UpgradeRoiCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 relative overflow-hidden">
+      <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-semibold mb-2">
               <Scale className="w-3.5 h-3.5" />
               风洞实测基准与改装边际效益测算
             </div>
-            <h1 className="text-2xl font-bold text-slate-100">零件减重与气动升级省瓦推算器</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">零件减重与气动升级省瓦推算器</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
               内置各大实验室风洞实测基准（轮组/头盔/骑行服/内胎），支持<strong>规格下拉一键自动推算省瓦</strong>或手动自定义，自动随巡航车速折算真实收益。
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Currency Selector */}
+            <div className="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-mono">
+              {(['CNY', 'USD', 'EUR', 'GBP'] as const).map(c => (
+                <button
+                  key={c}
+                  onClick={() => setCurrency(c)}
+                  className={`px-2 py-1 rounded-lg transition ${
+                    currency === c
+                      ? 'bg-cyan-500 text-slate-950 font-bold shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                  title={`切换货币: ${c}`}
+                >
+                  {c === 'CNY' ? '¥' : c === 'USD' ? '$' : c === 'EUR' ? '€' : '£'}
+                </button>
+              ))}
+            </div>
+
             <button
               onClick={copyReport}
-              className="flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 transition shadow-xs"
             >
               <Copy className="w-3.5 h-3.5" />
-              复制改装报告
+              复制报告
             </button>
             <button
               onClick={handleAddCustomItem}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 rounded-xl text-xs font-semibold transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 rounded-xl text-xs font-semibold transition"
             >
               <Plus className="w-3.5 h-3.5" />
               添加自定义件
@@ -343,10 +371,10 @@ export const UpgradeRoiCalculator: React.FC = () => {
       </div>
 
       {/* Cruise speed and baseline controls */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-300 font-semibold flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1">
+            <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
             基准巡航车速:
           </span>
           <div className="w-36">
@@ -359,13 +387,13 @@ export const UpgradeRoiCalculator: React.FC = () => {
               unit="km/h"
             />
           </div>
-          <span className="text-[11px] text-slate-400 hidden sm:inline">
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
             (省瓦按 P ∝ v³ 随车速动态折算: ×{(speedScalingFactor).toFixed(2)})
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-300 font-semibold">人车总重:</span>
+          <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">人车总重:</span>
           <div className="w-36">
             <NumberStepper
               value={totalSystemWeightKg}
@@ -461,9 +489,9 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   {/* Editable 3 Inputs: Price, Weight Save, Watt Save */}
                   <div className="grid grid-cols-3 gap-2 text-xs pt-1.5 border-t border-slate-200 dark:border-slate-800/60 font-mono">
                     <div className="bg-slate-100 dark:bg-slate-950/80 rounded-lg p-2 border border-slate-200 dark:border-slate-800/80">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">实际价格 (元)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">实际价格 ({currency})</span>
                       <div className="flex items-center text-amber-500 dark:text-amber-400 font-bold">
-                        <span className="text-[11px] mr-1">¥</span>
+                        <span className="text-[11px] mr-1">{currencySymbol}</span>
                         <input
                           type="number"
                           value={item.costYuan}
@@ -512,47 +540,47 @@ export const UpgradeRoiCalculator: React.FC = () => {
         <div className="lg:col-span-5 space-y-6">
           {/* Key Metric Cards */}
           <div className="grid grid-cols-3 gap-2.5">
-            <div className="glass-card p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-[11px] font-medium block">总计省瓦收益</span>
-              <div className="text-xl font-bold font-mono text-cyan-400 mt-1">
+            <div className="glass-card p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium block">总计省瓦收益</span>
+              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                 +{analysis.totalPowerSaveWatts} <span className="text-xs text-slate-400 font-sans font-normal">W</span>
               </div>
             </div>
 
-            <div className="glass-card p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-[11px] font-medium block">整车总减重</span>
-              <div className="text-xl font-bold font-mono text-emerald-400 mt-1">
+            <div className="glass-card p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium block">整车总减重</span>
+              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
                 -{analysis.totalWeightSaveG} <span className="text-xs text-slate-400 font-sans font-normal">g</span>
               </div>
             </div>
 
-            <div className="glass-card p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 text-center">
-              <span className="text-slate-400 text-[11px] font-medium block">改装总投资</span>
-              <div className="text-xl font-bold font-mono text-amber-400 mt-1">
-                ¥{analysis.totalCostYuan}
+            <div className="glass-card p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-center shadow-xs">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium block">改装总投资</span>
+              <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
+                {currencySymbol}{analysis.totalCostYuan}
               </div>
             </div>
           </div>
 
           {/* Time Saved Comparisons */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="glass-panel p-4 rounded-xl border border-slate-800 space-y-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="glass-panel p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-xs">
+              <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
                 40km 平路巡航省时
               </span>
-              <div className="text-xl font-bold font-mono text-cyan-300">
+              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-300">
                 节省 {analysis.flatTimeSavedSec} 秒
               </div>
               <span className="text-[10px] text-slate-500">约 {(analysis.flatTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
             </div>
 
-            <div className="glass-panel p-4 rounded-xl border border-slate-800 space-y-1">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="glass-panel p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-xs">
+              <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                 10km 7.5% 爬坡省时
               </span>
-              <div className="text-xl font-bold font-mono text-emerald-300">
+              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-300">
                 节省 {analysis.climbTimeSavedSec} 秒
               </div>
               <span className="text-[10px] text-slate-500">约 {(analysis.climbTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
@@ -560,27 +588,27 @@ export const UpgradeRoiCalculator: React.FC = () => {
           </div>
 
           {/* ROI Metric & Badge */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-slate-400">改装性价比与边际收益评级</span>
+              <span className="text-xs text-slate-600 dark:text-slate-400">改装性价比与边际收益评级</span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold border ${analysis.roiBadgeColor}`}>
-                ¥{analysis.costPerWatt} 元 / W
+                {currencySymbol}{analysis.costPerWatt} / W
               </span>
             </div>
-            <div className="text-sm font-bold text-slate-100">
+            <div className="text-sm font-bold text-slate-900 dark:text-slate-100">
               {analysis.roiLevel}
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               💡 <strong>风洞与改装避坑法则</strong>：
-              <br />• <strong>黄金第一阶 (&lt;¥200/W)</strong>：修身/破风骑行服、TPU 超轻内胎/真空胎，花费几百元立省 7~10W。
-              <br />• <strong>进阶第二阶 (¥300~600/W)</strong>：50mm 综合气动碳轮、一体把、气动头盔，兼具巡航破风与整车颜值。
-              <br />• <strong>边际递减阶 (&gt;¥1000/W)</strong>：陶瓷大导轮、钛合金螺丝，适合发烧竞技车手追求极限边际增益。
+              <br />• <strong>黄金第一阶 (&lt;{currencySymbol}200/W)</strong>：修身/破风骑行服、TPU 超轻内胎/真空胎，花费较低立省 7~10W。
+              <br />• <strong>进阶第二阶 ({currencySymbol}300~600/W)</strong>：50mm 综合气动碳轮、一体把、气动头盔，兼具巡航破风与整车颜值。
+              <br />• <strong>边际递减阶 (&gt;{currencySymbol}1000/W)</strong>：陶瓷大导轮、钛合金螺丝，适合发烧竞技车手追求极限边际增益。
             </p>
           </div>
 
           {/* Single Item Wattage Contribution Chart */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
-            <span className="text-xs font-semibold text-slate-300 block">各单品省瓦贡献对比柱状图 (Watts @ {flatCruiseSpeedKmh}km/h)</span>
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-xs">
+            <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">各单品省瓦贡献对比柱状图 (Watts @ {flatCruiseSpeedKmh}km/h)</span>
             <div className="h-44">
               <Bar
                 data={chartData}
@@ -589,8 +617,8 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   maintainAspectRatio: false,
                   plugins: { legend: { display: false } },
                   scales: {
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { font: { size: 10 } } },
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: '节省瓦数 (W)', font: { size: 10 } } }
+                    x: { grid: { color: 'rgba(150, 150, 150, 0.1)' }, ticks: { font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(150, 150, 150, 0.1)' }, title: { display: true, text: '节省瓦数 (W)', font: { size: 10 } } }
                   }
                 }}
               />

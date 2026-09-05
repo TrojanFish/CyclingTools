@@ -30,6 +30,11 @@
   --accent-cyan: #0284c7;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
