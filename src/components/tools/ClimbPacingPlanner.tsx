@@ -629,7 +629,7 @@ export const ClimbPacingPlanner: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             <button
               onClick={handleOpenStravaSegments}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="从 Strava 检索赛段 (KOM / Starred) 并导入"
             >
               <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
@@ -638,7 +638,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               <span>{language === 'zh-TW' ? 'Strava 賽段' : 'Strava 赛段'}</span>
             </button>
 
-            <label className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0">
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
               <span className="hidden sm:inline">{language === 'zh-TW' ? '匯入 GPX 爬坡路線' : '导入 GPX 爬坡路线'}</span>
               <span className="sm:hidden">{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
@@ -647,10 +647,10 @@ export const ClimbPacingPlanner: React.FC = () => {
 
             <button
               onClick={handleGeneratePoster}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue rounded-2xl text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成名山爬坡攻坚与分段配速海报卡片"
             >
-              <Share2 className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+              <Share2 className="w-3.5 h-3.5 shrink-0" />
               <span>{language === 'zh-TW' ? '生成配速海報' : '生成配速海报'}</span>
             </button>
           </div>

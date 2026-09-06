@@ -349,7 +349,7 @@ export const MtbSuspensionTuner: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleGeneratePoster}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-ios-blue to-indigo-600 hover:opacity-90 text-white rounded-full font-semibold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成避震设定卡"
             >
               <Share2 className="w-3.5 h-3.5 shrink-0" />
@@ -357,7 +357,7 @@ export const MtbSuspensionTuner: React.FC = () => {
             </button>
 
             {/* Connected Active Rider Indicator */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-white/10 border border-black/[0.05] dark:border-white/10 text-xs font-mono shadow-2xs">
+            <div className="h-9 px-3.5 rounded-2xl bg-slate-100/90 dark:bg-white/10 border border-black/[0.05] dark:border-white/10 text-xs font-mono shadow-2xs flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-slate-600 dark:text-slate-300">
                 {activeRider ? activeRider.name : 'Rider'}:

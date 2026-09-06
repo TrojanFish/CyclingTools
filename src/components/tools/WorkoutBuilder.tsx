@@ -527,19 +527,19 @@ export const WorkoutBuilder: React.FC = () => {
             <button
               type="button"
               onClick={handleGeneratePoster}
-              className="apple-touch px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200/80 dark:border-white/10 shadow-ios-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
               title="生成社交分享课表海报"
             >
-              <Share2 className="w-4 h-4 text-ios-red" />
+              <Share2 className="w-3.5 h-3.5 text-ios-red" />
               <span>生成课表海报</span>
             </button>
 
             <button
               type="button"
               onClick={() => setExportModalOpen(true)}
-              className="apple-touch px-4 py-2.5 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5" />
               <span>导出课表 (ZWO / MRC)</span>
             </button>
           </div>

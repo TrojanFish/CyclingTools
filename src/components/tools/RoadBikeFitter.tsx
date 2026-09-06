@@ -184,7 +184,7 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-indigo-600 hover:opacity-90 text-white text-xs font-semibold shadow-ios-sm transition active:scale-95 whitespace-nowrap"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成个人 Fitting 档案长图"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -192,9 +192,9 @@ export const RoadBikeFitter: React.FC = () => {
             </button>
             <button
               onClick={handlePrint}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <Printer className="w-3.5 h-3.5" />
+              <Printer className="w-3.5 h-3.5 text-ios-purple" />
               {language === 'zh-TW' ? '列印工單' : '打印工单'}
             </button>
           </div>

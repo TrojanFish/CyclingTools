@@ -380,7 +380,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 dark:bg-ios-blue/20 text-ios-blue text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成改装升级省瓦战报海报"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -389,9 +389,9 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
             <button
               onClick={resetToDefaults}
-              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-3.5 h-3.5 text-ios-blue" />
               重置预设
             </button>
           </div>

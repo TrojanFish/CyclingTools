@@ -674,22 +674,22 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             <button
               onClick={handleOpenStravaModal}
-              className={`flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl text-xs font-semibold border transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0 ${
+              className={`apple-touch h-9 px-3.5 sm:px-4 rounded-2xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
                 isStravaConnected
                   ? 'bg-orange-500/10 hover:bg-orange-500/20 text-[#FC4C02] border-orange-500/30'
                   : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
               }`}
               title={isStravaConnected ? '从 Strava 同步星标路线' : '连接 Strava 导入路线'}
             >
-              <Cloud className="w-4 h-4 text-[#FC4C02]" />
+              <Cloud className="w-3.5 h-3.5 text-[#FC4C02]" />
               <span>{language === 'zh-TW' ? '從 Strava 匯入' : '从 Strava 导入'}</span>
               {isStravaConnected && (
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
               )}
             </button>
 
-            <label className="flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0">
-              <Upload className="w-4 h-4 text-ios-blue" />
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+              <Upload className="w-3.5 h-3.5 text-ios-mint" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
             </label>
@@ -697,18 +697,18 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <button
               type="button"
               onClick={handleGeneratePoster}
-              className="flex items-center gap-1.5 sm:gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-2xl font-bold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-2xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成社交打卡路书海报"
             >
-              <Share2 className="w-4 h-4 text-ios-mint" />
+              <Share2 className="w-3.5 h-3.5 text-ios-mint" />
               <span>{language === 'zh-TW' ? '生成路書海報' : '生成路书海报'}</span>
             </button>
 
             <button
               onClick={handleExportGpx}
-              className="flex items-center gap-1.5 sm:gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-2xl font-bold text-xs transition shadow-ios-md apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-2xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}</span>
             </button>
           </div>

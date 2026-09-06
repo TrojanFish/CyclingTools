@@ -961,27 +961,27 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 self-start sm:self-center shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-center shrink-0">
             <button
               onClick={handleGeneratePoster}
-              className="px-4 py-2.5 rounded-full bg-gradient-to-r from-ios-red to-orange-500 hover:opacity-90 text-white font-semibold text-xs shadow-ios-sm apple-touch transition flex items-center gap-1.5"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成码表活动深度复盘长图海报"
             >
-              <Share2 className="w-4 h-4" />
+              <Share2 className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '生成復盤海報' : '生成复盘海报'}</span>
             </button>
             <button
               onClick={() => window.print()}
-              className="px-4 py-2.5 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs apple-touch transition flex items-center gap-1.5"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '列印報告' : '打印报告'}</span>
             </button>
             <button
               onClick={handleLoadDemo}
-              className="px-4 py-2.5 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold text-xs shadow-ios-sm apple-touch transition flex items-center gap-2"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
             </button>
           </div>

@@ -445,9 +445,9 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               onClick={findOptimalCruiseSpeed}
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-ios-mint hover:bg-ios-mint/90 text-white rounded-2xl text-xs font-bold transition shadow-ios-md apple-touch"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-2xl text-xs font-bold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
               {language === 'zh-TW' ? '求解最高不破產均速' : '求解最高不破产均速'}
             </button>
           </div>

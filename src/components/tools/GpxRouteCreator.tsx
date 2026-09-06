@@ -415,30 +415,30 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             <button
               onClick={handleGeneratePoster}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-ios-mint to-teal-500 hover:opacity-90 text-white rounded-full font-semibold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-2xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成航迹长图海报"
             >
-              <Share2 className="w-3.5 h-3.5 shrink-0" />
+              <Share2 className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>生成航迹海报</span>
             </button>
-            <label className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs apple-touch transition whitespace-nowrap shrink-0">
-              <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+              <Upload className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>导入 GPX</span>
               <input type="file" accept=".gpx,.xml" onChange={handleGpxFileUpload} className="hidden" />
             </label>
             <button
               onClick={handleReverseRoute}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs apple-touch transition whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="一键反转起点与终点"
             >
-              <ArrowRightLeft className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+              <ArrowRightLeft className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>反转路线</span>
             </button>
             <button
               onClick={handleExportGpx}
-              className="flex items-center gap-1.5 sm:gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-full font-semibold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-2xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
-              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <Download className="w-3.5 h-3.5 shrink-0" />
               <span>导出 .GPX</span>
             </button>
           </div>
@@ -450,7 +450,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-              <Mountain className="w-3.5 h-3.5 text-ios-blue" />
+              <Mountain className="w-3.5 h-3.5 text-ios-mint" />
               行者精选·浙江实测经典路书 (6条经典高频):
             </span>
           </div>

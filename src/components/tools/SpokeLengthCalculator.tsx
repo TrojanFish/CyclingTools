@@ -270,7 +270,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               <button
                 key={p.id}
                 onClick={() => applyPreset(p.id as any)}
-                className="apple-touch px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition active:scale-95"
+                className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-ios-blue/10 dark:hover:bg-ios-blue/20 hover:text-ios-blue hover:border-ios-blue/30 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center whitespace-nowrap shrink-0"
               >
                 {p.label}
               </button>

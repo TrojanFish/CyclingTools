@@ -110,7 +110,7 @@ export const RoadBikePainChecker: React.FC = () => {
           <div className="flex items-center gap-2.5">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch flex items-center gap-1.5 px-4 py-2 bg-ios-purple/15 hover:bg-ios-purple/25 text-ios-purple dark:text-purple-300 rounded-xl font-semibold text-xs border border-ios-purple/30 transition shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成针对性调车自纠处方海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -127,10 +127,10 @@ export const RoadBikePainChecker: React.FC = () => {
             placeholder="搜索不适关键词快速定位 (如: 髌骨, 膝前痛, 手麻, 会阴, 锁片, 塌腰)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-blue transition"
+            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"
           />
           {searchQuery && (
-            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-ios-blue font-mono">
+            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-ios-purple font-mono">
               匹配到 {matchingAreaIds.length} 个部位
             </span>
           )}

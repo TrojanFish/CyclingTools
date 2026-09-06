@@ -219,10 +219,10 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/20 hover:bg-ios-blue/20 text-ios-blue text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm active:scale-95 shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成齿比与踏频速度海报卡片"
             >
-              <Share2 className="w-3.5 h-3.5 text-ios-blue" />
+              <Share2 className="w-3.5 h-3.5" />
               <span>生成齿比海报</span>
             </button>
 

@@ -350,9 +350,9 @@ export const CyclingWeatherAdvisor: React.FC = () => {
               结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。
             </p>
           </div>
-          <div className="flex items-center gap-2.5">
-            <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
-              <Upload className="w-4 h-4 text-ios-mint" />
+          <div className="flex flex-wrap items-center gap-2.5">
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+              <Upload className="w-3.5 h-3.5 text-ios-mint" />
               <span>导入 GPX / TCX 路线</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxUpload} className="hidden" />
             </label>
@@ -360,9 +360,9 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             <button
               onClick={fetchWeatherAdvice}
               disabled={isLoading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-ios-mint hover:bg-ios-mint/90 text-white rounded-2xl font-bold text-sm transition shadow-ios-md apple-touch disabled:opacity-50"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-2xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
             >
-              <Play className="w-4 h-4 fill-current" />
+              <Play className="w-3.5 h-3.5 fill-current" />
               {isLoading ? '正在获取沿途气象...' : '生成全路段天气顾问'}
             </button>
           </div>
