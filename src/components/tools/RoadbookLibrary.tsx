@@ -618,11 +618,11 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 <div
                   key={route.id}
                   onClick={() => setSelectedRouteId(route.id)}
-                  className={`ios-card p-4 rounded-3xl border transition cursor-pointer relative group apple-touch shadow-ios-card ${
-                    isSelected
-                      ? 'border-ios-blue ring-2 ring-ios-blue/30 bg-ios-blue/5'
-                      : 'border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
-                  }`}
+                    className={`ios-card p-4 rounded-3xl border transition cursor-pointer relative group apple-touch shadow-ios-card ${
+                      isSelected
+                        ? 'border-ios-blue ring-2 ring-ios-blue/40 bg-ios-blue/10 dark:bg-ios-blue/20 shadow-ios-md scale-[1.005]'
+                        : 'border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
+                    }`}
                 >
                   <div className="flex justify-between items-start gap-2">
                     <div className="space-y-1 flex-1">

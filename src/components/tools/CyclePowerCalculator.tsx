@@ -445,20 +445,23 @@ export const CyclePowerCalculator: React.FC = () => {
                   { id: 'drops', label: language === 'zh-TW' ? '下把位' : '下把位', cda: 0.28 },
                   { id: 'hoods', label: language === 'zh-TW' ? '手變位' : '手变位', cda: 0.32 },
                   { id: 'tops', label: language === 'zh-TW' ? '上把位' : '上把位', cda: 0.38 },
-                ].map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => handleCdaPresetChange(p.id as any)}
-                    className={`py-2 px-1 rounded-xl border text-center transition ${
-                      cdaPreset === p.id
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}
-                  >
-                    <div className="text-[11px] font-bold">{p.label}</div>
-                    <div className="text-[9px] font-mono text-slate-500 mt-0.5">{p.cda} m²</div>
-                  </button>
-                ))}
+                ].map((p) => {
+                  const isSelected = cdaPreset === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => handleCdaPresetChange(p.id as any)}
+                      className={`py-2 px-1 rounded-xl border text-center transition apple-touch ${
+                        isSelected
+                          ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-sm ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                          : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <div className={`text-[11px] ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
+                      <div className={`text-[9px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>{p.cda} m²</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -481,30 +484,24 @@ export const CyclePowerCalculator: React.FC = () => {
 
               {/* Quick Altitude Presets */}
               <div className="flex flex-wrap items-center gap-1 text-[10px]">
-                <button
-                  onClick={() => setAltitudeM(0)}
-                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 0 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
-                >
-                  海平面 0m
-                </button>
-                <button
-                  onClick={() => setAltitudeM(500)}
-                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 500 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
-                >
-                  丘陵 500m
-                </button>
-                <button
-                  onClick={() => setAltitudeM(2200)}
-                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 2200 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
-                >
-                  青海湖 2200m
-                </button>
-                <button
-                  onClick={() => setAltitudeM(4200)}
-                  className={`px-2 py-0.5 rounded-lg border transition ${altitudeM === 4200 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-500 font-bold' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
-                >
-                  折多山 4200m
-                </button>
+                {[
+                  { val: 0, label: '海平面 0m' },
+                  { val: 500, label: '丘陵 500m' },
+                  { val: 2200, label: '青海湖 2200m' },
+                  { val: 4200, label: '折多山 4200m' },
+                ].map((item) => (
+                  <button
+                    key={item.val}
+                    onClick={() => setAltitudeM(item.val)}
+                    className={`px-2 py-0.5 rounded-lg border transition font-medium ${
+                      altitudeM === item.val
+                        ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs'
+                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">

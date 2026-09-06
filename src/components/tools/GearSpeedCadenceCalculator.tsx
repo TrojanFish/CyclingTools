@@ -298,19 +298,22 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         {/* Tire preset picker */}
         <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-800/80">
           <span className="text-xs text-slate-500 dark:text-slate-400">外胎周长规格:</span>
-          {TIRE_PRESETS.map((p) => (
-            <button
-              key={p.value}
-              onClick={() => setTireCircumferenceMm(p.value)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-mono transition ${
-                tireCircumferenceMm === p.value
-                  ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 font-semibold'
-                  : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+          {TIRE_PRESETS.map((p) => {
+            const isSelected = tireCircumferenceMm === p.value;
+            return (
+              <button
+                key={p.value}
+                onClick={() => setTireCircumferenceMm(p.value)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-mono transition apple-touch ${
+                  isSelected
+                    ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800'
+                }`}
+              >
+                {p.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

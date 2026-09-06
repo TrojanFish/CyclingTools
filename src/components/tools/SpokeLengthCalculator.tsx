@@ -412,20 +412,23 @@ export const SpokeLengthCalculator: React.FC = () => {
                     { val: 12, label: '12mm 标准' },
                     { val: 14, label: '14mm 加长' },
                     { val: 16, label: '16mm 深圈' }
-                  ].map((item) => (
-                    <button
-                      key={item.val}
-                      type="button"
-                      onClick={() => setNippleLengthMm(item.val)}
-                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                        nippleLengthMm === item.val
-                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
+                  ].map((item) => {
+                    const isSelected = nippleLengthMm === item.val;
+                    return (
+                      <button
+                        key={item.val}
+                        type="button"
+                        onClick={() => setNippleLengthMm(item.val)}
+                        className={`py-1.5 text-xs rounded-xl border transition apple-touch ${
+                          isSelected
+                            ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                            : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 font-medium'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
                 </div>
                 <span className="text-[10px] text-slate-400 block mt-1">14/16mm 条帽咬合点更深，系统已自动补偿微调避底</span>
               </div>
@@ -437,20 +440,23 @@ export const SpokeLengthCalculator: React.FC = () => {
                     { val: 0, label: '无垫片' },
                     { val: 0.5, label: 'PHR 0.5mm' },
                     { val: 1.0, label: '厚垫 1.0mm' }
-                  ].map((item) => (
-                    <button
-                      key={item.val}
-                      type="button"
-                      onClick={() => setNippleWasherMm(item.val)}
-                      className={`py-1.5 text-xs font-semibold rounded-xl border transition ${
-                        nippleWasherMm === item.val
-                          ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-600 dark:text-cyan-400'
-                          : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
+                  ].map((item) => {
+                    const isSelected = nippleWasherMm === item.val;
+                    return (
+                      <button
+                        key={item.val}
+                        type="button"
+                        onClick={() => setNippleWasherMm(item.val)}
+                        className={`py-1.5 text-xs rounded-xl border transition apple-touch ${
+                          isSelected
+                            ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                            : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 font-medium'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
                 </div>
                 <span className="text-[10px] text-slate-400 block mt-1">修正后有效 ERD: <strong className="font-mono text-cyan-600 dark:text-cyan-400">{result.effectiveErd} mm</strong></span>
               </div>

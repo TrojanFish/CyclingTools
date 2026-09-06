@@ -53,13 +53,13 @@ export const BackgroundMusicControl: React.FC = () => {
           onClick={() => setIsOpenPopover(!isOpenPopover)}
           className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl border transition select-none active:scale-95 relative shrink-0 ${
             isPlaying
-              ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-600 dark:text-cyan-400 shadow-xs'
+              ? 'bg-ios-blue text-white border-ios-blue shadow-ios-sm'
               : 'bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
           }`}
           title={isPlaying ? `正在播放: ${currentTrack?.name}` : '骑行音乐'}
           aria-label="骑行音乐"
         >
-          <Music className={`w-4 h-4 ${isPlaying ? 'text-cyan-500 animate-pulse' : ''}`} />
+          <Music className={`w-4 h-4 ${isPlaying ? 'text-white animate-pulse' : ''}`} />
           {isPlaying && (
             <span className="absolute top-1 right-1 flex h-1.5 w-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
@@ -135,12 +135,12 @@ export const BackgroundMusicControl: React.FC = () => {
                   onClick={() => selectTrack(idx)}
                   className={`px-2.5 py-1.5 rounded-lg text-xs flex justify-between items-center cursor-pointer transition ${
                     currentTrackIndex === idx
-                      ? 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 font-semibold'
+                      ? 'bg-ios-blue text-white font-bold shadow-xs'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
                   <span className="truncate max-w-[170px]">{t.name}</span>
-                  {t.bpm && <span className="text-[9px] font-mono text-slate-400">{t.bpm} BPM</span>}
+                  {t.bpm && <span className={`text-[9px] font-mono ${currentTrackIndex === idx ? 'text-white/80' : 'text-slate-400'}`}>{t.bpm} BPM</span>}
                 </div>
               ))}
             </div>

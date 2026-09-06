@@ -384,12 +384,12 @@ export const TubelessSealantCalculator: React.FC = () => {
                       onClick={() => setCasingType(c.id as any)}
                       className={`w-full py-2 px-3 text-xs text-left rounded-2xl border transition flex items-center justify-between apple-touch ${
                         casingType === c.id
-                          ? 'bg-ios-blue/15 border-ios-blue/50 text-ios-blue font-semibold'
-                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300'
+                          ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-sm shadow-ios-blue/20 ring-2 ring-ios-blue/30 scale-[1.01]'
+                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
                       }`}
                     >
-                      <span>{c.label}</span>
-                      {casingType === c.id && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />}
+                      <span className={casingType === c.id ? 'font-bold text-white' : ''}>{c.label}</span>
+                      {casingType === c.id && <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />}
                     </button>
                   ))}
                 </div>
@@ -411,12 +411,12 @@ export const TubelessSealantCalculator: React.FC = () => {
                       onClick={() => setClimate(cl.id as any)}
                       className={`w-full py-2 px-3 text-xs text-left rounded-2xl border transition flex items-center justify-between apple-touch ${
                         climate === cl.id
-                          ? 'bg-ios-red/15 border-ios-red/50 text-ios-red font-semibold'
-                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300'
+                          ? 'bg-ios-red text-white border-ios-red font-bold shadow-sm shadow-ios-red/20 ring-2 ring-ios-red/30 scale-[1.01]'
+                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
                       }`}
                     >
-                      <span>{cl.label}</span>
-                      {climate === cl.id && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />}
+                      <span className={climate === cl.id ? 'font-bold text-white' : ''}>{cl.label}</span>
+                      {climate === cl.id && <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />}
                     </button>
                   ))}
                 </div>

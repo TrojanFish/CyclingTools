@@ -397,11 +397,17 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                       setIsPlaying(true);
                     }}
                     className={`p-2 rounded-xl text-xs flex justify-between items-center cursor-pointer apple-touch transition ${
-                      currentTrackIndex === idx ? 'bg-ios-blue/15 text-ios-blue font-semibold' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10'
+                      currentTrackIndex === idx
+                        ? 'bg-ios-blue text-white font-bold shadow-xs'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10'
                     }`}
                   >
                     <span className="truncate">{t.name}</span>
-                    {t.bpm && <span className="text-[9px] font-mono text-slate-500">{t.bpm} BPM</span>}
+                    {t.bpm && (
+                      <span className={`text-[9px] font-mono ${currentTrackIndex === idx ? 'text-white/80' : 'text-slate-500'}`}>
+                        {t.bpm} BPM
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>

@@ -171,14 +171,14 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
                 onClick={() => setSelectedAreaId(key)}
                 className={`apple-touch p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 relative active:scale-95 ${
                   isSelected
-                    ? 'bg-ios-red/10 border-ios-red/40 text-ios-red shadow-ios-sm font-bold'
+                    ? 'bg-ios-red text-white border-ios-red shadow-md shadow-ios-red/25 ring-2 ring-ios-red/30 font-bold scale-[1.02] z-10'
                     : isMatch
-                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 font-semibold'
-                    : 'bg-black/[0.03] dark:bg-white/[0.06] border-black/[0.04] dark:border-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-black/[0.06] dark:hover:bg-white/[0.1]'
+                    ? 'bg-amber-500/15 border-amber-500/50 text-amber-700 dark:text-amber-300 font-semibold ring-1 ring-amber-500/30'
+                    : 'bg-black/[0.03] dark:bg-white/[0.06] border-black/[0.05] dark:border-white/[0.06] text-slate-700 dark:text-slate-300 hover:bg-black/[0.06] dark:hover:bg-white/[0.1]'
                 }`}
               >
-                {isMatch && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400" />
+                {isMatch && !isSelected && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-white dark:ring-[#1C1C1E]" />
                 )}
                 {(() => {
                   const AreaIcon = areaIconMap[key] || Activity;
@@ -186,15 +186,15 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
                     <AreaIcon
                       className={`w-5 h-5 transition-colors ${
                         isSelected
-                          ? 'text-ios-red'
+                          ? 'text-white'
                           : isMatch
-                          ? 'text-amber-500'
+                          ? 'text-amber-500 dark:text-amber-400'
                           : 'text-slate-500 dark:text-slate-400'
                       }`}
                     />
                   );
                 })()}
-                <span className="text-xs">{item.title.split(' ')[0]}</span>
+                <span className={`text-xs ${isSelected ? 'text-white font-bold' : ''}`}>{item.title.split(' ')[0]}</span>
               </button>
             );
           })}

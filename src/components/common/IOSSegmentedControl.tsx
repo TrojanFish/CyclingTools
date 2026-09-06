@@ -9,20 +9,68 @@ export type SegmentOption<T extends string = string> = {
   | { id: T; value?: T }
 );
 
+export type SegmentTint = 'blue' | 'purple' | 'mint' | 'red' | 'orange' | 'green';
+
 interface IOSSegmentedControlProps<T extends string = string> {
   options: SegmentOption<T>[];
   value: T;
   onChange: (value: T) => void;
   size?: 'sm' | 'md' | 'lg';
+  tint?: SegmentTint;
   fullWidth?: boolean;
   className?: string;
 }
+
+const TINT_STYLES: Record<SegmentTint, {
+  activeLight: string;
+  activeDark: string;
+  iconActive: string;
+  badgeActive: string;
+}> = {
+  blue: {
+    activeLight: 'bg-white text-ios-blue ring-1.5 ring-ios-blue/35 shadow-[0_2px_8px_rgba(0,122,255,0.18),0_1px_2px_rgba(0,0,0,0.06)]',
+    activeDark: 'dark:bg-ios-blue dark:text-white dark:ring-0 dark:shadow-[0_2px_10px_rgba(0,122,255,0.4)]',
+    iconActive: 'text-ios-blue dark:text-white',
+    badgeActive: 'bg-ios-blue/15 text-ios-blue dark:bg-white/25 dark:text-white',
+  },
+  purple: {
+    activeLight: 'bg-white text-ios-purple ring-1.5 ring-ios-purple/35 shadow-[0_2px_8px_rgba(175,82,222,0.18),0_1px_2px_rgba(0,0,0,0.06)]',
+    activeDark: 'dark:bg-ios-purple dark:text-white dark:ring-0 dark:shadow-[0_2px_10px_rgba(175,82,222,0.4)]',
+    iconActive: 'text-ios-purple dark:text-white',
+    badgeActive: 'bg-ios-purple/15 text-ios-purple dark:bg-white/25 dark:text-white',
+  },
+  mint: {
+    activeLight: 'bg-white text-emerald-600 ring-1.5 ring-emerald-500/35 shadow-[0_2px_8px_rgba(16,185,129,0.18),0_1px_2px_rgba(0,0,0,0.06)]',
+    activeDark: 'dark:bg-emerald-600 dark:text-white dark:ring-0 dark:shadow-[0_2px_10px_rgba(16,185,129,0.4)]',
+    iconActive: 'text-emerald-600 dark:text-white',
+    badgeActive: 'bg-emerald-500/15 text-emerald-600 dark:bg-white/25 dark:text-white',
+  },
+  red: {
+    activeLight: 'bg-white text-ios-red ring-1.5 ring-ios-red/35 shadow-[0_2px_8px_rgba(255,59,48,0.18),0_1px_2px_rgba(0,0,0,0.06)]',
+    activeDark: 'dark:bg-ios-red dark:text-white dark:ring-0 dark:shadow-[0_2px_10px_rgba(255,59,48,0.4)]',
+    iconActive: 'text-ios-red dark:text-white',
+    badgeActive: 'bg-ios-red/15 text-ios-red dark:bg-white/25 dark:text-white',
+  },
+  orange: {
+    activeLight: 'bg-white text-ios-orange ring-1.5 ring-ios-orange/35 shadow-[0_2px_8px_rgba(255,149,0,0.18),0_1px_2px_rgba(0,0,0,0.06)]',
+    activeDark: 'dark:bg-ios-orange dark:text-white dark:ring-0 dark:shadow-[0_2px_10px_rgba(255,149,0,0.4)]',
+    iconActive: 'text-ios-orange dark:text-white',
+    badgeActive: 'bg-ios-orange/15 text-ios-orange dark:bg-white/25 dark:text-white',
+  },
+  green: {
+    activeLight: 'bg-white text-ios-green ring-1.5 ring-ios-green/35 shadow-[0_2px_8px_rgba(52,199,89,0.18),0_1px_2px_rgba(0,0,0,0.06)]',
+    activeDark: 'dark:bg-ios-green dark:text-white dark:ring-0 dark:shadow-[0_2px_10px_rgba(52,199,89,0.4)]',
+    iconActive: 'text-ios-green dark:text-white',
+    badgeActive: 'bg-ios-green/15 text-ios-green dark:bg-white/25 dark:text-white',
+  },
+};
 
 export function IOSSegmentedControl<T extends string = string>({
   options,
   value,
   onChange,
   size = 'md',
+  tint = 'blue',
   fullWidth = false,
   className = '',
 }: IOSSegmentedControlProps<T>) {
@@ -38,10 +86,12 @@ export function IOSSegmentedControl<T extends string = string>({
     lg: 'px-4 py-2',
   }[size];
 
+  const currentTint = TINT_STYLES[tint] || TINT_STYLES.blue;
+
   return (
     <div
       role="tablist"
-      className={`inline-flex items-center rounded-xl bg-slate-200/70 dark:bg-white/[0.08] backdrop-blur-md p-0.5 transition-colors duration-200 border border-black/[0.04] dark:border-white/[0.06] select-none ${
+      className={`inline-flex items-center rounded-xl bg-slate-200/80 dark:bg-white/[0.08] backdrop-blur-md p-0.5 transition-colors duration-200 border border-black/[0.06] dark:border-white/[0.08] select-none ${
         fullWidth ? 'w-full' : ''
       } ${sizeClasses} ${className}`}
     >
@@ -56,18 +106,18 @@ export function IOSSegmentedControl<T extends string = string>({
             role="tab"
             aria-selected={isSelected}
             onClick={() => onChange(optVal)}
-            className={`relative flex items-center justify-center gap-1.5 rounded-[10px] font-medium transition-all duration-200 ease-out apple-touch ${itemPadding} ${
+            className={`relative flex items-center justify-center gap-1.5 rounded-[10px] transition-all duration-200 ease-out apple-touch ${itemPadding} ${
               fullWidth ? 'flex-1' : ''
             } ${
               isSelected
-                ? 'bg-white dark:bg-[#636366] text-slate-900 dark:text-white shadow-[0_1px_3px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.06)] font-semibold'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                ? `${currentTint.activeLight} ${currentTint.activeDark} font-bold z-10 scale-[1.01]`
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium'
             }`}
           >
             {Icon && (
               <Icon
                 className={`w-3.5 h-3.5 transition-colors ${
-                  isSelected ? 'text-ios-blue dark:text-ios-blue-dark' : 'text-slate-400 dark:text-slate-500'
+                  isSelected ? currentTint.iconActive : 'text-slate-400 dark:text-slate-500'
                 }`}
               />
             )}
@@ -76,7 +126,7 @@ export function IOSSegmentedControl<T extends string = string>({
               <span
                 className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
                   isSelected
-                    ? 'bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark'
+                    ? currentTint.badgeActive
                     : 'bg-slate-300/60 dark:bg-white/10 text-slate-500 dark:text-slate-400'
                 }`}
               >

@@ -397,36 +397,47 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
 
         {/* 6 Route Pills Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-          {ZHEJIANG_XINGZHE_ROUTES.map((route) => (
-            <button
-              key={route.id}
-              onClick={() => loadPresetRoute(route.id)}
-              className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between apple-touch ${
-                selectedPresetId === route.id
-                  ? 'bg-ios-blue/10 border-ios-blue text-ios-blue ring-1 ring-ios-blue/20 shadow-xs'
-                  : 'bg-white/70 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between gap-1 mb-1">
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold bg-slate-200/70 dark:bg-white/10 text-slate-700 dark:text-slate-300">
-                    {route.city}
-                  </span>
-                  <span className="text-[9px] text-ios-blue font-mono">
-                    {route.xingzheRoadbookId}
-                  </span>
+          {ZHEJIANG_XINGZHE_ROUTES.map((route) => {
+            const isSelected = selectedPresetId === route.id;
+            return (
+              <button
+                key={route.id}
+                onClick={() => loadPresetRoute(route.id)}
+                className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between apple-touch ${
+                  isSelected
+                    ? 'bg-ios-blue text-white border-ios-blue ring-2 ring-ios-blue/30 shadow-ios-md scale-[1.01]'
+                    : 'bg-white/70 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold ${
+                      isSelected
+                        ? 'bg-white/20 text-white'
+                        : 'bg-slate-200/70 dark:bg-white/10 text-slate-700 dark:text-slate-300'
+                    }`}>
+                      {route.city}
+                    </span>
+                    <span className={`text-[9px] font-mono ${isSelected ? 'text-white/90' : 'text-ios-blue'}`}>
+                      {route.xingzheRoadbookId}
+                    </span>
+                  </div>
+                  <div className={`text-xs font-bold truncate ${isSelected ? 'text-white' : ''}`} title={route.name}>
+                    {route.name.split('-')[0].replace('宁波', '').replace('德清', '').replace('舟山', '').replace('安吉', '')}
+                  </div>
                 </div>
-                <div className="text-xs font-bold truncate" title={route.name}>
-                  {route.name.split('-')[0].replace('宁波', '').replace('德清', '').replace('舟山', '').replace('安吉', '')}
-                </div>
-              </div>
 
-              <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-2 pt-1.5 border-t border-slate-200/60 dark:border-white/10">
-                <span>{route.distanceKm}km</span>
-                <span className="text-ios-orange font-semibold">+{route.elevationGainM}m</span>
-              </div>
-            </button>
-          ))}
+                <div className={`flex items-center justify-between text-[10px] font-mono mt-2 pt-1.5 border-t ${
+                  isSelected
+                    ? 'border-white/20 text-white/80'
+                    : 'border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400'
+                }`}>
+                  <span>{route.distanceKm}km</span>
+                  <span className={isSelected ? 'text-amber-200 font-bold' : 'text-ios-orange font-semibold'}>+{route.elevationGainM}m</span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 

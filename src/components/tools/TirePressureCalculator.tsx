@@ -317,20 +317,23 @@ export const TirePressureCalculator: React.FC = () => {
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">主要路面条件 (Surface Conditions)</label>
               <div className="grid grid-cols-2 gap-2">
-                {Object.entries(SURFACE_FACTORS).map(([key, s]) => (
-                  <button
-                    key={key}
-                    onClick={() => setSurfaceKey(key)}
-                    className={`p-2.5 rounded-xl border text-left transition ${
-                      surfaceKey === key
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
-                        : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    <div className="text-xs font-medium">{s.label}</div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{s.desc}</div>
-                  </button>
-                ))}
+                {Object.entries(SURFACE_FACTORS).map(([key, s]) => {
+                  const isSelected = surfaceKey === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setSurfaceKey(key)}
+                      className={`p-2.5 rounded-xl border text-left transition apple-touch ${
+                        isSelected
+                          ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-sm ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                          : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <div className={`text-xs ${isSelected ? 'font-bold text-white' : 'font-medium'}`}>{s.label}</div>
+                      <div className={`text-[10px] mt-0.5 ${isSelected ? 'text-white/85' : 'text-slate-500 dark:text-slate-400'}`}>{s.desc}</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

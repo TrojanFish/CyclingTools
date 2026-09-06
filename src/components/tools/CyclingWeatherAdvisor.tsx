@@ -452,22 +452,27 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                 </label>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                {ZHEJIANG_XINGZHE_ROUTES.map((r) => (
-                  <button
-                    key={r.id}
-                    onClick={() => loadPresetRoute(r.id)}
-                    className={`px-2.5 py-2 rounded-2xl border text-left text-xs transition apple-touch ${
-                      selectedRouteId === r.id
-                        ? 'bg-ios-blue/15 border-ios-blue/50 text-ios-blue font-bold shadow-ios-sm'
-                        : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300'
-                    }`}
-                  >
-                    <span className="truncate block font-semibold">{r.name.split('-')[0].replace('宁波', '').replace('德清', '').replace('舟山', '').replace('安吉', '')}</span>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-400 block font-mono">
-                      {isImperial ? `${Math.round(r.distanceKm * 0.621371)}mi` : `${r.distanceKm}km`} | {r.city}
-                    </span>
-                  </button>
-                ))}
+                {ZHEJIANG_XINGZHE_ROUTES.map((r) => {
+                  const isSelected = selectedRouteId === r.id;
+                  return (
+                    <button
+                      key={r.id}
+                      onClick={() => loadPresetRoute(r.id)}
+                      className={`px-2.5 py-2 rounded-2xl border text-left text-xs transition apple-touch ${
+                        isSelected
+                          ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-ios-md ring-2 ring-ios-blue/30 scale-[1.01]'
+                          : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
+                      }`}
+                    >
+                      <span className={`truncate block ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>
+                        {r.name.split('-')[0].replace('宁波', '').replace('德清', '').replace('舟山', '').replace('安吉', '')}
+                      </span>
+                      <span className={`text-[10px] block font-mono ${isSelected ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
+                        {isImperial ? `${Math.round(r.distanceKm * 0.621371)}mi` : `${r.distanceKm}km`} | {r.city}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

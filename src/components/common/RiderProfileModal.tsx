@@ -375,8 +375,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     }}
                     className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-medium border transition apple-touch ${
                       isSelected
-                        ? 'bg-ios-blue/10 border-ios-blue/30 text-ios-blue dark:text-ios-blue-dark font-semibold'
-                        : 'bg-slate-50 dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.06] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.08]'
+                        ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                        : 'bg-slate-50 dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.06] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.08]'
                     }`}
                   >
                     <span>{preset.icon}</span>
@@ -543,7 +543,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                               }}
                               className={`flex items-center justify-between p-2.5 rounded-xl border text-left transition apple-touch ${
                                 isCurrent
-                                  ? 'bg-ios-blue/10 border-ios-blue/30 text-ios-blue dark:text-ios-blue-dark'
+                                  ? 'bg-ios-blue/15 border-ios-blue text-ios-blue dark:text-white dark:bg-ios-blue/30 font-bold ring-2 ring-ios-blue/30 shadow-xs'
                                   : isUsedInOtherSlot
                                   ? 'bg-slate-100/50 dark:bg-white/[0.02] border-transparent opacity-40 cursor-not-allowed'
                                   : 'bg-slate-50 dark:bg-white/[0.04] border-black/[0.04] dark:border-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.08] text-slate-800 dark:text-slate-200'

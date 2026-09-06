@@ -278,19 +278,22 @@ export const ChainLengthCalculator: React.FC = () => {
                   { teeth: 11, label: '标准原厂 (11T)' },
                   { teeth: 12, label: 'AXS/新型 (12T)' },
                   { teeth: 14, label: '大鸡腿改装 (14T+)' }
-                ].map((p) => (
-                  <button
-                    key={p.teeth}
-                    onClick={() => setPulleyTeeth(p.teeth)}
-                    className={`py-2 px-1 rounded-xl border text-center transition ${
-                      pulleyTeeth === p.teeth
-                        ? 'bg-cyan-500/15 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-semibold'
-                        : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
+                ].map((p) => {
+                  const isSelected = pulleyTeeth === p.teeth;
+                  return (
+                    <button
+                      key={p.teeth}
+                      onClick={() => setPulleyTeeth(p.teeth)}
+                      className={`py-2 px-1 rounded-xl border text-center transition apple-touch ${
+                        isSelected
+                          ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
+                          : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <span className={isSelected ? 'font-bold text-white' : ''}>{p.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
