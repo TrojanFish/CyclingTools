@@ -144,7 +144,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-5 sm:p-6 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-4 sm:p-6 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in zoom-in-95 duration-200">
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-black/[0.05] dark:border-white/[0.08]">
           <div className="flex items-center gap-3">
@@ -173,19 +173,20 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
           </button>
         </div>
 
-        {/* Top Segmented Navigation Tabs (Mobile Horizontally Scrollable & Adaptive Labels) */}
-        <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
+        {/* Top Segmented Navigation Tabs (Adaptive Layout for Mobile & Desktop) */}
+        <div className="w-full">
           <IOSSegmentedControl
             options={[
               { id: 'profile', label: language === 'zh-TW' ? '數據' : '数据', icon: Activity },
               { id: 'roster', label: language === 'zh-TW' ? '車隊' : '车队', icon: Users, badge: roster.length },
               { id: 'garage', label: language === 'zh-TW' ? '戰車' : '战车', icon: Bike, badge: bikes.length },
-              { id: 'strava', label: 'Strava', icon: Cloud, badge: isStravaConnected ? '已连' : undefined },
+              { id: 'strava', label: 'Strava', icon: Cloud, dot: isStravaConnected },
               { id: 'system', label: language === 'zh-TW' ? '導航' : '导航', icon: SlidersHorizontal }
             ]}
             value={modalTab}
             onChange={(val) => setModalTab(val as any)}
             fullWidth
+            hideIconOnMobile
             size="sm"
           />
         </div>

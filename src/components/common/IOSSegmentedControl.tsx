@@ -5,6 +5,8 @@ export type SegmentOption<T extends string = string> = {
   label: string;
   icon?: React.ComponentType<{ className?: string }>;
   badge?: string | number;
+  dot?: boolean;
+  dotColor?: string;
 } & (
   | { value: T; id?: T }
   | { id: T; value?: T }
@@ -19,6 +21,7 @@ interface IOSSegmentedControlProps<T extends string = string> {
   size?: 'sm' | 'md' | 'lg';
   tint?: SegmentTint;
   fullWidth?: boolean;
+  hideIconOnMobile?: boolean;
   className?: string;
 }
 
@@ -73,6 +76,7 @@ export function IOSSegmentedControl<T extends string = string>({
   size = 'md',
   tint = 'blue',
   fullWidth = false,
+  hideIconOnMobile = false,
   className = '',
 }: IOSSegmentedControlProps<T>) {
   const sizeClasses = {
@@ -82,9 +86,9 @@ export function IOSSegmentedControl<T extends string = string>({
   }[size];
 
   const itemPadding = {
-    sm: 'px-2.5 py-1',
-    md: 'px-3.5 py-1.5',
-    lg: 'px-4 py-2',
+    sm: 'px-1.5 sm:px-2.5 py-1',
+    md: 'px-2.5 sm:px-3.5 py-1.5',
+    lg: 'px-3 sm:px-4 py-2',
   }[size];
 
   const currentTint = TINT_STYLES[tint] || TINT_STYLES.blue;
@@ -92,7 +96,7 @@ export function IOSSegmentedControl<T extends string = string>({
   return (
     <div
       role="tablist"
-      className={`inline-flex items-center rounded-xl bg-slate-200/80 dark:bg-white/[0.08] backdrop-blur-md p-0.5 transition-colors duration-200 border border-black/[0.06] dark:border-white/[0.08] select-none ${
+      className={`inline-flex items-center rounded-xl bg-slate-200/80 dark:bg-white/[0.08] backdrop-blur-md p-0.5 transition-colors duration-200 border border-black/[0.06] dark:border-white/[0.08] select-none overflow-hidden ${
         fullWidth ? 'w-full' : ''
       } ${sizeClasses} ${className}`}
     >
@@ -110,8 +114,8 @@ export function IOSSegmentedControl<T extends string = string>({
               triggerHaptic('selection');
               onChange(optVal);
             }}
-            className={`relative flex items-center justify-center gap-1.5 rounded-[10px] transition-all duration-200 ease-out apple-touch ${itemPadding} ${
-              fullWidth ? 'flex-1' : ''
+            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 rounded-[10px] transition-all duration-200 ease-out apple-touch ${itemPadding} ${
+              fullWidth ? 'flex-1 min-w-0' : ''
             } ${
               isSelected
                 ? `${currentTint.activeLight} ${currentTint.activeDark} font-bold z-10 scale-[1.01]`
@@ -120,15 +124,24 @@ export function IOSSegmentedControl<T extends string = string>({
           >
             {Icon && (
               <Icon
-                className={`w-3.5 h-3.5 transition-colors ${
+                className={`w-3.5 h-3.5 transition-colors shrink-0 ${
+                  hideIconOnMobile ? 'hidden sm:inline-block' : ''
+                } ${
                   isSelected ? currentTint.iconActive : 'text-slate-400 dark:text-slate-500'
                 }`}
               />
             )}
-            <span>{opt.label}</span>
+            <span className="truncate">{opt.label}</span>
+            {opt.dot && (
+              <span
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                  opt.dotColor || 'bg-emerald-500'
+                }`}
+              />
+            )}
             {opt.badge !== undefined && (
               <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                className={`text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-full font-mono font-bold shrink-0 ${
                   isSelected
                     ? currentTint.badgeActive
                     : 'bg-slate-300/60 dark:bg-white/10 text-slate-500 dark:text-slate-400'
