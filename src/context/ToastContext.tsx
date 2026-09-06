@@ -47,12 +47,12 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               key={toast.id}
               className={`pointer-events-auto p-3 sm:p-3.5 rounded-2xl border shadow-xl backdrop-blur-2xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200 transition-all ${
                 isSuccess
-                  ? 'bg-white/95 dark:bg-slate-950/95 border-emerald-500/35 dark:border-emerald-500/40 shadow-emerald-500/5'
+                  ? 'bg-white/95 dark:bg-[#1C1C1E]/95 border-emerald-500/35 dark:border-emerald-500/40 shadow-emerald-500/5'
                   : isError
-                  ? 'bg-white/95 dark:bg-slate-950/95 border-rose-500/35 dark:border-rose-500/40 shadow-rose-500/5'
+                  ? 'bg-white/95 dark:bg-[#1C1C1E]/95 border-rose-500/35 dark:border-rose-500/40 shadow-rose-500/5'
                   : isWarning
-                  ? 'bg-white/95 dark:bg-slate-950/95 border-amber-500/35 dark:border-amber-500/40 shadow-amber-500/5'
-                  : 'bg-white/95 dark:bg-slate-950/95 border-ios-blue/35 dark:border-ios-blue/40 shadow-ios-blue/5'
+                  ? 'bg-white/95 dark:bg-[#1C1C1E]/95 border-amber-500/35 dark:border-amber-500/40 shadow-amber-500/5'
+                  : 'bg-white/95 dark:bg-[#1C1C1E]/95 border-ios-blue/35 dark:border-ios-blue/40 shadow-ios-blue/5'
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
@@ -87,7 +87,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
               <button
                 onClick={() => removeToast(toast.id)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition shrink-0 apple-touch"
                 title="关闭提示"
                 aria-label="Close toast"
               >

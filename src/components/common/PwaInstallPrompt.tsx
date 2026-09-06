@@ -110,8 +110,8 @@ export const PwaInstallPrompt: React.FC = () => {
 
       {/* iOS Safari Add to Home Screen Instructions Modal */}
       {showIosGuide && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
-          <div className="bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.1] max-w-sm w-full space-y-4 text-slate-900 dark:text-white shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.1] max-w-sm w-full space-y-4 text-slate-900 dark:text-white shadow-ios-popover relative animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-2xl bg-ios-blue/15 text-ios-blue">

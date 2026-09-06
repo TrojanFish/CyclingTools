@@ -171,7 +171,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:opacity-80 transition"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full bg-black/10 dark:bg-white/20 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition apple-touch"
             >
               <X className="w-3 h-3" />
             </button>

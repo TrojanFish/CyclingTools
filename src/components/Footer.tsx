@@ -59,15 +59,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600 dark:text-slate-400">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerSearch')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-slate-200 dark:border-white/10 shadow-2xs">/</kbd>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">/</kbd>
             </div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerClose')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-slate-200 dark:border-white/10 shadow-2xs">ESC</kbd>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">ESC</kbd>
             </div>
             <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerPrint')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-slate-200 dark:border-white/10 shadow-2xs">Ctrl+P</kbd>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">Ctrl+P</kbd>
             </div>
           </div>
 

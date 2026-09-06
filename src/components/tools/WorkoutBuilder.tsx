@@ -945,8 +945,8 @@ export const WorkoutBuilder: React.FC = () => {
 
       {/* Export Drawer / Modal */}
       {exportModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="ios-card w-full max-w-2xl p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-5 animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileCode className="w-5 h-5 text-ios-red" />

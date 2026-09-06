@@ -398,7 +398,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -421,14 +421,14 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               <Share2 className="w-3.5 h-3.5 shrink-0" />
               <span>生成航迹海报</span>
             </button>
-            <label className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs apple-touch transition whitespace-nowrap shrink-0">
+            <label className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs apple-touch transition whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
               <span>导入 GPX</span>
               <input type="file" accept=".gpx,.xml" onChange={handleGpxFileUpload} className="hidden" />
             </label>
             <button
               onClick={handleReverseRoute}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs apple-touch transition whitespace-nowrap shrink-0"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs apple-touch transition whitespace-nowrap shrink-0"
               title="一键反转起点与终点"
             >
               <ArrowRightLeft className="w-3.5 h-3.5 text-ios-blue shrink-0" />
@@ -443,10 +443,10 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
             </button>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Xingzhe Verified Zhejiang Routes Showcase Bar */}
-      <div className="ios-card p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
+      <IOSCard variant="default" padding="none" className="p-5 sm:p-6 space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
@@ -510,7 +510,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
             );
           })}
         </div>
-      </div>
+      </IOSCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Map Area */}
@@ -538,9 +538,9 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </div>
 
           {/* Leaflet Map Canvas */}
-          <div className="ios-card p-2 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card overflow-hidden">
+          <IOSCard variant="default" padding="none" className="p-2 overflow-hidden">
             <div ref={mapContainerRef} className="w-full h-96 rounded-2xl border border-slate-200/60 dark:border-white/10 overflow-hidden"></div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Route Stats & Elevation Profile */}
@@ -571,7 +571,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </div>
 
           {/* Elevation Profile Chart with Hover Sync */}
-          <div className="ios-card p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-2">
+          <IOSCard variant="default" padding="none" className="p-5 sm:p-6 space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-white flex items-center gap-1.5">
                 <Mountain className="w-3.5 h-3.5 text-ios-blue" />
@@ -590,10 +590,10 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                   plugins: {
                     legend: { display: false },
                     tooltip: {
-                      backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                      titleColor: '#38bdf8',
-                      bodyColor: '#f8fafc',
-                      borderColor: 'rgba(56, 189, 248, 0.3)',
+                      backgroundColor: 'rgba(28, 28, 30, 0.95)',
+                      titleColor: '#0A84FF',
+                      bodyColor: '#ffffff',
+                      borderColor: 'rgba(10, 132, 255, 0.3)',
                       borderWidth: 1,
                       padding: 8
                     }
@@ -605,10 +605,10 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                 }}
               />
             </div>
-          </div>
+          </IOSCard>
 
           {/* Waypoints List with Move/Delete Operations */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
+          <IOSCard variant="default" padding="none" className="p-5 space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-white">航点序列明细:</span>
               <span className="text-slate-500 text-[11px]">可调整顺序或重命名</span>
@@ -640,7 +640,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                       <button
                         onClick={() => moveWaypoint(idx, 'up')}
                         disabled={idx === 0}
-                        className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-20 transition apple-touch"
+                        className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 transition apple-touch"
                         title="上移"
                       >
                         <ArrowUp className="w-3.5 h-3.5" />
@@ -648,15 +648,16 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                       <button
                         onClick={() => moveWaypoint(idx, 'down')}
                         disabled={idx === waypoints.length - 1}
-                        className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-20 transition apple-touch"
+                        className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 transition apple-touch"
                         title="下移"
                       >
                         <ArrowDown className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => deleteWaypoint(w.id)}
-                        className="p-1 rounded text-slate-400 hover:text-ios-red transition apple-touch"
-                        title="删除"
+                        disabled={waypoints.length <= 2}
+                        className="p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/30 text-rose-500 disabled:opacity-30 transition apple-touch"
+                        title="删除航点"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -665,7 +666,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                 </div>
               ))}
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

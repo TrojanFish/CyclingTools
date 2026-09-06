@@ -2212,8 +2212,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
       {/* Smart Workout Generator Modal */}
       {smartWorkoutModalOpen && smartWorkoutRecommendation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="ios-card w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-white/20 shadow-2xl space-y-5 bg-white dark:bg-[#1C1C1E]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-5 bg-white dark:bg-[#1C1C1E]">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
               <div className="flex items-center gap-2.5">

@@ -64,8 +64,8 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-[#1C1C1E] border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white isolate">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-[#1C1C1E] border border-white/10 rounded-3xl shadow-ios-popover overflow-hidden text-white isolate animate-in zoom-in-95 duration-200">
         {/* Ambient Top Glow */}
         <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-40 bg-ios-blue/25 blur-3xl rounded-full" />
 

@@ -137,7 +137,7 @@ const MainAppContent: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between ${isDark ? 'dark bg-[#0b0f19] text-slate-100' : 'light bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen flex flex-col justify-between ${isDark ? 'dark bg-[#000000] text-slate-100' : 'light bg-[#F2F2F7] text-slate-900'}`}>
       <div>
         {/* Top Header (Fixed at top: 0 with built-in height spacer) */}
         <Header
@@ -207,7 +207,7 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handlePrevTool}
                     disabled={currentToolIndex <= 0}
-                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-white/80 dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch shadow-2xs"
                     title={t('prevTool')}
                     aria-label={t('prevTool')}
                   >
@@ -224,7 +224,7 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handleNextTool}
                     disabled={currentToolIndex >= TOOLS_LIST.length - 1}
-                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-white/80 dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch shadow-2xs"
                     title={t('nextTool')}
                     aria-label={t('nextTool')}
                   >

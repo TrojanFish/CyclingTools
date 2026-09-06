@@ -453,8 +453,8 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
       {/* Smart Text Paste Modal */}
       {isPasteModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-2xl z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/40 dark:bg-black/75 backdrop-blur-2xl z-50 flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-ios-popover animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-ios-blue" />

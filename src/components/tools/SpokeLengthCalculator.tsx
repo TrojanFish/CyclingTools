@@ -684,7 +684,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               <span className="text-[10px] text-slate-400 font-mono">Jobst Brandt 2D Chord</span>
             </div>
 
-            <div className="h-52 w-full flex items-center justify-center bg-slate-50 dark:bg-slate-950/80 rounded-xl p-2 border border-slate-100 dark:border-slate-900 relative overflow-hidden">
+            <div className="h-52 w-full flex items-center justify-center bg-black/[0.02] dark:bg-black/40 rounded-2xl p-2 border border-black/[0.05] dark:border-white/[0.08] relative overflow-hidden">
               <svg viewBox="0 0 200 200" className="w-full h-full max-h-48">
                 {/* Rim Circle */}
                 <circle cx="100" cy="100" r="85" fill="none" stroke="#64748b" strokeWidth="2.5" strokeDasharray="3 3" />
