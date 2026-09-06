@@ -59,8 +59,9 @@ export const CyclePowerCalculator: React.FC = () => {
   // Advanced aero & physics parameters
   const [altitudeM, setAltitudeM] = useState<number>(50);
   const [tempC, setTempC] = useState<number>(20);
-  const [cdaPreset, setCdaPreset] = useState<'tt' | 'drops' | 'hoods' | 'tops'>('hoods');
+  const [cdaPreset, setCdaPreset] = useState<'extreme_tt' | 'tt' | 'drops' | 'hoods' | 'tops'>('hoods');
   const [customCda, setCustomCda] = useState<number>(0.32);
+  const [hasHeadShrug, setHasHeadShrug] = useState<boolean>(false);
   const [customCrr, setCustomCrr] = useState<number>(0.0035);
   const [yawAngleDeg, setYawAngleDeg] = useState<number>(0); // 0°~20° yaw angle
 
@@ -80,9 +81,10 @@ export const CyclePowerCalculator: React.FC = () => {
     return parseFloat(rho.toFixed(3));
   }, [altitudeM, tempC]);
 
-  const handleCdaPresetChange = (preset: 'tt' | 'drops' | 'hoods' | 'tops') => {
+  const handleCdaPresetChange = (preset: 'extreme_tt' | 'tt' | 'drops' | 'hoods' | 'tops') => {
     setCdaPreset(preset);
-    if (preset === 'tt') setCustomCda(0.22);
+    if (preset === 'extreme_tt') setCustomCda(0.20);
+    else if (preset === 'tt') setCustomCda(0.22);
     else if (preset === 'drops') setCustomCda(0.28);
     else if (preset === 'hoods') setCustomCda(0.32);
     else if (preset === 'tops') setCustomCda(0.38);
@@ -98,9 +100,12 @@ export const CyclePowerCalculator: React.FC = () => {
     const fGravity = totalMass * g * Math.sin(gradeRad);
     const fRolling = totalMass * g * Math.cos(gradeRad) * customCrr;
 
+    // Base CdA incorporating Head Shrug aerodynamic savings (-0.015 m² CdA)
+    const baseCda = Math.max(0.15, customCda - (hasHeadShrug ? 0.015 : 0));
+
     // Crosswind Yaw angle CdA empirical correction
     const yawRad = (yawAngleDeg * Math.PI) / 180;
-    const effectiveCda = customCda * (1 + Math.pow(Math.sin(yawRad), 2) * 0.28);
+    const effectiveCda = baseCda * (1 + Math.pow(Math.sin(yawRad), 2) * 0.28);
 
     const windMs = (windSpeedKmh / 3.6) * (windDirection === 'headwind' ? 1 : -1);
 
@@ -191,7 +196,7 @@ export const CyclePowerCalculator: React.FC = () => {
       const fGravityForward = -fGravity; // forward component of gravity
       if (fGravityForward > fRolling) {
         const netForwardForce = fGravityForward - fRolling;
-        const vRelTerm = Math.sqrt((2 * netForwardForce) / (airDensityRho * customCda));
+        const vRelTerm = Math.sqrt((2 * netForwardForce) / (airDensityRho * effectiveCda));
         const vTerm = Math.max(0, vRelTerm - windMs);
         terminalCoastingKmh = parseFloat((vTerm * 3.6).toFixed(1));
       }
@@ -218,10 +223,13 @@ export const CyclePowerCalculator: React.FC = () => {
       terminalCoastingKmh,
       isDownhillAlert
     };
-  }, [calcMode, powerInput, targetSpeedKmh, targetWkg, riderWeight, bikeWeight, grade, windSpeedKmh, windDirection, yawAngleDeg, airDensityRho, customCda, customCrr, climbDistanceKm, climbElevationGainM, profile.ftpWatts]);
+  }, [calcMode, powerInput, targetSpeedKmh, targetWkg, riderWeight, bikeWeight, grade, windSpeedKmh, windDirection, yawAngleDeg, hasHeadShrug, airDensityRho, customCda, customCrr, climbDistanceKm, climbElevationGainM, profile.ftpWatts]);
 
   // Chart datasets
   const speedChartData = useMemo(() => {
+    const baseCda = Math.max(0.15, customCda - (hasHeadShrug ? 0.015 : 0));
+    const yawRad = (yawAngleDeg * Math.PI) / 180;
+    const effectiveCda = baseCda * (1 + Math.pow(Math.sin(yawRad), 2) * 0.28);
     const speeds = [20, 25, 30, 35, 40, 45, 50];
     const powers = speeds.map(spd => {
       const v = spd / 3.6;
@@ -229,7 +237,7 @@ export const CyclePowerCalculator: React.FC = () => {
       const totalMass = riderWeight + bikeWeight;
       const fG = totalMass * g * Math.sin(Math.atan(grade / 100));
       const fR = totalMass * g * Math.cos(Math.atan(grade / 100)) * customCrr;
-      const fA = 0.5 * airDensityRho * customCda * Math.pow(v, 2);
+      const fA = 0.5 * airDensityRho * effectiveCda * Math.pow(v, 2);
       return Math.round(Math.max(0, (fG + fR + fA) * v));
     });
 
@@ -248,9 +256,12 @@ export const CyclePowerCalculator: React.FC = () => {
         }
       ]
     };
-  }, [riderWeight, bikeWeight, grade, airDensityRho, customCda, customCrr, isImperial]);
+  }, [riderWeight, bikeWeight, grade, airDensityRho, customCda, hasHeadShrug, yawAngleDeg, customCrr, isImperial]);
 
   const weightChartData = useMemo(() => {
+    const baseCda = Math.max(0.15, customCda - (hasHeadShrug ? 0.015 : 0));
+    const yawRad = (yawAngleDeg * Math.PI) / 180;
+    const effectiveCda = baseCda * (1 + Math.pow(Math.sin(yawRad), 2) * 0.28);
     const weights = [55, 60, 65, 70, 75, 80, 85];
     const powers = weights.map(w => {
       const v = 35 / 3.6; // 35 km/h standard
@@ -258,7 +269,7 @@ export const CyclePowerCalculator: React.FC = () => {
       const totalMass = w + bikeWeight;
       const fG = totalMass * g * Math.sin(Math.atan(grade / 100));
       const fR = totalMass * g * Math.cos(Math.atan(grade / 100)) * customCrr;
-      const fA = 0.5 * airDensityRho * customCda * Math.pow(v, 2);
+      const fA = 0.5 * airDensityRho * effectiveCda * Math.pow(v, 2);
       return Math.round(Math.max(0, (fG + fR + fA) * v));
     });
 
@@ -277,7 +288,7 @@ export const CyclePowerCalculator: React.FC = () => {
         }
       ]
     };
-  }, [bikeWeight, grade, airDensityRho, customCda, customCrr, isImperial]);
+  }, [bikeWeight, grade, airDensityRho, customCda, hasHeadShrug, yawAngleDeg, customCrr, isImperial]);
 
   const copyFullReport = () => {
     const text = `SoloRiderTools 科学骑行功率与推重比报告:\n- 输出功率: ${result.power} W\n- 推重比: ${result.wkg} W/kg (${result.levelTitle})\n- 巡航车速: ${result.speedKmh} km/h\n- 坡度: ${grade}% | 空气密度: ${airDensityRho} kg/m³\n- 能耗代谢: ${result.kcalPerHour} kcal/h\n- 爬坡 VAM: ${result.vam} m/h (预计 ${climbElevationGainM}m 耗时: ${result.climbTimeMinutes} 分钟)`;
@@ -461,8 +472,9 @@ export const CyclePowerCalculator: React.FC = () => {
                 {language === 'zh-TW' ? '騎行姿態與風阻迎風面積 (CdA)' : '骑行姿态与风阻迎风面积 (CdA)'}
                 <Tooltip content="CdA 代表风阻系数乘以正面投影迎风面积，值越小越气动省力。" />
               </label>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-5 gap-1.5">
                 {[
+                  { id: 'extreme_tt', label: language === 'zh-TW' ? '祈禱 TT' : '极限祈祷', cda: 0.20 },
                   { id: 'tt', label: language === 'zh-TW' ? 'TT 破風' : 'TT 破风', cda: 0.22 },
                   { id: 'drops', label: language === 'zh-TW' ? '下把位' : '下把位', cda: 0.28 },
                   { id: 'hoods', label: language === 'zh-TW' ? '手變位' : '手变位', cda: 0.32 },
@@ -479,11 +491,41 @@ export const CyclePowerCalculator: React.FC = () => {
                           : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                       }`}
                     >
-                      <div className={`text-[11px] ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
+                      <div className={`text-[10px] ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
                       <div className={`text-[9px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>{p.cda} m²</div>
                     </button>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Head Shrug / Turtle Head Aero Technique */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
+                      {language === 'zh-TW' ? '頭部下潛姿態 (Head Shrug / 烏龜縮頭)' : '头部下潜姿态 (Head Shrug / 乌龟缩头)'}
+                    </span>
+                    <Tooltip content="世界巡回赛 TT 计时赛核心控风技巧：头部下沉嵌于双肩之间，压平后背高速气流湍流。风洞实测平均降低 CdA 约 0.015 m²（40km/h 下省约 12~18W）。" />
+                  </div>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                    下沉下颌嵌入双肩，抹平后颈气流剥离
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {hasHeadShrug && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      -0.015 m² (~15W)
+                    </span>
+                  )}
+                  <input
+                    type="checkbox"
+                    checked={hasHeadShrug}
+                    onChange={(e) => setHasHeadShrug(e.target.checked)}
+                    className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
 

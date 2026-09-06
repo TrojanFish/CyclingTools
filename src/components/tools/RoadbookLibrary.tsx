@@ -34,10 +34,11 @@ import L from 'leaflet';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { useStrava } from '../../context/StravaContext';
 import { StravaRouteRecord } from '../../utils/indexedDb';
-import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { ROADBOOK_DATABASE, RoadbookItem, RoadbookPoint } from '../../data/roadbookDatabase';
+import { PoweredByStravaBadge } from '../common/PoweredByStravaBadge';
 
 interface RoadbookLibraryProps {
   onNavigateTool?: (toolId: string) => void;
@@ -1082,12 +1083,15 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsStravaModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-200/70 dark:bg-[#2C2C2E] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <PoweredByStravaBadge />
+                <button
+                  onClick={() => setIsStravaModalOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-200/70 dark:bg-[#2C2C2E] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* Modal Content */}

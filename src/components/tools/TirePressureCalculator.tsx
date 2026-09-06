@@ -25,6 +25,9 @@ export const TirePressureCalculator: React.FC = () => {
   const [isHookless, setIsHookless] = useState<boolean>(false);
   const [hasTireInsert, setHasTireInsert] = useState<boolean>(false);
   const [weightDistFront, setWeightDistFront] = useState<number>(44);
+  const [isBikepacking, setIsBikepacking] = useState<boolean>(false);
+  const [luggageKg, setLuggageKg] = useState<number>(12);
+  const [luggageBias, setLuggageBias] = useState<'front' | 'frame' | 'rear'>('rear');
   const [surfaceKey, setSurfaceKey] = useState<string>('smooth_asphalt');
   const [pressureUnit, setPressureUnit] = useState<'psi' | 'bar' | 'kpa'>(isImperial ? 'psi' : 'bar');
 
@@ -39,8 +42,29 @@ export const TirePressureCalculator: React.FC = () => {
     setPressureUnit(unitSystem === 'imperial' ? 'psi' : 'bar');
   }, [unitSystem]);
 
-  const totalSystemWeight = riderWeight + bikeGearWeight;
+  const effectiveLuggage = isBikepacking ? Math.max(0, luggageKg) : 0;
+  const totalSystemWeight = riderWeight + bikeGearWeight + effectiveLuggage;
   const weightDistRear = 100 - weightDistFront;
+
+  // Dynamic front/rear distribution adjustment when bikepacking luggage is loaded
+  const { effectiveFrontPct, effectiveRearPct } = useMemo(() => {
+    if (!isBikepacking || effectiveLuggage <= 0) {
+      return { effectiveFrontPct: weightDistFront, effectiveRearPct: 100 - weightDistFront };
+    }
+    const baseFrontKg = (riderWeight + bikeGearWeight) * (weightDistFront / 100);
+    const baseRearKg = (riderWeight + bikeGearWeight) * ((100 - weightDistFront) / 100);
+
+    // Front biased (handlebar + fork bags): 60% front, 40% rear
+    // Frame bag balanced: 45% front, 55% rear
+    // Rear biased (saddle pack / rear rack panniers): 15% front, 85% rear
+    const lugFrontRatio = luggageBias === 'front' ? 0.60 : luggageBias === 'frame' ? 0.45 : 0.15;
+    const lugRearRatio = 1 - lugFrontRatio;
+
+    const totalFrontKg = baseFrontKg + effectiveLuggage * lugFrontRatio;
+    const totalRearKg = baseRearKg + effectiveLuggage * lugRearRatio;
+    const frontPct = Math.round((totalFrontKg / totalSystemWeight) * 100);
+    return { effectiveFrontPct: frontPct, effectiveRearPct: 100 - frontPct };
+  }, [isBikepacking, effectiveLuggage, luggageBias, riderWeight, bikeGearWeight, weightDistFront, totalSystemWeight]);
 
   // Compute recommendations
   const result = useMemo(() => {
@@ -64,8 +88,8 @@ export const TirePressureCalculator: React.FC = () => {
       adjustedBase -= 2.5;
     }
 
-    const frontRatio = (weightDistFront / 50) * 0.94;
-    const rearRatio = (weightDistRear / 50) * 1.06;
+    const frontRatio = (effectiveFrontPct / 50) * 0.94;
+    const rearRatio = (effectiveRearPct / 50) * 1.06;
 
     let frontRec = Math.round(adjustedBase * frontRatio);
     let rearRec = Math.round(adjustedBase * rearRatio);
@@ -103,12 +127,21 @@ export const TirePressureCalculator: React.FC = () => {
         surfaceKey === 'wet_slick' ? '雨天/湿滑路面：建议胎压调低 5~8 PSI 提升橡胶抓地力与刹车循迹性。' : null,
         tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬(Pinch Flat)爆胎。',
         hasTireInsert ? '已启用真空胎防爆胎垫 (Tire Insert)：胎垫提供侧向渐进支撑并防止轮圈磕底，推荐胎压已自适应调低 2.5 PSI，兼顾极致抓地循迹与轮圈防护。' : null,
+        isBikepacking && effectiveLuggage > 0
+          ? `🎒 长途重装 Bikepacking 模式 (+${effectiveLuggage}kg 行囊)：前后轮载荷动态平衡重构为 [前 ${effectiveFrontPct}% / 后 ${effectiveRearPct}%]。${
+              luggageBias === 'rear'
+                ? '后轮承重显著升高，后胎压已自适应调升以防坑洼过坎砸框 (Rim Strike)'
+                : luggageBias === 'front'
+                ? '前轮载荷升高，转向手感沉稳，已提升前胎气压维持支撑刚性'
+                : '中央车架包重心居中均衡，前后胎压同步增强'
+            }。重车状态下制动距离显著延长，下长坡务必提前阶梯式制动控速，注意碟片热衰竭。`
+          : null,
         actualWidth > nominalWidth ? `实测胎宽(${actualWidth}mm)宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
         isHooklessPressureExceeded ? '无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
         isHooklessPressureWarning ? '当前气压逼近无钩轮圈 72.5 PSI 上限临界点，建议充气时预留余量以防日晒升温爆胎。' : null
       ].filter(Boolean) as string[]
     };
-  }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, hasTireInsert, weightDistFront, weightDistRear, surfaceKey, pressureUnit]);
+  }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, hasTireInsert, effectiveFrontPct, effectiveRearPct, isBikepacking, effectiveLuggage, luggageBias, surfaceKey, pressureUnit]);
 
   const copyPressureToClipboard = () => {
     const text = `前轮: ${result.front.rec} ${pressureUnit.toUpperCase()} | 后轮: ${result.rear.rec} ${pressureUnit.toUpperCase()} (建议区间: 前 ${result.front.min}-${result.front.max} / 后 ${result.rear.min}-${result.rear.max})`;
@@ -251,6 +284,74 @@ export const TirePressureCalculator: React.FC = () => {
                 onChange={(e) => setWeightDistFront(Number(e.target.value))}
                 className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
               />
+            </div>
+
+            {/* Bikepacking / Long-Distance Luggage Tuning */}
+            <div className="p-3.5 rounded-2xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🎒</span>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                      长途重装 / Bikepacking 驮包模式
+                    </span>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                      附加行囊载荷、重心重构与防砸圈胎压补偿
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={isBikepacking}
+                  onChange={(e) => setIsBikepacking(e.target.checked)}
+                  className="w-4 h-4 rounded accent-amber-500 cursor-pointer"
+                />
+              </div>
+
+              {isBikepacking && (
+                <div className="pt-2 border-t border-amber-500/15 space-y-3 animate-in fade-in duration-150">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+                      行李行囊净重 (Luggage Weight)
+                    </span>
+                    <span className="text-amber-600 dark:text-amber-400 font-mono font-bold text-xs">
+                      +{luggageKg} kg ({Math.round(luggageKg * 2.20462)} lbs)
+                    </span>
+                  </div>
+                  <NumberStepper
+                    value={luggageKg}
+                    onChange={(val) => setLuggageKg(val)}
+                    step={1}
+                    min={1}
+                    max={40}
+                    unit="kg"
+                    decimals={0}
+                  />
+
+                  <div>
+                    <span className="text-xs text-slate-700 dark:text-slate-300 font-medium block mb-1.5">
+                      主要装载重心分布 (Center of Gravity)
+                    </span>
+                    <IOSSegmentedControl
+                      options={[
+                        { id: 'front', label: '车头/前叉包' },
+                        { id: 'frame', label: '车架包均衡' },
+                        { id: 'rear', label: '后鞍包/后驮包' }
+                      ]}
+                      value={luggageBias}
+                      onChange={(val) => setLuggageBias(val as any)}
+                      size="sm"
+                    />
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white/70 dark:bg-black/20 border border-amber-500/20 text-[11px] flex items-center justify-between text-slate-600 dark:text-slate-300">
+                    <span>重构后动态前后载荷比：</span>
+                    <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                      前轮 {effectiveFrontPct}% / 后轮 {effectiveRearPct}%
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Tire Setup */}

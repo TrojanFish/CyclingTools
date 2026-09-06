@@ -58,6 +58,7 @@ interface StravaContextType {
   syncActivities: (forceFullRefresh?: boolean) => Promise<{ count: number }>;
   getActivityStreams: (activityId: number) => Promise<StravaStreamsRecord | null>;
   getRoutes: () => Promise<StravaRouteRecord[]>;
+  clearCache: () => Promise<void>;
   updateSettings: (settings: Partial<StravaSyncSettings>) => void;
 }
 
@@ -135,6 +136,19 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       console.warn('Failed to clear Strava IndexedDB:', err);
     }
     showToast('已断开与 Strava 的连接并清理本地缓存', 'info');
+  }, [showToast]);
+
+  // Clear offline cached activities and streams without disconnecting
+  const clearCache = useCallback(async () => {
+    try {
+      await clearStravaDb();
+      setActivities([]);
+      setLastSyncTime(null);
+      showToast('已清空 Strava 本地离线活动及流数据缓存', 'success');
+    } catch (err) {
+      console.warn('Failed to clear Strava IndexedDB cache:', err);
+      showToast('清理本地离线缓存失败', 'error');
+    }
   }, [showToast]);
 
   // Sync Activities
@@ -413,6 +427,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       syncActivities,
       getActivityStreams,
       getRoutes,
+      clearCache,
       updateSettings
     }),
     [
@@ -431,6 +446,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       syncActivities,
       getActivityStreams,
       getRoutes,
+      clearCache,
       updateSettings
     ]
   );

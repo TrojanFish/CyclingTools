@@ -25,8 +25,11 @@ import {
   Battery,
   Sliders,
   ArrowRight,
-  Dumbbell
+  Dumbbell,
+  X
 } from 'lucide-react';
+import { PoweredByStravaBadge } from '../common/PoweredByStravaBadge';
+import { WORKOUT_TEMPLATES, WorkoutTemplate, WorkoutSegment } from './WorkoutBuilder';
 import { Line, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -120,6 +123,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   const [analysis, setAnalysis] = useState<ActivityAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'trends' | 'zones' | 'mmp' | 'coaching' | 'pmc'>('trends');
+  const [smartWorkoutModalOpen, setSmartWorkoutModalOpen] = useState<boolean>(false);
+  const [selectedSmartTemplateId, setSelectedSmartTemplateId] = useState<string>('');
   const [pmcMesocycle, setPmcMesocycle] = useState<PmcMesocycleType>('build');
   const [targetTsbForPeak, setTargetTsbForPeak] = useState<number>(15);
   const [baselineFitness, setBaselineFitness] = useState<BaselineFitnessLevel>('club');
@@ -652,6 +657,100 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     };
   }, [analysis, weightKg, language]);
 
+  // Intelligent Targeted Workout Recommendation derived from ride telemetry & physiological deficits
+  const smartWorkoutRecommendation = useMemo(() => {
+    if (!analysis) return null;
+
+    // 1. Aerobic Decoupling deficiency: Pw:HR > 5% indicates severe cardiac drift & insufficient aerobic base
+    if (analysis.aerobicDecoupling !== undefined && analysis.aerobicDecoupling > 5.0) {
+      const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'zone2_endurance') || WORKOUT_TEMPLATES[5];
+      return {
+        template: tmpl,
+        deficiencyTitle: language === 'zh-TW' ? '有氧耐力脫節 (Pw:HR 漂移過大)' : '有氧耐力脱节 (Pw:HR 漂移过大)',
+        deficiencyDesc: `本次骑行后程有氧解耦率高达 ${analysis.aerobicDecoupling}%。在同等踩踏功率下心率出现显著代偿性爬升，表明基础有氧能力、肌纤维抗疲劳度与线粒体容量亟待加强。`,
+        actionAdvice: '推荐通过 90 分钟 Zone 2 恒定巡航课表，最大化脂肪氧化率 (FatMax)，建立扎实有氧金字塔基石。'
+      };
+    }
+
+    // Check MMP continuous power scores
+    if (analysis.mmp && analysis.mmp.length > 0) {
+      const m5s = analysis.mmp.find(m => m.durationSec === 5)?.wkg || 0;
+      const m1m = analysis.mmp.find(m => m.durationSec === 60)?.wkg || 0;
+      const m5m = analysis.mmp.find(m => m.durationSec === 300)?.wkg || 0;
+      const m20m = analysis.mmp.find(m => m.durationSec === 1200)?.wkg || ((analysis.normalizedPower || 200) / (weightKg || 68));
+
+      const score5s = m5s / 15.2;
+      const score1m = m1m / 7.3;
+      const score5m = m5m / 4.3;
+      const score20m = m20m / 3.7;
+
+      const minScore = Math.min(score5s, score1m, score5m, score20m);
+
+      // 2. VO2max / Short climb surge deficiency
+      if (minScore === score5m || minScore === score1m) {
+        const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'ronnestad_30_15') || WORKOUT_TEMPLATES[0];
+        return {
+          template: tmpl,
+          deficiencyTitle: language === 'zh-TW' ? '最大攝氧量 (VO2max) 儲備不足' : '最大摄氧量 (VO2max) 储备不足',
+          deficiencyDesc: `本次骑行 1m~5m 相对推重比偏弱 (5m 推重比: ${m5m.toFixed(1)} W/kg)。面对急陡坡爆击或高强度拉扯突围时易进入急性缺氧力竭。`,
+          actionAdvice: '推荐执行 Rønnestad 30/15s 微间歇或 4x4 min 高摄氧课表，快速提升左心室泵血输出与神经抗乳酸效率。'
+        };
+      }
+
+      // 3. FTP / Sustained threshold cruise deficiency
+      if (minScore === score20m) {
+        const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'threshold_2x20') || WORKOUT_TEMPLATES[2];
+        return {
+          template: tmpl,
+          deficiencyTitle: language === 'zh-TW' ? '乳酸閾值 (FTP) 續航持久力不足' : '乳酸阈值 (FTP) 续航持久力不足',
+          deficiencyDesc: `本次骑行 20m 稳态功率或长坡表现相对滞后 (20m 推重比: ${m20m.toFixed(1)} W/kg)。乳酸拐点下的维持极限时间 (TTE) 存在短板。`,
+          actionAdvice: '推荐执行 2x20 min 经典阈值巡航或 Over-Under 乳酸清除课表，铁壁锚定阈值输出，拓展名山长爬坡统治力。'
+        };
+      }
+
+      // 4. Sprint peak power deficiency
+      if (minScore === score5s) {
+        const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'tabata_sprint') || WORKOUT_TEMPLATES[4];
+        return {
+          template: tmpl,
+          deficiencyTitle: language === 'zh-TW' ? '神經肌肉瞬時衝刺爆發力不足' : '神经肌肉瞬时冲刺爆发力不足',
+          deficiencyDesc: `本次骑行 5s 神经肌肉峰值功率相对偏低 (5s 冲刺: ${m5s.toFixed(1)} W/kg)。无氧电量快速放电与高速抢位超车能力待唤醒。`,
+          actionAdvice: '推荐执行 Tabata 20/10s 极致冲刺课表，激活快肌纤维运动神经元放电与 ATP-CP 供能效率。'
+        };
+      }
+    }
+
+    // 5. Default/Balanced: Over-Under lactate clearing
+    const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'over_under_lactate') || WORKOUT_TEMPLATES[3];
+    return {
+      template: tmpl,
+      deficiencyTitle: language === 'zh-TW' ? '綜合能力均衡 · 進階抗乳酸突破' : '综合能力均衡 · 进阶抗乳酸突破',
+      deficiencyDesc: '各项生理区间推重比表现均衡，无明显单项短板。适合进入乳酸穿梭与动态抗乳酸进阶期，直接推升巡航天花板。',
+      actionAdvice: '推荐执行 Over-Under 乳酸清除间歇，在乳酸生成与有氧清除的交替波动中强化学科级乳酸再循环利用能力。'
+    };
+  }, [analysis, weightKg, language]);
+
+  const handleDispatchSmartWorkout = (targetTemplate?: WorkoutTemplate) => {
+    const tmpl = targetTemplate || (selectedSmartTemplateId ? WORKOUT_TEMPLATES.find(t => t.id === selectedSmartTemplateId) : smartWorkoutRecommendation?.template) || WORKOUT_TEMPLATES[0];
+    const payload = {
+      templateId: tmpl.id,
+      title: `${tmpl.name} (针对本次骑行诊断)`,
+      reason: smartWorkoutRecommendation?.deficiencyTitle || '骑行诊断补强',
+      segments: JSON.parse(JSON.stringify(tmpl.segments))
+    };
+    try {
+      localStorage.setItem('solorider_pending_workout', JSON.stringify(payload));
+      showToast('🎯 已生成专属靶向补强课表，正在跳转工坊...', 'success');
+      setSmartWorkoutModalOpen(false);
+      if (onNavigateTool) {
+        onNavigateTool('workout-builder');
+      }
+    } catch (e) {
+      console.error('Failed to dispatch smart workout:', e);
+      showToast('生成课表失败，请稍后再试', 'error');
+    }
+  };
+
   // MMP Curve Chart Data with Coggan Benchmarks
   const mmpChartData = useMemo(() => {
     if (!analysis) return { labels: [], datasets: [] };
@@ -895,6 +994,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                   从 Strava 快速选择骑行深度复盘:
                 </span>
+                <PoweredByStravaBadge />
               </div>
 
               <div className="flex items-center gap-2 flex-1 sm:max-w-md">
@@ -1333,15 +1433,29 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         </div>
 
                         {onNavigateTool && (
-                          <button
-                            type="button"
-                            onClick={() => onNavigateTool('workout-builder')}
-                            className="apple-touch shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-2xl bg-ios-purple/10 hover:bg-ios-purple/20 border border-ios-purple/25 text-ios-purple text-xs font-bold transition shadow-2xs"
-                          >
-                            <Dumbbell className="w-4 h-4" />
-                            <span>前往科学训练课表工坊</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (smartWorkoutRecommendation) {
+                                  setSelectedSmartTemplateId(smartWorkoutRecommendation.template.id);
+                                }
+                                setSmartWorkoutModalOpen(true);
+                              }}
+                              className="apple-touch inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold transition shadow-ios-sm active:scale-95"
+                            >
+                              <Sparkles className="w-3.5 h-3.5" />
+                              <span>智能生成靶向补强课表</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => onNavigateTool('workout-builder')}
+                              className="apple-touch p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-semibold transition"
+                              title="直接打开训练工坊"
+                            >
+                              <Dumbbell className="w-4 h-4" />
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -1989,6 +2103,54 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 ))}
               </div>
 
+              {/* Smart Targeted Workout Recommendation Card */}
+              {smartWorkoutRecommendation && (
+                <div className="p-5 rounded-3xl bg-gradient-to-br from-ios-purple/10 via-ios-blue/10 to-transparent border border-ios-purple/25 space-y-3.5 shadow-ios-sm relative overflow-hidden">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-purple/15 text-ios-purple text-xs font-bold border border-ios-purple/25">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>运动科学智能靶向补强推荐</span>
+                      </div>
+                      <h4 className="text-sm font-extrabold text-slate-900 dark:text-white">
+                        短板诊断：{smartWorkoutRecommendation.deficiencyTitle}
+                      </h4>
+                    </div>
+
+                    {onNavigateTool && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedSmartTemplateId(smartWorkoutRecommendation.template.id);
+                          setSmartWorkoutModalOpen(true);
+                        }}
+                        className="apple-touch self-start sm:self-auto shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white font-bold text-xs shadow-ios-sm transition active:scale-95"
+                      >
+                        <Dumbbell className="w-4 h-4" />
+                        <span>配置补强课表</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {smartWorkoutRecommendation.deficiencyDesc}
+                  </p>
+
+                  <div className="p-3 rounded-2xl bg-white/80 dark:bg-white/5 border border-black/[0.04] dark:border-white/[0.08] flex items-center justify-between text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block">推荐专属科学课表</span>
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        {smartWorkoutRecommendation.template.name}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-ios-purple font-medium">
+                      {smartWorkoutRecommendation.template.targetAdaptation}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* Recovery & Nutrition Advice */}
               <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-xs space-y-2">
                 <div className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
@@ -2001,6 +2163,126 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Smart Workout Generator Modal */}
+      {smartWorkoutModalOpen && smartWorkoutRecommendation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="ios-card w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-white/20 shadow-2xl space-y-5 bg-white dark:bg-[#1C1C1E]">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-ios-purple to-ios-blue text-white flex items-center justify-center shadow-ios-sm">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                    智能靶向补强课表生成
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    基于本次骑行真实心率、功率与疲劳数据生成
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSmartWorkoutModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Physiological Deficit Diagnosis Alert */}
+            <div className="p-4 rounded-2xl bg-ios-purple/10 border border-ios-purple/25 space-y-1.5">
+              <div className="flex items-center gap-2 text-xs font-bold text-ios-purple">
+                <AlertTriangle className="w-4 h-4" />
+                <span>生理学短板评估：{smartWorkoutRecommendation.deficiencyTitle}</span>
+              </div>
+              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                {smartWorkoutRecommendation.deficiencyDesc}
+              </p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
+                💡 训练建议：{smartWorkoutRecommendation.actionAdvice}
+              </p>
+            </div>
+
+            {/* Scientific Workout Template Selection */}
+            <div className="space-y-3">
+              <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                <span>选择训练课表方案：</span>
+                <span className="text-[10px] text-ios-purple font-normal">已预选最匹配短板方案</span>
+              </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {WORKOUT_TEMPLATES.map((tmpl) => {
+                  const isRecommended = tmpl.id === smartWorkoutRecommendation.template.id;
+                  const isSelected = (selectedSmartTemplateId || smartWorkoutRecommendation.template.id) === tmpl.id;
+                  return (
+                    <button
+                      key={tmpl.id}
+                      type="button"
+                      onClick={() => setSelectedSmartTemplateId(tmpl.id)}
+                      className={`p-3 rounded-2xl border text-left transition relative apple-touch ${
+                        isSelected
+                          ? 'bg-ios-purple/10 dark:bg-ios-purple/20 border-ios-purple text-slate-900 dark:text-white ring-2 ring-ios-purple/30'
+                          : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300'
+                      }`}
+                    >
+                      {isRecommended && (
+                        <span className="absolute top-2 right-2 px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-ios-purple text-white shadow-2xs">
+                          推荐
+                        </span>
+                      )}
+                      <div className="font-bold text-xs pr-8">{tmpl.name}</div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{tmpl.subtitle}</div>
+                      <div className="text-[10px] text-ios-purple font-medium mt-1">{tmpl.categoryLabel}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Selected Template Details Preview */}
+            {(() => {
+              const activeTmpl = WORKOUT_TEMPLATES.find(t => t.id === (selectedSmartTemplateId || smartWorkoutRecommendation.template.id)) || smartWorkoutRecommendation.template;
+              return (
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-slate-900 dark:text-white">{activeTmpl.name}</span>
+                    <span className="font-mono text-slate-500">共 {activeTmpl.segments.length} 个结构化分段</span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]">
+                    {activeTmpl.description}
+                  </p>
+                  <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    🎯 靶向适应：{activeTmpl.targetAdaptation}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setSmartWorkoutModalOpen(false)}
+                className="apple-touch px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDispatchSmartWorkout()}
+                className="apple-touch px-5 py-2.5 rounded-2xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center gap-2 transition active:scale-95"
+              >
+                <Dumbbell className="w-4 h-4" />
+                <span>载入课表工坊并开始训练</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

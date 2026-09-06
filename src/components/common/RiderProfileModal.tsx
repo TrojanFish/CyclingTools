@@ -31,8 +31,11 @@ import {
   Key,
   Eye,
   EyeOff,
-  Check
+  Check,
+  Database,
+  LogOut
 } from 'lucide-react';
+import { PoweredByStravaBadge } from './PoweredByStravaBadge';
 import { NumberStepper } from './NumberStepper';
 import { IOSSegmentedControl } from './IOSSegmentedControl';
 import {
@@ -94,6 +97,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
     saveApiKeys: saveStravaApiKeys,
     initiateAuth: initiateStravaAuth,
     disconnect: disconnectStrava,
+    clearCache: clearStravaCache,
     syncActivities: syncStravaActivities,
     updateSettings: updateStravaSettings
   } = useStrava();
@@ -647,13 +651,16 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       <Cloud className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                          Strava 开放平台直连
-                        </h3>
-                        <span className="text-[10px] px-2 py-0.2 rounded-full bg-[#FC4C02]/15 text-[#FC4C02] font-semibold border border-[#FC4C02]/20">
-                          个人 API 模式
-                        </span>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                            Strava 开放平台直连
+                          </h3>
+                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-[#FC4C02]/15 text-[#FC4C02] font-semibold border border-[#FC4C02]/20">
+                            个人 API 模式
+                          </span>
+                        </div>
+                        <PoweredByStravaBadge />
                       </div>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                         零云端服务器中转，本地直连您的 Strava 账号。自动同步骑行历史、真实心率功率与战车行驶里程。
@@ -776,15 +783,18 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => syncStravaActivities(false)}
-                      disabled={isStravaSyncing}
-                      className="apple-touch px-3 py-1.5 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/20 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
-                    >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isStravaSyncing ? 'animate-spin' : ''}`} />
-                      <span>{isStravaSyncing ? '同步中...' : '立即同步'}</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <PoweredByStravaBadge />
+                      <button
+                        type="button"
+                        onClick={() => syncStravaActivities(false)}
+                        disabled={isStravaSyncing}
+                        className="apple-touch px-3 py-1.5 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/20 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${isStravaSyncing ? 'animate-spin' : ''}`} />
+                        <span>{isStravaSyncing ? '同步中...' : '立即同步'}</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Realtime Progress Bar */}
@@ -940,15 +950,48 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   </div>
                 )}
 
-                {/* Disconnect Danger Button */}
-                <div className="pt-1">
-                  <button
-                    type="button"
-                    onClick={disconnectStrava}
-                    className="apple-touch w-full py-2 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 text-xs font-semibold transition"
-                  >
-                    断开 Strava 连接并清空本地缓存
-                  </button>
+                {/* Offline Cache & Storage Management */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Database className="w-4 h-4 text-ios-blue" />
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">
+                        {language === 'zh-TW' ? '本地離線快取管理' : '本地离线缓存管理'}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono text-slate-500">
+                      {stravaActivities.length} 条活动 · ~{Math.round(stravaActivities.length * 12.5)} KB
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    所有 Strava 骑行与传感器流数据均保存在本地浏览器 IndexedDB 离线数据库中，绝不上载第三方服务器。您可以随时释放离线存储空间。
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={clearStravaCache}
+                      className="apple-touch flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-200/70 hover:bg-slate-300/70 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium transition"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>{language === 'zh-TW' ? '清空本地離線資料' : '清空本地离线数据'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={disconnectStrava}
+                      className="apple-touch flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-medium transition"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>{language === 'zh-TW' ? '解除綁定並斷開' : '解除绑定并断开'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Brand Compliance Footer */}
+                <div className="pt-2 flex flex-col items-center justify-center gap-1 text-center">
+                  <PoweredByStravaBadge />
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                    本应用遵循 Strava API 开发者准则与品牌官方规范。
+                  </p>
                 </div>
               </div>
             )}
