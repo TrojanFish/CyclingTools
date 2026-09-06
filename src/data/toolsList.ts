@@ -391,5 +391,29 @@ export const TOOLS_LIST: ToolMetadata[] = [
     tags: ['编轮', '辐条长度', 'ERD', '花鼓法兰', '偏心圈', '张力平衡', '交叉编法', 'Wheelbuilding'],
     tagsEn: ['Spoke Length', 'Wheelbuilding', 'ERD', 'Flange PCD', 'Asymmetric Rim', 'Tension Ratio'],
     tagsTw: ['編輪', '輻條長度', 'ERD', '花鼓法蘭', '偏心圈', '張力平衡', '交叉編法', 'Wheelbuilding']
+  },
+  {
+    id: 'mtb-suspension',
+    title: '山地车避震与 SAG 智能调校顾问',
+    titleEn: 'MTB Dual Suspension & SAG Tuning Wizard',
+    titleTw: '山地車避震與 SAG 智能調校顧問',
+    subtitle: '前叉气压/后胆弹簧磅数 / 下沉量标尺 / 阻尼点位 / 杠杆比',
+    subtitleEn: 'Fork PSI & Coil Spring Rate / SAG Ruler / Damping Clicks / Leverage Ratio',
+    subtitleTw: '前叉氣壓/後膽彈簧磅數 / 下沉量標尺 / 阻尼點位 / 槓桿比',
+    category: 'dynamics',
+    categoryLabel: '动力学与传动',
+    categoryLabelEn: 'Dynamics & Gearing',
+    categoryLabelTw: '動力學與傳動',
+    icon: 'Sliders',
+    badge: '山地避震',
+    badgeEn: 'Suspension',
+    badgeTw: '山地避震',
+    description: '专业车队级山地车双避震科学调校。支持 XC、Trail、Enduro 与 DH 速降全车种，精确解算前叉正负气室建议气压、后避震主气室气压与钢簧弹簧磅数(lbs/in)，推导车架连杆杠杆比(Leverage Ratio)，计算低/高速回弹与压缩阻尼点击点位(Clicks)，集成动态下沉量(SAG)可视化刻度标尺与技师疑难排解方案。',
+    descriptionEn: 'Professional MTB suspension tuning wizard for XC, Trail, Enduro, and Downhill. Calculate front fork air pressure, rear air shock PSI or coil spring rate (lbs/in), linkage leverage ratios, and damping clicks.',
+    descriptionTw: '專業車隊級山地車雙避震科學調校。支援 XC、Trail、Enduro 與 DH 速降全車種，精確解算前叉正負氣室建議氣壓、後避震主氣室氣壓與鋼簧彈簧磅數(lbs/in)，推導車架連桿槓桿比(Leverage Ratio)，計算低/高速回彈與壓縮阻尼點擊點位(Clicks)，集成動態下沉量(SAG)視覺化刻度標尺與技師疑難排解方案。',
+    tags: ['山地车', '避震', 'SAG', '前叉', '后胆', '弹簧磅数', '阻尼', 'Fox', 'RockShox'],
+    tagsEn: ['MTB', 'Suspension', 'SAG', 'Fork', 'Coil Spring', 'Rebound', 'Damping', 'Fox', 'RockShox'],
+    tagsTw: ['山地車', '避震', 'SAG', '前叉', '後膽', '彈簧磅數', '阻尼', 'Fox', 'RockShox']
   }
 ];
+

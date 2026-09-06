@@ -24,6 +24,7 @@ import { HealthCalculator } from './components/tools/HealthCalculator';
 import { FitActivityAnalyzer } from './components/tools/FitActivityAnalyzer';
 import { TubelessSealantCalculator } from './components/tools/TubelessSealantCalculator';
 import { SpokeLengthCalculator } from './components/tools/SpokeLengthCalculator';
+import { MtbSuspensionTuner } from './components/tools/MtbSuspensionTuner';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { TOOLS_LIST } from './data/toolsList';
@@ -276,6 +277,7 @@ const MainAppContent: React.FC = () => {
             {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer />}
             {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
             {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
+            {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
           </main>
         </div>
       </div>

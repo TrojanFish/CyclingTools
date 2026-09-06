@@ -1,5 +1,24 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Users, Play, Activity, TrendingUp, Sliders, Shield, Zap, Plus, Trash2, Sparkles, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import {
+  Users,
+  Play,
+  Activity,
+  TrendingUp,
+  Sliders,
+  Shield,
+  Zap,
+  Plus,
+  Trash2,
+  Sparkles,
+  AlertTriangle,
+  CheckCircle2,
+  Timer,
+  Flag,
+  Flame,
+  Clock,
+  ArrowRight,
+  RotateCw
+} from 'lucide-react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,6 +35,7 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useToast } from '../../context/ToastContext';
 
 ChartJS.register(
   CategoryScale,
@@ -27,43 +47,60 @@ ChartJS.register(
   Legend
 );
 
-interface Rider {
+export interface GroupRider {
   id: string;
   name: string;
   weight: number;
   ftp: number;
   wPrime: number;
   followOnly: boolean;
+  // TTT specific properties
+  pullSeconds?: number;
+  role?: 'leader' | 'rouleur' | 'climber' | 'sprinter' | 'domestique';
+  isSacrificial?: boolean;
 }
 
 export const GroupRideSimulator: React.FC = () => {
-  const { profile } = useRiderProfile();
+  const { profile, activeRider } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
+  const { showToast } = useToast();
   const isImperial = unitSystem === 'imperial';
 
-  const [distanceKm, setDistanceKm] = useState<number>(80);
-  const [avgSpeedKmh, setAvgSpeedKmh] = useState<number>(38);
-  const [rotationMinutes, setRotationMinutes] = useState<number>(2.0);
+  // Simulator Mode: 'peloton' (公路大组团骑) vs 'ttt' (车队计时赛极限轮转)
+  const [mode, setMode] = useState<'peloton' | 'ttt'>('peloton');
+
+  // Common Course & Environmental Settings
+  const [distanceKm, setDistanceKm] = useState<number>(40);
+  const [avgSpeedKmh, setAvgSpeedKmh] = useState<number>(42);
+  const [rotationMinutes, setRotationMinutes] = useState<number>(2.0); // For peloton mode
   const [gradePercent, setGradePercent] = useState<number>(0);
   const [windSpeedKmh, setWindSpeedKmh] = useState<number>(10);
   const [windDirection, setWindDirection] = useState<'headwind' | 'crosswind' | 'tailwind'>('headwind');
 
-  const [riders, setRiders] = useState<Rider[]>([
-    { id: '1', name: '车手 1 (主将)', weight: 68, ftp: 300, wPrime: 22, followOnly: false },
-    { id: '2', name: '车手 2 (破风手)', weight: 74, ftp: 320, wPrime: 25, followOnly: false },
-    { id: '3', name: '车手 3 (爬坡手)', weight: 62, ftp: 270, wPrime: 18, followOnly: false },
-    { id: '4', name: '车手 4 (副将)', weight: 70, ftp: 280, wPrime: 20, followOnly: false }
+  // TTT Specific Settings
+  const [tttFinishRule, setTttFinishRule] = useState<'4th' | '5th' | 'last'>('4th');
+
+  // Initial Roster
+  const [riders, setRiders] = useState<GroupRider[]>([
+    { id: '1', name: '车手 1 (GC主将)', weight: 68, ftp: 320, wPrime: 22, followOnly: false, pullSeconds: 15, role: 'leader', isSacrificial: false },
+    { id: '2', name: '车手 2 (破风手)', weight: 75, ftp: 350, wPrime: 25, followOnly: false, pullSeconds: 30, role: 'rouleur', isSacrificial: false },
+    { id: '3', name: '车手 3 (计时赛专家)', weight: 72, ftp: 340, wPrime: 24, followOnly: false, pullSeconds: 25, role: 'rouleur', isSacrificial: false },
+    { id: '4', name: '车手 4 (爬坡副将)', weight: 64, ftp: 290, wPrime: 19, followOnly: false, pullSeconds: 15, role: 'climber', isSacrificial: false },
+    { id: '5', name: '车手 5 (牺牲破风副将)', weight: 76, ftp: 330, wPrime: 23, followOnly: false, pullSeconds: 35, role: 'domestique', isSacrificial: true },
+    { id: '6', name: '车手 6 (平路副将)', weight: 71, ftp: 310, wPrime: 20, followOnly: false, pullSeconds: 20, role: 'domestique', isSacrificial: false }
   ]);
 
   // Reactively sync lead rider with rider profile
   useEffect(() => {
-    if (profile.weightKg || profile.ftpWatts) {
+    const currentWeight = activeRider?.weightKg || profile.weightKg;
+    const currentFtp = activeRider?.ftpWatts || profile.ftpWatts;
+    if (currentWeight || currentFtp) {
       setRiders(prev => {
         if (prev.length === 0) return prev;
         const updated = [...prev];
         const currentLead = updated[0];
-        const newWeight = profile.weightKg || currentLead.weight;
-        const newFtp = profile.ftpWatts || currentLead.ftp;
+        const newWeight = currentWeight || currentLead.weight;
+        const newFtp = currentFtp || currentLead.ftp;
         if (currentLead.weight === newWeight && currentLead.ftp === newFtp) {
           return prev;
         }
@@ -75,25 +112,45 @@ export const GroupRideSimulator: React.FC = () => {
         return updated;
       });
     }
-  }, [profile.weightKg, profile.ftpWatts]);
+  }, [profile.weightKg, profile.ftpWatts, activeRider]);
 
-  const RHO = 1.225, CRR = 0.004, G = 9.80665, CDA_SOLO = 0.32;
+  // Physics constants
+  const RHO = 1.225, CRR = 0.004, G = 9.80665;
+  // Solo CdA: Peloton road bike (~0.32), TTT TT bike aero setup (~0.23)
+  const CDA_SOLO = mode === 'ttt' ? 0.23 : 0.32;
 
-  const getDraftingBenefit = (pos: number, count: number) => {
-    if (pos === 1) return 0;
-    const relativeDepth = pos / count;
-    let benefit = 0.45 * (1 - Math.exp(-6 * relativeDepth));
-    if (windDirection === 'crosswind') benefit *= 0.75;
-    if (windDirection === 'tailwind') benefit *= 0.85;
-    return benefit;
+  // Drafting benefit helper
+  const getDraftingBenefit = (pos: number, count: number, isPeelingOff: boolean = false) => {
+    if (pos === 1) return 0; // Lead rider: 100% wind
+    if (isPeelingOff) {
+      // Swings off into open wind with side turbulence: only 10% benefit
+      return 0.10;
+    }
+
+    if (mode === 'ttt') {
+      // TTT tight echelon drafting factors
+      let benefit = 0.30; // 2nd: 30% savings (70% drag)
+      if (pos === 3) benefit = 0.36; // 3rd: 36% savings
+      if (pos >= 4) benefit = 0.40; // 4th+: 40% savings
+      if (windDirection === 'crosswind') benefit *= 0.80; // crosswind echelon less drafting
+      if (windDirection === 'tailwind') benefit *= 0.88;
+      return benefit;
+    } else {
+      // Peloton normal pack drafting
+      const relativeDepth = pos / count;
+      let benefit = 0.45 * (1 - Math.exp(-6 * relativeDepth));
+      if (windDirection === 'crosswind') benefit *= 0.75;
+      if (windDirection === 'tailwind') benefit *= 0.85;
+      return benefit;
+    }
   };
 
-  const calculatePower = (speedKmh: number, weightKg: number, benefit: number) => {
+  const calculatePower = (speedKmh: number, weightKg: number, benefit: number, bikeWeight: number = 8.0) => {
     const v = speedKmh / 3.6;
     const vWind = windSpeedKmh / 3.6;
-    const fRoll = (weightKg + 8.5) * G * Math.cos(Math.atan(gradePercent / 100)) * CRR;
-    const fGrav = (weightKg + 8.5) * G * Math.sin(Math.atan(gradePercent / 100));
-    
+    const fRoll = (weightKg + bikeWeight) * G * Math.cos(Math.atan(gradePercent / 100)) * CRR;
+    const fGrav = (weightKg + bikeWeight) * G * Math.sin(Math.atan(gradePercent / 100));
+
     let vAir = v;
     if (windDirection === 'headwind') vAir += vWind;
     else if (windDirection === 'tailwind') vAir = Math.max(0, vAir - vWind);
@@ -103,99 +160,202 @@ export const GroupRideSimulator: React.FC = () => {
     return Math.max(0, (fRoll + fGrav + fAero) * v);
   };
 
+  // Switch to preset scenarios
+  const applyPreset = (presetKey: 'peloton_standard' | 'ttt_worldtour' | 'ttt_regional') => {
+    if (presetKey === 'peloton_standard') {
+      setMode('peloton');
+      setDistanceKm(80);
+      setAvgSpeedKmh(38);
+      setRotationMinutes(2.0);
+      setGradePercent(0);
+      showToast(language === 'zh-TW' ? '已切換為大組團騎模式' : '已切换为大组团骑模式', 'info');
+    } else if (presetKey === 'ttt_worldtour') {
+      setMode('ttt');
+      setDistanceKm(40);
+      setAvgSpeedKmh(53);
+      setGradePercent(0);
+      setTttFinishRule('4th');
+      showToast(language === 'zh-TW' ? '已載入世巡賽 40km TTT 戰術預設' : '已载入世巡赛 40km TTT 战术预设', 'info');
+    } else if (presetKey === 'ttt_regional') {
+      setMode('ttt');
+      setDistanceKm(25);
+      setAvgSpeedKmh(46);
+      setGradePercent(0.5);
+      setTttFinishRule('4th');
+      showToast(language === 'zh-TW' ? '已載入俱樂部 25km TTT 預設' : '已载入俱乐部 25km TTT 预设', 'info');
+    }
+  };
+
+  // Main Simulation Engine
   const simulationResult = useMemo(() => {
     const totalMinutes = (distanceKm / Math.max(5, avgSpeedKmh)) * 60;
-    const timeSteps = 50;
+    const totalSeconds = totalMinutes * 60;
+    const timeSteps = 60;
     const stepDurationMinutes = totalMinutes / timeSteps;
-    const activeLeadRiders = riders.filter(r => !r.followOnly);
-    const count = riders.length;
+    const stepDurationSeconds = stepDurationMinutes * 60;
 
     const timeLabels: string[] = [];
     const riderWPrimePercent: Record<number, number[]> = {};
     const riderPowers: Record<number, number[]> = {};
     const currentWPrimeBalance: Record<number, number> = {};
+    const riderDroppedAtSec: Record<number, number | null> = {};
 
     riders.forEach((r, idx) => {
       riderWPrimePercent[idx] = [];
       riderPowers[idx] = [];
       currentWPrimeBalance[idx] = r.wPrime * 1000;
+      riderDroppedAtSec[idx] = null;
     });
+
+    // Total cycle duration for TTT rotation in seconds
+    const activeRidersInRotation = riders.filter(r => !r.followOnly);
+    const tttCycleSeconds = activeRidersInRotation.reduce((sum, r) => sum + (r.pullSeconds || 20), 0) || 60;
 
     for (let step = 0; step <= timeSteps; step++) {
       const curMinute = step * stepDurationMinutes;
-      timeLabels.push(`${curMinute.toFixed(0)}m`);
+      const curSecond = curMinute * 60;
+      timeLabels.push(`${curMinute.toFixed(1)}m`);
 
-      const leadIndexInActive = Math.floor(curMinute / rotationMinutes) % (activeLeadRiders.length || 1);
-      const currentLeadRider = activeLeadRiders[leadIndexInActive];
+      // Determine who is leading at this moment
+      let leadRiderIndex = 0;
+      if (mode === 'ttt') {
+        // Find which rider is pulling based on cumulative seconds in the cycle
+        const secondInCycle = curSecond % tttCycleSeconds;
+        let accum = 0;
+        for (let i = 0; i < activeRidersInRotation.length; i++) {
+          accum += activeRidersInRotation[i].pullSeconds || 20;
+          if (secondInCycle <= accum) {
+            leadRiderIndex = riders.findIndex(r => r.id === activeRidersInRotation[i].id);
+            break;
+          }
+        }
+      } else {
+        // Peloton mode: minutes per rotation
+        const activeIdx = Math.floor(curMinute / rotationMinutes) % (activeRidersInRotation.length || 1);
+        const leadR = activeRidersInRotation[activeIdx];
+        leadRiderIndex = leadR ? riders.findIndex(r => r.id === leadR.id) : 0;
+      }
+
+      // Check how many riders are still surviving in the paceline
+      const survivingCount = riders.filter((_, idx) => riderDroppedAtSec[idx] === null).length;
 
       riders.forEach((r, idx) => {
-        const isLeading = currentLeadRider && r.name === currentLeadRider.name && !r.followOnly;
-        const posInLine = isLeading ? 1 : 2 + (idx % (count - 1));
-        const draftBenefit = getDraftingBenefit(posInLine, count);
-        const powerRequired = calculatePower(avgSpeedKmh, r.weight, draftBenefit);
+        // If already dropped out
+        if (riderDroppedAtSec[idx] !== null) {
+          riderPowers[idx].push(0);
+          riderWPrimePercent[idx].push(0);
+          return;
+        }
 
+        const isLeading = idx === leadRiderIndex && !r.followOnly;
+        // In TTT, check if peeling off
+        const isPeeling = mode === 'ttt' && !isLeading && ((curSecond % (r.pullSeconds || 20)) < 4);
+        const posInLine = isLeading ? 1 : 2 + (idx % Math.max(1, survivingCount - 1));
+        const draftBenefit = getDraftingBenefit(posInLine, survivingCount, isPeeling);
+
+        const powerRequired = calculatePower(avgSpeedKmh, r.weight, draftBenefit, mode === 'ttt' ? 9.0 : 8.5);
         riderPowers[idx].push(Math.round(powerRequired));
 
-        const deltaSec = stepDurationMinutes * 60;
+        // W' anaerobic energy depletion or recovery
         if (powerRequired > r.ftp) {
-          const expendedJ = (powerRequired - r.ftp) * deltaSec;
+          const expendedJ = (powerRequired - r.ftp) * stepDurationSeconds;
           currentWPrimeBalance[idx] = Math.max(0, currentWPrimeBalance[idx] - expendedJ);
         } else {
+          // Recovery formula
           const diff = r.ftp - powerRequired;
           const tau = 546 * Math.exp(-0.01 * diff) + 316;
           const maxW = r.wPrime * 1000;
           const currentW = currentWPrimeBalance[idx];
-          currentWPrimeBalance[idx] = maxW - (maxW - currentW) * Math.exp(-deltaSec / tau);
+          currentWPrimeBalance[idx] = maxW - (maxW - currentW) * Math.exp(-stepDurationSeconds / tau);
         }
 
         const pct = Math.round((currentWPrimeBalance[idx] / (r.wPrime * 1000)) * 100);
         riderWPrimePercent[idx].push(Math.max(0, Math.min(100, pct)));
+
+        // Sacrificial domestique drop condition
+        if (pct <= 0) {
+          riderDroppedAtSec[idx] = curSecond;
+        }
       });
     }
 
+    // Dropped riders analysis
     const droppedRiders = riders.map((r, idx) => {
       const minW = Math.min(...riderWPrimePercent[idx]);
+      const droppedSec = riderDroppedAtSec[idx];
+      const droppedKm = droppedSec !== null ? Math.round((droppedSec / 3600) * avgSpeedKmh * 10) / 10 : null;
+      const validPowers = riderPowers[idx].filter(p => p > 0);
+      const avgPower = validPowers.length > 0 ? Math.round(validPowers.reduce((a, b) => a + b, 0) / validPowers.length) : 0;
+
       return {
+        id: r.id,
         name: r.name,
+        role: r.role || 'rouleur',
+        isSacrificial: r.isSacrificial || false,
         isDropped: minW <= 0,
+        droppedKm,
         minWPrimePct: minW,
-        avgPowerW: Math.round(riderPowers[idx].reduce((a, b) => a + b, 0) / riderPowers[idx].length)
+        avgPowerW: avgPower
       };
     });
+
+    // UCI TTT Finish Time calculation
+    const survivingRidersCount = droppedRiders.filter(r => !r.isDropped).length;
+    const targetScoringIndex = tttFinishRule === '4th' ? 3 : tttFinishRule === '5th' ? 4 : riders.length - 1;
+    const isUciValid = survivingRidersCount > targetScoringIndex;
+
+    const totalSecondsNum = totalSeconds;
+    const hours = Math.floor(totalSecondsNum / 3600);
+    const minutes = Math.floor((totalSecondsNum % 3600) / 60);
+    const seconds = Math.floor(totalSecondsNum % 60);
+    const tenths = Math.floor((totalSecondsNum % 1) * 10);
+    const formattedTime = hours > 0
+      ? `${hours}h ${minutes}m ${seconds}.${tenths}s`
+      : `${minutes}分 ${seconds}.${tenths}秒`;
 
     return {
       timeLabels,
       riderWPrimePercent,
       droppedRiders,
-      leadPower: calculatePower(avgSpeedKmh, 70, 0),
-      draftPower: calculatePower(avgSpeedKmh, 70, 0.38)
+      leadPower: calculatePower(avgSpeedKmh, 72, 0, mode === 'ttt' ? 9.0 : 8.5),
+      draftPower: calculatePower(avgSpeedKmh, 72, mode === 'ttt' ? 0.38 : 0.35, mode === 'ttt' ? 9.0 : 8.5),
+      formattedTime,
+      totalSecondsNum,
+      survivingRidersCount,
+      isUciValid
     };
-  }, [distanceKm, avgSpeedKmh, rotationMinutes, gradePercent, windSpeedKmh, windDirection, riders]);
+  }, [distanceKm, avgSpeedKmh, rotationMinutes, gradePercent, windSpeedKmh, windDirection, riders, mode, tttFinishRule]);
 
-  // Auto-find optimal non-dropping cruise speed
+  // Optimal Cruise Speed Finder
   const findOptimalCruiseSpeed = () => {
-    let low = 25, high = 55, bestSpeed = 25;
-    for (let s = 50; s >= 20; s -= 1) {
-      let anyDropped = false;
-      const totalMinutes = (distanceKm / s) * 60;
+    let bestSpeed = mode === 'ttt' ? 44 : 30;
+    const maxTest = mode === 'ttt' ? 60 : 50;
+    const minTest = 25;
+
+    for (let s = maxTest; s >= minTest; s -= 0.5) {
+      let failed = false;
       const count = riders.length;
       const activeLeads = riders.filter(r => !r.followOnly);
 
       for (let idx = 0; idx < riders.length; idx++) {
         const r = riders[idx];
-        const avgBenefit = r.followOnly ? 0.38 : (0 * (1 / (activeLeads.length || 1)) + 0.38 * ((activeLeads.length - 1) / (activeLeads.length || 1)));
-        const p = calculatePower(s, r.weight, avgBenefit);
-        if (p > r.ftp * 1.05) {
-          anyDropped = true;
+        if (mode === 'ttt' && r.isSacrificial) continue; // Sacrificial riders are expected to drop
+        const avgBenefit = r.followOnly
+          ? 0.38
+          : (0 * (1 / (activeLeads.length || 1)) + 0.38 * ((activeLeads.length - 1) / (activeLeads.length || 1)));
+        const p = calculatePower(s, r.weight, avgBenefit, mode === 'ttt' ? 9.0 : 8.5);
+        if (p > r.ftp * 1.04) {
+          failed = true;
           break;
         }
       }
-      if (!anyDropped) {
+      if (!failed) {
         bestSpeed = s;
         break;
       }
     }
-    setAvgSpeedKmh(bestSpeed);
+    setAvgSpeedKmh(Math.round(bestSpeed * 10) / 10);
+    showToast(`已求解最佳团队均速: ${bestSpeed} km/h`, 'success');
   };
 
   const addRider = () => {
@@ -203,7 +363,17 @@ export const GroupRideSimulator: React.FC = () => {
     const newId = (riders.length + 1).toString();
     setRiders(prev => [
       ...prev,
-      { id: newId, name: `车手 ${newId}`, weight: 68, ftp: 260, wPrime: 20, followOnly: false }
+      {
+        id: newId,
+        name: `车手 ${newId}`,
+        weight: 70,
+        ftp: 300,
+        wPrime: 22,
+        followOnly: false,
+        pullSeconds: 20,
+        role: 'rouleur',
+        isSacrificial: false
+      }
     ]);
   };
 
@@ -217,11 +387,12 @@ export const GroupRideSimulator: React.FC = () => {
     return {
       labels: simulationResult.timeLabels,
       datasets: riders.map((r, idx) => ({
-        label: `${r.name} (FTP: ${r.ftp}W)`,
+        label: `${r.name} (${r.ftp}W${r.isSacrificial ? ' · 牺牲副将' : ''})`,
         data: simulationResult.riderWPrimePercent[idx],
         borderColor: chartColors[idx % chartColors.length],
         backgroundColor: 'transparent',
-        borderWidth: 2,
+        borderWidth: r.isSacrificial ? 1.5 : 2.5,
+        borderDash: r.isSacrificial ? [4, 4] : [],
         tension: 0.2,
         pointRadius: 1
       }))
@@ -239,60 +410,133 @@ export const GroupRideSimulator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Header Card */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 max-w-5xl mx-auto pb-12">
+      {/* Top Mode Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-500/10 via-slate-500/5 to-purple-500/10 dark:from-cyan-500/20 dark:via-slate-800/40 dark:to-purple-500/20 border border-cyan-500/20 p-6 backdrop-blur-md">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold mb-2">
-              <Users className="w-3.5 h-3.5" />
-              团队空气动力学与无氧能量仿真
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 text-xs font-bold">
+                <Users className="w-3.5 h-3.5" />
+                {mode === 'ttt'
+                  ? (language === 'zh-TW' ? 'TTT 車隊計時賽极限輪轉' : 'TTT 车队计时赛极限轮转')
+                  : (language === 'zh-TW' ? '公路大組團騎氣動仿真' : '公路大组团骑气动仿真')}
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30">
+                PRO STRATEGY
+              </span>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">公路车团骑/跟骑阻力与战术模拟器</h1>
-            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
-              模拟编队破风减阻（高达 35%~42% 瓦数节省）、轮转策略及各车手 $W'$ 无氧储备消耗与掉队预警。
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+              {mode === 'ttt'
+                ? (language === 'zh-TW' ? 'TTT 車隊計時賽秒級推演與戰術模擬器' : 'TTT 车队计时赛秒级推演与战术模拟器')
+                : (language === 'zh-TW' ? '公路車團騎/跟騎阻力與戰術模擬器' : '公路车团骑/跟骑阻力与战术模拟器')}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+              {mode === 'ttt'
+                ? '世巡赛 TTT 计时赛秒级轮转换位、侧后方脱离风阻扰动、牺牲副将燃尽退场与 UCI 第 4 人冲线成绩推导。'
+                : '模拟大组编队破风减阻（高达 35%~42% 瓦数节省）、轮转策略及各车手 $W\'$ 无氧储备消耗与掉队预警。'}
             </p>
           </div>
-          <button
-            onClick={findOptimalCruiseSpeed}
-            className="flex items-center gap-2 px-4 py-2.5 bg-ios-green hover:bg-ios-green/90 text-white rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch"
-          >
-            <Sparkles className="w-4 h-4" />
-            {language === 'zh-TW' ? '求解團隊均速' : '求解团队均速'}
-          </button>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            <button
+              onClick={findOptimalCruiseSpeed}
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-2xl text-xs font-bold transition shadow-md shadow-cyan-600/20 apple-touch"
+            >
+              <Sparkles className="w-4 h-4" />
+              {language === 'zh-TW' ? '求解最高不破產均速' : '求解最高不破产均速'}
+            </button>
+          </div>
+        </div>
+
+        {/* Mode Switcher & Presets */}
+        <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="w-full sm:w-80">
+            <IOSSegmentedControl
+              options={[
+                { value: 'peloton', label: language === 'zh-TW' ? '公路大組團騎' : '公路大组团骑' },
+                { value: 'ttt', label: language === 'zh-TW' ? 'TTT 車隊計時賽' : 'TTT 车队计时赛' }
+              ]}
+              value={mode}
+              onChange={(v) => {
+                setMode(v as 'peloton' | 'ttt');
+                if (v === 'ttt') {
+                  setAvgSpeedKmh(52);
+                  setDistanceKm(40);
+                } else {
+                  setAvgSpeedKmh(38);
+                  setDistanceKm(80);
+                }
+              }}
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-400">预设:</span>
+            {mode === 'ttt' ? (
+              <>
+                <button
+                  onClick={() => applyPreset('ttt_worldtour')}
+                  className="px-2.5 py-1 text-xs rounded-lg font-medium bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
+                >
+                  世巡赛 40km TTT (53 km/h)
+                </button>
+                <button
+                  onClick={() => applyPreset('ttt_regional')}
+                  className="px-2.5 py-1 text-xs rounded-lg font-medium bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
+                >
+                  俱乐部 25km TTT (46 km/h)
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => applyPreset('peloton_standard')}
+                className="px-2.5 py-1 text-xs rounded-lg font-medium bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
+              >
+                标准大组团骑 80km (38 km/h)
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Highlights Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <IOSMetricTile
-          label="领骑破风所需功率"
+          label={mode === 'ttt' ? 'TTT 领骑破风功率' : '领骑破风所需功率'}
           value={Math.round(simulationResult.leadPower)}
           unit="W"
-          subValue="1 号位 100% 迎风阻力"
+          subValue={mode === 'ttt' ? 'TT 车气动位 100% 阻力' : '大组 1 号位 100% 阻力'}
           accent="red"
         />
         <IOSMetricTile
-          label="编队跟骑功率"
+          label={mode === 'ttt' ? '高速跟骑尾流功率' : '编队跟骑功率'}
           value={Math.round(simulationResult.draftPower)}
           unit="W"
-          subValue={`立省 ${Math.round(simulationResult.leadPower - simulationResult.draftPower)} W (~38%)`}
+          subValue={`省 ${Math.round(simulationResult.leadPower - simulationResult.draftPower)} W (~38%)`}
           accent="green"
         />
         <IOSMetricTile
-          label="团队巡航速度"
-          value={displayAvgSpeed}
-          unit={isImperial ? 'mph' : 'km/h'}
-          subValue={`轮转: ${rotationMinutes} 分钟/人`}
+          label={mode === 'ttt' ? '预测完赛官方成绩' : '团队巡航速度'}
+          value={mode === 'ttt' ? simulationResult.formattedTime : displayAvgSpeed}
+          unit={mode === 'ttt' ? '' : (isImperial ? 'mph' : 'km/h')}
+          subValue={mode === 'ttt' ? `均速: ${avgSpeedKmh} km/h` : `轮转: ${rotationMinutes} 分钟/人`}
           accent="blue"
         />
         <IOSMetricTile
-          label="车手体能生存状态"
-          value={simulationResult.droppedRiders.every(r => !r.isDropped) ? '全员完赛' : `${simulationResult.droppedRiders.filter(r => r.isDropped).length} 人掉队`}
+          label={mode === 'ttt' ? 'UCI 冲线标准判定' : '车手体能生存状态'}
+          value={
+            mode === 'ttt'
+              ? (simulationResult.isUciValid ? `达标 (${simulationResult.survivingRidersCount}人完赛)` : '成绩无效 (掉队过多)')
+              : (simulationResult.droppedRiders.every(r => !r.isDropped) ? '全员完赛' : `${simulationResult.droppedRiders.filter(r => r.isDropped).length} 人掉队`)
+          }
           unit=""
-          subValue="基于 W' 无氧动态储备"
-          accent={simulationResult.droppedRiders.every(r => !r.isDropped) ? 'mint' : 'orange'}
+          subValue={mode === 'ttt' ? `基于第 ${tttFinishRule === '4th' ? '4' : '5'} 名冲线规则` : "基于 W' 无氧储备"}
+          accent={
+            (mode === 'ttt' ? simulationResult.isUciValid : simulationResult.droppedRiders.every(r => !r.isDropped))
+              ? 'mint'
+              : 'orange'
+          }
         />
       </div>
 
@@ -300,21 +544,26 @@ export const GroupRideSimulator: React.FC = () => {
         {/* Left Settings & Rider List */}
         <div className="lg:col-span-5 space-y-6">
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-ios-blue" />
-              编队巡航与环境设定
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-cyan-500" />
+                {mode === 'ttt' ? 'TTT 赛道与极限节奏参数' : '编队巡航与环境设定'}
+              </span>
+              <span className="text-[11px] font-mono font-bold text-cyan-500">
+                CdA: {CDA_SOLO}
+              </span>
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                  巡航总距离 ({isImperial ? 'mi' : 'km'})
+                  {mode === 'ttt' ? 'TTT 赛段总距离' : '巡航总距离'} ({isImperial ? 'mi' : 'km'})
                 </label>
                 <NumberStepper
                   value={displayDistance}
                   onChange={handleDistanceChange}
-                  min={1}
-                  max={500}
+                  min={5}
+                  max={300}
                   step={1}
                   unit={isImperial ? 'mi' : 'km'}
                   decimals={1}
@@ -322,13 +571,13 @@ export const GroupRideSimulator: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                  目标均速 ({isImperial ? 'mph' : 'km/h'})
+                  目标团队均速 ({isImperial ? 'mph' : 'km/h'})
                 </label>
                 <NumberStepper
                   value={displayAvgSpeed}
                   onChange={handleAvgSpeedChange}
-                  min={10}
-                  max={80}
+                  min={20}
+                  max={70}
                   step={0.5}
                   unit={isImperial ? 'mph' : 'km/h'}
                   decimals={1}
@@ -336,21 +585,46 @@ export const GroupRideSimulator: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">领骑轮转周期 (分钟/人)</label>
-                <span className="text-ios-blue font-mono font-bold text-xs">{rotationMinutes} 分钟</span>
+            {/* Rotation controls: Second level for TTT vs Minute level for Peloton */}
+            {mode === 'ttt' ? (
+              <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-cyan-700 dark:text-cyan-300 flex items-center gap-1.5">
+                    <Timer className="w-3.5 h-3.5" />
+                    UCI 官方计分冲线规则
+                  </span>
+                  <span className="text-[10px] text-slate-500">世巡赛标准</span>
+                </div>
+                <IOSSegmentedControl
+                  options={[
+                    { value: '4th', label: '第 4 人冲线 (UCI 标准)' },
+                    { value: '5th', label: '第 5 人冲线 (7-8人队)' },
+                    { value: 'last', label: '全员不掉队' }
+                  ]}
+                  value={tttFinishRule}
+                  onChange={(v) => setTttFinishRule(v as any)}
+                />
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  车队总成绩以第 {tttFinishRule === '4th' ? '4' : tttFinishRule === '5th' ? '5' : '最后'} 位过线车手的车头触线时间为准。允许前序破风手牺牲自爆。
+                </p>
               </div>
-              <input
-                type="range"
-                min="0.5"
-                max="8"
-                step="0.5"
-                value={rotationMinutes}
-                onChange={(e) => setRotationMinutes(Number(e.target.value))}
-                className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ios-blue"
-              />
-            </div>
+            ) : (
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">领骑轮转周期 (分钟/人)</label>
+                  <span className="text-cyan-500 font-mono font-bold text-xs">{rotationMinutes} 分钟</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.5"
+                  max="8"
+                  step="0.5"
+                  value={rotationMinutes}
+                  onChange={(e) => setRotationMinutes(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                />
+              </div>
+            )}
 
             <div className="space-y-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <div>
@@ -358,8 +632,8 @@ export const GroupRideSimulator: React.FC = () => {
                 <NumberStepper
                   value={gradePercent}
                   onChange={setGradePercent}
-                  min={-20}
-                  max={30}
+                  min={-15}
+                  max={20}
                   step={0.5}
                   unit="%"
                   decimals={1}
@@ -384,13 +658,13 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <Users className="w-4 h-4 text-ios-blue" />
-                团队车手名单 ({riders.length} 人)
+                <Users className="w-4 h-4 text-cyan-500" />
+                {mode === 'ttt' ? 'TTT 车队出战编队' : '团队车手名单'} ({riders.length} 人)
               </h2>
               {riders.length < 8 && (
                 <button
                   onClick={addRider}
-                  className="flex items-center gap-1 text-xs text-ios-blue hover:opacity-80 font-medium apple-touch px-2.5 py-1 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20"
+                  className="flex items-center gap-1 text-xs text-cyan-600 dark:text-cyan-400 hover:opacity-80 font-medium apple-touch px-2.5 py-1 rounded-full bg-cyan-500/10 dark:bg-cyan-500/20"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   添加车手
@@ -410,26 +684,42 @@ export const GroupRideSimulator: React.FC = () => {
                         updated[idx].name = e.target.value;
                         setRiders(updated);
                       }}
-                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-white/20 focus:border-ios-blue focus:outline-none"
+                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-white/20 focus:border-cyan-500 focus:outline-none"
                     />
                     <div className="flex items-center gap-3">
-                      <label className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={r.followOnly}
-                          onChange={(e) => {
-                            const updated = [...riders];
-                            updated[idx].followOnly = e.target.checked;
-                            setRiders(updated);
-                          }}
-                          className="rounded accent-ios-blue"
-                        />
-                        纯跟骑
-                      </label>
+                      {mode === 'ttt' ? (
+                        <label className="flex items-center gap-1 text-[11px] font-semibold text-red-500 dark:text-red-400 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={r.isSacrificial || false}
+                            onChange={(e) => {
+                              const updated = [...riders];
+                              updated[idx].isSacrificial = e.target.checked;
+                              setRiders(updated);
+                            }}
+                            className="rounded accent-red-500"
+                          />
+                          牺牲副将
+                        </label>
+                      ) : (
+                        <label className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={r.followOnly}
+                            onChange={(e) => {
+                              const updated = [...riders];
+                              updated[idx].followOnly = e.target.checked;
+                              setRiders(updated);
+                            }}
+                            className="rounded accent-cyan-500"
+                          />
+                          纯跟骑
+                        </label>
+                      )}
                       {riders.length > 2 && (
                         <button
                           onClick={() => removeRider(r.id)}
-                          className="text-slate-400 hover:text-ios-red transition apple-touch"
+                          className="text-slate-400 hover:text-red-500 transition apple-touch"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -437,7 +727,7 @@ export const GroupRideSimulator: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     <div>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
                         体重 ({isImperial ? 'lbs' : 'kg'})
@@ -452,11 +742,11 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].weight = weightKg || 65;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1.5 text-xs text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-slate-900 dark:text-white font-mono focus:border-cyan-500 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">FTP 功率 (W)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">FTP (W)</span>
                       <input
                         type="number"
                         value={r.ftp}
@@ -465,7 +755,7 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].ftp = parseFloat(e.target.value) || 250;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1.5 text-xs text-ios-blue dark:text-ios-blue font-mono font-bold focus:border-ios-blue focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-cyan-600 dark:text-cyan-400 font-mono font-bold focus:border-cyan-500 focus:outline-none"
                       />
                     </div>
                     <div>
@@ -478,9 +768,27 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].wPrime = parseFloat(e.target.value) || 20;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1.5 text-xs text-ios-green dark:text-ios-green font-mono font-bold focus:border-ios-blue focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:border-cyan-500 focus:outline-none"
                       />
                     </div>
+                    {mode === 'ttt' && (
+                      <div>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">领骑时长 (s)</span>
+                        <input
+                          type="number"
+                          min={5}
+                          max={90}
+                          step={5}
+                          value={r.pullSeconds || 20}
+                          onChange={(e) => {
+                            const updated = [...riders];
+                            updated[idx].pullSeconds = parseInt(e.target.value) || 20;
+                            setRiders(updated);
+                          }}
+                          className="w-full bg-white/90 dark:bg-black/40 border border-amber-500/50 rounded-xl px-2 py-1 text-xs text-amber-600 dark:text-amber-400 font-mono font-bold focus:border-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -494,10 +802,12 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-ios-blue" />
-                全员 W' 无氧能量储备消耗曲线 (W' Balance %)
+                <TrendingUp className="w-4 h-4 text-cyan-500" />
+                {mode === 'ttt'
+                  ? 'TTT 编队极限放电: W\' 无氧电池动态消耗曲线'
+                  : '全员 W\' 无氧能量储备消耗曲线 (W\' Balance %)'}
               </h3>
-              <span className="text-xs text-slate-400">低于 0% 透支掉队</span>
+              <span className="text-xs text-slate-400">低于 0% 即破产脱离</span>
             </div>
             <div className="h-64 w-full">
               <Line
@@ -536,22 +846,40 @@ export const GroupRideSimulator: React.FC = () => {
 
           {/* Rider Survival Analysis Summary */}
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-              团队战术与体能负荷分析
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                {mode === 'ttt' ? 'TTT 战术角色履职与体能负载评估' : '团队战术与体能负荷分析'}
+              </h3>
+              {mode === 'ttt' && (
+                <span className="text-[11px] font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                  {simulationResult.survivingRidersCount} / {riders.length} 人通过终点
+                </span>
+              )}
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {simulationResult.droppedRiders.map((dr, idx) => (
                 <div key={idx} className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1.5 shadow-xs">
                   <div className="flex justify-between items-center">
-                    <span className={`text-[11px] font-medium flex items-center gap-1 ${dr.isDropped ? 'text-ios-red dark:text-ios-red font-bold' : 'text-ios-green dark:text-ios-green'}`}>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      {dr.name}
+                      {dr.isSacrificial && (
+                        <span className="px-1.5 py-0.2 rounded-sm text-[9px] bg-red-500/15 text-red-500 font-normal">
+                          自杀式副将
+                        </span>
+                      )}
+                    </span>
+                    <span className={`text-[11px] font-medium flex items-center gap-1 ${dr.isDropped ? 'text-red-500 font-bold' : 'text-emerald-500'}`}>
                       {dr.isDropped ? (
                         <>
-                          <AlertTriangle className="w-3.5 h-3.5 text-ios-red shrink-0" />
-                          <span>{language === 'zh-TW' ? '嚴重透支掉隊' : '严重透支掉队'}</span>
+                          <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                          <span>
+                            {dr.droppedKm ? `燃尽于 ${dr.droppedKm}km` : (language === 'zh-TW' ? '嚴重透支掉隊' : '严重透支掉队')}
+                          </span>
                         </>
                       ) : (
                         <>
-                          <CheckCircle2 className="w-3.5 h-3.5 text-ios-green shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                           <span>{language === 'zh-TW' ? '穩定跟騎完賽' : '稳定跟骑完赛'}</span>
                         </>
                       )}
@@ -559,12 +887,27 @@ export const GroupRideSimulator: React.FC = () => {
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between pt-1">
                     <span>平均功率: <strong className="text-slate-700 dark:text-slate-300 font-mono">{dr.avgPowerW}W</strong></span>
-                    <span>最低储备: <strong className="text-ios-blue dark:text-ios-blue font-mono">{dr.minWPrimePct}%</strong></span>
+                    <span>最低储备: <strong className="text-cyan-500 font-mono">{dr.minWPrimePct}%</strong></span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* TTT Tactical Guidance Card */}
+          {mode === 'ttt' && (
+            <div className="p-4 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-cyan-700 dark:text-cyan-300">
+                <Flag className="w-4 h-4 text-cyan-500" />
+                世巡赛顶级车队 TTT 战术锦囊
+              </div>
+              <ul className="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 leading-relaxed list-disc list-inside">
+                <li><strong>短平快轮转：</strong>平路秒级轮转（15-25秒）效率远高于长领骑（1分钟），能最大限度阻止乳酸在无氧区堆积；</li>
+                <li><strong>平滑脱离交接：</strong>交接车手切忌减速过猛，应沿侧后方平缓滑行，借助尾流在第 4/第 5 位迅速扣回队列；</li>
+                <li><strong>副将精准自爆：</strong>牺牲型大马力副将在最后 10km 前完成超长暴力破风后退场，主将与核心小队轻装全速冲刺冲线。</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

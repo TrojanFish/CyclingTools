@@ -48,6 +48,13 @@ import {
   generateRealisticDemoRide,
   analyzePoints
 } from '../../utils/activityParser';
+import {
+  generatePmcSeries,
+  getTsbZoneInfo,
+  predictTaperDays,
+  PmcMesocycleType,
+  PmcDayData
+} from '../../utils/pmcCalculator';
 
 ChartJS.register(
   CategoryScale,
@@ -81,7 +88,61 @@ export const FitActivityAnalyzer: React.FC = () => {
   // Activity State
   const [analysis, setAnalysis] = useState<ActivityAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'trends' | 'zones' | 'mmp' | 'coaching'>('trends');
+  const [activeTab, setActiveTab] = useState<'trends' | 'zones' | 'mmp' | 'coaching' | 'pmc'>('trends');
+  const [pmcMesocycle, setPmcMesocycle] = useState<PmcMesocycleType>('build');
+  const [targetTsbForPeak, setTargetTsbForPeak] = useState<number>(15);
+
+  // PMC Calculation
+  const pmcData = useMemo(() => {
+    return generatePmcSeries(pmcMesocycle, analysis?.tss);
+  }, [pmcMesocycle, analysis?.tss]);
+
+  const latestPmcDay = pmcData[pmcData.length - 1];
+  const currentTsbZone = getTsbZoneInfo(latestPmcDay ? latestPmcDay.tsb : 0);
+  const taperPrediction = predictTaperDays(
+    latestPmcDay ? latestPmcDay.ctl : 50,
+    latestPmcDay ? latestPmcDay.atl : 40,
+    targetTsbForPeak
+  );
+
+  const pmcChartData = useMemo(() => {
+    return {
+      labels: pmcData.map(d => d.date),
+      datasets: [
+        {
+          label: 'CTL (体能 / 42天均线)',
+          data: pmcData.map(d => d.ctl),
+          borderColor: '#00AFFF',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          tension: 0.3,
+          pointRadius: 1,
+          yAxisID: 'y'
+        },
+        {
+          label: 'ATL (疲劳 / 7天均线)',
+          data: pmcData.map(d => d.atl),
+          borderColor: '#f43f5e',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          tension: 0.3,
+          pointRadius: 1,
+          yAxisID: 'y'
+        },
+        {
+          label: 'TSB (竞技状态 / CTL - ATL)',
+          data: pmcData.map(d => d.tsb),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.15)',
+          borderWidth: 1.5,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 1,
+          yAxisID: 'y1'
+        }
+      ]
+    };
+  }, [pmcData]);
 
   // Chart Channel Visibility Toggles
   const [showPower, setShowPower] = useState<boolean>(true);
@@ -698,6 +759,7 @@ export const FitActivityAnalyzer: React.FC = () => {
                 { value: 'trends', label: language === 'zh-TW' ? '時序趨勢' : '时序趋势' },
                 { value: 'zones', label: language === 'zh-TW' ? '區間駐留' : '区间驻留' },
                 { value: 'mmp', label: language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线' },
+                { value: 'pmc', label: language === 'zh-TW' ? 'PMC 負荷' : 'PMC 负荷' },
                 { value: 'coaching', label: language === 'zh-TW' ? '生理診斷' : '生理诊断' }
               ]}
               value={activeTab}
@@ -900,6 +962,252 @@ export const FitActivityAnalyzer: React.FC = () => {
                     <div className="text-[11px] text-slate-500">{m.wkg} W/kg</div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: PMC (Performance Management Chart) */}
+          {activeTab === 'pmc' && (
+            <div className="space-y-6">
+              {/* PMC Overview Card */}
+              <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-ios-blue" />
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                        {language === 'zh-TW'
+                          ? 'PMC 運動表現管理模型 (CTL / ATL / TSB)'
+                          : 'PMC 运动表现管理模型 (CTL / ATL / TSB)'}
+                      </h3>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
+                        Bannister EWMA
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {language === 'zh-TW'
+                        ? '長周期體能積累 (CTL 42天)、急性疲勞 (ATL 7天) 與比賽競技狀態 (TSB) 動態時序監測。'
+                        : '长周期体能积累 (CTL 42天)、急性疲劳 (ATL 7天) 与比赛竞技状态 (TSB) 动态时序监测。'}
+                    </p>
+                  </div>
+
+                  {/* Mesocycle Switcher */}
+                  <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                    <button
+                      onClick={() => setPmcMesocycle('base')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        pmcMesocycle === 'base'
+                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      基础期 (60天)
+                    </button>
+                    <button
+                      onClick={() => setPmcMesocycle('build')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        pmcMesocycle === 'build'
+                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      强化期 (45天)
+                    </button>
+                    <button
+                      onClick={() => setPmcMesocycle('taper')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        pmcMesocycle === 'taper'
+                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      减量备战 (28天)
+                    </button>
+                    <button
+                      onClick={() => setPmcMesocycle('grand_tour')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        pmcMesocycle === 'grand_tour'
+                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                      }`}
+                    >
+                      大环赛多日 (24天)
+                    </button>
+                  </div>
+                </div>
+
+                {/* 4 Core Current Numbers */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center">
+                    <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 block">
+                      当前 CTL (长期体能)
+                    </span>
+                    <span className="text-2xl sm:text-3xl font-black font-mono text-blue-600 dark:text-blue-400 block my-1">
+                      {latestPmcDay ? latestPmcDay.ctl : '--'}
+                    </span>
+                    <span className="text-[10px] text-slate-400">42 天衰减滚动均线</span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center">
+                    <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 block">
+                      当前 ATL (急性疲劳)
+                    </span>
+                    <span className="text-2xl sm:text-3xl font-black font-mono text-rose-600 dark:text-rose-400 block my-1">
+                      {latestPmcDay ? latestPmcDay.atl : '--'}
+                    </span>
+                    <span className="text-[10px] text-slate-400">7 天短期负荷均线</span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 block">
+                      当前 TSB (竞技状态)
+                    </span>
+                    <span
+                      className="text-2xl sm:text-3xl font-black font-mono block my-1"
+                      style={{ color: currentTsbZone.color }}
+                    >
+                      {latestPmcDay ? (latestPmcDay.tsb > 0 ? `+${latestPmcDay.tsb}` : latestPmcDay.tsb) : '--'}
+                    </span>
+                    <span className="text-[10px] text-slate-400">CTL - ATL 差值</span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+                    <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 block">
+                      本次骑行载入 TSS
+                    </span>
+                    <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900 dark:text-white block my-1">
+                      {analysis.tss}
+                    </span>
+                    <span className="text-[10px] text-emerald-500 font-medium">已合并进末日时间轴</span>
+                  </div>
+                </div>
+
+                {/* Triple-Curve Line Chart */}
+                <div className="h-80 w-full pt-2">
+                  <Line
+                    data={pmcChartData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      interaction: {
+                        mode: 'index',
+                        intersect: false
+                      },
+                      scales: {
+                        x: {
+                          grid: { color: 'rgba(150, 150, 150, 0.08)' },
+                          ticks: { color: '#94a3b8', font: { size: 10 } }
+                        },
+                        y: {
+                          type: 'linear',
+                          display: true,
+                          position: 'left',
+                          grid: { color: 'rgba(150, 150, 150, 0.08)' },
+                          ticks: { color: '#94a3b8', font: { size: 10 } },
+                          title: { display: true, text: 'CTL / ATL (负荷点)', color: '#64748b', font: { size: 11 } }
+                        },
+                        y1: {
+                          type: 'linear',
+                          display: true,
+                          position: 'right',
+                          grid: { drawOnChartArea: false },
+                          ticks: { color: '#10b981', font: { size: 10 } },
+                          title: { display: true, text: 'TSB (竞技状态)', color: '#10b981', font: { size: 11 } }
+                        }
+                      },
+                      plugins: {
+                        legend: {
+                          position: 'top',
+                          labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 14 }
+                        },
+                        tooltip: {
+                          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                          borderColor: 'rgba(56, 189, 248, 0.3)',
+                          borderWidth: 1
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Race Day Peak Predictor & Coach Diagnostic */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left: TSB Status Diagnostic */}
+                <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      当前机体竞技状态判定
+                    </span>
+                    <span
+                      className="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono"
+                      style={{ backgroundColor: `${currentTsbZone.color}20`, color: currentTsbZone.color }}
+                    >
+                      {language === 'zh-TW' ? currentTsbZone.labelTw : currentTsbZone.label}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed p-3.5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                    {language === 'zh-TW' ? currentTsbZone.adviceTw : currentTsbZone.advice}
+                  </p>
+
+                  {/* 5 TSB Reference Zones */}
+                  <div className="space-y-1.5 pt-2">
+                    <div className="text-[11px] font-bold text-slate-500">TSB 黄金区间速查：</div>
+                    <div className="grid grid-cols-5 gap-1 text-[9px] text-center font-mono font-bold">
+                      <div className="p-1 rounded-lg bg-red-500/10 text-red-500" title="过度透支">&lt; -30 透支</div>
+                      <div className="p-1 rounded-lg bg-blue-500/10 text-blue-500" title="强化提升">-30~-10 增能</div>
+                      <div className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500" title="维持">-10~+5 维持</div>
+                      <div className="p-1 rounded-lg bg-amber-500/10 text-amber-500" title="巅峰状态">+5~+25 巅峰</div>
+                      <div className="p-1 rounded-lg bg-slate-500/10 text-slate-500" title="衰退">&gt; +25 衰退</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Target Race Peak Predictor */}
+                <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <Award className="w-4 h-4 text-amber-500" />
+                      目标赛事巅峰状态倒计时预测
+                    </span>
+                    <span className="text-xs font-mono font-bold text-amber-500">
+                      目标 TSB: +{targetTsbForPeak}
+                    </span>
+                  </div>
+
+                  <div>
+                    <input
+                      type="range"
+                      min={5}
+                      max={25}
+                      value={targetTsbForPeak}
+                      onChange={(e) => setTargetTsbForPeak(parseInt(e.target.value))}
+                      className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                      <span>+5 (稳健参赛)</span>
+                      <span>+15 (爆发力巅峰)</span>
+                      <span>+25 (极限减量)</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center space-y-1">
+                    <div className="text-xs text-amber-700 dark:text-amber-300 font-semibold">
+                      预计所需减量备赛周期
+                    </div>
+                    <div className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400">
+                      {taperPrediction.daysNeeded} <span className="text-sm font-sans">天 (Days)</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                      出关比赛日预测 CTL 体能保全值：<strong className="font-mono text-slate-900 dark:text-white">{taperPrediction.predictedCtl}</strong>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    在减量期（Taper）保持每天 20~35 TSS 的低量高频刺激（短冲刺激活神经，缩减总骑行时间 40%），可确保疲劳迅速消退而有氧酶活性不失。
+                  </p>
+                </div>
               </div>
             </div>
           )}

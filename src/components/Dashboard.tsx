@@ -45,6 +45,7 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   LineChart,
   Droplets,
   Disc,
+  Sliders,
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; ring: string }> = {

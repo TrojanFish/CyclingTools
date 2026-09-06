@@ -17,6 +17,7 @@ import {
   LineChart,
   Droplets,
   Disc,
+  Sliders,
   LucideIcon
 } from 'lucide-react';
 
@@ -130,6 +131,18 @@ export const ALL_NAV_TOOLS: NavToolItem[] = [
     categoryLabelTw: '動力學與傳动',
     categoryColor: 'ios-blue',
     icon: Disc
+  },
+  {
+    id: 'mtb-suspension',
+    title: '山地车避震与 SAG 智能调校顾问',
+    titleTw: '山地車避震與 SAG 智能調校顧問',
+    shortTitle: '山地避震',
+    shortTitleTw: '山地避震',
+    category: 'dynamics',
+    categoryLabel: '动力学与传动',
+    categoryLabelTw: '動力學與傳動',
+    categoryColor: 'ios-blue',
+    icon: Sliders
   },
 
   // 2. Fitting
