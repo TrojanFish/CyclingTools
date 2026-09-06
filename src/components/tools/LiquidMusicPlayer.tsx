@@ -35,8 +35,12 @@ const DEFAULT_PLAYLIST: Track[] = [
 
 export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ isStandalonePage = false }) => {
   const [playlist, setPlaylist] = useState<Track[]>(() => {
-    const saved = localStorage.getItem('yolo_cycling_playlist');
-    return saved ? JSON.parse(saved) : DEFAULT_PLAYLIST;
+    try {
+      const saved = localStorage.getItem('yolo_cycling_playlist');
+      return saved ? JSON.parse(saved) : DEFAULT_PLAYLIST;
+    } catch {
+      return DEFAULT_PLAYLIST;
+    }
   });
 
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
@@ -103,10 +107,12 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
   };
 
   const handleNext = () => {
+    if (playlist.length === 0) return;
     setCurrentTrackIndex((prev) => (prev + 1) % playlist.length);
   };
 
   const handlePrev = () => {
+    if (playlist.length === 0) return;
     setCurrentTrackIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
   };
 

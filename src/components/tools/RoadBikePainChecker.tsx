@@ -18,8 +18,12 @@ export const RoadBikePainChecker: React.FC = () => {
   const [selectedAreaId, setSelectedAreaId] = useState<string>('knee');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [completedChecks, setCompletedChecks] = useState<Record<string, boolean>>(() => {
-    const saved = localStorage.getItem('yolo_cycling_pain_checks');
-    return saved ? JSON.parse(saved) : {};
+    try {
+      const saved = localStorage.getItem('yolo_cycling_pain_checks');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
   });
 
   const activeArea = PAIN_AREAS[selectedAreaId] || PAIN_AREAS['knee'];

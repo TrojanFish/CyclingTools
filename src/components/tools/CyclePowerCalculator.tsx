@@ -90,7 +90,9 @@ export const CyclePowerCalculator: React.FC = () => {
   // Main Comprehensive Physical Calculation Engine
   const result = useMemo(() => {
     const g = 9.80665;
-    const totalMass = riderWeight + bikeWeight;
+    const safeRiderWeight = Math.max(20, riderWeight || 68);
+    const safeBikeWeight = Math.max(3, bikeWeight || 8);
+    const totalMass = safeRiderWeight + safeBikeWeight;
     const gradeRad = Math.atan(grade / 100);
     const fGravity = totalMass * g * Math.sin(gradeRad);
     const fRolling = totalMass * g * Math.cos(gradeRad) * customCrr;
@@ -101,7 +103,7 @@ export const CyclePowerCalculator: React.FC = () => {
     let effectiveSpeedKmh = targetSpeedKmh;
 
     if (calcMode === 'wkg') {
-      effectiveWatts = Math.round(targetWkg * riderWeight);
+      effectiveWatts = Math.round(targetWkg * safeRiderWeight);
     }
 
     if (calcMode === 'speed' || calcMode === 'wkg') {
@@ -134,7 +136,7 @@ export const CyclePowerCalculator: React.FC = () => {
     const vRelFinal = vFinal + windMs;
     const fAero = 0.5 * airDensityRho * customCda * Math.pow(Math.max(0, vRelFinal), 2);
 
-    const wkg = parseFloat((effectiveWatts / riderWeight).toFixed(2));
+    const wkg = parseFloat((effectiveWatts / safeRiderWeight).toFixed(2));
     const totalForce = Math.max(0.1, Math.abs(fGravity) + fRolling + fAero);
     const aeroPct = Math.round((Math.max(0, fAero) / totalForce) * 100);
     const rollingPct = Math.round((Math.max(0, fRolling) / totalForce) * 100);

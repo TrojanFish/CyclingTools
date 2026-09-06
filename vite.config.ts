@@ -15,6 +15,7 @@ export default defineConfig({
           'vendor-react': ['react', 'react-dom'],
           'vendor-chartjs': ['chart.js', 'react-chartjs-2'],
           'vendor-leaflet': ['leaflet'],
+          'vendor-fit': ['@garmin/fitsdk'],
           'vendor-icons': ['lucide-react']
         }
       }

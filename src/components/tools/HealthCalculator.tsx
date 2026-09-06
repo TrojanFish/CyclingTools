@@ -121,10 +121,11 @@ export const HealthCalculator: React.FC = () => {
 
   // 3. BMI Calculation
   const bmiResult = useMemo(() => {
-    const hM = heightCm / 100;
-    const bmi = weightKg / (hM * hM);
-    const idealMin = 18.5 * hM * hM;
-    const idealMax = 23.9 * hM * hM;
+    const safeHM = Math.max(0.5, (heightCm || 175) / 100);
+    const safeWeight = Math.max(20, weightKg || 68);
+    const bmi = safeWeight / (safeHM * safeHM);
+    const idealMin = 18.5 * safeHM * safeHM;
+    const idealMax = 23.9 * safeHM * safeHM;
 
     let category = '正常健康体重';
     let color = 'text-emerald-400';

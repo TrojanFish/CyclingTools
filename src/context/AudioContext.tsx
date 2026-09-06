@@ -56,8 +56,12 @@ const AudioContext = createContext<AudioContextType | null>(null);
 
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [playlist, setPlaylist] = useState<BGMTrack[]>(() => {
-    const saved = localStorage.getItem('yolo_cycling_bgm_playlist');
-    return saved ? JSON.parse(saved) : DEFAULT_BGM_TRACKS;
+    try {
+      const saved = localStorage.getItem('yolo_cycling_bgm_playlist');
+      return saved ? JSON.parse(saved) : DEFAULT_BGM_TRACKS;
+    } catch {
+      return DEFAULT_BGM_TRACKS;
+    }
   });
 
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
@@ -137,10 +141,12 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const nextTrack = () => {
+    if (playlist.length === 0) return;
     setCurrentTrackIndex(prev => (prev + 1) % playlist.length);
   };
 
   const prevTrack = () => {
+    if (playlist.length === 0) return;
     setCurrentTrackIndex(prev => (prev - 1 + playlist.length) % playlist.length);
   };
 

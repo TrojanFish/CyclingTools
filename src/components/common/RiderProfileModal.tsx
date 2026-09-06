@@ -167,7 +167,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-2">
-                  <span>推重比: <strong className="text-ios-blue font-bold">{(activeRider.ftpWatts / activeRider.weightKg).toFixed(2)} W/kg</strong></span>
+                  <span>推重比: <strong className="text-ios-blue font-bold">{(activeRider.weightKg > 0 ? (activeRider.ftpWatts / activeRider.weightKg).toFixed(2) : '--')} W/kg</strong></span>
                   <span>•</span>
                   <span>战车: <strong className="text-slate-700 dark:text-slate-300 font-semibold">{activeBike.name.split('/')[0]}</strong> ({activeBike.weightKg}kg)</span>
                 </div>
@@ -381,7 +381,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               {roster.map((rider) => {
                 const isActive = activeRiderId === rider.id;
                 const roleMeta = roleLabelMap[rider.role || 'custom'];
-                const wkg = (rider.ftpWatts / rider.weightKg).toFixed(2);
+                const wkg = rider.weightKg > 0 ? (rider.ftpWatts / rider.weightKg).toFixed(2) : '--';
 
                 return (
                   <div
