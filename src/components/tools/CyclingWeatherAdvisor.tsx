@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CloudSun, Wind, Navigation, AlertTriangle, Droplets, Sun, Compass, Play, ArrowRight, ShieldCheck, Thermometer, MapPin, Download, Upload, AlertCircle, Clock, CheckCircle2 } from 'lucide-react';
 import L from 'leaflet';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { NumberStepper } from '../common/NumberStepper';
 import { ZHEJIANG_XINGZHE_ROUTES } from '../../data/zhejiangRoutes';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -429,11 +430,13 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
                   预计均速 ({isImperial ? 'mph' : 'km/h'})
                 </label>
-                <input
-                  type="number"
+                <NumberStepper
                   value={displayAvgSpeed}
-                  onChange={(e) => handleAvgSpeedChange(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
+                  onChange={handleAvgSpeedChange}
+                  min={10}
+                  max={70}
+                  step={1}
+                  unit={isImperial ? 'mph' : 'km/h'}
                 />
               </div>
             </div>

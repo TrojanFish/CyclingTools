@@ -4,6 +4,7 @@ import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { NumberStepper } from '../common/NumberStepper';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -186,15 +187,14 @@ export const TirePressureCalculator: React.FC = () => {
                     {isImperial ? `${(riderWeight * 2.20462).toFixed(1)} lbs` : `${riderWeight} kg`}
                   </span>
                 </div>
-                <input
-                  type="number"
-                  step={isImperial ? '1' : '0.5'}
+                <NumberStepper
                   value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 0;
-                    setRiderWeight(isImperial ? parseFloat((val / 2.20462).toFixed(1)) : val);
-                  }}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                  onChange={(val) => setRiderWeight(isImperial ? parseFloat((val / 2.20462).toFixed(1)) : val)}
+                  step={isImperial ? 1 : 0.5}
+                  min={isImperial ? 66 : 30}
+                  max={isImperial ? 330 : 150}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
                 />
               </div>
               <div>
@@ -206,15 +206,14 @@ export const TirePressureCalculator: React.FC = () => {
                     {isImperial ? `${(bikeGearWeight * 2.20462).toFixed(1)} lbs` : `${bikeGearWeight} kg`}
                   </span>
                 </div>
-                <input
-                  type="number"
-                  step={isImperial ? '0.2' : '0.5'}
+                <NumberStepper
                   value={isImperial ? parseFloat((bikeGearWeight * 2.20462).toFixed(1)) : bikeGearWeight}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value) || 0;
-                    setBikeGearWeight(isImperial ? parseFloat((val / 2.20462).toFixed(1)) : val);
-                  }}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                  onChange={(val) => setBikeGearWeight(isImperial ? parseFloat((val / 2.20462).toFixed(1)) : val)}
+                  step={isImperial ? 0.2 : 0.1}
+                  min={isImperial ? 11 : 4}
+                  max={isImperial ? 66 : 30}
+                  unit={isImperial ? 'lbs' : 'kg'}
+                  decimals={1}
                 />
               </div>
             </div>
@@ -275,23 +274,27 @@ export const TirePressureCalculator: React.FC = () => {
 
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">实测胎宽 (mm)</label>
-                <input
-                  type="number"
-                  step="0.5"
+                <NumberStepper
                   value={actualWidth}
-                  onChange={(e) => setActualWidth(parseFloat(e.target.value) || nominalWidth)}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                  onChange={setActualWidth}
+                  step={0.5}
+                  min={18}
+                  max={70}
+                  unit="mm"
+                  decimals={1}
                 />
               </div>
 
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">车圈内宽 (mm)</label>
-                <input
-                  type="number"
-                  step="0.5"
+                <NumberStepper
                   value={rimInnerWidth}
-                  onChange={(e) => setRimInnerWidth(parseFloat(e.target.value) || 21)}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+                  onChange={setRimInnerWidth}
+                  step={0.5}
+                  min={13}
+                  max={45}
+                  unit="mm"
+                  decimals={1}
                 />
               </div>
             </div>

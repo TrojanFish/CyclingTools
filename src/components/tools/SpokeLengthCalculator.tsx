@@ -18,6 +18,7 @@ import {
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { NumberStepper } from '../common/NumberStepper';
 
 export const SpokeLengthCalculator: React.FC = () => {
   const { language, unitSystem } = useLanguageAndUnit();
@@ -357,11 +358,13 @@ export const SpokeLengthCalculator: React.FC = () => {
               {/* ERD */}
               <div>
                 <label className="text-[11px] text-slate-500 block mb-1">ERD 有效内径 (mm)</label>
-                <input
-                  type="number"
+                <NumberStepper
                   value={erdMm}
-                  onChange={(e) => setErdMm(Number(e.target.value))}
-                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:border-cyan-500"
+                  onChange={setErdMm}
+                  min={300}
+                  max={700}
+                  step={1}
+                  unit="mm"
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">如 50mm高~540, 38mm高~564</span>
               </div>
@@ -369,12 +372,14 @@ export const SpokeLengthCalculator: React.FC = () => {
               {/* Asymmetric Rim Offset */}
               <div>
                 <label className="text-[11px] text-slate-500 block mb-1">偏心距 Offset (mm)</label>
-                <input
-                  type="number"
-                  step="0.5"
+                <NumberStepper
                   value={rimOffsetMm}
-                  onChange={(e) => setRimOffsetMm(Number(e.target.value))}
-                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-cyan-500 focus:outline-none focus:border-cyan-500"
+                  onChange={setRimOffsetMm}
+                  min={0}
+                  max={10}
+                  step={0.5}
+                  unit="mm"
+                  decimals={1}
                 />
                 <span className="text-[10px] text-slate-400 block mt-1">对称圈填 0，偏心圈一般 2.0-3.5</span>
               </div>
@@ -476,23 +481,27 @@ export const SpokeLengthCalculator: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-[10px] text-slate-500 block mb-1">法兰中心距 W_L (mm)</label>
-                    <input
-                      type="number"
-                      step="0.5"
+                    <NumberStepper
                       value={leftCenterDistMm}
-                      onChange={(e) => setLeftCenterDistMm(Number(e.target.value))}
-                      className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                      onChange={setLeftCenterDistMm}
+                      min={10}
+                      max={60}
+                      step={0.5}
+                      unit="mm"
+                      decimals={1}
                     />
                   </div>
 
                   <div>
                     <label className="text-[10px] text-slate-500 block mb-1">法兰 PCD 孔径 (mm)</label>
-                    <input
-                      type="number"
-                      step="0.5"
+                    <NumberStepper
                       value={leftPcdMm}
-                      onChange={(e) => setLeftPcdMm(Number(e.target.value))}
-                      className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                      onChange={setLeftPcdMm}
+                      min={20}
+                      max={120}
+                      step={0.5}
+                      unit="mm"
+                      decimals={1}
                     />
                   </div>
                 </div>
@@ -527,23 +536,27 @@ export const SpokeLengthCalculator: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-[10px] text-slate-500 block mb-1">法兰中心距 W_R (mm)</label>
-                    <input
-                      type="number"
-                      step="0.5"
+                    <NumberStepper
                       value={rightCenterDistMm}
-                      onChange={(e) => setRightCenterDistMm(Number(e.target.value))}
-                      className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                      onChange={setRightCenterDistMm}
+                      min={10}
+                      max={60}
+                      step={0.5}
+                      unit="mm"
+                      decimals={1}
                     />
                   </div>
 
                   <div>
                     <label className="text-[10px] text-slate-500 block mb-1">法兰 PCD 孔径 (mm)</label>
-                    <input
-                      type="number"
-                      step="0.5"
+                    <NumberStepper
                       value={rightPcdMm}
-                      onChange={(e) => setRightPcdMm(Number(e.target.value))}
-                      className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                      onChange={setRightPcdMm}
+                      min={20}
+                      max={120}
+                      step={0.5}
+                      unit="mm"
+                      decimals={1}
                     />
                   </div>
                 </div>

@@ -39,6 +39,7 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { NumberStepper } from '../common/NumberStepper';
 import {
   ActivityAnalysis,
   parseFitFile,
@@ -551,11 +552,13 @@ export const FitActivityAnalyzer: React.FC = () => {
           <div className="grid grid-cols-3 gap-2.5">
             <div>
               <label className="text-[10px] text-slate-500 block mb-1">FTP (W)</label>
-              <input
-                type="number"
+              <NumberStepper
                 value={ftpWatts}
-                onChange={(e) => setFtpWatts(Number(e.target.value))}
-                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-2 text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-ios-blue"
+                onChange={setFtpWatts}
+                min={50}
+                max={600}
+                step={5}
+                unit="W"
               />
             </div>
 
@@ -563,11 +566,14 @@ export const FitActivityAnalyzer: React.FC = () => {
               <label className="text-[10px] text-slate-500 block mb-1">
                 {'体重 (kg)'}
               </label>
-              <input
-                type="number"
+              <NumberStepper
                 value={weightKg}
-                onChange={(e) => setWeightKg(Number(e.target.value))}
-                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-2 text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-ios-blue"
+                onChange={setWeightKg}
+                min={30}
+                max={160}
+                step={0.5}
+                unit="kg"
+                decimals={1}
               />
             </div>
 
@@ -575,11 +581,13 @@ export const FitActivityAnalyzer: React.FC = () => {
               <label className="text-[10px] text-slate-500 block mb-1">
                 {'最大心率'}
               </label>
-              <input
-                type="number"
+              <NumberStepper
                 value={maxHr}
-                onChange={(e) => setMaxHr(Number(e.target.value))}
-                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-2 text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-ios-blue"
+                onChange={setMaxHr}
+                min={120}
+                max={240}
+                step={1}
+                unit="bpm"
               />
             </div>
           </div>

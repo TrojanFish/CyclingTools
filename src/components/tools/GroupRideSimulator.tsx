@@ -13,6 +13,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { NumberStepper } from '../common/NumberStepper';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
@@ -309,22 +310,28 @@ export const GroupRideSimulator: React.FC = () => {
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
                   巡航总距离 ({isImperial ? 'mi' : 'km'})
                 </label>
-                <input
-                  type="number"
+                <NumberStepper
                   value={displayDistance}
-                  onChange={(e) => handleDistanceChange(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
+                  onChange={handleDistanceChange}
+                  min={1}
+                  max={500}
+                  step={1}
+                  unit={isImperial ? 'mi' : 'km'}
+                  decimals={1}
                 />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
                   目标均速 ({isImperial ? 'mph' : 'km/h'})
                 </label>
-                <input
-                  type="number"
+                <NumberStepper
                   value={displayAvgSpeed}
-                  onChange={(e) => handleAvgSpeedChange(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
+                  onChange={handleAvgSpeedChange}
+                  min={10}
+                  max={80}
+                  step={0.5}
+                  unit={isImperial ? 'mph' : 'km/h'}
+                  decimals={1}
                 />
               </div>
             </div>
@@ -348,12 +355,14 @@ export const GroupRideSimulator: React.FC = () => {
             <div className="space-y-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">道路坡度 (%)</label>
-                <input
-                  type="number"
-                  step="0.5"
+                <NumberStepper
                   value={gradePercent}
-                  onChange={(e) => setGradePercent(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono focus:border-ios-blue focus:outline-none"
+                  onChange={setGradePercent}
+                  min={-20}
+                  max={30}
+                  step={0.5}
+                  unit="%"
+                  decimals={1}
                 />
               </div>
               <div>
