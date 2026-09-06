@@ -29,9 +29,9 @@ import { MtbSuspensionTuner } from './components/tools/MtbSuspensionTuner';
 import { WorkoutBuilder } from './components/tools/WorkoutBuilder';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
-import { CustomToolSelect, StravaLogo } from './components/common/CustomToolSelect';
+import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { TOOLS_LIST } from './data/toolsList';
-import { ArrowLeft, ChevronRight, ChevronLeft, Home } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(null);
@@ -204,17 +204,6 @@ const MainAppContent: React.FC = () => {
 
                 {/* Right: Sequential Tool Navigation (Prev / Next) + Fluid Jump Selector */}
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-end min-w-0">
-                  {/* Realtime Strava Integration SVG Indicator */}
-                  {currentToolMeta?.hasStravaIntegration && (
-                    <div
-                      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-xl bg-[#FC4C02]/10 border border-[#FC4C02]/25 text-[#FC4C02] text-xs font-semibold shrink-0 animate-in fade-in transition shadow-2xs"
-                      title={language === 'zh-TW' ? '此工具支援 Strava 雲端數據即時連動' : '此工具支持 Strava 云端数据实时联动'}
-                    >
-                      <StravaLogo className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline font-bold text-[11px] tracking-tight">Strava</span>
-                    </div>
-                  )}
-
                   <button
                     onClick={handlePrevTool}
                     disabled={currentToolIndex <= 0}
