@@ -25,6 +25,7 @@ import {
   Dumbbell
 } from 'lucide-react';
 import { ToolMetadata } from '../types';
+import { TOOLS_LIST } from '../data/toolsList';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
 import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 
@@ -98,7 +99,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { language, t } = useLanguageAndUnit();
 
   const categoryOptions = [
-    { id: 'all', label: language === 'zh-TW' ? '全部 (18)' : '全部 (18)' },
+    { id: 'all', label: language === 'zh-TW' ? `全部 (${TOOLS_LIST.length})` : `全部 (${TOOLS_LIST.length})` },
     { id: 'dynamics', icon: Zap, label: language === 'zh-TW' ? '動力傳動' : '动力传动' },
     { id: 'fitting', icon: Ruler, label: 'Fitting' },
     { id: 'route', icon: MapPin, label: language === 'zh-TW' ? '路線氣象' : '路线气象' },
@@ -117,8 +118,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Sparkles className="w-3.5 h-3.5" />
             <span>
               {language === 'zh-TW'
-                ? '科學單車計算與動力學工坊 · 18 大專業工具'
-                : '科学骑行计算与动力学工坊 · 18 大专业工具'}
+                ? `科學單車計算與動力學工坊 · ${TOOLS_LIST.length} 大專業工具`
+                : `科学骑行计算与动力学工坊 · ${TOOLS_LIST.length} 大专业工具`}
             </span>
           </div>
 
@@ -221,11 +222,24 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <div className={`w-12 h-12 rounded-2xl ${colorTheme.bg} ${colorTheme.text} flex items-center justify-center ring-1 ${colorTheme.ring} group-hover:scale-105 transition duration-200`}>
                       <IconComp className="w-6 h-6" />
                     </div>
-                    {toolBadge && (
-                      <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-slate-600 dark:text-slate-300 font-medium border border-black/[0.04] dark:border-white/[0.06]">
-                        {toolBadge}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                      {tool.hasStravaIntegration && (
+                        <span
+                          className="text-[10px] px-2 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] font-semibold border border-[#FC4C02]/20 flex items-center gap-1 shrink-0"
+                          title={language === 'zh-TW' ? '支援 Strava 雲端數據即時連動' : '支持 Strava 云端数据实时联动'}
+                        >
+                          <svg className="w-2.5 h-2.5 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24" role="img">
+                            <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
+                          </svg>
+                          <span>Strava 联动</span>
+                        </span>
+                      )}
+                      {toolBadge && (
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-slate-600 dark:text-slate-300 font-medium border border-black/[0.04] dark:border-white/[0.06]">
+                          {toolBadge}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div>

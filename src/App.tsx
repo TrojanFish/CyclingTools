@@ -121,6 +121,28 @@ const MainAppContent: React.FC = () => {
     return TOOLS_LIST.find(t => t.id === currentToolId);
   }, [currentToolId]);
 
+  // Group tools by category for the segmented dropdown selector
+  const toolGroups = useMemo(() => {
+    const categoryConfigs: {
+      category: string;
+      labelZh: string;
+      labelTw: string;
+    }[] = [
+      { category: 'dynamics', labelZh: '动力学与传动', labelTw: '動力學與傳動' },
+      { category: 'fitting', labelZh: 'Fitting与工效', labelTw: 'Fitting與工效' },
+      { category: 'route', labelZh: '路线战术气象', labelTw: '路線戰術氣象' },
+      { category: 'health', labelZh: '生理与代谢', labelTw: '生理與代謝' },
+    ];
+
+    return categoryConfigs
+      .map((cat) => ({
+        category: cat.category,
+        label: language === 'zh-TW' ? cat.labelTw : cat.labelZh,
+        tools: TOOLS_LIST.filter((t) => t.category === cat.category),
+      }))
+      .filter((g) => g.tools.length > 0);
+  }, [language]);
+
   const handlePrevTool = () => {
     if (currentToolIndex > 0) {
       setCurrentToolId(TOOLS_LIST[currentToolIndex - 1].id);
@@ -193,15 +215,39 @@ const MainAppContent: React.FC = () => {
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
                     <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[160px]">
-                      {language === 'zh-TW' && currentToolMeta.titleTw
+                      {language === 'zh-TW' && currentToolMeta?.titleTw
                         ? currentToolMeta.titleTw
-                        : currentToolMeta.title}
+                        : currentToolMeta?.title}
                     </span>
+                    {currentToolMeta?.hasStravaIntegration && (
+                      <span
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] text-[10px] font-bold border border-[#FC4C02]/20 shrink-0 ml-0.5"
+                        title={language === 'zh-TW' ? '支援 Strava 雲端數據連動' : '支持 Strava 云端数据联动'}
+                      >
+                        <svg className="w-2.5 h-2.5 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24" role="img">
+                          <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
+                        </svg>
+                        <span>Strava</span>
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 {/* Right: Sequential Tool Navigation (Prev / Next) + Fluid Jump Selector */}
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-end min-w-0">
+                  {/* Realtime Strava Integration SVG Indicator */}
+                  {currentToolMeta?.hasStravaIntegration && (
+                    <div
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-xl bg-[#FC4C02]/10 border border-[#FC4C02]/25 text-[#FC4C02] text-xs font-semibold shrink-0 animate-in fade-in transition shadow-2xs"
+                      title={language === 'zh-TW' ? '此工具支援 Strava 雲端數據即時連動' : '此工具支持 Strava 云端数据实时联动'}
+                    >
+                      <svg className="w-3.5 h-3.5 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24" role="img" aria-label="Strava">
+                        <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
+                      </svg>
+                      <span className="hidden sm:inline text-[11px] font-bold tracking-tight">Strava 联动</span>
+                    </div>
+                  )}
+
                   <button
                     onClick={handlePrevTool}
                     disabled={currentToolIndex <= 0}
@@ -219,18 +265,33 @@ const MainAppContent: React.FC = () => {
                       setCurrentToolId(e.target.value);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2 sm:px-3 py-1 text-xs text-slate-800 dark:text-slate-300 font-medium focus:outline-none focus:border-cyan-500 w-full sm:w-auto max-w-full sm:max-w-[240px] truncate"
+                    className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-2 sm:px-3 py-1 text-xs text-slate-800 dark:text-slate-300 font-medium focus:outline-none focus:border-cyan-500 w-full sm:w-auto max-w-full sm:max-w-[260px] truncate"
                   >
-                    {TOOLS_LIST.map((tItem) => {
-                      const displayTitle = language === 'zh-TW' && tItem.titleTw
-                        ? tItem.titleTw
-                        : tItem.title;
-                      return (
-                        <option key={tItem.id} value={tItem.id}>
-                          {displayTitle}
-                        </option>
-                      );
-                    })}
+                    {toolGroups.map((group) => (
+                      <optgroup
+                        key={group.category}
+                        label={group.label}
+                        className="font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-950"
+                      >
+                        {group.tools.map((tItem) => {
+                          const displayTitle = language === 'zh-TW' && tItem.titleTw
+                            ? tItem.titleTw
+                            : tItem.title;
+                          const stravaTag = tItem.hasStravaIntegration
+                            ? (language === 'zh-TW' ? ' [⚡ Strava 聯動]' : ' [⚡ Strava 联动]')
+                            : '';
+                          return (
+                            <option
+                              key={tItem.id}
+                              value={tItem.id}
+                              className="font-normal text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900"
+                            >
+                              {displayTitle}{stravaTag}
+                            </option>
+                          );
+                        })}
+                      </optgroup>
+                    ))}
                   </select>
 
                   <button

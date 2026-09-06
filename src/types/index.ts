@@ -20,6 +20,7 @@ export interface ToolMetadata {
   tags: string[];
   tagsEn?: string[];
   tagsTw?: string[];
+  hasStravaIntegration?: boolean;
 }
 
 export type ToolCategory = 'all' | 'dynamics' | 'fitting' | 'route' | 'health' | 'utility';
