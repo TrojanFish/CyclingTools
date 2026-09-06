@@ -75,12 +75,20 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
 
   // Sync personal routes to localStorage
   useEffect(() => {
-    localStorage.setItem('yolo_cycling_personal_roadbooks', JSON.stringify(personalRoutes));
+    try {
+      localStorage.setItem('yolo_cycling_personal_roadbooks', JSON.stringify(personalRoutes));
+    } catch (e) {
+      console.warn('Failed to save personal roadbooks to localStorage:', e);
+    }
   }, [personalRoutes]);
 
   // Sync bookmarks
   useEffect(() => {
-    localStorage.setItem('yolo_cycling_bookmarked_roadbooks', JSON.stringify(bookmarkedIds));
+    try {
+      localStorage.setItem('yolo_cycling_bookmarked_roadbooks', JSON.stringify(bookmarkedIds));
+    } catch (e) {
+      console.warn('Failed to save bookmarked roadbooks to localStorage:', e);
+    }
   }, [bookmarkedIds]);
 
   const toggleBookmark = (id: string, e?: React.MouseEvent) => {

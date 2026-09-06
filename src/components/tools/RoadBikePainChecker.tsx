@@ -29,7 +29,11 @@ export const RoadBikePainChecker: React.FC = () => {
   const activeArea = PAIN_AREAS[selectedAreaId] || PAIN_AREAS['knee'];
 
   useEffect(() => {
-    localStorage.setItem('yolo_cycling_pain_checks', JSON.stringify(completedChecks));
+    try {
+      localStorage.setItem('yolo_cycling_pain_checks', JSON.stringify(completedChecks));
+    } catch (e) {
+      console.warn('Failed to save pain checks:', e);
+    }
   }, [completedChecks]);
 
   const toggleCheck = (idxKey: string) => {

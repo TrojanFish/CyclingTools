@@ -80,9 +80,11 @@ export const ChainLengthCalculator: React.FC = () => {
     const shimanoMethodLinks = Math.ceil((2 * cInches + (bigRing + bigCog) / 4 + (isSingleRing ? 3 : 2)) / 2) * 2;
 
     // 3. Drivetrain Capacity Check (后拨齿容量校核)
-    const frontDifference = isSingleRing ? 0 : bigRing - smallRing;
-    const rearDifference = bigCog - smallCog;
+    const frontDifference = isSingleRing ? 0 : Math.max(0, bigRing - smallRing);
+    const rearDifference = Math.max(0, bigCog - smallCog);
     const requiredCapacity = frontDifference + rearDifference;
+    const isRingInverted = !isSingleRing && smallRing >= bigRing;
+    const isCogInverted = smallCog >= bigCog;
 
     let rearDerailleurRecommendation = '短腿 (SS: ~30T) 或 中腿 (GS)';
     let isCapacityWarning = false;
@@ -106,9 +108,11 @@ export const ChainLengthCalculator: React.FC = () => {
       requiredCapacity,
       rearDerailleurRecommendation,
       isCapacityWarning,
+      isRingInverted,
+      isCogInverted,
       rawFloat: finalRawLinks.toFixed(2)
     };
-  }, [chainstayLengthMm, bigRing, smallRing, isSingleRing, bigCog, smallCog, pulleyTeeth]);
+  }, [chainstayLengthMm, chainstayGrowthMm, isFullSuspension, bigRing, smallRing, isSingleRing, bigCog, smallCog, pulleyTeeth]);
 
   const copyReport = () => {
     const text = `SoloRiderTools 链条长度与传动计算报告:\n- 后下叉 RC: ${chainstayLengthMm} mm\n- 传动搭配: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} + ${smallCog}-${bigCog}T 飞轮\n- 推荐链条截取节数: ${result.recommendedLinks} 节 (含魔术扣)\n- 链条总长: ${result.chainLengthInches} 英寸\n- 传动总齿容量需求: ${result.requiredCapacity}T (推荐 ${result.rearDerailleurRecommendation})`;
@@ -301,6 +305,20 @@ export const ChainLengthCalculator: React.FC = () => {
 
         {/* Right Outputs & Visualization */}
         <div className="lg:col-span-7 space-y-6">
+          {(result.isRingInverted || result.isCogInverted) && (
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-amber-700 dark:text-amber-400 text-xs shadow-ios-sm animate-pulse">
+              <AlertTriangle className="w-5 h-5 shrink-0 text-amber-500 mt-0.5" />
+              <div>
+                <span className="font-bold block text-sm mb-0.5">齿盘参数设置异常提醒</span>
+                <span>
+                  {result.isRingInverted && '小盘齿数不能大于或等于大盘齿数；'}
+                  {result.isCogInverted && '飞轮最小片齿数不能大于或等于最大片齿数；'}
+                  系统已做安全回退保护，请修正齿数输入以获得最精准的截链建议。
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Main Key Link Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             <IOSMetricTile

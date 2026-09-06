@@ -1,4 +1,5 @@
 import React from 'react';
+import { triggerHaptic } from '../../utils/haptics';
 
 export type SegmentOption<T extends string = string> = {
   label: string;
@@ -105,7 +106,10 @@ export function IOSSegmentedControl<T extends string = string>({
             key={optVal}
             role="tab"
             aria-selected={isSelected}
-            onClick={() => onChange(optVal)}
+            onClick={() => {
+              triggerHaptic('selection');
+              onChange(optVal);
+            }}
             className={`relative flex items-center justify-center gap-1.5 rounded-[10px] transition-all duration-200 ease-out apple-touch ${itemPadding} ${
               fullWidth ? 'flex-1' : ''
             } ${

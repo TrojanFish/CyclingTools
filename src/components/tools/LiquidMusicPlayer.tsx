@@ -59,7 +59,11 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
 
   // Save playlist
   useEffect(() => {
-    localStorage.setItem('yolo_cycling_playlist', JSON.stringify(playlist));
+    try {
+      localStorage.setItem('yolo_cycling_playlist', JSON.stringify(playlist));
+    } catch (e) {
+      console.warn('Failed to save playlist:', e);
+    }
   }, [playlist]);
 
   // Audio setup

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Copy, Award, Sliders, ChevronDown, Disc } from 'lucide-react';
+import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Copy, Award, Sliders, ChevronDown, Disc, AlertTriangle } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -180,6 +180,19 @@ export const CyclePowerCalculator: React.FC = () => {
     const vam = Math.round(climbSpeedMs * (avgClimbGrade / 100) * 3600);
     const climbTimeMinutes = vam > 0 ? Math.round((climbElevationGainM / vam) * 60) : 0;
 
+    // Downhill Terminal Coasting Speed at 0W
+    let terminalCoastingKmh = 0;
+    if (grade < 0) {
+      const fGravityForward = -fGravity; // forward component of gravity
+      if (fGravityForward > fRolling) {
+        const netForwardForce = fGravityForward - fRolling;
+        const vRelTerm = Math.sqrt((2 * netForwardForce) / (airDensityRho * customCda));
+        const vTerm = Math.max(0, vRelTerm - windMs);
+        terminalCoastingKmh = parseFloat((vTerm * 3.6).toFixed(1));
+      }
+    }
+    const isDownhillAlert = grade < 0 && (effectiveSpeedKmh > 75 || terminalCoastingKmh > 75);
+
     return {
       power: effectiveWatts,
       speedKmh: effectiveSpeedKmh,
@@ -196,7 +209,9 @@ export const CyclePowerCalculator: React.FC = () => {
       kcalPerHour,
       vam,
       climbTimeMinutes,
-      avgClimbGrade: avgClimbGrade.toFixed(1)
+      avgClimbGrade: avgClimbGrade.toFixed(1),
+      terminalCoastingKmh,
+      isDownhillAlert
     };
   }, [calcMode, powerInput, targetSpeedKmh, targetWkg, riderWeight, bikeWeight, grade, windSpeedKmh, windDirection, airDensityRho, customCda, customCrr, climbDistanceKm, climbElevationGainM, profile.ftpWatts]);
 
@@ -542,6 +557,36 @@ export const CyclePowerCalculator: React.FC = () => {
 
         {/* Right Output Results & Full Analytics */}
         <div className="lg:col-span-7 space-y-6">
+          {/* Downhill High Speed & Thermal Warning */}
+          {grade < 0 && (
+            <div className={`p-4 rounded-2xl border transition-all shadow-ios-sm ${
+              result.isDownhillAlert
+                ? 'bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-200'
+                : 'bg-ios-blue/10 border-ios-blue/20 text-slate-800 dark:text-slate-200'
+            }`}>
+              <div className="flex items-start gap-3 text-xs">
+                <AlertTriangle className={`w-5 h-5 shrink-0 mt-0.5 ${result.isDownhillAlert ? 'text-rose-500 animate-bounce' : 'text-ios-blue'}`} />
+                <div className="space-y-1 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-bold text-sm">
+                      {result.isDownhillAlert ? '下坡极速与制动热衰减安全预警' : '下坡滑行力学平衡'}
+                    </span>
+                    {result.terminalCoastingKmh > 0 && (
+                      <span className="font-mono font-bold text-xs px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/10">
+                        0W 终端放坡滑行极速: {result.terminalCoastingKmh} km/h
+                      </span>
+                    )}
+                  </div>
+                  <p className="leading-relaxed opacity-90 text-[11px] sm:text-xs">
+                    {result.isDownhillAlert
+                      ? '当前下坡车速或终端滑行速度突破 75 km/h 极速警戒线！请务必警惕弯道横风切变、碳纤维轮圈刹车热衰减（或碟刹油路气阻沸腾导致制动力丧失），提早点刹并保持充足跟车安全间距。'
+                      : `在 ${Math.abs(grade)}% 负坡度下，重力向前分量克服地面滚阻持续做功。当空气阻力与净重力完全平衡时，0W 纯滑行终端速度为 ${result.terminalCoastingKmh} km/h。`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Main Hero Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             <IOSMetricTile

@@ -80,17 +80,25 @@ export const TirePressureCalculator: React.FC = () => {
       return Math.round(psiVal).toString();
     };
 
-    const hasHooklessWarning = isHookless && (rearRec > 72.5 || frontRec > 72.5);
+    const isHooklessWidthMismatch = isHookless && rimInnerWidth >= 23 && nominalWidth < 28;
+    const isHooklessPressureExceeded = isHookless && (rearRec > 72.5 || frontRec > 72.5);
+    const isHooklessPressureWarning = isHookless && !isHooklessPressureExceeded && (rearRec >= 68 || frontRec >= 68);
+    const hasHooklessWarning = isHooklessPressureExceeded || isHooklessPressureWarning || isHooklessWidthMismatch;
 
     return {
       front: { rec: formatVal(frontRec), min: formatVal(frontMin), max: formatVal(frontMax), rawPsi: frontRec },
       rear: { rec: formatVal(rearRec), min: formatVal(rearMin), max: formatVal(rearMax), rawPsi: rearRec },
       hasHooklessWarning,
+      isHooklessWidthMismatch,
+      isHooklessPressureExceeded,
+      isHooklessPressureWarning,
       notes: [
+        isHooklessWidthMismatch ? 'ETRTO 规范安全红线：无钩轮圈内宽 ≥23mm 严禁搭配小于 28c 外胎，极易脱圈导致严重摔车事故！' : null,
         surfaceKey === 'wet_slick' ? '雨天/湿滑路面：建议胎压调低 5~8 PSI 提升橡胶抓地力与刹车循迹性。' : null,
         tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬(Pinch Flat)爆胎。',
         actualWidth > nominalWidth ? `实测胎宽(${actualWidth}mm)宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
-        hasHooklessWarning ? '无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压接近或超过上限，建议选用更宽外胎以降低气压！' : null
+        isHooklessPressureExceeded ? '无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
+        isHooklessPressureWarning ? '当前气压逼近无钩轮圈 72.5 PSI 上限临界点，建议充气时预留余量以防日晒升温爆胎。' : null
       ].filter(Boolean) as string[]
     };
   }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, weightDistFront, weightDistRear, surfaceKey, pressureUnit]);
@@ -341,15 +349,40 @@ export const TirePressureCalculator: React.FC = () => {
 
         {/* Right Output Results */}
         <div className="lg:col-span-6 space-y-6">
-          {/* Hookless Safety Limit Alert Banner */}
-          {result.hasHooklessWarning && (
-            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-900 dark:text-rose-200 text-xs space-y-1.5 shadow-sm">
+          {/* Hookless ETRTO Width Mismatch Banner */}
+          {result.isHooklessWidthMismatch && (
+            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-950 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm animate-pulse">
               <div className="font-bold flex items-center gap-2 text-sm text-rose-600 dark:text-rose-400">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>突破无钩轮圈 (Hookless) ETRTO 极限安全红线！</span>
+                <span>ETRTO 2023/2024 禁忌组合警报：无钩圈宽胎匹配违规！</span>
               </div>
               <p className="leading-relaxed opacity-95">
-                当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破或迫近国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI (5.0 Bar)</strong> 绝对强制安全上限！在无钩轮圈上超压骑行存在瞬间脱圈爆胎的严重安全隐患。强烈建议：<strong>选用 30c 或 32c 更宽规格外胎</strong>，即可在 55-65 PSI 黄金安全气压下享受更低滚阻与极佳抓地力。
+                当前车圈内宽为 <strong>{rimInnerWidth}mm</strong>（≥23mm），而外胎规格仅为 <strong>{nominalWidth}c</strong>（&lt;28c）。根据国际自行车轮胎与轮圈组织 (ETRTO) 规范，宽内宽无钩轮圈严禁搭配小于 28c 外胎！此时胎圈无法产生足够的机械锁紧拉力，在压弯、路面坑洼或高速刹车时极易发生<strong>突发性脱圈爆胎事故</strong>。请立即更换 28c 或以上外胎！
+              </p>
+            </div>
+          )}
+
+          {/* Hookless Pressure Danger/Warning */}
+          {result.isHooklessPressureExceeded && (
+            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-900 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm">
+              <div className="font-bold flex items-center gap-2 text-sm text-rose-600 dark:text-rose-400">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>突破无钩轮圈 (Hookless) 72.5 PSI 极限安全红线！</span>
+              </div>
+              <p className="leading-relaxed opacity-95">
+                当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI (5.0 Bar)</strong> 绝对强制安全上限！无钩轮圈没有内扣机械锁止突缘，超压极易导致外胎炸出车圈。强烈建议选用 28c~32c 更宽外胎以将安全气压降至 50~65 PSI。
+              </p>
+            </div>
+          )}
+
+          {result.isHooklessPressureWarning && (
+            <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-900 dark:text-amber-200 text-xs space-y-1.5 shadow-ios-sm">
+              <div className="font-bold flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>气压临近无钩圈 72.5 PSI 安全阈值</span>
+              </div>
+              <p className="leading-relaxed opacity-95">
+                当前推荐气压（后轮 {result.rear.rec} {pressureUnit.toUpperCase()}）已处于 68~72.5 PSI 高压临界区间。夏季柏油路面温度可达 50°C+，会导致胎内空气热膨胀再升高 3~5 PSI，建议充气时预留 3 PSI 冗余，或升级更宽外胎获得更高舒适性与安全性。
               </p>
             </div>
           )}

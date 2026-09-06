@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import { triggerHaptic } from '../../utils/haptics';
 
 interface NumberStepperProps {
   value: number;
@@ -32,6 +33,24 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const valueRef = useRef(value);
+  valueRef.current = value;
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const timeoutRef = useRef<number | null>(null);
+
+  const stopHold = () => {
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => stopHold();
+  }, []);
+
   // Sync external value when not focused
   useEffect(() => {
     if (!isFocused) {
@@ -61,30 +80,44 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
     onChange(parsed);
   };
 
-  const handleDecrement = () => {
-    const currentVal = isNaN(parseFloat(localText)) ? (value ?? min) : parseFloat(localText);
-    let next = currentVal - step;
-    next = Math.max(min, next);
+  const doStep = (direction: 1 | -1): number => {
+    const currentVal = isNaN(parseFloat(localText)) ? (valueRef.current ?? min) : parseFloat(localText);
+    let next = currentVal + direction * step;
+    next = Math.max(min, Math.min(max, next));
     if (effectiveDecimals > 0) {
       next = parseFloat(next.toFixed(effectiveDecimals));
     } else {
       next = Math.round(next);
     }
     setLocalText(String(next));
-    onChange(next);
+    onChangeRef.current(next);
+    triggerHaptic('light');
+    return next;
   };
 
-  const handleIncrement = () => {
-    const currentVal = isNaN(parseFloat(localText)) ? (value ?? min) : parseFloat(localText);
-    let next = currentVal + step;
-    next = Math.min(max, next);
-    if (effectiveDecimals > 0) {
-      next = parseFloat(next.toFixed(effectiveDecimals));
-    } else {
-      next = Math.round(next);
+  const startHold = (direction: 1 | -1) => {
+    stopHold();
+    const nextVal = doStep(direction);
+    if ((direction > 0 && nextVal >= max) || (direction < 0 && nextVal <= min)) {
+      return;
     }
-    setLocalText(String(next));
-    onChange(next);
+
+    let holdCount = 0;
+    // Initial delay 380ms
+    timeoutRef.current = window.setTimeout(() => {
+      const runInterval = () => {
+        holdCount++;
+        const steppedVal = doStep(direction);
+        if ((direction > 0 && steppedVal >= max) || (direction < 0 && steppedVal <= min)) {
+          stopHold();
+          return;
+        }
+        // Accelerate interval: 140ms -> 80ms -> 45ms
+        const delay = holdCount > 12 ? 45 : holdCount > 4 ? 80 : 140;
+        timeoutRef.current = window.setTimeout(runInterval, delay);
+      };
+      runInterval();
+    }, 380);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,10 +178,10 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
       inputRef.current?.blur();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      handleIncrement();
+      doStep(1);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      handleDecrement();
+      doStep(-1);
     }
   };
 
@@ -156,9 +189,22 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
     <div className={`flex items-center bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.06] dark:border-white/[0.08] rounded-xl overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none transition-all duration-200 focus-within:ring-2 focus-within:ring-ios-blue/40 ${className}`}>
       <button
         type="button"
-        onClick={handleDecrement}
+        onPointerDown={(e) => {
+          if (e.button !== 0 && e.pointerType === 'mouse') return;
+          try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch {}
+          startHold(-1);
+        }}
+        onPointerUp={(e) => {
+          try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
+          stopHold();
+        }}
+        onPointerCancel={(e) => {
+          try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
+          stopHold();
+        }}
+        onContextMenu={(e) => e.preventDefault()}
         disabled={value <= min}
-        className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] disabled:opacity-25 disabled:hover:bg-transparent transition-all apple-touch shrink-0"
+        className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] disabled:opacity-25 disabled:hover:bg-transparent transition-all apple-touch shrink-0 select-none touch-none active:scale-95"
         aria-label="Decrease value"
       >
         <Minus className="w-3.5 h-3.5 stroke-[2.2]" />
@@ -184,9 +230,22 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
 
       <button
         type="button"
-        onClick={handleIncrement}
+        onPointerDown={(e) => {
+          if (e.button !== 0 && e.pointerType === 'mouse') return;
+          try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch {}
+          startHold(1);
+        }}
+        onPointerUp={(e) => {
+          try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
+          stopHold();
+        }}
+        onPointerCancel={(e) => {
+          try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
+          stopHold();
+        }}
+        onContextMenu={(e) => e.preventDefault()}
         disabled={value >= max}
-        className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] disabled:opacity-25 disabled:hover:bg-transparent transition-all apple-touch shrink-0"
+        className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] disabled:opacity-25 disabled:hover:bg-transparent transition-all apple-touch shrink-0 select-none touch-none active:scale-95"
         aria-label="Increase value"
       >
         <Plus className="w-3.5 h-3.5 stroke-[2.2]" />

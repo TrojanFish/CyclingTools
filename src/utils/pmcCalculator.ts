@@ -79,34 +79,43 @@ export const getTsbZoneInfo = (tsb: number): TsbZoneInfo => {
   };
 };
 
+export type BaselineFitnessLevel = 'rec' | 'club' | 'elite' | 'pro';
+
+export interface ManualTssEntry {
+  id: string;
+  dayOffset: number; // 0 for today, -1 for yesterday
+  tss: number;
+  title: string;
+}
+
+export const BASELINE_FITNESS_OPTIONS: Record<BaselineFitnessLevel, { ctl: number; atl: number; label: string; desc: string }> = {
+  rec: { ctl: 35, atl: 30, label: '业余骑游 (CTL 35)', desc: '周骑 3-5h' },
+  club: { ctl: 65, atl: 60, label: '进阶俱乐部 (CTL 65)', desc: '周骑 6-10h' },
+  elite: { ctl: 90, atl: 85, label: '业余精英 (CTL 90)', desc: '周骑 12-16h' },
+  pro: { ctl: 115, atl: 110, label: '职业世巡 (CTL 115)', desc: '周骑 18h+' }
+};
+
 /**
- * Generate a realistic timeline of daily TSS based on mesocycle type
+ * Generate a realistic timeline of daily TSS based on mesocycle type & baseline fitness
  */
 export const generatePmcSeries = (
   mesocycle: PmcMesocycleType,
-  injectedTodayTss?: number
+  injectedTodayTss?: number,
+  baselineLevel: BaselineFitnessLevel = 'club',
+  manualEntries?: ManualTssEntry[]
 ): PmcDayData[] => {
   let daysCount = 60;
-  let baseDailyTss = 70;
-  let initialCtl = 50;
-  let initialAtl = 45;
+  let initialCtl = BASELINE_FITNESS_OPTIONS[baselineLevel]?.ctl ?? 65;
+  let initialAtl = BASELINE_FITNESS_OPTIONS[baselineLevel]?.atl ?? 60;
 
   if (mesocycle === 'base') {
     daysCount = 60;
-    initialCtl = 40;
-    initialAtl = 35;
   } else if (mesocycle === 'build') {
     daysCount = 45;
-    initialCtl = 75;
-    initialAtl = 70;
   } else if (mesocycle === 'taper') {
     daysCount = 28;
-    initialCtl = 95;
-    initialAtl = 115;
   } else if (mesocycle === 'grand_tour') {
     daysCount = 24;
-    initialCtl = 105;
-    initialAtl = 95;
   }
 
   const series: PmcDayData[] = [];
@@ -174,10 +183,19 @@ export const generatePmcSeries = (
       }
     }
 
+    // Manual TSS entries override for specific day offsets (0 = today, -1 = yesterday, etc.)
+    if (manualEntries && manualEntries.length > 0) {
+      const match = manualEntries.find(e => d === (daysCount + e.dayOffset));
+      if (match) {
+        dayTss = match.tss;
+        phaseName = match.title || '手动记录训练';
+      }
+    }
+
     // Inject today's activity TSS if on final day
     if (d === daysCount && injectedTodayTss !== undefined && injectedTodayTss > 0) {
       dayTss = Math.round(injectedTodayTss);
-      phaseName = '解析活动写入';
+      phaseName = 'FIT活动解析写入';
     }
 
     // Exponential moving averages (standard impulse-response formula)

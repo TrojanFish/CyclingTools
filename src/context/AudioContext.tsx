@@ -73,7 +73,11 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    localStorage.setItem('yolo_cycling_bgm_playlist', JSON.stringify(playlist));
+    try {
+      localStorage.setItem('yolo_cycling_bgm_playlist', JSON.stringify(playlist));
+    } catch (e) {
+      console.warn('Failed to save audio playlist:', e);
+    }
   }, [playlist]);
 
   // Audio setup

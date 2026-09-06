@@ -53,7 +53,10 @@ import {
   getTsbZoneInfo,
   predictTaperDays,
   PmcMesocycleType,
-  PmcDayData
+  PmcDayData,
+  BaselineFitnessLevel,
+  ManualTssEntry,
+  BASELINE_FITNESS_OPTIONS
 } from '../../utils/pmcCalculator';
 
 ChartJS.register(
@@ -91,11 +94,48 @@ export const FitActivityAnalyzer: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'trends' | 'zones' | 'mmp' | 'coaching' | 'pmc'>('trends');
   const [pmcMesocycle, setPmcMesocycle] = useState<PmcMesocycleType>('build');
   const [targetTsbForPeak, setTargetTsbForPeak] = useState<number>(15);
+  const [baselineFitness, setBaselineFitness] = useState<BaselineFitnessLevel>('club');
+  const [manualTssEntries, setManualTssEntries] = useState<ManualTssEntry[]>(() => {
+    try {
+      const saved = localStorage.getItem('yolo_cycling_pmc_manual_tss');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [newManualTss, setNewManualTss] = useState<number>(80);
+  const [newManualTitle, setNewManualTitle] = useState<string>('');
+  const [newManualDayOffset, setNewManualDayOffset] = useState<number>(0);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('yolo_cycling_pmc_manual_tss', JSON.stringify(manualTssEntries));
+    } catch (e) {
+      console.warn('Failed to save manual TSS:', e);
+    }
+  }, [manualTssEntries]);
+
+  const handleAddManualTss = () => {
+    const entry: ManualTssEntry = {
+      id: Date.now().toString(),
+      dayOffset: newManualDayOffset,
+      tss: Math.max(1, newManualTss),
+      title: newManualTitle.trim() || (newManualDayOffset === 0 ? '今日手动训练' : newManualDayOffset === -1 ? '昨日手动训练' : '前日手动训练')
+    };
+    setManualTssEntries(prev => [...prev.filter(e => e.dayOffset !== newManualDayOffset), entry]);
+    setNewManualTitle('');
+    showToast(`已成功录入 ${entry.tss} TSS 训练负荷！`, 'success');
+  };
+
+  const handleRemoveManualTss = (id: string) => {
+    setManualTssEntries(prev => prev.filter(e => e.id !== id));
+    showToast('已移除手动训练负荷', 'info');
+  };
 
   // PMC Calculation
   const pmcData = useMemo(() => {
-    return generatePmcSeries(pmcMesocycle, analysis?.tss);
-  }, [pmcMesocycle, analysis?.tss]);
+    return generatePmcSeries(pmcMesocycle, analysis?.tss, baselineFitness, manualTssEntries);
+  }, [pmcMesocycle, analysis?.tss, baselineFitness, manualTssEntries]);
 
   const latestPmcDay = pmcData[pmcData.length - 1];
   const currentTsbZone = getTsbZoneInfo(latestPmcDay ? latestPmcDay.tsb : 0);
@@ -991,48 +1031,70 @@ export const FitActivityAnalyzer: React.FC = () => {
                     </p>
                   </div>
 
-                  {/* Mesocycle Switcher */}
-                  <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
-                    <button
-                      onClick={() => setPmcMesocycle('base')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                        pmcMesocycle === 'base'
-                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                      }`}
-                    >
-                      基础期 (60天)
-                    </button>
-                    <button
-                      onClick={() => setPmcMesocycle('build')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                        pmcMesocycle === 'build'
-                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                      }`}
-                    >
-                      强化期 (45天)
-                    </button>
-                    <button
-                      onClick={() => setPmcMesocycle('taper')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                        pmcMesocycle === 'taper'
-                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                      }`}
-                    >
-                      减量备战 (28天)
-                    </button>
-                    <button
-                      onClick={() => setPmcMesocycle('grand_tour')}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                        pmcMesocycle === 'grand_tour'
-                          ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                      }`}
-                    >
-                      大环赛多日 (24天)
-                    </button>
+                  {/* Baseline Fitness & Mesocycle Switchers */}
+                  <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2.5">
+                    <div className="flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 overflow-x-auto max-w-full">
+                      <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 px-2 shrink-0">
+                        体能起点:
+                      </span>
+                      {(['rec', 'club', 'elite', 'pro'] as BaselineFitnessLevel[]).map((level) => (
+                        <button
+                          key={level}
+                          onClick={() => setBaselineFitness(level)}
+                          className={`px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+                            baselineFitness === level
+                              ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          }`}
+                          title={BASELINE_FITNESS_OPTIONS[level].desc}
+                        >
+                          {BASELINE_FITNESS_OPTIONS[level].label.split(' ')[0]} ({BASELINE_FITNESS_OPTIONS[level].ctl})
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                      <button
+                        onClick={() => setPmcMesocycle('base')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                          pmcMesocycle === 'base'
+                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                        }`}
+                      >
+                        基础期 (60天)
+                      </button>
+                      <button
+                        onClick={() => setPmcMesocycle('build')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                          pmcMesocycle === 'build'
+                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                        }`}
+                      >
+                        强化期 (45天)
+                      </button>
+                      <button
+                        onClick={() => setPmcMesocycle('taper')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                          pmcMesocycle === 'taper'
+                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                        }`}
+                      >
+                        减量备战 (28天)
+                      </button>
+                      <button
+                        onClick={() => setPmcMesocycle('grand_tour')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                          pmcMesocycle === 'grand_tour'
+                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                        }`}
+                      >
+                        大环赛多日 (24天)
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -1208,6 +1270,86 @@ export const FitActivityAnalyzer: React.FC = () => {
                     在减量期（Taper）保持每天 20~35 TSS 的低量高频刺激（短冲刺激活神经，缩减总骑行时间 40%），可确保疲劳迅速消退而有氧酶活性不失。
                   </p>
                 </div>
+              </div>
+
+              {/* Manual TSS Workout Logging Card */}
+              <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Zap className="w-4 h-4 text-ios-blue" />
+                    手动补录日常训练负荷 (Manual TSS Entry)
+                  </h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    可补记未导出 FIT 文件的骑行台训练、通勤或周末外骑，实时重塑 42 天 CTL 体能与 ATL 疲劳走势。
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <div className="w-28 sm:w-32">
+                    <label className="text-[10px] text-slate-400 block mb-1">训练日期</label>
+                    <select
+                      value={newManualDayOffset}
+                      onChange={(e) => setNewManualDayOffset(Number(e.target.value))}
+                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none"
+                    >
+                      <option value={0}>今天 (Day 0)</option>
+                      <option value={-1}>昨天 (Day -1)</option>
+                      <option value={-2}>前天 (Day -2)</option>
+                      <option value={-3}>3天前 (Day -3)</option>
+                    </select>
+                  </div>
+
+                  <div className="w-28 sm:w-32">
+                    <label className="text-[10px] text-slate-400 block mb-1">负荷点数 (TSS)</label>
+                    <NumberStepper
+                      value={newManualTss}
+                      onChange={setNewManualTss}
+                      min={10}
+                      max={400}
+                      step={5}
+                      unit="TSS"
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-[140px]">
+                    <label className="text-[10px] text-slate-400 block mb-1">训练备注 (可选)</label>
+                    <input
+                      type="text"
+                      value={newManualTitle}
+                      onChange={(e) => setNewManualTitle(e.target.value)}
+                      placeholder="例：90min 甜区团骑"
+                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleAddManualTss}
+                    className="apple-touch self-end px-4 py-2 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl text-xs font-semibold shadow-ios-sm active:scale-95 transition"
+                  >
+                    录入 PMC
+                  </button>
+                </div>
+
+                {manualTssEntries.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-2 border-t border-black/[0.04] dark:border-white/[0.06]">
+                    <span className="text-[11px] text-slate-400 self-center">已录入负荷:</span>
+                    {manualTssEntries.map((entry) => (
+                      <div
+                        key={entry.id}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono"
+                      >
+                        <span>{entry.dayOffset === 0 ? '今日' : `${Math.abs(entry.dayOffset)}天前`}: {entry.tss} TSS ({entry.title})</span>
+                        <button
+                          onClick={() => handleRemoveManualTss(entry.id)}
+                          className="hover:text-red-500 font-bold ml-1 text-slate-400"
+                          title="删除"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

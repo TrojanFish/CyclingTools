@@ -34,11 +34,12 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
   // Parse cogs
   const cogsList = useMemo(() => {
-    return cogsStr
+    const parsed = cogsStr
       .split(/[,，\s]+/)
       .map(s => parseInt(s.trim(), 10))
       .filter(n => !isNaN(n) && n > 0)
       .sort((a, b) => a - b);
+    return parsed.length > 0 ? parsed : [11, 12, 13, 14, 15, 17, 19, 21, 24, 27, 30, 34];
   }, [cogsStr]);
 
   // Gear Step % differences
