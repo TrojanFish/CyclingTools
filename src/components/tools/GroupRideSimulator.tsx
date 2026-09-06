@@ -415,26 +415,27 @@ export const GroupRideSimulator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Mode Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-500/10 via-slate-500/5 to-purple-500/10 dark:from-cyan-500/20 dark:via-slate-800/40 dark:to-purple-500/20 border border-cyan-500/20 p-6 backdrop-blur-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 text-xs font-bold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold">
                 <Users className="w-3.5 h-3.5" />
                 {mode === 'ttt'
-                  ? (language === 'zh-TW' ? 'TTT 車隊計時賽极限輪轉' : 'TTT 车队计时赛极限轮转')
+                  ? (language === 'zh-TW' ? 'TTT 車隊計時賽極限輪轉' : 'TTT 车队计时赛极限轮转')
                   : (language === 'zh-TW' ? '公路大組團騎氣動仿真' : '公路大组团骑气动仿真')}
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-ios-mint/15 text-ios-mint border border-ios-mint/30">
                 PRO STRATEGY
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               {mode === 'ttt'
                 ? (language === 'zh-TW' ? 'TTT 車隊計時賽秒級推演與戰術模擬器' : 'TTT 车队计时赛秒级推演与战术模拟器')
                 : (language === 'zh-TW' ? '公路車團騎/跟騎阻力與戰術模擬器' : '公路车团骑/跟骑阻力与战术模拟器')}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
               {mode === 'ttt'
                 ? '世巡赛 TTT 计时赛秒级轮转换位、侧后方脱离风阻扰动、牺牲副将燃尽退场与 UCI 第 4 人冲线成绩推导。'
                 : '模拟大组编队破风减阻（高达 35%~42% 瓦数节省）、轮转策略及各车手 $W\'$ 无氧储备消耗与掉队预警。'}
@@ -444,7 +445,7 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               onClick={findOptimalCruiseSpeed}
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-2xl text-xs font-bold transition shadow-md shadow-cyan-600/20 apple-touch"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-ios-mint hover:bg-ios-mint/90 text-white rounded-2xl text-xs font-bold transition shadow-ios-md apple-touch"
             >
               <Sparkles className="w-4 h-4" />
               {language === 'zh-TW' ? '求解最高不破產均速' : '求解最高不破产均速'}
@@ -453,7 +454,7 @@ export const GroupRideSimulator: React.FC = () => {
         </div>
 
         {/* Mode Switcher & Presets */}
-        <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative z-10 mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="w-full sm:w-80">
             <IOSSegmentedControl
               options={[
@@ -476,7 +477,7 @@ export const GroupRideSimulator: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
+              <Sparkles className="w-3.5 h-3.5 text-ios-mint" />
               {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
             </span>
             {mode === 'ttt' ? (
@@ -528,7 +529,7 @@ export const GroupRideSimulator: React.FC = () => {
           value={mode === 'ttt' ? simulationResult.formattedTime : displayAvgSpeed}
           unit={mode === 'ttt' ? '' : (isImperial ? 'mph' : 'km/h')}
           subValue={mode === 'ttt' ? `均速: ${avgSpeedKmh} km/h` : `轮转: ${rotationMinutes} 分钟/人`}
-          accent="blue"
+          accent="mint"
         />
         <IOSMetricTile
           label={mode === 'ttt' ? 'UCI 冲线标准判定' : '车手体能生存状态'}
@@ -553,10 +554,10 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-cyan-500" />
+                <Sliders className="w-4 h-4 text-ios-mint" />
                 {mode === 'ttt' ? 'TTT 赛道与极限节奏参数' : '编队巡航与环境设定'}
               </span>
-              <span className="text-[11px] font-mono font-bold text-cyan-500">
+              <span className="text-[11px] font-mono font-bold text-ios-mint">
                 CdA: {CDA_SOLO}
               </span>
             </h2>
@@ -594,9 +595,9 @@ export const GroupRideSimulator: React.FC = () => {
 
             {/* Rotation controls: Second level for TTT vs Minute level for Peloton */}
             {mode === 'ttt' ? (
-              <div className="p-3.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
+              <div className="p-3.5 rounded-2xl bg-ios-mint/10 border border-ios-mint/20 space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-cyan-700 dark:text-cyan-300 flex items-center gap-1.5">
+                  <span className="font-bold text-ios-mint flex items-center gap-1.5">
                     <Timer className="w-3.5 h-3.5" />
                     UCI 官方计分冲线规则
                   </span>
@@ -619,7 +620,7 @@ export const GroupRideSimulator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">领骑轮转周期 (分钟/人)</label>
-                  <span className="text-cyan-500 font-mono font-bold text-xs">{rotationMinutes} 分钟</span>
+                  <span className="text-ios-mint font-mono font-bold text-xs">{rotationMinutes} 分钟</span>
                 </div>
                 <input
                   type="range"
@@ -628,7 +629,7 @@ export const GroupRideSimulator: React.FC = () => {
                   step="0.5"
                   value={rotationMinutes}
                   onChange={(e) => setRotationMinutes(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ios-mint"
                 />
               </div>
             )}
@@ -665,13 +666,13 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <Users className="w-4 h-4 text-cyan-500" />
+                <Users className="w-4 h-4 text-ios-mint" />
                 {mode === 'ttt' ? 'TTT 车队出战编队' : '团队车手名单'} ({riders.length} 人)
               </h2>
               {riders.length < 8 && (
                 <button
                   onClick={addRider}
-                  className="flex items-center gap-1 text-xs text-cyan-600 dark:text-cyan-400 hover:opacity-80 font-medium apple-touch px-2.5 py-1 rounded-full bg-cyan-500/10 dark:bg-cyan-500/20"
+                  className="flex items-center gap-1 text-xs text-ios-mint hover:opacity-80 font-medium apple-touch px-2.5 py-1 rounded-full bg-ios-mint/10 dark:bg-ios-mint/20"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   添加车手
@@ -691,7 +692,7 @@ export const GroupRideSimulator: React.FC = () => {
                         updated[idx].name = e.target.value;
                         setRiders(updated);
                       }}
-                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-white/20 focus:border-cyan-500 focus:outline-none"
+                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-white/20 focus:border-ios-mint focus:outline-none"
                     />
                     <div className="flex items-center gap-3">
                       {mode === 'ttt' ? (
@@ -718,7 +719,7 @@ export const GroupRideSimulator: React.FC = () => {
                               updated[idx].followOnly = e.target.checked;
                               setRiders(updated);
                             }}
-                            className="rounded accent-cyan-500"
+                            className="rounded accent-ios-mint"
                           />
                           纯跟骑
                         </label>
@@ -749,7 +750,7 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].weight = weightKg || 65;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-slate-900 dark:text-white font-mono focus:border-cyan-500 focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-slate-900 dark:text-white font-mono focus:border-ios-mint focus:outline-none"
                       />
                     </div>
                     <div>
@@ -762,7 +763,7 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].ftp = parseFloat(e.target.value) || 250;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-cyan-600 dark:text-cyan-400 font-mono font-bold focus:border-cyan-500 focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-ios-mint font-mono font-bold focus:border-ios-mint focus:outline-none"
                       />
                     </div>
                     <div>
@@ -775,7 +776,7 @@ export const GroupRideSimulator: React.FC = () => {
                           updated[idx].wPrime = parseFloat(e.target.value) || 20;
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:border-cyan-500 focus:outline-none"
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:border-ios-mint focus:outline-none"
                       />
                     </div>
                     {mode === 'ttt' && (
@@ -809,7 +810,7 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-cyan-500" />
+                <TrendingUp className="w-4 h-4 text-ios-mint" />
                 {mode === 'ttt'
                   ? 'TTT 编队极限放电: W\' 无氧电池动态消耗曲线'
                   : '全员 W\' 无氧能量储备消耗曲线 (W\' Balance %)'}
@@ -842,7 +843,7 @@ export const GroupRideSimulator: React.FC = () => {
                     },
                     tooltip: {
                       backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                      borderColor: 'rgba(56, 189, 248, 0.3)',
+                      borderColor: 'rgba(0, 199, 190, 0.3)',
                       borderWidth: 1
                     }
                   }
@@ -858,7 +859,7 @@ export const GroupRideSimulator: React.FC = () => {
                 {mode === 'ttt' ? 'TTT 战术角色履职与体能负载评估' : '团队战术与体能负荷分析'}
               </h3>
               {mode === 'ttt' && (
-                <span className="text-[11px] font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                <span className="text-[11px] font-mono font-bold text-ios-mint">
                   {simulationResult.survivingRidersCount} / {riders.length} 人通过终点
                 </span>
               )}
@@ -894,7 +895,7 @@ export const GroupRideSimulator: React.FC = () => {
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 flex justify-between pt-1">
                     <span>平均功率: <strong className="text-slate-700 dark:text-slate-300 font-mono">{dr.avgPowerW}W</strong></span>
-                    <span>最低储备: <strong className="text-cyan-500 font-mono">{dr.minWPrimePct}%</strong></span>
+                    <span>最低储备: <strong className="text-ios-mint font-mono">{dr.minWPrimePct}%</strong></span>
                   </div>
                 </div>
               ))}
@@ -903,9 +904,9 @@ export const GroupRideSimulator: React.FC = () => {
 
           {/* TTT Tactical Guidance Card */}
           {mode === 'ttt' && (
-            <div className="p-4 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-cyan-700 dark:text-cyan-300">
-                <Flag className="w-4 h-4 text-cyan-500" />
+            <div className="p-4 rounded-3xl bg-ios-mint/10 border border-ios-mint/20 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-ios-mint">
+                <Flag className="w-4 h-4 text-ios-mint" />
                 世巡赛顶级车队 TTT 战术锦囊
               </div>
               <ul className="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 leading-relaxed list-disc list-inside">
