@@ -1807,7 +1807,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <button
                           key={level}
                           onClick={() => setBaselineFitness(level)}
-                          className={`px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+                          className={`apple-touch px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                             baselineFitness === level
                               ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1822,7 +1822,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <div className="flex flex-wrap items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
                       <button
                         onClick={() => setPmcMesocycle('base')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                           pmcMesocycle === 'base'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1832,7 +1832,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       </button>
                       <button
                         onClick={() => setPmcMesocycle('build')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                           pmcMesocycle === 'build'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1842,7 +1842,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       </button>
                       <button
                         onClick={() => setPmcMesocycle('taper')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                           pmcMesocycle === 'taper'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1852,13 +1852,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       </button>
                       <button
                         onClick={() => setPmcMesocycle('grand_tour')}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                           pmcMesocycle === 'grand_tour'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                         }`}
                       >
-                        大环赛多日 (24天)
+                        多日赛重负荷 (21天)
                       </button>
                     </div>
                   </div>
@@ -2107,7 +2107,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <span>{entry.dayOffset === 0 ? '今日' : `${Math.abs(entry.dayOffset)}天前`}: {entry.tss} TSS ({entry.title})</span>
                         <button
                           onClick={() => handleRemoveManualTss(entry.id)}
-                          className="hover:text-red-500 font-bold ml-1 text-slate-400"
+                          className="apple-touch hover:text-red-500 font-bold ml-1 text-slate-400"
                           title="删除"
                         >
                           ×
@@ -2242,7 +2242,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <button
                 type="button"
                 onClick={() => setSmartWorkoutModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
+                className="apple-touch w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
               >
                 <X className="w-4 h-4" />
               </button>

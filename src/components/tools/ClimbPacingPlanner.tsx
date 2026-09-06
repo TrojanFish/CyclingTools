@@ -806,7 +806,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               </h2>
               <button
                 onClick={addSegment}
-                className="flex items-center gap-1 text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 font-semibold"
+                className="apple-touch flex items-center gap-1 text-xs text-ios-blue hover:opacity-80 font-semibold"
               >
                 <Plus className="w-3.5 h-3.5" />
                 {language === 'zh-TW' ? '添加分段' : '添加分段'}
@@ -830,7 +830,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                     {segments.length > 1 && (
                       <button
                         onClick={() => removeSegment(seg.id)}
-                        className="text-slate-400 hover:text-rose-500 transition"
+                        className="apple-touch text-slate-400 hover:text-rose-500 transition"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1033,7 +1033,7 @@ export const ClimbPacingPlanner: React.FC = () => {
 
               <button
                 onClick={() => setIsStravaModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 transition"
+                className="apple-touch text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1217,7 +1217,7 @@ export const ClimbPacingPlanner: React.FC = () => {
 
               <button
                 onClick={() => setIsStravaModalOpen(false)}
-                className="px-3.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 rounded-xl transition"
+                className="apple-touch px-3.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 rounded-xl transition"
               >
                 关闭
               </button>

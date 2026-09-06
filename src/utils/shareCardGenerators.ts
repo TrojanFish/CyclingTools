@@ -372,7 +372,8 @@ export function generateClimbPacingPoster(data: ClimbPacingPosterData): string {
   ctx.fillText('🚩 分段路况与目标配速功率表', 40, segStartY);
 
   // Segments List Table Box
-  const listH = Math.min(520, Math.max(260, data.segments.length * 68 + 30));
+  const segments = data.segments || [];
+  const listH = Math.min(520, Math.max(260, segments.length * 68 + 30));
   roundRect(ctx, 40, segStartY + 15, w - 80, listH, 20);
   ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
   ctx.fill();
@@ -387,7 +388,7 @@ export function generateClimbPacingPoster(data: ClimbPacingPosterData): string {
   ctx.fillText('目标输出', 410, segStartY + 45);
   ctx.fillText('预计耗时', 560, segStartY + 45);
 
-  data.segments.slice(0, 7).forEach((seg, idx) => {
+  segments.slice(0, 7).forEach((seg, idx) => {
     const rowY = segStartY + 80 + idx * 62;
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.beginPath();
@@ -527,9 +528,13 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
   const h = 960;
   const { ctx, canvas } = createPosterCanvas(w, h);
   const accent = '#007AFF';
+  const unitStr = String(data.unit || 'PSI').toUpperCase();
+  const tireSetupStr = data.tireSetup || '真空胎 (Tubeless)';
+  const surfaceStr = data.surface || '综合平整铺装路面';
+  const totalWeightStr = data.totalWeightKg ? `${data.totalWeightKg} kg` : '--';
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '⚡ 滚阻与形变 · 智能胎压', '科学胎压与抓地力调校卡', `总系统重量 ${data.totalWeightKg} kg · ${data.tireSetup} · ${data.surface}`, accent);
+  drawHeader(ctx, w, '⚡ 滚阻与形变 · 智能胎压', '科学胎压与抓地力调校卡', `总系统重量 ${totalWeightStr} · ${tireSetupStr} · ${surfaceStr}`, accent);
 
   // Large Dual Pressure Pods
   const podW = (w - 80 - 20) / 2;
@@ -549,13 +554,13 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 54px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(String(data.frontRec), 60, 315);
+  ctx.fillText(String(data.frontRec ?? '--'), 60, 315);
   ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(data.unit.toUpperCase(), 60 + ctx.measureText(String(data.frontRec)).width * 2.8 + 10, 315);
+  ctx.fillText(unitStr, 60 + ctx.measureText(String(data.frontRec ?? '--')).width * 2.8 + 10, 315);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`建议安全区间: ${data.frontRange} ${data.unit.toUpperCase()}`, 60, 370);
+  ctx.fillText(`建议安全区间: ${data.frontRange || '--'} ${unitStr}`, 60, 370);
 
   // Rear Pod
   roundRect(ctx, 40 + podW + 20, 204, podW, podH, 24);
@@ -571,13 +576,13 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
 
   ctx.fillStyle = '#30D158';
   ctx.font = 'bold 54px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(String(data.rearRec), 40 + podW + 40, 315);
+  ctx.fillText(String(data.rearRec ?? '--'), 40 + podW + 40, 315);
   ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(data.unit.toUpperCase(), 40 + podW + 40 + ctx.measureText(String(data.rearRec)).width * 2.8 + 10, 315);
+  ctx.fillText(unitStr, 40 + podW + 40 + ctx.measureText(String(data.rearRec ?? '--')).width * 2.8 + 10, 315);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`建议安全区间: ${data.rearRange} ${data.unit.toUpperCase()}`, 40 + podW + 40, 370);
+  ctx.fillText(`建议安全区间: ${data.rearRange || '--'} ${unitStr}`, 40 + podW + 40, 370);
 
   // Parameter Details Table
   const detailY = 450;
@@ -1147,7 +1152,8 @@ export function generateRoadbookPoster(data: RoadbookPosterData): string {
   ctx.fillText('✨ 路线特色标签', 65, hlY + 34);
 
   let badgeOffset = 65;
-  data.highlights.forEach(h => {
+  const highlights = data.highlights || ['经典骑行', '山野风光'];
+  highlights.slice(0, 4).forEach(h => {
     ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     const bw = ctx.measureText(h).width + 20;
     roundRect(ctx, badgeOffset, hlY + 50, bw, 26, 13);
@@ -1173,7 +1179,7 @@ export function generateRoadbookPoster(data: RoadbookPosterData): string {
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   // Multiline wrapping
-  const words = data.description;
+  const words = data.description || '经典骑行探索路线，尽情领略户外破风骑行之美。可将本航迹导入码表进行全程导航。';
   let line = '';
   let lineY = descY + 75;
   for (let i = 0; i < words.length; i++) {
@@ -1406,7 +1412,8 @@ export function generateFittingPoster(data: FittingPosterData): string {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(g.val.length > 32 ? g.val.slice(0, 32) + '...' : g.val, 280, gy);
+    const valStr = String(g.val ?? '--');
+    ctx.fillText(valStr.length > 32 ? valStr.slice(0, 32) + '...' : valStr, 280, gy);
   });
 
   // Fitting Guidelines
