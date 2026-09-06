@@ -225,13 +225,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <div className="flex items-center gap-1.5 flex-wrap justify-end">
                       {tool.hasStravaIntegration && (
                         <span
-                          className="text-[10px] px-2 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] font-semibold border border-[#FC4C02]/20 flex items-center gap-1 shrink-0"
+                          className="px-2 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] font-semibold border border-[#FC4C02]/20 flex items-center gap-1 shrink-0"
                           title={language === 'zh-TW' ? '支援 Strava 雲端數據即時連動' : '支持 Strava 云端数据实时联动'}
                         >
-                          <svg className="w-2.5 h-2.5 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24" role="img">
+                          <svg className="w-3 h-3 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24" role="img">
                             <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
                           </svg>
-                          <span>Strava 联动</span>
+                          <span className="text-[10px] font-bold">Strava</span>
                         </span>
                       )}
                       {toolBadge && (

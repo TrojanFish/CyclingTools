@@ -173,20 +173,22 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
           </button>
         </div>
 
-        {/* Top Segmented Navigation Tabs */}
-        <IOSSegmentedControl
-          options={[
-            { id: 'profile', label: language === 'zh-TW' ? '當前數據' : '当前数据', icon: Activity },
-            { id: 'roster', label: language === 'zh-TW' ? `車隊 (${roster.length})` : `车队 (${roster.length})`, icon: Users },
-            { id: 'garage', label: language === 'zh-TW' ? `戰車 (${bikes.length})` : `战车 (${bikes.length})`, icon: Bike },
-            { id: 'strava', label: 'Strava', icon: Cloud, badge: isStravaConnected ? '已连' : undefined },
-            { id: 'system', label: language === 'zh-TW' ? '偏好導航' : '偏好导航', icon: SlidersHorizontal }
-          ]}
-          value={modalTab}
-          onChange={(val) => setModalTab(val as any)}
-          fullWidth
-          size="sm"
-        />
+        {/* Top Segmented Navigation Tabs (Mobile Horizontally Scrollable & Adaptive Labels) */}
+        <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
+          <IOSSegmentedControl
+            options={[
+              { id: 'profile', label: language === 'zh-TW' ? '數據' : '数据', icon: Activity },
+              { id: 'roster', label: language === 'zh-TW' ? '車隊' : '车队', icon: Users, badge: roster.length },
+              { id: 'garage', label: language === 'zh-TW' ? '戰車' : '战车', icon: Bike, badge: bikes.length },
+              { id: 'strava', label: 'Strava', icon: Cloud, badge: isStravaConnected ? '已连' : undefined },
+              { id: 'system', label: language === 'zh-TW' ? '導航' : '导航', icon: SlidersHorizontal }
+            ]}
+            value={modalTab}
+            onChange={(val) => setModalTab(val as any)}
+            fullWidth
+            size="sm"
+          />
+        </div>
 
         {/* TAB 1: CURRENT ACTIVE PROFILE DETAILS */}
         {modalTab === 'profile' && (
@@ -382,9 +384,10 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
         {/* TAB 2: TEAM ROSTER (MULTI-RIDER MANAGEMENT) */}
         {modalTab === 'roster' && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                {language === 'zh-TW' ? '車隊現役車手名單 (點擊立即切換出賽)' : '车队现役车手名单 (点击立即切换出赛)'}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate">
+                {language === 'zh-TW' ? '車隊現役車手名單' : '车队现役车手名单'}
+                <span className="hidden sm:inline font-normal text-slate-400 ml-1">(点击立即切换出赛)</span>
               </span>
               <button
                 type="button"
@@ -406,7 +409,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   });
                   showToast('已创建并载入新车手档案', 'success');
                 }}
-                className="flex items-center gap-1 text-xs text-ios-blue hover:text-ios-blue/80 font-semibold apple-touch"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-xs hover:bg-blue-600 transition shrink-0 apple-touch"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '添加車手' : '添加车手'}</span>
@@ -438,22 +441,22 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     }`}
                   >
                     <div className="space-y-1 min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                         <span className={`text-xs font-bold ${isActive ? 'text-ios-blue' : 'text-slate-900 dark:text-white'}`}>
                           {rider.name}
                         </span>
-                        <span className={`text-[10px] px-2 py-0.2 rounded-full border font-semibold ${roleMeta?.color}`}>
+                        <span className={`text-[10px] px-2 py-0.2 rounded-full border font-semibold shrink-0 ${roleMeta?.color}`}>
                           {language === 'zh-TW' ? roleMeta?.labelTw : roleMeta?.label}
                         </span>
                         {isActive && (
-                          <span className="flex items-center gap-1 text-[10px] font-bold text-ios-green font-mono">
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-ios-green font-mono shrink-0">
                             <CheckCircle2 className="w-3 h-3" />
                             出赛中
                           </span>
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                         <span>体重: <strong className="text-slate-700 dark:text-slate-300">{rider.weightKg} kg</strong></span>
                         <span>FTP: <strong className="text-slate-700 dark:text-slate-300">{rider.ftpWatts} W</strong></span>
                         <span>推重比: <strong className="text-ios-blue font-bold">{wkg} W/kg</strong></span>
@@ -461,7 +464,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 ml-1">
                       {roster.length > 1 && !isActive && (
                         <button
                           type="button"
@@ -470,7 +473,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                             deleteRider(rider.id);
                             showToast('已移除该车手', 'info');
                           }}
-                          className="p-1.5 rounded-xl text-slate-400 hover:text-ios-red hover:bg-ios-red/10 transition apple-touch"
+                          className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-ios-red hover:bg-ios-red/10 flex items-center justify-center transition apple-touch shrink-0"
                           title="删除车手"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -487,9 +490,10 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
         {/* TAB 3: BIKE GARAGE (MULTI-BIKE CONFIGURATION) */}
         {modalTab === 'garage' && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                {language === 'zh-TW' ? '車隊戰車車庫 (點擊裝配並聯動計算)' : '车队战车车库 (点击装配并联动计算)'}
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate">
+                {language === 'zh-TW' ? '車隊戰車車庫' : '车队战车车库'}
+                <span className="hidden sm:inline font-normal text-slate-400 ml-1">(点击装配并联动计算)</span>
               </span>
               <button
                 type="button"
@@ -506,7 +510,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   });
                   showToast('已添加新战车至车库', 'success');
                 }}
-                className="flex items-center gap-1 text-xs text-ios-blue hover:text-ios-blue/80 font-semibold apple-touch"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-xs hover:bg-blue-600 transition shrink-0 apple-touch"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '新增戰車' : '新增战车'}</span>
@@ -541,29 +545,31 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     }`}
                   >
                     <div className="space-y-1 min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Bike className={`w-4 h-4 ${isActive ? 'text-ios-blue' : 'text-slate-400'}`} />
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <Bike className={`w-4 h-4 shrink-0 ${isActive ? 'text-ios-blue' : 'text-slate-400'}`} />
                         <span className={`text-xs font-bold truncate ${isActive ? 'text-ios-blue' : 'text-slate-900 dark:text-white'}`}>
                           {b.name}
                         </span>
-                        <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200/60 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium">
+                        <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200/60 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium shrink-0">
                           {typeName}
                         </span>
                         {b.stravaGearId && (
-                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-orange-500/15 text-[#FC4C02] font-semibold flex items-center gap-1">
-                            <Cloud className="w-2.5 h-2.5" />
-                            Strava
+                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-orange-500/15 text-[#FC4C02] font-semibold flex items-center gap-1 shrink-0">
+                            <svg className="w-2.5 h-2.5 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24">
+                              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
+                            </svg>
+                            <span>Strava</span>
                           </span>
                         )}
                         {isActive && (
-                          <span className="flex items-center gap-1 text-[10px] font-bold text-ios-blue font-mono">
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-ios-blue font-mono shrink-0">
                             <CheckCircle2 className="w-3 h-3" />
                             装配中
                           </span>
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                         <span>整车重: <strong className="text-slate-700 dark:text-slate-300">{b.weightKg} kg</strong></span>
                         <span>滚阻 Crr: <strong className="text-slate-700 dark:text-slate-300">{b.crr}</strong></span>
                         <span>风阻 CdA: <strong className="text-slate-700 dark:text-slate-300">{b.cda} m²</strong></span>
@@ -576,13 +582,17 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       {/* Strava Gear Binding Selector */}
                       {isStravaConnected && athlete?.bikes && athlete.bikes.length > 0 && (
                         <div
-                          className="mt-2 pt-2 border-t border-black/[0.04] dark:border-white/[0.06] flex items-center gap-2"
+                          className="mt-2 pt-2 border-t border-black/[0.04] dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <Cloud className="w-3 h-3 text-[#FC4C02] shrink-0" />
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400 shrink-0">
-                            {language === 'zh-TW' ? 'Strava 裝備關聯:' : 'Strava 装备关联:'}
-                          </span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <svg className="w-3 h-3 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24">
+                              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
+                            </svg>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                              {language === 'zh-TW' ? 'Strava 裝備關聯:' : 'Strava 装备关联:'}
+                            </span>
+                          </div>
                           <select
                             value={b.stravaGearId || ''}
                             onChange={(e) => {
@@ -602,7 +612,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                                 );
                               }
                             }}
-                            className="bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-200 text-[11px] rounded-lg px-2 py-0.5 border-none focus:ring-1 focus:ring-orange-500 flex-1 min-w-0 font-sans"
+                            className="w-full sm:flex-1 bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-200 text-[11px] rounded-lg px-2 py-1 border border-black/[0.06] dark:border-white/[0.1] focus:ring-1 focus:ring-orange-500 min-w-0 font-sans"
                           >
                             <option value="">未绑定</option>
                             {athlete.bikes.map(sb => (
@@ -615,7 +625,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 ml-1">
                       {bikes.length > 1 && !isActive && (
                         <button
                           type="button"
@@ -624,7 +634,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                             deleteBike(b.id);
                             showToast('已从车库移出该车', 'info');
                           }}
-                          className="p-1.5 rounded-xl text-slate-400 hover:text-ios-red hover:bg-ios-red/10 transition apple-touch"
+                          className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-ios-red hover:bg-ios-red/10 flex items-center justify-center transition apple-touch shrink-0"
                           title="删除战车"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -646,23 +656,25 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               <div className="space-y-4">
                 {/* Intro Card */}
                 <div className="p-5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold shrink-0">
                       <Cloud className="w-5 h-5" />
                     </div>
-                    <div>
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                             Strava 开放平台直连
                           </h3>
-                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-[#FC4C02]/15 text-[#FC4C02] font-semibold border border-[#FC4C02]/20">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FC4C02]/15 text-[#FC4C02] font-semibold border border-[#FC4C02]/20 shrink-0">
                             个人 API 模式
                           </span>
                         </div>
-                        <PoweredByStravaBadge />
+                        <div className="shrink-0">
+                          <PoweredByStravaBadge />
+                        </div>
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                         零云端服务器中转，本地直连您的 Strava 账号。自动同步骑行历史、真实心率功率与战车行驶里程。
                       </p>
                     </div>
@@ -754,42 +766,42 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               <div className="space-y-4">
                 {/* Connected Athlete Banner */}
                 <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       {athlete?.profile_medium ? (
                         <img
                           src={athlete.profile_medium}
                           alt={athlete.firstname}
-                          className="w-11 h-11 rounded-2xl object-cover border border-black/10 dark:border-white/10"
+                          className="w-11 h-11 rounded-2xl object-cover border border-black/10 dark:border-white/10 shrink-0"
                         />
                       ) : (
-                        <div className="w-11 h-11 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold text-base">
+                        <div className="w-11 h-11 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold text-base shrink-0">
                           {athlete?.firstname?.charAt(0) || 'S'}
                         </div>
                       )}
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-slate-900 dark:text-white">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-bold text-slate-900 dark:text-white truncate">
                             {athlete?.firstname} {athlete?.lastname}
                           </span>
-                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20 flex items-center gap-1">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20 flex items-center gap-1 shrink-0">
                             <Check className="w-2.5 h-2.5" />
                             已连接
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-[11px] text-slate-400 font-mono truncate">
                           {athlete?.city ? `${athlete.city}, ${athlete.country || ''}` : 'Strava 认证车手'}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-black/[0.04] dark:border-white/[0.06] w-full sm:w-auto">
                       <PoweredByStravaBadge />
                       <button
                         type="button"
                         onClick={() => syncStravaActivities(false)}
                         disabled={isStravaSyncing}
-                        className="apple-touch px-3 py-1.5 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/20 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
+                        className="apple-touch px-3.5 py-1.5 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/20 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50 shrink-0"
                       >
                         <RefreshCw className={`w-3.5 h-3.5 ${isStravaSyncing ? 'animate-spin' : ''}`} />
                         <span>{isStravaSyncing ? '同步中...' : '立即同步'}</span>
@@ -819,7 +831,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   )}
 
                   {/* Stats Tiles */}
-                  <div className="grid grid-cols-4 gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-center">
                     <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
                       <span className="text-[10px] text-slate-400 block">已同步活动</span>
                       <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
@@ -888,21 +900,23 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       />
                     </label>
 
-                    <div className="pt-2 flex items-center justify-between">
+                    <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
                         <span className="text-slate-800 dark:text-slate-200 block font-medium">历史骑行活动同步范围</span>
                         <span className="text-[10px] text-slate-400">为 PMC 长期体能负荷分析拉取历史天数</span>
                       </div>
-                      <IOSSegmentedControl
-                        options={[
-                          { value: '30', label: '30天' },
-                          { value: '60', label: '60天' },
-                          { value: '90', label: '90天' },
-                        ]}
-                        value={String(stravaSyncSettings.syncDays || 90)}
-                        onChange={(val) => updateStravaSettings({ syncDays: Number(val) })}
-                        size="sm"
-                      />
+                      <div className="shrink-0 self-end sm:self-auto">
+                        <IOSSegmentedControl
+                          options={[
+                            { value: '30', label: '30天' },
+                            { value: '60', label: '60天' },
+                            { value: '90', label: '90天' },
+                          ]}
+                          value={String(stravaSyncSettings.syncDays || 90)}
+                          onChange={(val) => updateStravaSettings({ syncDays: Number(val) })}
+                          size="sm"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -970,17 +984,17 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <button
                       type="button"
                       onClick={clearStravaCache}
-                      className="apple-touch flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-200/70 hover:bg-slate-300/70 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium transition"
+                      className="apple-touch flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-200/70 hover:bg-slate-300/70 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium transition shrink-0"
                     >
-                      <RotateCcw className="w-3.5 h-3.5" />
+                      <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                       <span>{language === 'zh-TW' ? '清空本地離線資料' : '清空本地离线数据'}</span>
                     </button>
                     <button
                       type="button"
                       onClick={disconnectStrava}
-                      className="apple-touch flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-medium transition"
+                      className="apple-touch flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-medium transition shrink-0"
                     >
-                      <LogOut className="w-3.5 h-3.5" />
+                      <LogOut className="w-3.5 h-3.5 shrink-0" />
                       <span>{language === 'zh-TW' ? '解除綁定並斷開' : '解除绑定并断开'}</span>
                     </button>
                   </div>
