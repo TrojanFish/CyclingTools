@@ -176,7 +176,7 @@ export const CyclePowerCalculator: React.FC = () => {
       { zone: 'Z2 有氧耐力 (Endurance Zone)', pct: '56% - 75%', min: Math.round(ftpBase * 0.56), max: Math.round(ftpBase * 0.75), desc: '提升线粒体密度与脂肪燃烧效率' },
       { zone: 'Z3 节奏区间 (Tempo)', pct: '76% - 90%', min: Math.round(ftpBase * 0.76), max: Math.round(ftpBase * 0.90), desc: '高效率巡航与长距离有氧输出' },
       { zone: 'Z4 甜点/乳酸阈值 (Sweetspot/Threshold)', pct: '91% - 105%', min: Math.round(ftpBase * 0.91), max: Math.round(ftpBase * 1.05), desc: '提升 FTP 阈值功率的核心训练区间' },
-      { zone: 'Z5 最大摄氧量 (VO2 Max)', pct: '106% - 120%', min: Math.round(ftpBase * 1.06), max: Math.round(ftpBase * 1.20), desc: '3~5分钟短坡与破风突围极限' },
+      { zone: 'Z5 最大摄氧量 (VO₂ Max)', pct: '106% - 120%', min: Math.round(ftpBase * 1.06), max: Math.round(ftpBase * 1.20), desc: '3~5分钟短坡与破风突围极限' },
       { zone: 'Z6 无氧耐力 (Anaerobic Capacity)', pct: '121% - 150%', min: Math.round(ftpBase * 1.21), max: Math.round(ftpBase * 1.50), desc: '30秒~2分钟陡坡进攻与超车' },
       { zone: 'Z7 神经肌肉冲刺 (Neuromuscular Power)', pct: '> 150%', min: Math.round(ftpBase * 1.51), max: 9999, desc: '全速冲刺与瞬间终点爆发' }
     ];
@@ -472,7 +472,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 {language === 'zh-TW' ? '騎行姿態與風阻迎風面積 (CdA)' : '骑行姿态与风阻迎风面积 (CdA)'}
                 <Tooltip content="CdA 代表风阻系数乘以正面投影迎风面积，值越小越气动省力。" />
               </label>
-              <div className="grid grid-cols-5 gap-1.5">
+              <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
                 {[
                   { id: 'extreme_tt', label: language === 'zh-TW' ? '祈禱 TT' : '极限祈祷', cda: 0.20 },
                   { id: 'tt', label: language === 'zh-TW' ? 'TT 破風' : 'TT 破风', cda: 0.22 },
@@ -485,13 +485,13 @@ export const CyclePowerCalculator: React.FC = () => {
                     <button
                       key={p.id}
                       onClick={() => handleCdaPresetChange(p.id as any)}
-                      className={`py-2 px-1 rounded-xl border text-center transition apple-touch ${
+                      className={`py-1.5 sm:py-2 px-0.5 sm:px-1 rounded-xl border text-center transition apple-touch ${
                         isSelected
                           ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-sm ring-1.5 ring-ios-blue/30 scale-[1.01]'
                           : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
                       }`}
                     >
-                      <div className={`text-[10px] ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
+                      <div className={`text-[10px] leading-tight truncate ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
                       <div className={`text-[9px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>{p.cda} m²</div>
                     </button>
                   );

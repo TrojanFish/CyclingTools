@@ -433,9 +433,9 @@ export const TOOLS_LIST: ToolMetadata[] = [
     badge: '科学课表',
     badgeEn: 'Workouts',
     badgeTw: '科學課表',
-    description: '针对 FTP 提升与专项能力强化打造的专业级结构化训练课表工坊。内置 Rønnestad 30/15s 微间歇、4x4 挪威经典 VO2max、2x20min 阈值巡航、Over-Under 乳酸清除、Tabata 极限冲刺及 Z2 耐力等 6 大世界级科学方案。支持可视化段落编排、NP/IF/TSS 实时预估，一键导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 标准课表文件。',
-    descriptionEn: 'Build and customize structured cycling interval workouts. Features 6 classic protocols (Rønnestad 30/15s, Norwegian 4x4 VO2max, 2x20 FTP, Over-Under, Tabata, Z2), live NP/IF/TSS estimation, and 1-click export to Zwift ZWO and Garmin MRC.',
-    descriptionTw: '針對 FTP 提升與專項能力強化打造的專業級結構化訓練課表工坊。內建 Rønnestad 30/15s 微間歇、4x4 挪威經典 VO2max、2x20min 閾值巡航、Over-Under 乳酸清除、Tabata 極限衝刺及 Z2 耐力等 6 大世界級科學方案。支援視覺化段落編排、NP/IF/TSS 即時預估，一鍵匯出 Zwift (.zwo) 與 Garmin/Wahoo (.mrc) 標準課表檔案。',
+    description: '针对 FTP 提升与专项能力强化打造的专业级结构化训练课表工坊。内置 Rønnestad 30/15s 微间歇、4x4 挪威经典 VO₂max、2x20min 阈值巡航、Over-Under 乳酸清除、Tabata 极限冲刺及 Z2 耐力等 6 大世界级科学方案。支持可视化段落编排、NP/IF/TSS 实时预估，一键导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 标准课表文件。',
+    descriptionEn: 'Build and customize structured cycling interval workouts. Features 6 classic protocols (Rønnestad 30/15s, Norwegian 4x4 VO₂max, 2x20 FTP, Over-Under, Tabata, Z2), live NP/IF/TSS estimation, and 1-click export to Zwift ZWO and Garmin MRC.',
+    descriptionTw: '針對 FTP 提升與專項能力強化打造的專業級結構化訓練課表工坊。內建 Rønnestad 30/15s 微間歇、4x4 挪威經典 VO₂max、2x20min 閾值巡航、Over-Under 乳酸清除、Tabata 極限衝刺及 Z2 耐力等 6 大世界級科學方案。支援視覺化段落編排、NP/IF/TSS 即時預估，一鍵匯出 Zwift (.zwo) 與 Garmin/Wahoo (.mrc) 標準課表檔案。',
     tags: ['间歇训练', '课表工坊', 'Zwift', 'ZWO', 'Garmin', 'MRC', 'VO2max', 'Ronnestad', 'Over-Under', 'FTP'],
     tagsEn: ['Workouts', 'Intervals', 'Zwift', 'ZWO', 'Garmin', 'MRC', 'VO2max', 'TrainerRoad'],
     tagsTw: ['間歇訓練', '課表工坊', 'Zwift', 'ZWO', 'Garmin', 'MRC', 'VO2max', 'Ronnestad', 'Over-Under', 'FTP']

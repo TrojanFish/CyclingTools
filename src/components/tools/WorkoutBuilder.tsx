@@ -70,10 +70,10 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     subtitle: '挪威名宿方案 / 3组x13次 / 高摄氧低神经疲劳',
     subtitleTw: '挪威名宿方案 / 3組x13次 / 高攝氧低神經疲勞',
     category: 'vo2max',
-    categoryLabel: '最大摄氧量 VO2max',
-    description: 'Bent R. Rønnestad 博士经典微间歇。3 组 x 13 次 (30s @ 125% FTP + 15s @ 50% FTP)，组间 3 分钟巡航。相比传统长间歇，微间歇能在积累极高 VO2max 刺激时间的同时，大幅降低乳酸与神经系统破坏。',
-    descriptionTw: 'Bent R. Rønnestad 博士經典微間歇。3 組 x 13 次 (30s @ 125% FTP + 15s @ 50% FTP)，組間 3 分鐘巡航。相比傳統長間歇，微間歇能在積累極高 VO2max 刺激時間的同時，大幅降低乳酸與神經系統破壞。',
-    targetAdaptation: 'VO2max 最大摄氧量拓展 · 神经肌肉快速抗乳酸恢复',
+    categoryLabel: '最大摄氧量 VO₂max',
+    description: 'Bent R. Rønnestad 博士经典微间歇。3 组 x 13 次 (30s @ 125% FTP + 15s @ 50% FTP)，组间 3 分钟巡航。相比传统长间歇，微间歇能在积累极高 VO₂max 刺激时间的同时，大幅降低乳酸与神经系统破坏。',
+    descriptionTw: 'Bent R. Rønnestad 博士經典微間歇。3 組 x 13 次 (30s @ 125% FTP + 15s @ 50% FTP)，組間 3 分鐘巡航。相比傳統長間歇，微間歇能在積累極高 VO₂max 刺激時間的同時，大幅降低乳酸與神經系統破壞。',
+    targetAdaptation: 'VO₂max 最大摄氧量拓展 · 神经肌肉快速抗乳酸恢复',
     segments: [
       { id: '1', type: 'warmup', name: '渐进热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
       { id: '2', type: 'steady', name: '准备踩踏 (Prep)', durationSec: 120, powerStartPct: 0.60, powerEndPct: 0.60, cadenceRpm: 90 },
@@ -92,19 +92,19 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     subtitle: 'Helgerud & Hoff 协议 / 4组4分 / 心肺泵血重构',
     subtitleTw: 'Helgerud & Hoff 協議 / 4組4分 / 心肺泵血重構',
     category: 'vo2max',
-    categoryLabel: '最大摄氧量 VO2max',
+    categoryLabel: '最大摄氧量 VO₂max',
     description: '挪威科技大学 Helgerud & Hoff 实验室金牌课表。4 组 4 分钟 @ 110% FTP (逼近 90-95% HRmax)，组间 3 分钟积极恢复。被运动医学界证实为单位时间内提升左心室每搏输出量与摄氧量效率最高的手段之一。',
     descriptionTw: '挪威科技大學 Helgerud & Hoff 實驗室金牌課表。4 組 4 分鐘 @ 110% FTP (逼近 90-95% HRmax)，組間 3 分鐘積極恢復。被運動醫學界證實為單位時間內提升左心室每搏輸出量與攝氧量效率最高的手法之一。',
     targetAdaptation: '心肌收缩力增强 · 最大心输出量 · 爬坡爆发力',
     segments: [
       { id: '1', type: 'warmup', name: '渐进热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
-      { id: '2', type: 'steady', name: '第 1 组 4min VO2max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
+      { id: '2', type: 'steady', name: '第 1 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
       { id: '3', type: 'steady', name: '恢复巡航 (Rest 1)', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
-      { id: '4', type: 'steady', name: '第 2 组 4min VO2max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
+      { id: '4', type: 'steady', name: '第 2 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
       { id: '5', type: 'steady', name: '恢复巡航 (Rest 2)', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
-      { id: '6', type: 'steady', name: '第 3 组 4min VO2max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
+      { id: '6', type: 'steady', name: '第 3 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
       { id: '7', type: 'steady', name: '恢复巡航 (Rest 3)', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
-      { id: '8', type: 'steady', name: '第 4 组 4min VO2max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
+      { id: '8', type: 'steady', name: '第 4 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
       { id: '9', type: 'cooldown', name: '冷身排酸 (Cooldown)', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
     ]
   },
@@ -357,7 +357,7 @@ export const WorkoutBuilder: React.FC = () => {
     if (pct < 0.75) return '#3b82f6'; // Z2 Endurance (blue)
     if (pct < 0.90) return '#10b981'; // Z3 Tempo (green)
     if (pct < 1.05) return '#f59e0b'; // Z4 Threshold (amber)
-    if (pct < 1.20) return '#f97316'; // Z5 VO2 Max (orange)
+    if (pct < 1.20) return '#f97316'; // Z5 VO₂ Max (orange)
     if (pct < 1.50) return '#ef4444'; // Z6 Anaerobic (red)
     return '#a855f7';                 // Z7 Neuromuscular (purple)
   };

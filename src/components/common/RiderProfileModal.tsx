@@ -338,7 +338,11 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                 <div>
                   <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block mb-1">
-                    {language === 'zh-TW' ? '最大心率 (HRmax)' : '最大心率 (HRmax)'}
+                    {language === 'zh-TW' ? (
+                      <span>最大心率 (HR<sub className="text-[10px]">max</sub>)</span>
+                    ) : (
+                      <span>最大心率 (HR<sub className="text-[10px]">max</sub>)</span>
+                    )}
                   </label>
                   <NumberStepper
                     value={profile.maxHr}
@@ -352,7 +356,11 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                 <div>
                   <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block mb-1">
-                    {language === 'zh-TW' ? '靜息心率 (HRrest)' : '静息心率 (HRrest)'}
+                    {language === 'zh-TW' ? (
+                      <span>靜息心率 (HR<sub className="text-[10px]">rest</sub>)</span>
+                    ) : (
+                      <span>静息心率 (HR<sub className="text-[10px]">rest</sub>)</span>
+                    )}
                   </label>
                   <NumberStepper
                     value={profile.restingHr}
@@ -572,7 +580,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                       <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                         <span>整车重: <strong className="text-slate-700 dark:text-slate-300">{b.weightKg} kg</strong></span>
-                        <span>滚阻 Crr: <strong className="text-slate-700 dark:text-slate-300">{b.crr}</strong></span>
+                        <span>滚阻 C<sub className="text-[9px]">rr</sub>: <strong className="text-slate-700 dark:text-slate-300">{b.crr}</strong></span>
                         <span>风阻 CdA: <strong className="text-slate-700 dark:text-slate-300">{b.cda} m²</strong></span>
                         {b.mileageKm !== undefined && (
                           <span>里程: <strong className="text-ios-blue font-bold">{b.mileageKm} km</strong></span>

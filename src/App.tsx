@@ -165,7 +165,7 @@ const MainAppContent: React.FC = () => {
           <main className="space-y-4 sm:space-y-6">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
-              <div className="glass-panel px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-xs no-print">
+              <div className="glass-panel relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-xs no-print">
                 {/* Left: Simplified Back Button & Breadcrumbs */}
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button

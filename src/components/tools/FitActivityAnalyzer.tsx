@@ -627,7 +627,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         title: language === 'zh-TW' ? '全能均衡型 (All-Rounder)' : '全能均衡型 (All-Rounder)',
         badgeColor: 'text-ios-blue bg-ios-blue/10 border-ios-blue/20',
         description: '冲刺、无氧摄氧与阈值巡航能力全面且均衡，能够从容应对多起伏丘陵、大组突围与平路追击等各类综合赛况。',
-        trainingFocus: '建议保持全面素质，结合「训练课表工坊」针对短板（如 VO2max 4x4 或 2x20 阈值）进行特定专项突破。'
+        trainingFocus: '建议保持全面素质，结合「训练课表工坊」针对短板（如 VO₂max 4x4 或 2x20 阈值）进行特定专项突破。'
       };
     }
     if (score5s === maxScore) {
@@ -644,8 +644,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         type: 'puncher',
         title: language === 'zh-TW' ? '阿登突圍/陡坡型 (Puncher / Breakaway)' : '阿登突围/陡坡型 (Puncher / Breakaway)',
         badgeColor: 'text-ios-orange bg-ios-orange/10 border-ios-orange/20',
-        description: '最大摄氧量 (VO2max) 与抗乳酸能力突出，擅长 1~5 分钟的短陡坡爆击、反复突围拉扯与追赶。',
-        trainingFocus: '可配合「Over-Under 乳酸清除间歇」与「4x4 VO2max 课表」进一步强化乳酸穿梭再循环能力。'
+        description: '最大摄氧量 (VO₂max) 与抗乳酸能力突出，擅长 1~5 分钟的短陡坡爆击、反复突围拉扯与追赶。',
+        trainingFocus: '可配合「Over-Under 乳酸清除间歇」与「4x4 VO₂max 课表」进一步强化乳酸穿梭再循环能力。'
       };
     }
     return {
@@ -691,7 +691,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'ronnestad_30_15') || WORKOUT_TEMPLATES[0];
         return {
           template: tmpl,
-          deficiencyTitle: language === 'zh-TW' ? '最大攝氧量 (VO2max) 儲備不足' : '最大摄氧量 (VO2max) 储备不足',
+          deficiencyTitle: language === 'zh-TW' ? '最大攝氧量 (VO₂max) 儲備不足' : '最大摄氧量 (VO₂max) 储备不足',
           deficiencyDesc: `本次骑行 1m~5m 相对推重比偏弱 (5m 推重比: ${m5m.toFixed(1)} W/kg)。面对急陡坡爆击或高强度拉扯突围时易进入急性缺氧力竭。`,
           actionAdvice: '推荐执行 Rønnestad 30/15s 微间歇或 4x4 min 高摄氧课表，快速提升左心室泵血输出与神经抗乳酸效率。'
         };

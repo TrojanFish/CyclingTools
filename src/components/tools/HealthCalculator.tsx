@@ -109,7 +109,7 @@ export const HealthCalculator: React.FC = () => {
         desc: '乳酸生成与清除平衡临界点，提升竞技巡航耐受力的关键训练区间。'
       },
       {
-        zone: 'Zone 5 无氧极限 (Anaerobic / VO2 Max)',
+        zone: 'Zone 5 无氧极限 (Anaerobic / VO₂ Max)',
         range: `${Math.round(restingHr + hrr * 0.90)} - ${maxHr} bpm`,
         pct: '90% - 100% HRR',
         desc: '陡坡进攻、卡位冲刺与全速突围极限，肌肉迅速堆积乳酸。'
@@ -222,6 +222,8 @@ export const HealthCalculator: React.FC = () => {
             ]}
             value={activeTab}
             onChange={(val) => setActiveTab(val as any)}
+            fullWidth
+            hideIconOnMobile
             size="sm"
           />
         </div>
@@ -506,7 +508,7 @@ export const HealthCalculator: React.FC = () => {
             <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 block">身体质量指数 (BMI)</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 block">{language === 'zh-TW' ? '身體質量指數 (BMI, kg/m²)' : '身体质量指数 (BMI, kg/m²)'}</span>
                   <div className="text-4xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
                     {bmiResult.bmi}
                   </div>

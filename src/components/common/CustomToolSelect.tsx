@@ -125,12 +125,12 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
   }, [language]);
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className={`relative ${isOpen ? 'z-50' : ''}`} ref={containerRef}>
       {/* Trigger Button */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-8 sm:h-9 px-2 sm:px-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between gap-1.5 sm:gap-2 w-full sm:w-auto max-w-[170px] sm:max-w-[270px] truncate apple-touch hover:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition shadow-2xs"
+        className="h-8 sm:h-9 px-2 sm:px-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between gap-1.5 sm:gap-2 w-auto min-w-[120px] max-w-[165px] sm:max-w-[270px] truncate apple-touch hover:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 transition shadow-2xs"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
@@ -159,7 +159,7 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute right-0 top-full mt-1.5 z-50 w-72 sm:w-80 max-w-[calc(100vw-32px)] max-h-[65vh] overflow-y-auto rounded-2xl bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-2xl p-1.5 space-y-2 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 top-full mt-1.5 z-50 w-72 sm:w-80 max-w-[calc(100vw-24px)] max-h-[65vh] overflow-y-auto rounded-2xl bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-2xl p-1.5 space-y-2 animate-in fade-in zoom-in-95 duration-150"
         >
           {toolGroups.map((group) => (
             <div key={group.category} className="space-y-0.5">

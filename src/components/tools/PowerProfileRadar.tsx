@@ -265,7 +265,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   // Radar Chart Dataset
   const chartData = useMemo(() => {
     return {
-      labels: ['5秒 冲刺', '1分钟 无氧', '5分钟 VO2', '20分钟 阈值', '绝对巡航瓦', '爬坡推重比'],
+      labels: ['5秒 冲刺', '1分钟 无氧', '5分钟 VO₂', '20分钟 阈值', '绝对巡航瓦', '爬坡推重比'],
       datasets: [
         {
           label: '车手能力六维评分 (100分制)',
@@ -308,8 +308,8 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             </h1>
             <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
               {language === 'zh-TW'
-                ? '基於 5s 衝刺、1min 無氧、5min VO2 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'
-                : '基于 5s 冲刺、1min 无氧、5min VO2 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'}
+                ? '基於 5s 衝刺、1min 無氧、5min VO₂ 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'
+                : '基于 5s 冲刺、1min 无氧、5min VO₂ 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'}
             </p>
           </div>
 
@@ -427,7 +427,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                     <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p1m ? `${liveParsed.p1m} W` : '未识别'}</span>
                   </div>
                   <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5分钟 VO2</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5分钟 VO₂</span>
                     <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p5m ? `${liveParsed.p5m} W` : '未识别'}</span>
                   </div>
                   <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
@@ -482,7 +482,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           accent="orange"
         />
         <IOSMetricTile
-          label={language === 'zh-TW' ? '5分鐘 VO2 推重比' : '5分钟 VO2 推重比'}
+          label={language === 'zh-TW' ? '5分鐘 VO₂ 推重比' : '5分钟 VO₂ 推重比'}
           value={analytics.w5m}
           unit="W/kg"
           subValue={`${p5m} W`}
@@ -553,7 +553,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '5分鐘 VO2 Max' : '5分钟 VO2 Max'} (W)
+                  {language === 'zh-TW' ? '5分鐘 VO₂ Max' : '5分钟 VO₂ Max'} (W)
                 </label>
                 <NumberStepper value={p5m} onChange={setP5m} step={5} min={150} max={700} unit="W" />
                 <span className="text-[11px] text-ios-blue font-mono font-medium block mt-1">
