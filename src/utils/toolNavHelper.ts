@@ -111,7 +111,7 @@ export const ALL_NAV_TOOLS: NavToolItem[] = [
   },
   {
     id: 'tubeless-sealant',
-    title: '真空胎自补液与维护周期计算器',
+    title: '真空胎自补液加注量与补液周期计算器',
     titleTw: '無內胎補胎液加注量與週期計算器',
     shortTitle: '自补液',
     shortTitleTw: '自補液',
@@ -129,7 +129,7 @@ export const ALL_NAV_TOOLS: NavToolItem[] = [
     shortTitleTw: '編輪輻條',
     category: 'dynamics',
     categoryLabel: '动力学与传动',
-    categoryLabelTw: '動力學與傳动',
+    categoryLabelTw: '動力學與傳動',
     categoryColor: 'ios-blue',
     icon: Disc
   },

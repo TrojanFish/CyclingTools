@@ -455,10 +455,10 @@ export const WorkoutBuilder: React.FC = () => {
     <div className="space-y-6">
       {/* Header Banner */}
       <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-purple/15" />
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
               <Dumbbell className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '結構化間歇課表工坊' : '结构化间歇课表工坊'}</span>
             </div>
@@ -474,7 +474,7 @@ export const WorkoutBuilder: React.FC = () => {
             <button
               type="button"
               onClick={() => setExportModalOpen(true)}
-              className="apple-touch px-4 py-2.5 rounded-2xl bg-ios-purple hover:bg-ios-purple/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
+              className="apple-touch px-4 py-2.5 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
             >
               <Download className="w-4 h-4" />
               <span>导出课表 (ZWO / MRC)</span>
@@ -535,7 +535,7 @@ export const WorkoutBuilder: React.FC = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-ios-purple" />
+            <Sparkles className="w-3.5 h-3.5 text-ios-red" />
             <span>世界殿堂科学训练协议预设库 (Classic Workout Presets)</span>
           </div>
         </div>
@@ -549,7 +549,7 @@ export const WorkoutBuilder: React.FC = () => {
                 onClick={() => handleSelectTemplate(tmpl)}
                 className={`p-4 rounded-3xl border transition cursor-pointer apple-touch flex flex-col justify-between gap-3 ${
                   isSelected
-                    ? 'bg-ios-purple/5 dark:bg-ios-purple/10 border-ios-purple shadow-ios-sm'
+                    ? 'bg-ios-red/5 dark:bg-ios-red/10 border-ios-red shadow-ios-sm'
                     : 'bg-white/80 dark:bg-[#1C1C1E]/80 border-slate-200/80 dark:border-white/10 hover:border-slate-300'
                 }`}
               >
@@ -559,7 +559,7 @@ export const WorkoutBuilder: React.FC = () => {
                       {tmpl.categoryLabel}
                     </span>
                     {isSelected && (
-                      <span className="text-[10px] font-bold text-ios-purple flex items-center gap-1">
+                      <span className="text-[10px] font-bold text-ios-red flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         当前编辑
                       </span>
@@ -575,7 +575,7 @@ export const WorkoutBuilder: React.FC = () => {
 
                 <div className="text-[10px] text-slate-400 font-medium pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                   <span>🎯 {tmpl.targetAdaptation}</span>
-                  <span className="text-ios-purple font-semibold">加载模板 →</span>
+                  <span className="text-ios-red font-semibold">加载模板 →</span>
                 </div>
               </div>
             );
@@ -592,7 +592,7 @@ export const WorkoutBuilder: React.FC = () => {
                 type="text"
                 value={workoutTitle}
                 onChange={(e) => setWorkoutTitle(e.target.value)}
-                className="text-base sm:text-lg font-bold text-slate-900 dark:text-white bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 hover:border-ios-purple focus:outline-none focus:border-ios-purple px-1 py-0.5"
+                className="text-base sm:text-lg font-bold text-slate-900 dark:text-white bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 hover:border-ios-red focus:outline-none focus:border-ios-red px-1 py-0.5"
                 placeholder="课表名称..."
               />
             </div>
@@ -613,7 +613,7 @@ export const WorkoutBuilder: React.FC = () => {
             <button
               type="button"
               onClick={() => handleAddSegment('interval')}
-              className="apple-touch px-3 py-1.5 rounded-xl bg-ios-purple/10 hover:bg-ios-purple/20 text-ios-purple font-bold transition flex items-center gap-1"
+              className="apple-touch px-3 py-1.5 rounded-xl bg-ios-red/10 hover:bg-ios-red/20 text-ios-red font-bold transition flex items-center gap-1"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>加微间歇循环</span>
@@ -688,7 +688,7 @@ export const WorkoutBuilder: React.FC = () => {
                       type="text"
                       value={seg.name}
                       onChange={(e) => handleUpdateSegment(seg.id, 'name', e.target.value)}
-                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:outline-none focus:border-ios-purple w-full truncate"
+                      className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 focus:outline-none focus:border-ios-red w-full truncate"
                     />
 
                     <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 font-mono">
@@ -708,72 +708,149 @@ export const WorkoutBuilder: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Center: Interactive Micro Steppers */}
-                <div className="flex flex-wrap items-center gap-3 text-xs">
+                {/* Center / Right: Power & Cadence Controls */}
+                <div className="flex flex-wrap items-center gap-3">
                   {!isInterval ? (
-                    <>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-400 text-[11px]">时长:</span>
-                        <NumberStepper
-                          value={Math.round(seg.durationSec / 60)}
-                          onChange={(m) => handleUpdateSegment(seg.id, 'durationSec', m * 60)}
-                          min={1}
-                          max={180}
-                          step={1}
-                          unit="分"
-                        />
+                    <div className="flex items-center gap-2">
+                      <div className="text-center">
+                        <span className="text-[10px] text-slate-400 block mb-0.5">功率区间</span>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            min={20}
+                            max={250}
+                            step={5}
+                            value={Math.round(seg.powerStartPct * 100)}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'powerStartPct', (parseInt(e.target.value) || 50) / 100)
+                            }
+                            className="w-14 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                          />
+                          <span className="text-slate-400 text-xs">%</span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-400 text-[11px]">强度:</span>
-                        <NumberStepper
-                          value={Math.round(seg.powerStartPct * 100)}
-                          onChange={(pct) => {
-                            handleUpdateSegment(seg.id, 'powerStartPct', pct / 100);
-                            handleUpdateSegment(seg.id, 'powerEndPct', pct / 100);
-                          }}
-                          min={30}
-                          max={250}
-                          step={5}
-                          unit="%"
-                        />
+                      <div className="text-center">
+                        <span className="text-[10px] text-slate-400 block mb-0.5">目标踏频</span>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            min={50}
+                            max={130}
+                            step={5}
+                            value={seg.cadenceRpm || 90}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'cadenceRpm', parseInt(e.target.value) || 90)
+                            }
+                            className="w-14 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                          />
+                          <span className="text-slate-400 text-xs">rpm</span>
+                        </div>
                       </div>
-                    </>
+
+                      <div className="text-center">
+                        <span className="text-[10px] text-slate-400 block mb-0.5">分段时长</span>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            min={1}
+                            max={120}
+                            step={1}
+                            value={Math.round(seg.durationSec / 60)}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'durationSec', (parseInt(e.target.value) || 1) * 60)
+                            }
+                            className="w-14 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                          />
+                          <span className="text-slate-400 text-xs">分</span>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
-                    <>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-400 text-[11px]">重复:</span>
-                        <NumberStepper
-                          value={seg.repeatCount || 5}
-                          onChange={(c) => handleUpdateSegment(seg.id, 'repeatCount', c)}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="text-center">
+                        <span className="text-[10px] text-slate-400 block mb-0.5">循环次数</span>
+                        <input
+                          type="number"
                           min={1}
                           max={30}
-                          step={1}
-                          unit="次"
+                          value={seg.repeatCount || 5}
+                          onChange={(e) =>
+                            handleUpdateSegment(seg.id, 'repeatCount', parseInt(e.target.value) || 1)
+                          }
+                          className="w-12 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
                         />
                       </div>
 
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-400 text-[11px]">冲刺%:</span>
-                        <NumberStepper
-                          value={Math.round((seg.onPowerPct || 1.2) * 100)}
-                          onChange={(p) => handleUpdateSegment(seg.id, 'onPowerPct', p / 100)}
-                          min={80}
-                          max={250}
-                          step={5}
-                          unit="%"
-                        />
+                      <div className="text-center">
+                        <span className="text-[10px] text-red-500 font-bold block mb-0.5">ON 时长/功率</span>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            min={5}
+                            max={600}
+                            step={5}
+                            value={seg.onDurationSec || 30}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'onDurationSec', parseInt(e.target.value) || 30)
+                            }
+                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold"
+                          />
+                          <span className="text-[10px] text-slate-400">s@</span>
+                          <input
+                            type="number"
+                            min={50}
+                            max={300}
+                            step={5}
+                            value={Math.round((seg.onPowerPct || 1.2) * 100)}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'onPowerPct', (parseInt(e.target.value) || 100) / 100)
+                            }
+                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold"
+                          />
+                          <span className="text-[10px] text-slate-400">%</span>
+                        </div>
                       </div>
-                    </>
+
+                      <div className="text-center">
+                        <span className="text-[10px] text-emerald-500 font-bold block mb-0.5">OFF 间歇/功率</span>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            min={5}
+                            max={600}
+                            step={5}
+                            value={seg.offDurationSec || 30}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'offDurationSec', parseInt(e.target.value) || 30)
+                            }
+                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
+                          />
+                          <span className="text-[10px] text-slate-400">s@</span>
+                          <input
+                            type="number"
+                            min={30}
+                            max={100}
+                            step={5}
+                            value={Math.round((seg.offPowerPct || 0.55) * 100)}
+                            onChange={(e) =>
+                              handleUpdateSegment(seg.id, 'offPowerPct', (parseInt(e.target.value) || 50) / 100)
+                            }
+                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
+                          />
+                          <span className="text-[10px] text-slate-400">%</span>
+                        </div>
+                      </div>
+                    </div>
                   )}
 
-                  {/* Actions: Move & Delete */}
-                  <div className="flex items-center gap-1 border-l border-slate-200 dark:border-white/10 pl-2">
+                  {/* Move Up/Down & Delete */}
+                  <div className="flex items-center gap-1">
                     <button
                       type="button"
                       disabled={idx === 0}
                       onClick={() => handleMoveSegment(idx, 'up')}
-                      className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-20 transition"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-20 transition"
                       title="上移"
                     >
                       <ChevronUp className="w-3.5 h-3.5" />
@@ -782,7 +859,7 @@ export const WorkoutBuilder: React.FC = () => {
                       type="button"
                       disabled={idx === segments.length - 1}
                       onClick={() => handleMoveSegment(idx, 'down')}
-                      className="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-20 transition"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 disabled:opacity-20 transition"
                       title="下移"
                     >
                       <ChevronDown className="w-3.5 h-3.5" />
@@ -790,8 +867,8 @@ export const WorkoutBuilder: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleDeleteSegment(seg.id)}
-                      className="p-1 text-slate-400 hover:text-ios-red transition ml-1"
-                      title="删除段落"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 transition"
+                      title="删除此段"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -809,7 +886,7 @@ export const WorkoutBuilder: React.FC = () => {
           <div className="ios-card w-full max-w-2xl p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileCode className="w-5 h-5 text-ios-purple" />
+                <FileCode className="w-5 h-5 text-ios-red" />
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   导出与下载骑行课表文件
                 </h3>
@@ -837,7 +914,7 @@ export const WorkoutBuilder: React.FC = () => {
 
             {/* Code Preview Box */}
             <div className="relative">
-              <pre className="p-4 rounded-2xl bg-slate-900 text-slate-200 text-xs font-mono h-64 overflow-y-auto leading-relaxed border border-slate-800 selection:bg-ios-purple selection:text-white">
+              <pre className="p-4 rounded-2xl bg-slate-900 text-slate-200 text-xs font-mono h-64 overflow-y-auto leading-relaxed border border-slate-800 selection:bg-ios-red selection:text-white">
                 {exportFormat === 'zwo' ? zwoXmlContent : mrcContent}
               </pre>
             </div>
@@ -870,7 +947,7 @@ export const WorkoutBuilder: React.FC = () => {
               <button
                 type="button"
                 onClick={handleDownloadFile}
-                className="apple-touch px-5 py-2 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
+                className="apple-touch px-5 py-2 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
               >
                 <Download className="w-4 h-4" />
                 <span>下载 .{exportFormat} 文件</span>

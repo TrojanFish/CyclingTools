@@ -63,9 +63,9 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; ring: string }
     ring: 'ring-ios-purple/20'
   },
   route: {
-    bg: 'bg-ios-teal/10 dark:bg-ios-teal/20',
-    text: 'text-ios-teal',
-    ring: 'ring-ios-teal/20'
+    bg: 'bg-ios-mint/10 dark:bg-ios-mint/20',
+    text: 'text-ios-mint',
+    ring: 'ring-ios-mint/20'
   },
   health: {
     bg: 'bg-ios-red/10 dark:bg-ios-red/20',

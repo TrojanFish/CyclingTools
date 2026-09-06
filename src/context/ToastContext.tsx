@@ -52,7 +52,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   ? 'bg-white/95 dark:bg-slate-950/95 border-rose-500/35 dark:border-rose-500/40 shadow-rose-500/5'
                   : isWarning
                   ? 'bg-white/95 dark:bg-slate-950/95 border-amber-500/35 dark:border-amber-500/40 shadow-amber-500/5'
-                  : 'bg-white/95 dark:bg-slate-950/95 border-cyan-500/35 dark:border-cyan-500/40 shadow-cyan-500/5'
+                  : 'bg-white/95 dark:bg-slate-950/95 border-ios-blue/35 dark:border-ios-blue/40 shadow-ios-blue/5'
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
@@ -64,7 +64,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                       ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
                       : isWarning
                       ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                      : 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400'
+                      : 'bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark'
                   }`}
                 >
                   {isSuccess && <CheckCircle2 className="w-4 h-4" />}

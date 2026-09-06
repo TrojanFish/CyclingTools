@@ -73,7 +73,7 @@ export const TireGauge: React.FC<TireGaugeProps> = ({
       </svg>
 
       <div className="-mt-3">
-        <span className="text-xl font-bold font-mono text-cyan-400">{displayValue}</span>
+        <span className="text-xl font-bold font-mono text-ios-blue">{displayValue}</span>
         <span className="text-[10px] text-slate-400 uppercase ml-1">{unit}</span>
       </div>
     </div>

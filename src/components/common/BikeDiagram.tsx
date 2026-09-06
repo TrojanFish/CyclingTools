@@ -21,7 +21,7 @@ export const BikeDiagram: React.FC<BikeDiagramProps> = ({
     <div className="w-full bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-4 relative overflow-hidden transition-colors">
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-slate-800 dark:text-slate-300">公路车几何与设定拟合可视化</span>
-        <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-semibold">SVG 矢量动力学模型</span>
+        <span className="text-[10px] text-ios-blue dark:text-ios-blue-dark font-mono font-semibold">SVG 矢量动力学模型</span>
       </div>
 
       <svg viewBox="0 0 500 280" className="w-full h-auto max-h-60 select-none">

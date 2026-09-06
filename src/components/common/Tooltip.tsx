@@ -16,7 +16,7 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
         onClick={() => setVisible(!visible)}
-        className="text-slate-400 hover:text-cyan-400 focus:outline-none transition p-0.5 ml-1"
+        className="text-slate-400 hover:text-ios-blue focus:outline-none transition p-0.5 ml-1"
       >
         {children || <HelpCircle className="w-3.5 h-3.5" />}
       </button>

@@ -294,13 +294,13 @@ export const MtbSuspensionTuner: React.FC = () => {
     <div className="space-y-6">
       {/* Header Banner */}
       <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-amber-500/15" />
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
               <Sliders className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '山地全避震工程' : '山地全避震工程'}</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/20">PRO TUNER</span>
+              <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-ios-blue/15 text-ios-blue border border-ios-blue/30">PRO TUNER</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
               {language === 'zh-TW'
@@ -332,7 +332,7 @@ export const MtbSuspensionTuner: React.FC = () => {
         {/* Quick Discipline Presets */}
         <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center gap-3">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <Sparkles className="w-3.5 h-3.5 text-ios-blue" />
             {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
           </span>
           <div className="w-full sm:max-w-2xl">
@@ -375,7 +375,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 <span className="text-slate-600 dark:text-slate-400">
                   {language === 'zh-TW' ? '防護裝具/背包/水壺重' : '防护装具/背包/水壶重'}
                 </span>
-                <span className="font-mono font-bold text-amber-500">
+                <span className="font-mono font-bold text-ios-blue">
                   +{gearWeightKg} kg (+{Math.round(gearWeightKg * 2.20462)} lbs)
                 </span>
               </div>
@@ -386,7 +386,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 step={0.5}
                 value={gearWeightKg}
                 onChange={(e) => setGearWeightKg(parseFloat(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
               />
               <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                 <span>轻装 2kg</span>
@@ -395,11 +395,11 @@ export const MtbSuspensionTuner: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                 {language === 'zh-TW' ? '避震計算總負重' : '避震计算总负重'}
               </span>
-              <span className="text-base font-black font-mono text-amber-600 dark:text-amber-400">
+              <span className="text-base font-black font-mono text-ios-blue">
                 {Math.round(totalRiderWeightKg * 10) / 10} kg ({Math.round(totalRiderWeightLbs)} lbs)
               </span>
             </div>
@@ -497,11 +497,11 @@ export const MtbSuspensionTuner: React.FC = () => {
               />
             </div>
 
-            <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-between">
+            <div className="p-2.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 平均杠杆比 (Leverage Ratio)
               </span>
-              <span className="text-sm font-black font-mono text-cyan-600 dark:text-cyan-400">
+              <span className="text-sm font-black font-mono text-ios-blue">
                 {calc.leverageRatio}:1
               </span>
             </div>
@@ -517,7 +517,7 @@ export const MtbSuspensionTuner: React.FC = () => {
             <IOSCardHeader
               title={language === 'zh-TW' ? '前避震前叉設定 (Front Fork)' : '前避震前叉设定 (Front Fork)'}
               action={
-                <span className="text-xs font-mono font-bold text-amber-500">
+                <span className="text-xs font-mono font-bold text-ios-blue">
                   {forkBrand.toUpperCase()} {forkStanchionMm}mm / {forkTravelMm}mm
                 </span>
               }
@@ -572,17 +572,17 @@ export const MtbSuspensionTuner: React.FC = () => {
                   step={10}
                   value={forkTravelMm}
                   onChange={(e) => setForkTravelMm(parseInt(e.target.value))}
-                  className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
                 />
               </div>
 
               {/* PRIMARY OUTPUT: FORK AIR PRESSURE & SAG */}
               <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-center">
-                  <div className="text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                <div className="p-4 rounded-2xl bg-ios-blue/15 border border-ios-blue/30 text-center">
+                  <div className="text-[11px] font-semibold text-ios-blue">
                     推荐前叉主气室气压
                   </div>
-                  <div className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400 my-1">
+                  <div className="text-3xl font-black font-mono text-ios-blue my-1">
                     {calc.finalForkPsi}
                     <span className="text-sm ml-1 font-sans">PSI</span>
                   </div>
@@ -599,7 +599,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     {calc.targetForkSagMm}
                     <span className="text-sm ml-1 font-sans">mm</span>
                   </div>
-                  <div className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400">
+                  <div className="text-[10px] font-bold text-ios-blue">
                     目标下沉率: {calc.targetForkSagPct}%
                   </div>
                 </div>
@@ -614,7 +614,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   max={15}
                   value={forkPsiOffset}
                   onChange={(e) => setForkPsiOffset(parseInt(e.target.value))}
-                  className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
                 />
                 <button
                   onClick={() => setForkPsiOffset(0)}
@@ -629,7 +629,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-2.5">
                 <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
                   <span>阻尼旋钮点击建议（由全闭 / Fully Closed 逆时针开退）</span>
-                  <span className="text-[10px] font-mono text-amber-500">CLICKS OUT</span>
+                  <span className="text-[10px] font-mono text-ios-blue">CLICKS OUT</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
@@ -654,7 +654,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <div className="text-[9px] text-slate-400">格 (GRIP2/Charger)</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
-                    <div className="text-amber-500 font-semibold text-[11px]">气室垫块 Token</div>
+                    <div className="text-ios-blue font-semibold text-[11px]">气室垫块 Token</div>
                     <div className="font-mono font-black text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.recommendedForkTokens}
                     </div>
@@ -679,7 +679,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   max={Math.round(forkTravelMm * 0.55)}
                   value={measuredForkSagMm}
                   onChange={(e) => setMeasuredForkSagMm(parseInt(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
                 />
 
                 {/* Status Indicator */}
@@ -730,7 +730,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     onClick={() => setShockType('air')}
                     className={`px-2.5 py-0.5 rounded-lg text-xs font-bold transition ${
                       shockType === 'air'
-                        ? 'bg-amber-500 text-white shadow-xs'
+                        ? 'bg-ios-blue text-white shadow-xs'
                         : 'bg-slate-100 dark:bg-white/5 text-slate-500'
                     }`}
                   >
@@ -741,7 +741,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     onClick={() => setShockType('coil')}
                     className={`px-2.5 py-0.5 rounded-lg text-xs font-bold transition ${
                       shockType === 'coil'
-                        ? 'bg-amber-500 text-white shadow-xs'
+                        ? 'bg-ios-blue text-white shadow-xs'
                         : 'bg-slate-100 dark:bg-white/5 text-slate-500'
                     }`}
                   >
@@ -755,11 +755,11 @@ export const MtbSuspensionTuner: React.FC = () => {
               {shockType === 'air' ? (
                 <>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-center">
-                      <div className="text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                    <div className="p-4 rounded-2xl bg-ios-blue/15 border border-ios-blue/30 text-center">
+                      <div className="text-[11px] font-semibold text-ios-blue">
                         推荐后胆主气室气压
                       </div>
-                      <div className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400 my-1">
+                      <div className="text-3xl font-black font-mono text-ios-blue my-1">
                         {calc.finalShockPsi}
                         <span className="text-sm ml-1 font-sans">PSI</span>
                       </div>
@@ -776,7 +776,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         {calc.targetShockSagMm}
                         <span className="text-sm ml-1 font-sans">mm</span>
                       </div>
-                      <div className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400">
+                      <div className="text-[10px] font-bold text-ios-blue">
                         目标下沉率: {calc.targetShockSagPct}%
                       </div>
                     </div>
@@ -791,7 +791,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                       max={20}
                       value={shockPsiOffset}
                       onChange={(e) => setShockPsiOffset(parseInt(e.target.value))}
-                      className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
                     />
                     <button
                       onClick={() => setShockPsiOffset(0)}
@@ -806,11 +806,11 @@ export const MtbSuspensionTuner: React.FC = () => {
                 /* Coil Shock Spring Rate Output */
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-center">
-                      <div className="text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                    <div className="p-4 rounded-2xl bg-ios-blue/15 border border-ios-blue/30 text-center">
+                      <div className="text-[11px] font-semibold text-ios-blue">
                         推荐市售弹簧磅数 (Spring)
                       </div>
-                      <div className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400 my-1">
+                      <div className="text-3xl font-black font-mono text-ios-blue my-1">
                         {calc.closestSpringRate}
                         <span className="text-sm ml-1 font-sans">lbs/in</span>
                       </div>
@@ -838,9 +838,9 @@ export const MtbSuspensionTuner: React.FC = () => {
                       弹簧选型提示：
                     </span>
                     若想要更敏锐的贴地循迹性可选{' '}
-                    <strong className="text-amber-500">{calc.closestSpringRate - 25} lbs</strong> 弹簧；
+                    <strong className="text-ios-blue">{calc.closestSpringRate - 25} lbs</strong> 弹簧；
                     若常飞大落差抛台推荐选配{' '}
-                    <strong className="text-amber-500">{calc.closestSpringRate} ~ {calc.closestSpringRate + 25} lbs</strong>。
+                    <strong className="text-ios-blue">{calc.closestSpringRate} ~ {calc.closestSpringRate + 25} lbs</strong>。
                   </div>
                 </div>
               )}
@@ -849,7 +849,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-2.5">
                 <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
                   <span>后避震阻尼点击点位（由全闭逆时针旋转）</span>
-                  <span className="text-[10px] font-mono text-amber-500">CLICKS OUT</span>
+                  <span className="text-[10px] font-mono text-ios-blue">CLICKS OUT</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-center text-xs">
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
@@ -886,7 +886,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   step={0.5}
                   value={measuredShockSagMm}
                   onChange={(e) => setMeasuredShockSagMm(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
                 />
 
                 {/* Status Indicator */}
@@ -935,7 +935,7 @@ export const MtbSuspensionTuner: React.FC = () => {
             <div>
               <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">
                 <span>前叉内管与 O 圈位置</span>
-                <span className="font-mono text-amber-500">
+                <span className="font-mono text-ios-blue">
                   {measuredForkSagMm}mm / {forkTravelMm}mm ({calc.actualForkSagPct}%)
                 </span>
               </div>
@@ -951,7 +951,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 />
                 {/* Travel Used Fill */}
                 <div
-                  className="h-full bg-gradient-to-r from-amber-500/40 to-amber-500/70 transition-all duration-200"
+                  className="h-full bg-gradient-to-r from-ios-blue/40 to-ios-blue/70 transition-all duration-200"
                   style={{ width: `${Math.min(100, calc.actualForkSagPct)}%` }}
                 />
                 {/* O-Ring Marker */}
@@ -972,14 +972,14 @@ export const MtbSuspensionTuner: React.FC = () => {
             <div>
               <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">
                 <span>后胆主轴与 O 圈位置</span>
-                <span className="font-mono text-cyan-500">
+                <span className="font-mono text-ios-blue">
                   {measuredShockSagMm}mm / {shockStrokeMm}mm ({calc.actualShockSagPct}%)
                 </span>
               </div>
               <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl relative overflow-hidden border border-slate-300 dark:border-white/10">
                 {/* Target Zone */}
                 <div
-                  className="absolute top-0 bottom-0 bg-cyan-500/25 border-r-2 border-cyan-500 z-0"
+                  className="absolute top-0 bottom-0 bg-ios-blue/25 border-r-2 border-ios-blue z-0"
                   style={{
                     left: `${Math.max(0, calc.targetShockSagPct - 3)}%`,
                     width: '6%'
@@ -988,7 +988,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 />
                 {/* Travel Used Fill */}
                 <div
-                  className="h-full bg-gradient-to-r from-cyan-500/40 to-cyan-500/70 transition-all duration-200"
+                  className="h-full bg-gradient-to-r from-ios-blue/40 to-ios-blue/70 transition-all duration-200"
                   style={{ width: `${Math.min(100, calc.actualShockSagPct)}%` }}
                 />
                 {/* O-Ring Marker */}
@@ -1000,7 +1000,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               </div>
               <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
                 <span>0mm (完全展开)</span>
-                <span className="text-cyan-500 font-bold">Target: {calc.targetShockSagMm}mm</span>
+                <span className="text-ios-blue font-bold">Target: {calc.targetShockSagMm}mm</span>
                 <span>{shockStrokeMm}mm (彻底触底)</span>
               </div>
             </div>
@@ -1035,7 +1035,7 @@ export const MtbSuspensionTuner: React.FC = () => {
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-1.5">
-            <div className="flex items-center gap-1.5 font-bold text-cyan-600 dark:text-cyan-400">
+            <div className="flex items-center gap-1.5 font-bold text-ios-blue">
               <Wrench className="w-4 h-4" />
               重刹点点头严重 (Diving)
             </div>

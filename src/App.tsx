@@ -171,7 +171,7 @@ const MainAppContent: React.FC = () => {
                   {/* Mobile Only: Back Button with Icon AND Text */}
                   <button
                     onClick={() => setCurrentToolId(null)}
-                    className="md:hidden inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition active:scale-95 text-xs font-bold shrink-0"
+                    className="md:hidden inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 text-xs font-bold shrink-0 apple-touch"
                     title={t('backToHome')}
                     aria-label={t('backToHome')}
                   >
@@ -183,7 +183,7 @@ const MainAppContent: React.FC = () => {
                   <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
                     <button
                       onClick={() => setCurrentToolId(null)}
-                      className="cursor-pointer hover:text-cyan-500 dark:hover:text-cyan-400 transition font-medium hover:underline text-slate-600 dark:text-slate-300"
+                      className="cursor-pointer hover:text-ios-blue transition font-medium hover:underline text-slate-600 dark:text-slate-300"
                     >
                       {language === 'zh-TW' ? '首頁' : '首页'}
                     </button>
@@ -207,7 +207,7 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handlePrevTool}
                     disabled={currentToolIndex <= 0}
-                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-cyan-500 disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
                     title={t('prevTool')}
                     aria-label={t('prevTool')}
                   >
@@ -224,7 +224,7 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handleNextTool}
                     disabled={currentToolIndex >= TOOLS_LIST.length - 1}
-                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-cyan-500 disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
                     title={t('nextTool')}
                     aria-label={t('nextTool')}
                   >

@@ -74,9 +74,9 @@ export const PwaInstallPrompt: React.FC = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 sm:pt-2.5 no-print">
-        <div className="max-w-xl mx-auto flex items-center justify-between gap-2 px-3 py-1.5 rounded-2xl bg-cyan-500/10 dark:bg-cyan-950/30 border border-cyan-500/30 dark:border-cyan-500/20 backdrop-blur-md text-slate-800 dark:text-slate-200 shadow-xs animate-in fade-in slide-in-from-top-1">
+        <div className="max-w-xl mx-auto flex items-center justify-between gap-2 px-3 py-1.5 rounded-2xl bg-ios-blue/10 dark:bg-ios-blue/15 border border-ios-blue/30 dark:border-ios-blue/20 backdrop-blur-md text-slate-800 dark:text-slate-200 shadow-xs animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+            <div className="w-6 h-6 rounded-lg bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark flex items-center justify-center shrink-0">
               <Smartphone className="w-3.5 h-3.5" />
             </div>
             <span className="text-[11px] sm:text-xs font-medium truncate text-slate-700 dark:text-slate-300">
@@ -89,9 +89,9 @@ export const PwaInstallPrompt: React.FC = () => {
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={handleInstallClick}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[11px] transition shadow-xs active:scale-95"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white font-bold text-[11px] transition shadow-xs active:scale-95"
             >
-              <Download className="w-3 h-3 text-slate-950" />
+              <Download className="w-3 h-3 text-white" />
               <span>
                 {language === 'zh-TW' ? '安裝' : '安装'}
               </span>
@@ -114,7 +114,7 @@ export const PwaInstallPrompt: React.FC = () => {
           <div className="glass-panel bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-sm w-full space-y-4 text-slate-900 dark:text-slate-100 shadow-2xl relative">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-2xl bg-cyan-500/15 text-cyan-500">
+                <div className="p-2 rounded-2xl bg-ios-blue/15 text-ios-blue">
                   <Smartphone className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-sm">
@@ -134,15 +134,15 @@ export const PwaInstallPrompt: React.FC = () => {
 
             <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
+                <span className="w-5 h-5 rounded-full bg-ios-blue text-white flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
                 <span>
                   {language === 'zh-TW' ? '點擊 Safari 底部的 ' : '点击 Safari 底部的 '}
-                  <Share className="w-3.5 h-3.5 inline mx-1 text-cyan-500" />
+                  <Share className="w-3.5 h-3.5 inline mx-1 text-ios-blue" />
                   {language === 'zh-TW' ? '分享按鈕' : '分享按钮'}
                 </span>
               </div>
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
+                <span className="w-5 h-5 rounded-full bg-ios-blue text-white flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
                 <span>
                   {language === 'zh-TW'
                     ? '下滑選取「加入主畫面」標籤。'
@@ -150,7 +150,7 @@ export const PwaInstallPrompt: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
+                <span className="w-5 h-5 rounded-full bg-ios-blue text-white flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
                 <span>
                   {language === 'zh-TW' ? '點擊右上角「加入」，即可從桌面啟動！' : '点击右上角「添加」，即可从桌面启动！'}
                 </span>
@@ -159,7 +159,7 @@ export const PwaInstallPrompt: React.FC = () => {
 
             <button
               onClick={() => setShowIosGuide(false)}
-              className="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold text-xs transition shadow-md shadow-cyan-500/20"
+              className="w-full py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl font-bold text-xs transition shadow-md shadow-ios-blue/20"
             >
               {language === 'zh-TW' ? '我知道了' : '我知道了'}
             </button>
