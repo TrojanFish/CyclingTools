@@ -23,11 +23,17 @@ import {
   Trash2,
   Play,
   Sun,
-  Lightbulb
+  Lightbulb,
+  Cloud,
+  RotateCw,
+  Check,
+  X
 } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { useStrava } from '../../context/StravaContext';
+import { StravaRouteRecord } from '../../utils/indexedDb';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -40,6 +46,12 @@ interface RoadbookLibraryProps {
 export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool }) => {
   const { showToast } = useToast();
   const { language, unitSystem, convertDistance, convertElevation, t } = useLanguageAndUnit();
+  const { isConnected: isStravaConnected, getRoutes: getStravaRoutes } = useStrava();
+
+  // Strava Import Modal States
+  const [isStravaModalOpen, setIsStravaModalOpen] = useState<boolean>(false);
+  const [stravaRoutes, setStravaRoutes] = useState<StravaRouteRecord[]>([]);
+  const [isLoadingStravaRoutes, setIsLoadingStravaRoutes] = useState<boolean>(false);
 
   // Active collection tab: 'curated' vs 'personal'
   const [activeTab, setActiveTab] = useState<'curated' | 'personal'>('curated');
@@ -466,6 +478,110 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
     showToast('已删除该自定义路书', 'info');
   };
 
+  // Open Strava routes modal and load routes
+  const handleOpenStravaModal = async () => {
+    setIsStravaModalOpen(true);
+    if (isStravaConnected) {
+      setIsLoadingStravaRoutes(true);
+      try {
+        const routes = await getStravaRoutes();
+        setStravaRoutes(routes || []);
+      } catch (err: any) {
+        showToast(err.message || '获取 Strava 路线失败', 'error');
+      } finally {
+        setIsLoadingStravaRoutes(false);
+      }
+    }
+  };
+
+  // Import a single Strava route into personal roadbooks
+  const handleImportSingleStravaRoute = (route: StravaRouteRecord) => {
+    try {
+      const coords = route.coordinates || [];
+      let sampledWps: RoadbookPoint[] = [];
+
+      if (coords.length > 0) {
+        const targetCount = Math.min(coords.length, 24);
+        const step = Math.max(1, Math.floor(coords.length / targetCount));
+        for (let i = 0; i < coords.length; i += step) {
+          sampledWps.push({
+            lat: coords[i][0],
+            lng: coords[i][1],
+            elevation: 0,
+            name: `航点 ${sampledWps.length + 1}`
+          });
+        }
+        const lastCoord = coords[coords.length - 1];
+        if (
+          sampledWps.length > 0 &&
+          (sampledWps[sampledWps.length - 1].lat !== lastCoord[0] ||
+            sampledWps[sampledWps.length - 1].lng !== lastCoord[1])
+        ) {
+          sampledWps.push({
+            lat: lastCoord[0],
+            lng: lastCoord[1],
+            elevation: 0,
+            name: '终点'
+          });
+        }
+      } else {
+        sampledWps = [
+          { lat: 30.2592, lng: 120.1472, elevation: 20, name: '起点' },
+          { lat: 30.22, lng: 120.12, elevation: 150, name: '山脊' },
+          { lat: 30.2, lng: 120.1, elevation: 50, name: '终点' }
+        ];
+      }
+
+      const distanceKm = parseFloat(((route.distance || 0) / 1000).toFixed(1));
+      const elevationGainM = Math.round(route.elevation_gain || 0);
+      const avgGradePct = route.distance > 0 ? parseFloat(((elevationGainM / route.distance) * 100).toFixed(1)) : 0;
+      const newRouteId = `strava-${route.id}`;
+
+      const newRoute: RoadbookItem = {
+        id: newRouteId,
+        name: route.name || `Strava 路线 #${route.id}`,
+        sourceCode: `Strava #${route.id}`,
+        region: 'Strava 云端航迹',
+        province: 'Strava',
+        category: elevationGainM > 600 ? 'climb' : distanceKm > 80 ? 'long-distance' : 'scenic',
+        categoryLabel: elevationGainM > 600 ? '高山爬坡' : distanceKm > 80 ? '长途耐力' : '云端航迹',
+        difficulty: elevationGainM > 1000 ? '终极硬核' : elevationGainM > 500 ? '进阶爬坡' : '入门休闲',
+        distanceKm,
+        elevationGainM,
+        maxAltitudeM: Math.round(elevationGainM * 0.4),
+        avgGradePct,
+        sceneryRating: 5,
+        roadCondition: 'Strava 实测云端航迹',
+        bestSeason: '四季皆宜',
+        description: `从车手 Strava 账号同步的个人路线 (${route.name})，包含高精度 GPS 轨迹。`,
+        highlights: ['Strava 星标路线', 'GPS 轨迹', '云端路书'],
+        tips: ['请根据实际天气与路面情况安全骑行。'],
+        waypoints: sampledWps
+      };
+
+      setPersonalRoutes(prev => {
+        const filtered = prev.filter(r => r.id !== newRouteId);
+        return [newRoute, ...filtered];
+      });
+
+      setActiveTab('personal');
+      setSelectedRouteId(newRouteId);
+      showToast(`Strava 路线「${route.name}」已成功导入本地路书库！`, 'success');
+    } catch (err: any) {
+      showToast('导入路线失败: ' + err.message, 'error');
+    }
+  };
+
+  // Import all Strava routes
+  const handleImportAllStravaRoutes = () => {
+    if (stravaRoutes.length === 0) return;
+    stravaRoutes.forEach(r => {
+      handleImportSingleStravaRoute(r);
+    });
+    setIsStravaModalOpen(false);
+    showToast(`已成功批量导入 ${stravaRoutes.length} 条 Strava 路线！`, 'success');
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -488,6 +604,22 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
 
           <div className="flex items-center gap-2.5">
+            <button
+              onClick={handleOpenStravaModal}
+              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-semibold border transition shadow-ios-sm apple-touch ${
+                isStravaConnected
+                  ? 'bg-orange-500/10 hover:bg-orange-500/20 text-[#FC4C02] border-orange-500/30'
+                  : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
+              }`}
+              title={isStravaConnected ? '从 Strava 同步星标路线' : '连接 Strava 导入路线'}
+            >
+              <Cloud className="w-4 h-4 text-[#FC4C02]" />
+              <span>{language === 'zh-TW' ? '從 Strava 匯入' : '从 Strava 导入'}</span>
+              {isStravaConnected && (
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              )}
+            </button>
+
             <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
               <Upload className="w-4 h-4 text-ios-blue" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
@@ -876,6 +1008,176 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
         </div>
       </div>
+
+      {/* Strava Route Import Modal */}
+      {isStravaModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-5 sm:p-6 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-black/[0.05] dark:border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-2xl bg-orange-500/15 text-[#FC4C02] flex items-center justify-center font-bold">
+                  <Cloud className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    {language === 'zh-TW' ? '從 Strava 匯入星標路線' : '从 Strava 导入星标路线'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    {language === 'zh-TW'
+                      ? '直接拉取您在 Strava 雲端建立或加為星標的單車路線'
+                      : '直接拉取您在 Strava 云端建立或加为星标的骑行路线'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsStravaModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-200/70 dark:bg-[#2C2C2E] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            {!isStravaConnected ? (
+              <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center space-y-3">
+                <div className="w-12 h-12 mx-auto rounded-full bg-amber-500/15 flex items-center justify-center text-[#FC4C02]">
+                  <Cloud className="w-6 h-6" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  {language === 'zh-TW' ? '尚未連接 Strava 帳號' : '尚未连接 Strava 账号'}
+                </h4>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+                  {language === 'zh-TW'
+                    ? '請點擊頂部或導航的「車手檔案」按鈕，切換至「Strava」標籤頁填寫您的 Client ID & Secret 完成一鍵授權。'
+                    : '请点击顶部或导航的「车手档案」按钮，切换至「Strava」标签页填写您的 Client ID & Secret 完成一键授权。'}
+                </p>
+                <div className="pt-2">
+                  <button
+                    onClick={() => setIsStravaModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-300 dark:hover:bg-white/15 transition apple-touch"
+                  >
+                    {language === 'zh-TW' ? '知道了' : '知道了'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {/* Status Bar */}
+                <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] text-xs">
+                  <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>Strava API 已连接，共发现 <strong>{stravaRoutes.length}</strong> 条路线</span>
+                  </div>
+                  <button
+                    onClick={handleOpenStravaModal}
+                    disabled={isLoadingStravaRoutes}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-ios-blue hover:text-ios-blue/80 disabled:opacity-50 transition apple-touch"
+                  >
+                    <RotateCw className={`w-3.5 h-3.5 ${isLoadingStravaRoutes ? 'animate-spin' : ''}`} />
+                    <span>刷新</span>
+                  </button>
+                </div>
+
+                {/* Routes List */}
+                {isLoadingStravaRoutes ? (
+                  <div className="py-12 text-center text-slate-500 dark:text-slate-400 space-y-2">
+                    <RotateCw className="w-6 h-6 animate-spin mx-auto text-orange-500" />
+                    <p className="text-xs">正在从 Strava 云端拉取路线列表与航迹流...</p>
+                  </div>
+                ) : stravaRoutes.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-slate-100 dark:bg-white/5 text-center space-y-2">
+                    <Compass className="w-8 h-8 text-slate-400 mx-auto opacity-50" />
+                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                      Strava 暂无已保存路线
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-500">
+                      可在 Strava App 或网页端将路线加为「星标 ⭐」或通过路线工坊创建路线后再次刷新。
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+                    {stravaRoutes.map(route => {
+                      const isImported = personalRoutes.some(r => r.id === `strava-${route.id}`);
+                      const distKm = (route.distance / 1000).toFixed(1);
+                      const eleM = Math.round(route.elevation_gain);
+
+                      return (
+                        <div
+                          key={route.id}
+                          className="p-3 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] hover:border-orange-500/40 transition flex items-center justify-between gap-3 shadow-xs"
+                        >
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                                {route.name}
+                              </span>
+                              {isImported && (
+                                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold shrink-0">
+                                  已导入
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 flex items-center gap-3">
+                              <span>里程: <strong className="text-slate-800 dark:text-slate-200">{distKm} km</strong></span>
+                              <span>•</span>
+                              <span>爬升: <strong className="text-slate-800 dark:text-slate-200">+{eleM} m</strong></span>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => handleImportSingleStravaRoute(route)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 apple-touch flex items-center gap-1 ${
+                              isImported
+                                ? 'bg-slate-200/60 dark:bg-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/15'
+                                : 'bg-orange-500 hover:bg-orange-600 text-white shadow-xs'
+                            }`}
+                          >
+                            {isImported ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                <span>重新导入</span>
+                              </>
+                            ) : (
+                              <>
+                                <Download className="w-3.5 h-3.5" />
+                                <span>导入路书</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Footer Buttons */}
+                <div className="pt-3 border-t border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between gap-2">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    导入后将在「本地导入」标签页呈现
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {stravaRoutes.length > 0 && (
+                      <button
+                        onClick={handleImportAllStravaRoutes}
+                        className="px-3.5 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold transition apple-touch"
+                      >
+                        全部批量导入
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setIsStravaModalOpen(false)}
+                      className="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-300 dark:hover:bg-white/15 transition apple-touch"
+                    >
+                      完成
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

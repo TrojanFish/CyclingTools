@@ -1,0 +1,404 @@
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  StravaApiKeys,
+  StravaTokenData,
+  StravaAthlete,
+  StravaSyncSettings,
+  getStoredApiKeys,
+  saveStoredApiKeys,
+  getStoredTokenData,
+  saveStoredTokenData,
+  clearStoredTokenData,
+  getStoredSettings,
+  saveStoredSettings,
+  buildAuthorizeUrl,
+  exchangeCodeForToken,
+  getValidAccessToken,
+  fetchAthleteProfile,
+  fetchAthleteActivities,
+  fetchActivityStreams,
+  fetchAthleteRoutes,
+  calculateActivityTss
+} from '../services/stravaService';
+import {
+  StravaActivityRecord,
+  StravaStreamsRecord,
+  StravaRouteRecord,
+  saveActivitiesToDb,
+  getAllActivitiesFromDb,
+  getStreamFromDb,
+  getAllRoutesFromDb,
+  setMetaToDb,
+  getMetaFromDb,
+  clearStravaDb
+} from '../utils/indexedDb';
+import { useRiderProfile } from './RiderProfileContext';
+import { useToast } from './ToastContext';
+
+interface StravaContextType {
+  apiKeys: StravaApiKeys | null;
+  tokenData: StravaTokenData | null;
+  athlete: StravaAthlete | null;
+  isConnected: boolean;
+  isSyncing: boolean;
+  lastSyncTime: number | null;
+  activities: StravaActivityRecord[];
+  syncSettings: StravaSyncSettings;
+  saveApiKeys: (keys: StravaApiKeys) => void;
+  initiateAuth: () => void;
+  disconnect: () => Promise<void>;
+  syncActivities: (forceFullRefresh?: boolean) => Promise<{ count: number }>;
+  getActivityStreams: (activityId: number) => Promise<StravaStreamsRecord | null>;
+  getRoutes: () => Promise<StravaRouteRecord[]>;
+  updateSettings: (settings: Partial<StravaSyncSettings>) => void;
+}
+
+const StravaContext = createContext<StravaContextType | undefined>(undefined);
+
+export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { profile, updateProfile, bikes, addBike, updateBike } = useRiderProfile();
+  const { showToast } = useToast();
+
+  const [apiKeys, setApiKeys] = useState<StravaApiKeys | null>(() => getStoredApiKeys());
+  const [tokenData, setTokenData] = useState<StravaTokenData | null>(() => getStoredTokenData());
+  const [syncSettings, setSyncSettings] = useState<StravaSyncSettings>(() => getStoredSettings());
+  const [activities, setActivities] = useState<StravaActivityRecord[]>([]);
+  const [lastSyncTime, setLastSyncTime] = useState<number | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+
+  const isConnected = Boolean(tokenData && tokenData.accessToken);
+  const athlete = tokenData?.athlete || null;
+
+  // Load cached activities and meta from IndexedDB on startup
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        const cached = await getAllActivitiesFromDb();
+        const syncMeta = await getMetaFromDb<number>('last_sync_timestamp');
+        if (isMounted) {
+          setActivities(cached);
+          if (syncMeta) setLastSyncTime(syncMeta);
+        }
+      } catch (err) {
+        console.warn('Could not load Strava cache from IndexedDB:', err);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Save API keys
+  const saveApiKeys = useCallback((keys: StravaApiKeys) => {
+    saveStoredApiKeys(keys);
+    setApiKeys(keys);
+  }, []);
+
+  // Update Settings
+  const updateSettings = useCallback((newSettings: Partial<StravaSyncSettings>) => {
+    setSyncSettings(prev => {
+      const next = { ...prev, ...newSettings };
+      saveStoredSettings(next);
+      return next;
+    });
+  }, []);
+
+  // Initiate OAuth Authorization
+  const initiateAuth = useCallback(() => {
+    if (!apiKeys?.clientId) {
+      showToast('请先填写 Client ID', 'warning');
+      return;
+    }
+    const url = buildAuthorizeUrl(apiKeys.clientId);
+    window.location.href = url;
+  }, [apiKeys, showToast]);
+
+  // Disconnect & Clear
+  const disconnect = useCallback(async () => {
+    clearStoredTokenData();
+    setTokenData(null);
+    setActivities([]);
+    setLastSyncTime(null);
+    try {
+      await clearStravaDb();
+    } catch (err) {
+      console.warn('Failed to clear Strava IndexedDB:', err);
+    }
+    showToast('已断开与 Strava 的连接并清理本地缓存', 'info');
+  }, [showToast]);
+
+  // Sync Activities
+  const syncActivities = useCallback(async (forceFullRefresh: boolean = false): Promise<{ count: number }> => {
+    const token = await getValidAccessToken();
+    if (!token) {
+      showToast('Strava 授权无效或已过期，请重新连接', 'error');
+      return { count: 0 };
+    }
+
+    setIsSyncing(true);
+    try {
+      // Refresh athlete profile
+      const latestAthlete = await fetchAthleteProfile(token);
+      setTokenData(prev => {
+        if (!prev) return null;
+        const updated = { ...prev, athlete: latestAthlete };
+        saveStoredTokenData(updated);
+        return updated;
+      });
+
+      // Auto sync FTP & weight if enabled
+      if (syncSettings.autoSyncFtpWeight) {
+        const updates: any = {};
+        if (latestAthlete.ftp && latestAthlete.ftp !== profile.ftpWatts) {
+          updates.ftpWatts = latestAthlete.ftp;
+        }
+        if (latestAthlete.weight && Math.abs(latestAthlete.weight - profile.weightKg) > 0.2) {
+          updates.weightKg = parseFloat(latestAthlete.weight.toFixed(1));
+        }
+        if (Object.keys(updates).length > 0) {
+          updateProfile(updates);
+        }
+      }
+
+      // Auto sync bikes to Garage
+      if (syncSettings.autoSyncBikes && latestAthlete.bikes && latestAthlete.bikes.length > 0) {
+        for (const stravaBike of latestAthlete.bikes) {
+          const mileageKm = Math.round(stravaBike.distance / 1000);
+          const existingBike = bikes.find(b => b.name.toLowerCase() === stravaBike.name.toLowerCase());
+          if (existingBike) {
+            // Update mileage if increased
+            if ((existingBike.mileageKm || 0) < mileageKm) {
+              updateBike(existingBike.id, { mileageKm });
+            }
+          } else {
+            // Add as new bike
+            addBike({
+              id: `strava-bike-${stravaBike.id}`,
+              name: stravaBike.name,
+              type: 'road_aero',
+              weightKg: 8.0,
+              cda: 0.32,
+              crr: 0.0035,
+              mileageKm
+            });
+          }
+        }
+      }
+
+      // Calculate 'after' timestamp
+      let afterSec: number | undefined = undefined;
+      const nowSec = Math.floor(Date.now() / 1000);
+
+      if (!forceFullRefresh && lastSyncTime && lastSyncTime > 0) {
+        afterSec = lastSyncTime;
+      } else {
+        // Sync past N days
+        const daysBack = syncSettings.syncDays || 90;
+        afterSec = nowSec - daysBack * 86400;
+      }
+
+      // Fetch pages
+      const rawActivities: any[] = [];
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore && page <= 4) { // safety ceiling: max 200 activities per sync
+        const pageData = await fetchAthleteActivities(token, afterSec, page, 50);
+        if (pageData && pageData.length > 0) {
+          rawActivities.push(...pageData);
+          if (pageData.length < 50) {
+            hasMore = false;
+          } else {
+            page++;
+          }
+        } else {
+          hasMore = false;
+        }
+      }
+
+      // Process and calculate TSS for each activity
+      const processed: StravaActivityRecord[] = rawActivities.map(act => {
+        const { tss, intensityFactor } = calculateActivityTss(act, profile.ftpWatts);
+        return {
+          id: act.id,
+          name: act.name,
+          distance: act.distance,
+          moving_time: act.moving_time,
+          elapsed_time: act.elapsed_time,
+          total_elevation_gain: act.total_elevation_gain,
+          type: act.type,
+          sport_type: act.sport_type,
+          start_date: act.start_date,
+          start_date_local: act.start_date_local,
+          start_latlng: act.start_latlng,
+          end_latlng: act.end_latlng,
+          average_speed: act.average_speed,
+          max_speed: act.max_speed,
+          average_watts: act.average_watts,
+          weighted_average_watts: act.weighted_average_watts,
+          kilojoules: act.kilojoules,
+          device_watts: act.device_watts,
+          has_heartrate: act.has_heartrate,
+          average_heartrate: act.average_heartrate,
+          max_heartrate: act.max_heartrate,
+          suffer_score: act.suffer_score,
+          gear_id: act.gear_id,
+          summary_polyline: act.map?.summary_polyline,
+          tss,
+          intensityFactor
+        };
+      });
+
+      if (processed.length > 0) {
+        await saveActivitiesToDb(processed);
+      }
+
+      await setMetaToDb('last_sync_timestamp', nowSec);
+      setLastSyncTime(nowSec);
+
+      // Re-read all from DB to ensure complete sorted state
+      const updatedList = await getAllActivitiesFromDb();
+      setActivities(updatedList);
+
+      showToast(`Strava 骑行数据同步成功！共更新 ${processed.length} 条活动`, 'success');
+      return { count: processed.length };
+    } catch (err: any) {
+      console.error('Strava sync error:', err);
+      showToast(`Strava 同步失败: ${err.message || '网络异常'}`, 'error');
+      return { count: 0 };
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [profile.ftpWatts, profile.weightKg, syncSettings, lastSyncTime, bikes, updateProfile, addBike, updateBike, showToast]);
+
+  // Get Activity Streams (cached or fetched)
+  const getActivityStreams = useCallback(async (activityId: number): Promise<StravaStreamsRecord | null> => {
+    try {
+      // 1. Check local IndexedDB cache
+      const cached = await getStreamFromDb(activityId);
+      if (cached && cached.time && cached.time.length > 0) {
+        return cached;
+      }
+
+      // 2. Fetch from API if token valid
+      const token = await getValidAccessToken();
+      if (!token) return null;
+
+      const streams = await fetchActivityStreams(token, activityId);
+      return streams;
+    } catch (err) {
+      console.warn(`Failed to fetch streams for activity ${activityId}:`, err);
+      return null;
+    }
+  }, []);
+
+  // Get Routes (cached or fetched)
+  const getRoutes = useCallback(async (): Promise<StravaRouteRecord[]> => {
+    try {
+      const token = await getValidAccessToken();
+      if (token) {
+        const freshRoutes = await fetchAthleteRoutes(token);
+        return freshRoutes;
+      }
+      return await getAllRoutesFromDb();
+    } catch (err) {
+      console.warn('Failed to fetch Strava routes:', err);
+      return await getAllRoutesFromDb();
+    }
+  }, []);
+
+  // Capture OAuth Code from URL on page load
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    const error = urlParams.get('error');
+
+    if (error) {
+      showToast(`Strava 授权被取消或失败: ${error}`, 'warning');
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+      return;
+    }
+
+    if (code && state === 'solorider_strava_auth') {
+      const keys = getStoredApiKeys();
+      if (!keys?.clientId || !keys?.clientSecret) {
+        showToast('缺少 Client ID / Secret，无法完成授权交换', 'error');
+        return;
+      }
+
+      (async () => {
+        try {
+          showToast('正在完成 Strava 授权握手...', 'info');
+          const tokenRes = await exchangeCodeForToken(keys.clientId, keys.clientSecret, code);
+          setTokenData(tokenRes);
+
+          // Clean URL
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+
+          showToast(`🎉 Strava 账号连接成功！欢迎，${tokenRes.athlete.firstname}`, 'success');
+
+          // Trigger initial sync in background
+          setTimeout(() => {
+            syncActivities(true);
+          }, 600);
+        } catch (err: any) {
+          console.error('Strava token exchange failed:', err);
+          showToast(`Strava 授权失败: ${err.message}`, 'error');
+        }
+      })();
+    }
+  }, [showToast, syncActivities]);
+
+  const value = useMemo(
+    () => ({
+      apiKeys,
+      tokenData,
+      athlete,
+      isConnected,
+      isSyncing,
+      lastSyncTime,
+      activities,
+      syncSettings,
+      saveApiKeys,
+      initiateAuth,
+      disconnect,
+      syncActivities,
+      getActivityStreams,
+      getRoutes,
+      updateSettings
+    }),
+    [
+      apiKeys,
+      tokenData,
+      athlete,
+      isConnected,
+      isSyncing,
+      lastSyncTime,
+      activities,
+      syncSettings,
+      saveApiKeys,
+      initiateAuth,
+      disconnect,
+      syncActivities,
+      getActivityStreams,
+      getRoutes,
+      updateSettings
+    ]
+  );
+
+  return <StravaContext.Provider value={value}>{children}</StravaContext.Provider>;
+};
+
+export const useStrava = (): StravaContextType => {
+  const context = useContext(StravaContext);
+  if (!context) {
+    throw new Error('useStrava must be used within a StravaProvider');
+  }
+  return context;
+};

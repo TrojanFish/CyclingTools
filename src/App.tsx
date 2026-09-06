@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { AudioProvider } from './context/AudioContext';
 import { ToastProvider } from './context/ToastContext';
 import { RiderProfileProvider } from './context/RiderProfileContext';
+import { StravaProvider } from './context/StravaContext';
 import { LanguageAndUnitProvider, useLanguageAndUnit } from './context/LanguageAndUnitContext';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
@@ -314,13 +315,15 @@ const MainAppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <LanguageAndUnitProvider>
-      <RiderProfileProvider>
-        <ToastProvider>
-          <AudioProvider>
-            <MainAppContent />
-          </AudioProvider>
-        </ToastProvider>
-      </RiderProfileProvider>
+      <ToastProvider>
+        <RiderProfileProvider>
+          <StravaProvider>
+            <AudioProvider>
+              <MainAppContent />
+            </AudioProvider>
+          </StravaProvider>
+        </RiderProfileProvider>
+      </ToastProvider>
     </LanguageAndUnitProvider>
   );
 };

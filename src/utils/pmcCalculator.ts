@@ -102,7 +102,8 @@ export const generatePmcSeries = (
   mesocycle: PmcMesocycleType,
   injectedTodayTss?: number,
   baselineLevel: BaselineFitnessLevel = 'club',
-  manualEntries?: ManualTssEntry[]
+  manualEntries?: ManualTssEntry[],
+  stravaActivities?: Array<{ start_date: string; start_date_local?: string; tss?: number; name: string }>
 ): PmcDayData[] => {
   let daysCount = 60;
   let initialCtl = BASELINE_FITNESS_OPTIONS[baselineLevel]?.ctl ?? 65;
@@ -118,17 +119,30 @@ export const generatePmcSeries = (
     daysCount = 24;
   }
 
+  // If Strava activities are present and cover more days, adjust daysCount
+  if (stravaActivities && stravaActivities.length > 0) {
+    daysCount = Math.max(daysCount, 60);
+  }
+
   const series: PmcDayData[] = [];
   let curCtl = initialCtl;
   let curAtl = initialAtl;
 
   const TC_CTL = 42;
   const TC_ATL = 7;
+  const now = new Date();
 
   for (let d = 1; d <= daysCount; d++) {
     let dayTss = 0;
     let phaseName = '日常训练';
-    const dayOfWeek = (d % 7); // 1 to 6, 0 is Sunday
+
+    const dayTarget = new Date(now);
+    dayTarget.setDate(now.getDate() - (daysCount - d));
+    const dateStr = `${dayTarget.getMonth() + 1}/${dayTarget.getDate()}`;
+    const dayYear = dayTarget.getFullYear();
+    const dayMonth = dayTarget.getMonth();
+    const dayDate = dayTarget.getDate();
+    const dayOfWeek = dayTarget.getDay();
 
     if (mesocycle === 'base') {
       // 3 weeks build, 1 week recovery cycle
@@ -183,6 +197,26 @@ export const generatePmcSeries = (
       }
     }
 
+    // If Strava activities are present, match activities for this specific day
+    if (stravaActivities && stravaActivities.length > 0) {
+      const matchActs = stravaActivities.filter(a => {
+        const aDate = new Date(a.start_date_local || a.start_date);
+        return (
+          aDate.getFullYear() === dayYear &&
+          aDate.getMonth() === dayMonth &&
+          aDate.getDate() === dayDate
+        );
+      });
+      if (matchActs.length > 0) {
+        dayTss = matchActs.reduce((acc, a) => acc + (a.tss || 0), 0);
+        phaseName = matchActs.map(a => a.name).join(' / ');
+      } else {
+        // Rest day if no activity recorded on this day
+        dayTss = 0;
+        phaseName = '休息/未记录';
+      }
+    }
+
     // Manual TSS entries override for specific day offsets (0 = today, -1 = yesterday, etc.)
     if (manualEntries && manualEntries.length > 0) {
       const match = manualEntries.find(e => d === (daysCount + e.dayOffset));
@@ -205,7 +239,7 @@ export const generatePmcSeries = (
 
     series.push({
       day: d,
-      date: `Day ${d}`,
+      date: dateStr,
       tss: dayTss,
       ctl: Math.round(curCtl * 10) / 10,
       atl: Math.round(curAtl * 10) / 10,

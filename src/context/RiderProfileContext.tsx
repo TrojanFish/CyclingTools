@@ -30,6 +30,7 @@ export interface BikeProfile {
   crr: number;
   cda: number;
   notes?: string;
+  mileageKm?: number;
 }
 
 export const DEFAULT_TEAM_ROSTER: TeamRider[] = [

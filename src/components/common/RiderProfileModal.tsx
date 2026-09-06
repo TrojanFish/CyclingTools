@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRiderProfile, TeamRider, BikeProfile } from '../../context/RiderProfileContext';
+import { useStrava } from '../../context/StravaContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import {
@@ -23,7 +24,14 @@ import {
   CheckCircle2,
   Zap,
   Flame,
-  Award
+  Award,
+  Cloud,
+  RefreshCw,
+  ExternalLink,
+  Key,
+  Eye,
+  EyeOff,
+  Check
 } from 'lucide-react';
 import { NumberStepper } from './NumberStepper';
 import { IOSSegmentedControl } from './IOSSegmentedControl';
@@ -72,8 +80,30 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
   const { unitSystem, setUnitSystem, language, setLanguage } = useLanguageAndUnit();
   const { showToast } = useToast();
-  const [modalTab, setModalTab] = useState<'profile' | 'roster' | 'garage' | 'system'>('profile');
+
+  const {
+    apiKeys,
+    tokenData,
+    athlete,
+    isConnected: isStravaConnected,
+    isSyncing: isStravaSyncing,
+    lastSyncTime: stravaLastSyncTime,
+    activities: stravaActivities,
+    syncSettings: stravaSyncSettings,
+    saveApiKeys: saveStravaApiKeys,
+    initiateAuth: initiateStravaAuth,
+    disconnect: disconnectStrava,
+    syncActivities: syncStravaActivities,
+    updateSettings: updateStravaSettings
+  } = useStrava();
+
+  const [modalTab, setModalTab] = useState<'profile' | 'roster' | 'garage' | 'strava' | 'system'>('profile');
   const [editingSlot, setEditingSlot] = useState<number | null>(null);
+
+  const [clientIdInput, setClientIdInput] = useState(apiKeys?.clientId || '');
+  const [clientSecretInput, setClientSecretInput] = useState(apiKeys?.clientSecret || '');
+  const [showSecret, setShowSecret] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   if (!isOpen) return null;
 
@@ -142,8 +172,9 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
         <IOSSegmentedControl
           options={[
             { id: 'profile', label: language === 'zh-TW' ? '當前數據' : '当前数据', icon: Activity },
-            { id: 'roster', label: language === 'zh-TW' ? `車隊陣容 (${roster.length})` : `车队阵容 (${roster.length})`, icon: Users },
-            { id: 'garage', label: language === 'zh-TW' ? `戰車庫 (${bikes.length})` : `战车库 (${bikes.length})`, icon: Bike },
+            { id: 'roster', label: language === 'zh-TW' ? `車隊 (${roster.length})` : `车队 (${roster.length})`, icon: Users },
+            { id: 'garage', label: language === 'zh-TW' ? `戰車 (${bikes.length})` : `战车 (${bikes.length})`, icon: Bike },
+            { id: 'strava', label: 'Strava', icon: Cloud, badge: isStravaConnected ? '已连' : undefined },
             { id: 'system', label: language === 'zh-TW' ? '偏好導航' : '偏好导航', icon: SlidersHorizontal }
           ]}
           value={modalTab}
@@ -549,6 +580,306 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* TAB: STRAVA CLOUD SYNC & API INTEGRATION */}
+        {modalTab === 'strava' && (
+          <div className="space-y-4">
+            {!isStravaConnected ? (
+              /* UNCONNECTED: BYOK Connect Form */
+              <div className="space-y-4">
+                {/* Intro Card */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold">
+                      <Cloud className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          Strava 开放平台直连
+                        </h3>
+                        <span className="text-[10px] px-2 py-0.2 rounded-full bg-[#FC4C02]/15 text-[#FC4C02] font-semibold border border-[#FC4C02]/20">
+                          个人 API 模式
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        零云端服务器中转，本地直连您的 Strava 账号。自动同步骑行历史、真实心率功率与战车行驶里程。
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Collapsible Guide */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowGuide(!showGuide)}
+                      className="w-full flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <Key className="w-3.5 h-3.5 text-[#FC4C02]" />
+                        如何免费获取 Strava API 密钥？（1分钟极简图文指引）
+                      </span>
+                      <span className="text-slate-400 text-xs">{showGuide ? '收起' : '展开'}</span>
+                    </button>
+
+                    {showGuide && (
+                      <div className="pt-2 border-t border-black/[0.04] dark:border-white/[0.06] text-[11px] text-slate-600 dark:text-slate-400 space-y-1.5 leading-relaxed">
+                        <p>1. 电脑或手机浏览器打开 <a href="https://www.strava.com/settings/api" target="_blank" rel="noreferrer" className="text-[#FC4C02] underline font-medium">strava.com/settings/api</a> 登录您的账号；</p>
+                        <p>2. 创建应用：<strong>Application Name</strong> 填 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">SoloRiderTools</code>，<strong>Category</strong> 选 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">Other</code>；</p>
+                        <p>3. <strong>Authorization Callback Domain</strong> 填入 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">localhost</code>（或您访问本系统的域名）；</p>
+                        <p>4. 创建成功后，复制页面上的 <strong>Client ID</strong> 与 <strong>Client Secret</strong> 粘贴在下方。</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Input Form */}
+                  <div className="space-y-3 pt-1">
+                    <div>
+                      <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                        Client ID
+                      </label>
+                      <input
+                        type="text"
+                        value={clientIdInput}
+                        onChange={(e) => setClientIdInput(e.target.value)}
+                        placeholder="例如: 123456"
+                        className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FC4C02]/30"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1 flex items-center justify-between">
+                        <span>Client Secret</span>
+                        <button
+                          type="button"
+                          onClick={() => setShowSecret(!showSecret)}
+                          className="text-[10px] text-slate-400 hover:text-slate-600 flex items-center gap-1"
+                        >
+                          {showSecret ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                          {showSecret ? '隐藏' : '显示'}
+                        </button>
+                      </label>
+                      <input
+                        type={showSecret ? 'text' : 'password'}
+                        value={clientSecretInput}
+                        onChange={(e) => setClientSecretInput(e.target.value)}
+                        placeholder="例如: 8a7b6c5d4e3f..."
+                        className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FC4C02]/30"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!clientIdInput.trim() || !clientSecretInput.trim()) {
+                          showToast('请完整填写 Client ID 和 Client Secret', 'warning');
+                          return;
+                        }
+                        saveStravaApiKeys({
+                          clientId: clientIdInput.trim(),
+                          clientSecret: clientSecretInput.trim()
+                        });
+                        initiateStravaAuth();
+                      }}
+                      className="apple-touch w-full py-2.5 rounded-xl bg-[#FC4C02] hover:bg-[#E34402] text-white font-bold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-98"
+                    >
+                      <Cloud className="w-4 h-4" />
+                      <span>保存密钥并前往 Strava 授权连接</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* CONNECTED: Athlete Status, Sync Actions, Preferences */
+              <div className="space-y-4">
+                {/* Connected Athlete Banner */}
+                <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {athlete?.profile_medium ? (
+                        <img
+                          src={athlete.profile_medium}
+                          alt={athlete.firstname}
+                          className="w-11 h-11 rounded-2xl object-cover border border-black/10 dark:border-white/10"
+                        />
+                      ) : (
+                        <div className="w-11 h-11 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold text-base">
+                          {athlete?.firstname?.charAt(0) || 'S'}
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-slate-900 dark:text-white">
+                            {athlete?.firstname} {athlete?.lastname}
+                          </span>
+                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20 flex items-center gap-1">
+                            <Check className="w-2.5 h-2.5" />
+                            已连接
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-mono">
+                          {athlete?.city ? `${athlete.city}, ${athlete.country || ''}` : 'Strava 认证车手'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => syncStravaActivities(false)}
+                      disabled={isStravaSyncing}
+                      className="apple-touch px-3 py-1.5 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/20 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isStravaSyncing ? 'animate-spin' : ''}`} />
+                      <span>{isStravaSyncing ? '同步中...' : '立即同步'}</span>
+                    </button>
+                  </div>
+
+                  {/* Stats Tiles */}
+                  <div className="grid grid-cols-4 gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-center">
+                    <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
+                      <span className="text-[10px] text-slate-400 block">已同步活动</span>
+                      <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
+                        {stravaActivities.length}
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
+                      <span className="text-[10px] text-slate-400 block">Strava FTP</span>
+                      <span className="text-sm font-bold font-mono text-ios-blue">
+                        {athlete?.ftp || '--'} <span className="text-[10px] font-normal">W</span>
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
+                      <span className="text-[10px] text-slate-400 block">车手自重</span>
+                      <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
+                        {athlete?.weight ? `${athlete.weight}` : '--'} <span className="text-[10px] font-normal">kg</span>
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
+                      <span className="text-[10px] text-slate-400 block">关联战车</span>
+                      <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
+                        {athlete?.bikes?.length || 0} <span className="text-[10px] font-normal">台</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {stravaLastSyncTime && (
+                    <div className="text-[10px] text-slate-400 flex items-center justify-between pt-1">
+                      <span>上次同步时间:</span>
+                      <span className="font-mono">{new Date(stravaLastSyncTime * 1000).toLocaleString()}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Auto-Sync Preferences Card */}
+                <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
+                  <h4 className="text-xs font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-ios-blue" />
+                    自动化协同偏好设置
+                  </h4>
+
+                  <div className="space-y-2.5 text-xs divide-y divide-black/[0.04] dark:divide-white/[0.06]">
+                    <label className="flex items-center justify-between pt-1 cursor-pointer">
+                      <div>
+                        <span className="text-slate-800 dark:text-slate-200 block font-medium">自动同步车手 FTP 与体重</span>
+                        <span className="text-[10px] text-slate-400">拉取 Strava 最新 FTP 与体重并更新到当前档案</span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={stravaSyncSettings.autoSyncFtpWeight}
+                        onChange={(e) => updateStravaSettings({ autoSyncFtpWeight: e.target.checked })}
+                        className="w-4 h-4 rounded accent-[#FC4C02] cursor-pointer"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between pt-2 cursor-pointer">
+                      <div>
+                        <span className="text-slate-800 dark:text-slate-200 block font-medium">自动同步单车行驶里程到战车库</span>
+                        <span className="text-[10px] text-slate-400">战车里程达标时联动提醒链条拉伸与外胎磨损</span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={stravaSyncSettings.autoSyncBikes}
+                        onChange={(e) => updateStravaSettings({ autoSyncBikes: e.target.checked })}
+                        className="w-4 h-4 rounded accent-[#FC4C02] cursor-pointer"
+                      />
+                    </label>
+
+                    <div className="pt-2 flex items-center justify-between">
+                      <div>
+                        <span className="text-slate-800 dark:text-slate-200 block font-medium">历史骑行活动同步范围</span>
+                        <span className="text-[10px] text-slate-400">为 PMC 长期体能负荷分析拉取历史天数</span>
+                      </div>
+                      <IOSSegmentedControl
+                        options={[
+                          { value: '30', label: '30天' },
+                          { value: '60', label: '60天' },
+                          { value: '90', label: '90天' },
+                        ]}
+                        value={String(stravaSyncSettings.syncDays || 90)}
+                        onChange={(val) => updateStravaSettings({ syncDays: Number(val) })}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Activities Preview */}
+                {stravaActivities.length > 0 && (
+                  <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-2.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        最近同步骑行 ({Math.min(3, stravaActivities.length)})
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        全量数据已存入本地 IndexedDB
+                      </span>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {stravaActivities.slice(0, 3).map((act) => (
+                        <div
+                          key={act.id}
+                          className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.03] dark:border-white/[0.05] flex items-center justify-between text-xs"
+                        >
+                          <div className="min-w-0 flex-1 pr-2">
+                            <span className="font-semibold text-slate-900 dark:text-white block truncate">
+                              {act.name}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {new Date(act.start_date_local || act.start_date).toLocaleDateString()} • {(act.distance / 1000).toFixed(1)} km • 爬升 {act.total_elevation_gain}m
+                            </span>
+                          </div>
+
+                          <div className="text-right shrink-0 font-mono">
+                            <span className="px-2 py-0.5 rounded-md bg-[#FC4C02]/10 text-[#FC4C02] font-bold text-[11px]">
+                              {act.tss || 0} TSS
+                            </span>
+                            {act.weighted_average_watts ? (
+                              <span className="text-[10px] text-slate-400 block mt-0.5">
+                                NP: {act.weighted_average_watts}W
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Disconnect Danger Button */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={disconnectStrava}
+                    className="apple-touch w-full py-2 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/20 text-xs font-semibold transition"
+                  >
+                    断开 Strava 连接并清空本地缓存
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

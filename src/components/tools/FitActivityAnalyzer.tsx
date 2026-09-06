@@ -19,7 +19,9 @@ import {
   Gauge,
   Layers,
   BarChart3,
-  Printer
+  Printer,
+  Cloud,
+  RefreshCw
 } from 'lucide-react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
@@ -42,6 +44,7 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import {
   ActivityAnalysis,
+  ActivityPoint,
   parseFitFile,
   parseGpxFile,
   parseTcxFile,
@@ -58,6 +61,8 @@ import {
   ManualTssEntry,
   BASELINE_FITNESS_OPTIONS
 } from '../../utils/pmcCalculator';
+import { useStrava } from '../../context/StravaContext';
+import { StravaActivityRecord } from '../../utils/indexedDb';
 
 ChartJS.register(
   CategoryScale,
@@ -132,10 +137,75 @@ export const FitActivityAnalyzer: React.FC = () => {
     showToast('已移除手动训练负荷', 'info');
   };
 
-  // PMC Calculation
+  const {
+    isConnected: isStravaConnected,
+    activities: stravaActivities,
+    getActivityStreams,
+    isSyncing: isStravaSyncing,
+    syncActivities: syncStravaActivities
+  } = useStrava();
+
+  const [selectedStravaActivityId, setSelectedStravaActivityId] = useState<string>('');
+
+  const handleLoadStravaActivity = async (activityIdStr: string) => {
+    const actId = parseInt(activityIdStr, 10);
+    if (isNaN(actId)) return;
+    const act = stravaActivities.find(a => a.id === actId);
+    if (!act) return;
+
+    setSelectedStravaActivityId(activityIdStr);
+    setIsLoading(true);
+    try {
+      showToast(`正在从 Strava 载入「${act.name}」秒级数据流...`, 'info');
+      const streams = await getActivityStreams(act.id);
+      if (!streams || !streams.time || streams.time.length === 0) {
+        showToast('该骑行暂无秒级详细流数据（可能无码表传感器记录）', 'warning');
+        return;
+      }
+
+      let cumDistanceMeters = 0;
+      const baseTime = new Date(act.start_date).getTime();
+      const points: ActivityPoint[] = streams.time.map((tSec, i) => {
+        const dt = i > 0 ? (streams.time![i] - streams.time![i - 1]) : 1;
+        const velMs = streams.velocity_smooth ? (streams.velocity_smooth[i] || 0) : 0;
+        cumDistanceMeters += velMs * dt;
+
+        return {
+          time: tSec,
+          timestamp: new Date(baseTime + tSec * 1000),
+          distance: cumDistanceMeters,
+          power: streams.watts ? streams.watts[i] : undefined,
+          heartRate: streams.heartrate ? streams.heartrate[i] : undefined,
+          cadence: streams.cadence ? streams.cadence[i] : undefined,
+          speed: velMs > 0 ? parseFloat((velMs * 3.6).toFixed(1)) : undefined,
+          altitude: streams.altitude ? streams.altitude[i] : undefined,
+          lat: streams.latlng && streams.latlng[i] ? streams.latlng[i][0] : undefined,
+          lon: streams.latlng && streams.latlng[i] ? streams.latlng[i][1] : undefined
+        };
+      });
+
+      const parsed = analyzePoints(points, act.name, 'fit', ftpWatts, weightKg, maxHr);
+      setAnalysis(parsed);
+      setActiveTab('trends');
+      showToast(`成功载入 Strava 骑行「${act.name}」！`, 'success');
+    } catch (err: any) {
+      console.error(err);
+      showToast(`载入 Strava 骑行流失败: ${err.message || '网络异常'}`, 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // PMC Calculation (automatically driven by real Strava activities if connected)
   const pmcData = useMemo(() => {
-    return generatePmcSeries(pmcMesocycle, analysis?.tss, baselineFitness, manualTssEntries);
-  }, [pmcMesocycle, analysis?.tss, baselineFitness, manualTssEntries]);
+    return generatePmcSeries(
+      pmcMesocycle,
+      analysis?.tss,
+      baselineFitness,
+      manualTssEntries,
+      isStravaConnected ? stravaActivities : undefined
+    );
+  }, [pmcMesocycle, analysis?.tss, baselineFitness, manualTssEntries, isStravaConnected, stravaActivities]);
 
   const latestPmcDay = pmcData[pmcData.length - 1];
   const currentTsbZone = getTsbZoneInfo(latestPmcDay ? latestPmcDay.tsb : 0);
@@ -603,39 +673,80 @@ export const FitActivityAnalyzer: React.FC = () => {
 
       {/* File Upload Zone & Rider Anchor Bar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Upload Dropzone */}
-        <div
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          className="lg:col-span-2 ios-card p-6 sm:p-8 rounded-3xl border-2 border-dashed border-slate-300/80 dark:border-white/20 hover:border-ios-blue dark:hover:border-ios-blue transition flex flex-col items-center justify-center text-center group cursor-pointer relative shadow-ios-card"
-        >
-          <input
-            type="file"
-            accept=".fit,.gpx,.tcx"
-            onChange={(e) => {
-              if (e.target.files && e.target.files.length > 0) {
-                handleFileUpload(e.target.files[0]);
-              }
-            }}
-            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-          />
+        {/* Upload Dropzone & Strava Quick Load Bar */}
+        <div className="lg:col-span-2 space-y-3">
+          <div
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            className="ios-card p-6 sm:p-7 rounded-3xl border-2 border-dashed border-slate-300/80 dark:border-white/20 hover:border-ios-blue dark:hover:border-ios-blue transition flex flex-col items-center justify-center text-center group cursor-pointer relative shadow-ios-card"
+          >
+            <input
+              type="file"
+              accept=".fit,.gpx,.tcx"
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  handleFileUpload(e.target.files[0]);
+                }
+              }}
+              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+            />
 
-          <div className="w-14 h-14 rounded-2xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue flex items-center justify-center mb-3.5 group-hover:scale-105 transition apple-touch">
-            <Upload className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue flex items-center justify-center mb-3 group-hover:scale-105 transition apple-touch">
+              <Upload className="w-5 h-5" />
+            </div>
+
+            <div className="font-bold text-sm text-slate-800 dark:text-white">
+              {'点击选择或拖拽码表文件至此 (.fit / .gpx / .tcx)'}
+            </div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {'全面兼容佳明 Garmin、Wahoo、迈金、行者、iGPSPORT、百锐腾等各大主流品牌'}
+            </div>
+
+            {analysis && (
+              <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono">
+                <CheckCircle2 className="w-3.5 h-3.5 text-ios-green" />
+                <span className="font-semibold">{analysis.fileName}</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-blue text-white uppercase font-bold">{analysis.fileType}</span>
+              </div>
+            )}
           </div>
 
-          <div className="font-bold text-sm text-slate-800 dark:text-white">
-            {'点击选择或拖拽码表文件至此 (.fit / .gpx / .tcx)'}
-          </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {'全面兼容佳明 Garmin、Wahoo、迈金、行者、iGPSPORT、百锐腾等各大主流品牌'}
-          </div>
+          {/* Strava Quick Select Bar (when connected) */}
+          {isStravaConnected && stravaActivities.length > 0 && (
+            <div className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center shrink-0">
+                  <Cloud className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  从 Strava 快速选择骑行深度复盘:
+                </span>
+              </div>
 
-          {analysis && (
-            <div className="mt-3.5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono">
-              <CheckCircle2 className="w-3.5 h-3.5 text-ios-green" />
-              <span className="font-semibold">{analysis.fileName}</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-blue text-white uppercase font-bold">{analysis.fileType}</span>
+              <div className="flex items-center gap-2 flex-1 sm:max-w-md">
+                <select
+                  value={selectedStravaActivityId}
+                  onChange={(e) => handleLoadStravaActivity(e.target.value)}
+                  className="flex-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1.5 focus:ring-[#FC4C02]"
+                >
+                  <option value="">-- 选择近期 Strava 骑行 (共 {stravaActivities.length} 条) --</option>
+                  {stravaActivities.slice(0, 30).map((act) => (
+                    <option key={act.id} value={String(act.id)}>
+                      {new Date(act.start_date_local || act.start_date).toLocaleDateString()} • {act.name} ({(act.distance / 1000).toFixed(0)}km | {act.tss || 0} TSS)
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="button"
+                  onClick={() => syncStravaActivities(false)}
+                  disabled={isStravaSyncing}
+                  className="apple-touch px-2.5 py-1.5 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] text-slate-600 dark:text-slate-300 text-xs shrink-0 flex items-center gap-1 transition"
+                  title="刷新 Strava 活动"
+                >
+                  <RefreshCw className={`w-3 h-3 ${isStravaSyncing ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -1011,6 +1122,35 @@ export const FitActivityAnalyzer: React.FC = () => {
             <div className="space-y-6">
               {/* PMC Overview Card */}
               <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-5">
+                {/* Strava Live Sync Banner if Connected */}
+                {isStravaConnected && (
+                  <div className="p-3.5 rounded-2xl bg-[#FC4C02]/10 border border-[#FC4C02]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-7 h-7 rounded-xl bg-[#FC4C02] text-white flex items-center justify-center shrink-0 shadow-xs font-bold">
+                        <Cloud className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-bold text-slate-900 dark:text-white block truncate">
+                          Strava 云端真实训练负荷时序已激活
+                        </span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                          已自动汇入 {stravaActivities.length} 次真实骑行 TSS 驱动 42天 CTL/ATL/TSB 曲线
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => syncStravaActivities(false)}
+                      disabled={isStravaSyncing}
+                      className="apple-touch self-start sm:self-auto px-3 py-1.5 rounded-xl bg-white dark:bg-[#1C1C1E] hover:bg-slate-50 dark:hover:bg-white/10 text-[#FC4C02] font-semibold text-xs border border-[#FC4C02]/30 shrink-0 flex items-center gap-1.5 transition shadow-2xs disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${isStravaSyncing ? 'animate-spin' : ''}`} />
+                      <span>{isStravaSyncing ? '同步中...' : '同步最新'}</span>
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
