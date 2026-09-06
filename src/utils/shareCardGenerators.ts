@@ -205,7 +205,7 @@ export function generatePowerProfilePoster(data: PowerProfilePosterData): string
   drawHeader(ctx, w, '⚡ 生理动力学 · 功率能力画像', '车手能力雷达与极化靶心战报', `车手自重 ${data.weightKg} kg · 功能阈值功率 (FTP) ${data.ftpWatts} W`, accent);
 
   // Phenotype Card
-  roundRect(ctx, 40, 204, w - 80, 84, 20);
+  roundRect(ctx, 40, 204, w - 80, 94, 20);
   ctx.fillStyle = 'rgba(255, 59, 48, 0.08)';
   ctx.fill();
   ctx.strokeStyle = 'rgba(255, 59, 48, 0.25)';
@@ -213,24 +213,23 @@ export function generatePowerProfilePoster(data: PowerProfilePosterData): string
   ctx.stroke();
 
   ctx.fillStyle = '#FF453A';
-  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🏆 车手类型判定', 60, 234);
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('🏆 车手类型判定', 60, 228);
 
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(data.phenotype, 60, 266);
+  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(data.phenotype, 60, 256);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  const phenoWidth = ctx.measureText(data.phenotype).width;
-  ctx.fillText(`(${data.phenotypeDesc})`, 60 + phenoWidth + 12, 266);
+  ctx.fillText(data.phenotypeDesc, 60, 280);
 
   // Peak Power Metrics (4 Tiles)
   const tileW = (w - 80 - 15) / 2;
-  drawMetricTile(ctx, 40, 308, tileW, 80, '5秒 神经肌肉冲刺', data.p5s, `W (${data.w5s} W/kg)`, '#FF375F');
-  drawMetricTile(ctx, 40 + tileW + 15, 308, tileW, 80, '1分钟 无氧容量', data.p1m, `W (${data.w1m} W/kg)`, '#FF9F0A');
-  drawMetricTile(ctx, 40, 403, tileW, 80, '5分钟 最大摄氧量 (VO₂)', data.p5m, `W (${data.w5m} W/kg)`, '#30D158');
-  drawMetricTile(ctx, 40 + tileW + 15, 403, tileW, 80, '20分钟 乳酸阈值 (FTP)', data.p20m, `W (${data.w20m} W/kg)`, '#0A84FF');
+  drawMetricTile(ctx, 40, 312, tileW, 80, '5秒 神经肌肉冲刺', data.p5s, `W (${data.w5s} W/kg)`, '#FF375F');
+  drawMetricTile(ctx, 40 + tileW + 15, 312, tileW, 80, '1分钟 无氧容量', data.p1m, `W (${data.w1m} W/kg)`, '#FF9F0A');
+  drawMetricTile(ctx, 40, 406, tileW, 80, '5分钟 最大摄氧量 (VO₂)', data.p5m, `W (${data.w5m} W/kg)`, '#30D158');
+  drawMetricTile(ctx, 40 + tileW + 15, 406, tileW, 80, '20分钟 乳酸阈值 (FTP)', data.p20m, `W (${data.w20m} W/kg)`, '#0A84FF');
 
   // Radar Polygon Simulation Box
   const radarY = 500;

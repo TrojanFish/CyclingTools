@@ -147,24 +147,24 @@ header {
   transform: translateY(-2px);
 }
 
-.light h1, .light h2, .light h3, .light h4 {
-  color: #000000 !important;
+.light h1:not(.dark *), .light h2:not(.dark *), .light h3:not(.dark *), .light h4:not(.dark *) {
+  color: #000000;
 }
 
-.light .text-slate-100, .light .text-slate-200 {
-  color: #1c1c1e !important;
+.light .text-slate-100:not(.dark *), .light .text-slate-200:not(.dark *) {
+  color: #1c1c1e;
 }
 
-.light .text-slate-300 {
-  color: #3a3a3c !important;
+.light .text-slate-300:not(.dark *) {
+  color: #3a3a3c;
 }
 
-.light .text-slate-400 {
-  color: #636366 !important;
+.light .text-slate-400:not(.dark *) {
+  color: #636366;
 }
 
-.light .text-slate-500 {
-  color: #8e8e93 !important;
+.light .text-slate-500:not(.dark *) {
+  color: #8e8e93;
 }
 
 .light .bg-slate-900, 
