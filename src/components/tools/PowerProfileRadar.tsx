@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Copy, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer } from 'lucide-react';
+import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Copy, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer, Dumbbell, ArrowRight } from 'lucide-react';
 import { Radar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -26,7 +26,11 @@ ChartJS.register(
   Legend
 );
 
-export const PowerProfileRadar: React.FC = () => {
+interface PowerProfileRadarProps {
+  onNavigateTool?: (toolId: string) => void;
+}
+
+export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigateTool }) => {
   const { profile } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
@@ -654,6 +658,23 @@ export const PowerProfileRadar: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            {onNavigateTool && (
+              <div className="pt-3 border-t border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="text-slate-500 dark:text-slate-400">
+                  💡 想要针对极化三区或弱项开展针对性课表训练？
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onNavigateTool('workout-builder')}
+                  className="apple-touch self-start sm:self-auto shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-ios-purple/10 hover:bg-ios-purple/20 text-ios-purple font-bold text-xs border border-ios-purple/20 transition shadow-2xs"
+                >
+                  <Dumbbell className="w-3.5 h-3.5" />
+                  <span>前往科学训练课表工坊</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

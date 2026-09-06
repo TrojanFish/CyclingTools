@@ -21,7 +21,11 @@ import {
   BarChart3,
   Printer,
   Cloud,
-  RefreshCw
+  RefreshCw,
+  Battery,
+  Sliders,
+  ArrowRight,
+  Dumbbell
 } from 'lucide-react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
@@ -49,7 +53,11 @@ import {
   parseGpxFile,
   parseTcxFile,
   generateRealisticDemoRide,
-  analyzePoints
+  analyzePoints,
+  COGGAN_BENCHMARKS,
+  CogganBenchmarkLevel,
+  calculateSkibaWPrimeBalance,
+  WPrimeBalanceResult
 } from '../../utils/activityParser';
 import {
   generatePmcSeries,
@@ -76,7 +84,11 @@ ChartJS.register(
   Filler
 );
 
-export const FitActivityAnalyzer: React.FC = () => {
+interface FitActivityAnalyzerProps {
+  onNavigateTool?: (toolId: string) => void;
+}
+
+export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavigateTool }) => {
   const { profile } = useRiderProfile();
   const { unitSystem, language, convertDistance, convertElevation, convertSpeed, convertWeight } = useLanguageAndUnit();
   const { showToast } = useToast();
@@ -92,6 +104,17 @@ export const FitActivityAnalyzer: React.FC = () => {
     if (profile.weightKg) setWeightKg(profile.weightKg);
     if (profile.maxHr) setMaxHr(profile.maxHr);
   }, [profile.ftpWatts, profile.weightKg, profile.maxHr]);
+
+  // MMP & W' Balance State
+  const [mmpUnit, setMmpUnit] = useState<'wkg' | 'watts'>('wkg');
+  const [mmpSubView, setMmpSubView] = useState<'mmp_curve' | 'w_balance'>('mmp_curve');
+  const [selectedCogganTier, setSelectedCogganTier] = useState<string>('all');
+  const [cpWatts, setCpWatts] = useState<number>(profile.ftpWatts || 240);
+  const [wPrimeKj, setWPrimeKj] = useState<number>(20);
+
+  useEffect(() => {
+    if (profile.ftpWatts) setCpWatts(profile.ftpWatts);
+  }, [profile.ftpWatts]);
 
   // Activity State
   const [analysis, setAnalysis] = useState<ActivityAnalysis | null>(null);
@@ -551,26 +574,177 @@ export const FitActivityAnalyzer: React.FC = () => {
     };
   }, [analysis, language]);
 
-  // MMP Curve Chart Data
+  // Coggan benchmark duration interpolator
+  const getBenchmarkWkgForDuration = (b: CogganBenchmarkLevel, sec: number): number => {
+    if (sec <= 5) return b.wkg5s;
+    if (sec <= 60) {
+      const ratio = Math.log(sec / 5) / Math.log(60 / 5);
+      return parseFloat((b.wkg5s + ratio * (b.wkg1m - b.wkg5s)).toFixed(1));
+    }
+    if (sec <= 300) {
+      const ratio = Math.log(sec / 60) / Math.log(300 / 60);
+      return parseFloat((b.wkg1m + ratio * (b.wkg5m - b.wkg1m)).toFixed(1));
+    }
+    if (sec <= 1200) {
+      const ratio = Math.log(sec / 300) / Math.log(1200 / 300);
+      return parseFloat((b.wkg5m + ratio * (b.wkg20m - b.wkg5m)).toFixed(1));
+    }
+    const ratio = Math.min(1, Math.log(sec / 1200) / Math.log(3600 / 1200));
+    return parseFloat((b.wkg20m + ratio * (b.wkg60m - b.wkg20m)).toFixed(1));
+  };
+
+  // Skiba W' Balance anaerobic battery calculation
+  const wPrimeResult: WPrimeBalanceResult | null = useMemo(() => {
+    if (!analysis || !analysis.points || analysis.points.length === 0) return null;
+    return calculateSkibaWPrimeBalance(analysis.points, cpWatts, wPrimeKj * 1000);
+  }, [analysis, cpWatts, wPrimeKj]);
+
+  // Rider phenotype analysis based on MMP profile
+  const riderPhenotype = useMemo(() => {
+    if (!analysis || !analysis.mmp || analysis.mmp.length === 0) return null;
+    const m5s = analysis.mmp.find(m => m.durationSec === 5)?.wkg || 0;
+    const m1m = analysis.mmp.find(m => m.durationSec === 60)?.wkg || 0;
+    const m5m = analysis.mmp.find(m => m.durationSec === 300)?.wkg || 0;
+    const m20m = analysis.mmp.find(m => m.durationSec === 1200)?.wkg || ((analysis.normalizedPower || 200) / (weightKg || 68));
+
+    // Baseline benchmark scores relative to Cat 3 club standard
+    const score5s = m5s / 15.2;
+    const score1m = m1m / 7.3;
+    const score5m = m5m / 4.3;
+    const score20m = m20m / 3.7;
+
+    const maxScore = Math.max(score5s, score1m, score5m, score20m);
+    const minScore = Math.min(score5s, score1m, score5m, score20m);
+
+    if (maxScore - minScore < 0.25) {
+      return {
+        type: 'all_rounder',
+        title: language === 'zh-TW' ? '全能均衡型 (All-Rounder)' : '全能均衡型 (All-Rounder)',
+        badgeColor: 'text-ios-blue bg-ios-blue/10 border-ios-blue/20',
+        description: '冲刺、无氧摄氧与阈值巡航能力全面且均衡，能够从容应对多起伏丘陵、大组突围与平路追击等各类综合赛况。',
+        trainingFocus: '建议保持全面素质，结合「训练课表工坊」针对短板（如 VO2max 4x4 或 2x20 阈值）进行特定专项突破。'
+      };
+    }
+    if (score5s === maxScore) {
+      return {
+        type: 'sprinter',
+        title: language === 'zh-TW' ? '衝刺爆發型 (Sprinter)' : '冲刺爆发型 (Sprinter)',
+        badgeColor: 'text-ios-pink bg-ios-pink/10 border-ios-pink/20',
+        description: '瞬时神经肌肉爆发力极高，终点冲刺与短陡坡超车优势显著，具备优秀的无氧电量快速放电能力。',
+        trainingFocus: '建议搭配「Ronnestad 30/15s 微间歇」提升抗乳酸恢复速度，并补充「Z2 基础耐力」避免后半程电量耗尽。'
+      };
+    }
+    if (score1m === maxScore || score5m === maxScore) {
+      return {
+        type: 'puncher',
+        title: language === 'zh-TW' ? '阿登突圍/陡坡型 (Puncher / Breakaway)' : '阿登突围/陡坡型 (Puncher / Breakaway)',
+        badgeColor: 'text-ios-orange bg-ios-orange/10 border-ios-orange/20',
+        description: '最大摄氧量 (VO2max) 与抗乳酸能力突出，擅长 1~5 分钟的短陡坡爆击、反复突围拉扯与追赶。',
+        trainingFocus: '可配合「Over-Under 乳酸清除间歇」与「4x4 VO2max 课表」进一步强化乳酸穿梭再循环能力。'
+      };
+    }
+    return {
+      type: 'time_trialist',
+      title: language === 'zh-TW' ? '計時賽/長坡巡航型 (Time Trialist / Climber)' : '计时赛/长坡巡航型 (Time Trialist / Climber)',
+      badgeColor: 'text-ios-green bg-ios-green/10 border-ios-green/20',
+      description: '功能阈值功率 (FTP) 持续输出坚如磐石，有氧底蕴深厚，长距离平路巡航与稳态爬坡表现优异。',
+      trainingFocus: '建议使用「2x20 经典阈值巡航」巩固推重比，同时适度补充「Tabata 冲刺」激活无氧能量池储备。'
+    };
+  }, [analysis, weightKg, language]);
+
+  // MMP Curve Chart Data with Coggan Benchmarks
   const mmpChartData = useMemo(() => {
     if (!analysis) return { labels: [], datasets: [] };
+    const labels = analysis.mmp.map(m => m.label);
+    const isWkg = mmpUnit === 'wkg';
+
+    const userDataset = {
+      type: 'line' as const,
+      label: isWkg ? '本次活动峰值 (W/kg)' : '本次活动峰值 (Watts)',
+      data: analysis.mmp.map(m => isWkg ? m.wkg : m.watts),
+      borderColor: '#8b5cf6',
+      backgroundColor: 'rgba(139, 92, 246, 0.18)',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 4,
+      pointBackgroundColor: '#8b5cf6',
+      borderWidth: 2.5,
+      order: 1
+    };
+
+    const benchmarkDatasets: any[] = [];
+    const tiersToInclude = selectedCogganTier === 'all'
+      ? COGGAN_BENCHMARKS
+      : selectedCogganTier === 'none'
+        ? []
+        : COGGAN_BENCHMARKS.filter(b => b.level === selectedCogganTier);
+
+    tiersToInclude.forEach(b => {
+      benchmarkDatasets.push({
+        type: 'line' as const,
+        label: `${b.label} ${isWkg ? '(W/kg)' : '(W)'}`,
+        data: analysis.mmp.map(m => {
+          const wkgVal = getBenchmarkWkgForDuration(b, m.durationSec);
+          return isWkg ? wkgVal : Math.round(wkgVal * weightKg);
+        }),
+        borderColor: b.color,
+        borderDash: [5, 4],
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.25,
+        pointRadius: 0,
+        borderWidth: 1.5,
+        order: 2
+      });
+    });
+
     return {
-      labels: analysis.mmp.map(m => m.label),
+      labels,
+      datasets: [userDataset, ...benchmarkDatasets]
+    };
+  }, [analysis, mmpUnit, selectedCogganTier, weightKg]);
+
+  // Skiba W' Balance Chart Data
+  const wPrimeChartData = useMemo(() => {
+    if (!wPrimeResult || !wPrimeResult.dataPoints || wPrimeResult.dataPoints.length === 0) {
+      return { labels: [], datasets: [] };
+    }
+    const labels = wPrimeResult.dataPoints.map(p => formatDuration(p.timeSec));
+    const wBalData = wPrimeResult.dataPoints.map(p => p.wBalPercent);
+    const powerData = wPrimeResult.dataPoints.map(p => p.power);
+
+    return {
+      labels,
       datasets: [
         {
           type: 'line' as const,
-          label: '峰值平均功率 (W)',
-          data: analysis.mmp.map(m => m.watts),
-          borderColor: '#8b5cf6',
-          backgroundColor: 'rgba(139, 92, 246, 0.12)',
+          label: "W' 无氧剩余电量 (%)",
+          data: wBalData,
+          yAxisID: 'yWBal',
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.12)',
           fill: true,
-          tension: 0.3,
-          pointRadius: 4,
-          pointBackgroundColor: '#8b5cf6'
+          tension: 0.2,
+          pointRadius: 0,
+          borderWidth: 2,
+          order: 1
+        },
+        {
+          type: 'line' as const,
+          label: '实时输出功率 (W)',
+          data: powerData,
+          yAxisID: 'yPower',
+          borderColor: 'rgba(59, 130, 246, 0.4)',
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.1,
+          pointRadius: 0,
+          borderWidth: 1,
+          order: 2
         }
       ]
     };
-  }, [analysis, language]);
+  }, [wPrimeResult]);
 
   // Coaching Insights Computation
   const coachingNotes = useMemo(() => {
@@ -1075,45 +1249,329 @@ export const FitActivityAnalyzer: React.FC = () => {
             </div>
           )}
 
-          {/* TAB 3: MMP Power Curve */}
+          {/* TAB 3: MMP Power Curve & Skiba W' Balance */}
           {activeTab === 'mmp' && (
-            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-                    {'最佳平均峰值功率 (MMP) 曲线'}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {'本次骑行中车手在各个标准时段内所维持的最高平均输出（瓦特与推重比）'}
-                  </p>
+            <div className="space-y-6">
+              {/* Sub-view switcher */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="max-w-xs">
+                  <IOSSegmentedControl
+                    options={[
+                      { value: 'mmp_curve', label: language === 'zh-TW' ? 'MMP 峰值與天梯' : 'MMP 峰值与天梯' },
+                      { value: 'w_balance', label: language === 'zh-TW' ? "W' Balance 耗竭模型" : "W' Balance 耗竭模型" }
+                    ]}
+                    value={mmpSubView}
+                    onChange={(v) => setMmpSubView(v as any)}
+                  />
                 </div>
-              </div>
 
-              <div className="h-64 sm:h-80">
-                <Line
-                  data={mmpChartData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                      x: { ticks: { font: { size: 10 }, color: '#94a3b8' } },
-                      y: { ticks: { font: { size: 10 }, color: '#64748b' } }
-                    }
-                  }}
-                />
-              </div>
+                {mmpSubView === 'mmp_curve' && (
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    {/* Unit Switcher */}
+                    <div className="flex items-center bg-slate-100 dark:bg-white/10 p-0.5 rounded-xl border border-slate-200/80 dark:border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => setMmpUnit('wkg')}
+                        className={`px-2.5 py-1 rounded-lg font-medium transition ${
+                          mmpUnit === 'wkg' ? 'bg-white dark:bg-slate-800 text-ios-purple shadow-2xs font-bold' : 'text-slate-500'
+                        }`}
+                      >
+                        W/kg (推重比)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMmpUnit('watts')}
+                        className={`px-2.5 py-1 rounded-lg font-medium transition ${
+                          mmpUnit === 'watts' ? 'bg-white dark:bg-slate-800 text-ios-purple shadow-2xs font-bold' : 'text-slate-500'
+                        }`}
+                      >
+                        Watts (瓦特)
+                      </button>
+                    </div>
 
-              {/* MMP Grid Table */}
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {analysis.mmp.map((m) => (
-                  <div key={m.label} className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-1">
-                    <div className="text-xs font-bold text-ios-purple uppercase">{m.label}</div>
-                    <div className="text-lg font-extrabold text-slate-900 dark:text-white">{m.watts} W</div>
-                    <div className="text-[11px] text-slate-500">{m.wkg} W/kg</div>
+                    {/* Coggan Benchmark Tier Selector */}
+                    <select
+                      value={selectedCogganTier}
+                      onChange={(e) => setSelectedCogganTier(e.target.value)}
+                      className="bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-purple"
+                    >
+                      <option value="all">Coggan 全等级天梯标尺</option>
+                      <option value="world_tour">WorldTour (世巡职业)</option>
+                      <option value="cat1">Cat 1 (国家级精英)</option>
+                      <option value="cat2">Cat 2 (省级健将)</option>
+                      <option value="cat3">Cat 3 (俱乐部高阶)</option>
+                      <option value="cat4">Cat 4 (进阶骑手)</option>
+                      <option value="cat5">Cat 5 / Untrained (业余入门)</option>
+                      <option value="none">隐藏天梯对比线</option>
+                    </select>
                   </div>
-                ))}
+                )}
               </div>
+
+              {/* VIEW 1: Continuous MMP Curve & Coggan Benchmarks */}
+              {mmpSubView === 'mmp_curve' && (
+                <div className="space-y-6">
+                  {/* Rider Phenotype Card */}
+                  {riderPhenotype && (
+                    <div className="ios-card p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card relative overflow-hidden">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                              {language === 'zh-TW' ? '車手表型畫像診斷' : '车手表型画像诊断'}
+                            </span>
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${riderPhenotype.badgeColor}`}>
+                              {riderPhenotype.title}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+                            {riderPhenotype.description}
+                          </p>
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                            💡 训练建议：{riderPhenotype.trainingFocus}
+                          </p>
+                        </div>
+
+                        {onNavigateTool && (
+                          <button
+                            type="button"
+                            onClick={() => onNavigateTool('workout-builder')}
+                            className="apple-touch shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-2xl bg-ios-purple/10 hover:bg-ios-purple/20 border border-ios-purple/25 text-ios-purple text-xs font-bold transition shadow-2xs"
+                          >
+                            <Dumbbell className="w-4 h-4" />
+                            <span>前往科学训练课表工坊</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* MMP Chart */}
+                  <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          {'最佳平均峰值功率 (MMP) 曲线与天梯标尺'}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          {'车手在各个标准时段内所维持的最高平均输出（瓦特与推重比对比 Coggan 世界标准）'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="h-72 sm:h-84">
+                      <Line
+                        data={mmpChartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                            legend: {
+                              display: true,
+                              position: 'top' as const,
+                              labels: { font: { size: 10 }, boxWidth: 12, color: '#94a3b8' }
+                            }
+                          },
+                          scales: {
+                            x: { ticks: { font: { size: 10 }, color: '#94a3b8' } },
+                            y: {
+                              ticks: { font: { size: 10 }, color: '#64748b' },
+                              title: {
+                                display: true,
+                                text: mmpUnit === 'wkg' ? 'W/kg (推重比)' : 'Watts (瓦特)',
+                                color: '#8b5cf6',
+                                font: { size: 11 }
+                              }
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+
+                    {/* MMP Grid Table */}
+                    <div className="pt-2">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5">
+                        全时域秒级阶梯最佳峰值数据表 (High-Resolution MMP Matrix)
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                        {analysis.mmp.map((m) => (
+                          <div key={m.label} className="p-2.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-0.5">
+                            <div className="text-[11px] font-bold text-ios-purple uppercase">{m.label}</div>
+                            <div className="text-base font-extrabold text-slate-900 dark:text-white">{m.watts} W</div>
+                            <div className="text-[10px] text-slate-500">{m.wkg} W/kg</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* VIEW 2: Skiba W' Balance Anaerobic Battery Exhaustion Model */}
+              {mmpSubView === 'w_balance' && wPrimeResult && (
+                <div className="space-y-6">
+                  {/* Parameter Tuning Bar */}
+                  <div className="ios-card p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Battery className="w-4 h-4 text-ios-green" />
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                            Skiba (2012) W' Balance 无氧电量动力学模型
+                          </h3>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          模拟无氧电池在 CP (临界功率) 以上踩踏时的放电耗竭与低于 CP 时的动态指数重充
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500">临界功率 CP:</span>
+                          <NumberStepper
+                            value={cpWatts}
+                            onChange={setCpWatts}
+                            min={100}
+                            max={500}
+                            step={5}
+                            unit="W"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500">无氧容量 W' max:</span>
+                          <NumberStepper
+                            value={wPrimeKj}
+                            onChange={setWPrimeKj}
+                            min={5}
+                            max={40}
+                            step={1}
+                            unit="kJ"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Metric Tiles */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">最低剩余无氧电量</div>
+                        <div className="text-lg font-extrabold text-slate-900 dark:text-white flex items-baseline gap-1.5">
+                          <span>{wPrimeResult.minWPrimePercent}%</span>
+                          <span className="text-xs font-normal text-slate-500">({(wPrimeResult.minWPrimeJoules / 1000).toFixed(1)} kJ)</span>
+                        </div>
+                        <div className="text-[10px]">
+                          {wPrimeResult.minWPrimePercent <= 10 ? (
+                            <span className="text-ios-red font-bold">⚠️ 濒临爆缸临界</span>
+                          ) : wPrimeResult.minWPrimePercent <= 30 ? (
+                            <span className="text-ios-orange font-bold">⚡ 深度无氧亏损</span>
+                          ) : (
+                            <span className="text-ios-green font-bold">✓ 电量充裕安全</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">电量最低点时刻</div>
+                        <div className="text-lg font-extrabold text-slate-900 dark:text-white">
+                          {formatDuration(wPrimeResult.minPointSec)}
+                        </div>
+                        <div className="text-[10px] text-slate-400">本次骑行最艰苦攻坚点</div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">深红放电次数 (&lt;30%)</div>
+                        <div className="text-lg font-extrabold text-slate-900 dark:text-white">
+                          {wPrimeResult.matchesBurned} <span className="text-xs font-normal text-slate-500">次火柴</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400">燃烧极限火柴次数</div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                        <div className="text-[11px] text-slate-400 font-medium">超阈值做功 (Work &gt; CP)</div>
+                        <div className="text-lg font-extrabold text-slate-900 dark:text-white">
+                          {wPrimeResult.workAboveCpKj} <span className="text-xs font-normal text-slate-500">kJ</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          历时 {formatDuration(wPrimeResult.timeAboveCpSec)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* W' Balance Dynamic Time-Series Chart */}
+                  <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs font-bold text-slate-850 dark:text-white">
+                        {"W' Balance 电量耗竭波形 (绿色) 与实时功率 (蓝色) 对照"}
+                      </div>
+                      <span className="text-[11px] text-slate-400">
+                        CP 临界基准: {cpWatts} W · W' max: {wPrimeKj} kJ
+                      </span>
+                    </div>
+
+                    <div className="h-72 sm:h-84">
+                      <Line
+                        data={wPrimeChartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          interaction: { mode: 'index', intersect: false },
+                          plugins: {
+                            legend: {
+                              display: true,
+                              position: 'top' as const,
+                              labels: { font: { size: 10 }, boxWidth: 12, color: '#94a3b8' }
+                            }
+                          },
+                          scales: {
+                            x: { ticks: { font: { size: 10 }, color: '#94a3b8' } },
+                            yWBal: {
+                              type: 'linear' as const,
+                              position: 'left' as const,
+                              min: 0,
+                              max: 100,
+                              ticks: { font: { size: 10 }, color: '#10b981', callback: (v) => `${v}%` },
+                              title: { display: true, text: "W' 剩余百分比 (%)", color: '#10b981', font: { size: 10 } }
+                            },
+                            yPower: {
+                              type: 'linear' as const,
+                              position: 'right' as const,
+                              grid: { display: false },
+                              ticks: { font: { size: 10 }, color: '#3b82f6', callback: (v) => `${v}W` },
+                              title: { display: true, text: '功率 (W)', color: '#3b82f6', font: { size: 10 } }
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+
+                    {/* Scientific Explanation Banner */}
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div className="flex items-start gap-2.5">
+                        <Info className="w-4 h-4 text-ios-blue shrink-0 mt-0.5" />
+                        <div className="space-y-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
+                          <p>
+                            <strong>科学原理</strong>：当输出功率高于临界功率 (CP) 时，身体主要依靠无氧糖酵解供能，迅速消耗 W' 储备；当功率降回 CP 以下时，机体利用有氧代谢乳酸穿梭逐步重充电量。若 W' 降至 0%，将引发急性力竭（爆缸）。
+                          </p>
+                        </div>
+                      </div>
+
+                      {onNavigateTool && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateTool('workout-builder')}
+                          className="apple-touch self-start sm:self-auto shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue font-bold text-xs border border-ios-blue/20 transition shadow-2xs"
+                        >
+                          <Dumbbell className="w-3.5 h-3.5" />
+                          <span>去课表工坊强化无氧池</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

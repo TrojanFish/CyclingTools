@@ -21,7 +21,8 @@ import {
   Sparkles,
   Search,
   X,
-  Sliders
+  Sliders,
+  Dumbbell
 } from 'lucide-react';
 import { ToolMetadata } from '../types';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
@@ -46,6 +47,7 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   Droplets,
   Disc,
   Sliders,
+  Dumbbell,
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; ring: string }> = {

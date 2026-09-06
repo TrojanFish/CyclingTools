@@ -62,6 +62,7 @@ export const CyclePowerCalculator: React.FC = () => {
   const [cdaPreset, setCdaPreset] = useState<'tt' | 'drops' | 'hoods' | 'tops'>('hoods');
   const [customCda, setCustomCda] = useState<number>(0.32);
   const [customCrr, setCustomCrr] = useState<number>(0.0035);
+  const [yawAngleDeg, setYawAngleDeg] = useState<number>(0); // 0°~20° yaw angle
 
   // Dedicated Climb & VAM test parameters
   const [climbDistanceKm, setClimbDistanceKm] = useState<number>(10);
@@ -97,6 +98,10 @@ export const CyclePowerCalculator: React.FC = () => {
     const fGravity = totalMass * g * Math.sin(gradeRad);
     const fRolling = totalMass * g * Math.cos(gradeRad) * customCrr;
 
+    // Crosswind Yaw angle CdA empirical correction
+    const yawRad = (yawAngleDeg * Math.PI) / 180;
+    const effectiveCda = customCda * (1 + Math.pow(Math.sin(yawRad), 2) * 0.28);
+
     const windMs = (windSpeedKmh / 3.6) * (windDirection === 'headwind' ? 1 : -1);
 
     let effectiveWatts = powerInput;
@@ -114,7 +119,7 @@ export const CyclePowerCalculator: React.FC = () => {
       for (let i = 0; i < 50; i++) {
         v = (low + high) / 2;
         const vRel = v + windMs;
-        const currentAero = 0.5 * airDensityRho * customCda * Math.pow(Math.max(0, vRel), 2);
+        const currentAero = 0.5 * airDensityRho * effectiveCda * Math.pow(Math.max(0, vRel), 2);
         const requiredPower = (fGravity + fRolling + currentAero) * v;
         if (requiredPower < effectiveWatts) {
           low = v;
@@ -127,14 +132,14 @@ export const CyclePowerCalculator: React.FC = () => {
       // Direct solve power from speed
       const v = targetSpeedKmh / 3.6;
       const vRel = v + windMs;
-      const currentAero = 0.5 * airDensityRho * customCda * Math.pow(Math.max(0, vRel), 2);
+      const currentAero = 0.5 * airDensityRho * effectiveCda * Math.pow(Math.max(0, vRel), 2);
       effectiveWatts = Math.max(0, Math.round((fGravity + fRolling + currentAero) * v));
       effectiveSpeedKmh = targetSpeedKmh;
     }
 
     const vFinal = effectiveSpeedKmh / 3.6;
     const vRelFinal = vFinal + windMs;
-    const fAero = 0.5 * airDensityRho * customCda * Math.pow(Math.max(0, vRelFinal), 2);
+    const fAero = 0.5 * airDensityRho * effectiveCda * Math.pow(Math.max(0, vRelFinal), 2);
 
     const wkg = parseFloat((effectiveWatts / safeRiderWeight).toFixed(2));
     const totalForce = Math.max(0.1, Math.abs(fGravity) + fRolling + fAero);
@@ -213,7 +218,7 @@ export const CyclePowerCalculator: React.FC = () => {
       terminalCoastingKmh,
       isDownhillAlert
     };
-  }, [calcMode, powerInput, targetSpeedKmh, targetWkg, riderWeight, bikeWeight, grade, windSpeedKmh, windDirection, airDensityRho, customCda, customCrr, climbDistanceKm, climbElevationGainM, profile.ftpWatts]);
+  }, [calcMode, powerInput, targetSpeedKmh, targetWkg, riderWeight, bikeWeight, grade, windSpeedKmh, windDirection, yawAngleDeg, airDensityRho, customCda, customCrr, climbDistanceKm, climbElevationGainM, profile.ftpWatts]);
 
   // Chart datasets
   const speedChartData = useMemo(() => {
@@ -479,6 +484,53 @@ export const CyclePowerCalculator: React.FC = () => {
                     </button>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Yaw Angle (Crosswind Angle) */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2.5">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
+                  <Wind className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                  {language === 'zh-TW' ? '側風偏航角 (Yaw Angle ψ)' : '侧风偏航角 (Yaw Angle ψ)'}
+                  <Tooltip content="偏航角为车手行进方向与合成风矢量的夹角（0°为正迎风，5°~12°为典型公路侧风，20°为强横风）。偏航角增加时身体侧向受风投影面积增大，气动阻力相应上升。" />
+                </span>
+                <span className="font-mono font-bold text-xs text-cyan-600 dark:text-cyan-400">
+                  {yawAngleDeg}° {yawAngleDeg === 0 ? '(正迎风 0°)' : yawAngleDeg <= 10 ? '(小角度侧风)' : '(强横风迎风面积修正)'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step="1"
+                  value={yawAngleDeg}
+                  onChange={(e) => setYawAngleDeg(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                {[
+                  { val: 0, label: '0° 正迎风' },
+                  { val: 5, label: '5° 微侧风' },
+                  { val: 10, label: '10° 典型公路风' },
+                  { val: 15, label: '15° 大偏航角' },
+                  { val: 20, label: '20° 极限横风' }
+                ].map((item) => (
+                  <button
+                    key={item.val}
+                    type="button"
+                    onClick={() => setYawAngleDeg(item.val)}
+                    className={`px-2 py-0.5 rounded-lg border transition font-medium ${
+                      yawAngleDeg === item.val
+                        ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs'
+                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
             </div>
 

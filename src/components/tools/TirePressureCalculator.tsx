@@ -23,6 +23,7 @@ export const TirePressureCalculator: React.FC = () => {
   const [actualWidth, setActualWidth] = useState<number>(29.5);
   const [rimInnerWidth, setRimInnerWidth] = useState<number>(21);
   const [isHookless, setIsHookless] = useState<boolean>(false);
+  const [hasTireInsert, setHasTireInsert] = useState<boolean>(false);
   const [weightDistFront, setWeightDistFront] = useState<number>(44);
   const [surfaceKey, setSurfaceKey] = useState<string>('smooth_asphalt');
   const [pressureUnit, setPressureUnit] = useState<'psi' | 'bar' | 'kpa'>(isImperial ? 'psi' : 'bar');
@@ -56,6 +57,11 @@ export const TirePressureCalculator: React.FC = () => {
 
     if (rimInnerWidth && rimInnerWidth >= 21 && nominalWidth <= 30) {
       adjustedBase -= 1.5;
+    }
+
+    // Adaptive pressure reduction for tire insert (cushcore / vittoria)
+    if (hasTireInsert) {
+      adjustedBase -= 2.5;
     }
 
     const frontRatio = (weightDistFront / 50) * 0.94;
@@ -96,12 +102,13 @@ export const TirePressureCalculator: React.FC = () => {
         isHooklessWidthMismatch ? 'ETRTO 规范安全红线：无钩轮圈内宽 ≥23mm 严禁搭配小于 28c 外胎，极易脱圈导致严重摔车事故！' : null,
         surfaceKey === 'wet_slick' ? '雨天/湿滑路面：建议胎压调低 5~8 PSI 提升橡胶抓地力与刹车循迹性。' : null,
         tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬(Pinch Flat)爆胎。',
+        hasTireInsert ? '已启用真空胎防爆胎垫 (Tire Insert)：胎垫提供侧向渐进支撑并防止轮圈磕底，推荐胎压已自适应调低 2.5 PSI，兼顾极致抓地循迹与轮圈防护。' : null,
         actualWidth > nominalWidth ? `实测胎宽(${actualWidth}mm)宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
         isHooklessPressureExceeded ? '无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
         isHooklessPressureWarning ? '当前气压逼近无钩轮圈 72.5 PSI 上限临界点，建议充气时预留余量以防日晒升温爆胎。' : null
       ].filter(Boolean) as string[]
     };
-  }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, weightDistFront, weightDistRear, surfaceKey, pressureUnit]);
+  }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, hasTireInsert, weightDistFront, weightDistRear, surfaceKey, pressureUnit]);
 
   const copyPressureToClipboard = () => {
     const text = `前轮: ${result.front.rec} ${pressureUnit.toUpperCase()} | 后轮: ${result.rear.rec} ${pressureUnit.toUpperCase()} (建议区间: 前 ${result.front.min}-${result.front.max} / 后 ${result.rear.min}-${result.rear.max})`;
@@ -307,18 +314,35 @@ export const TirePressureCalculator: React.FC = () => {
               </div>
             </div>
 
-            {/* Hookless Rim Option */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-              <div>
-                <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">无钩车圈 (Hookless Rim)</span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
+            {/* Hookless & Tire Insert Options */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Hookless Rim Option */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                <div>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">无钩车圈 (Hookless Rim)</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={isHookless}
+                  onChange={(e) => setIsHookless(e.target.checked)}
+                  className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                />
               </div>
-              <input
-                type="checkbox"
-                checked={isHookless}
-                onChange={(e) => setIsHookless(e.target.checked)}
-                className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
-              />
+
+              {/* Tire Insert Option */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                <div>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">防爆胎垫 / 内衬 (Tire Insert)</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">如 CushCore/Vittoria，防磕圈自适应降压 2.5 PSI</span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={hasTireInsert}
+                  onChange={(e) => setHasTireInsert(e.target.checked)}
+                  className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                />
+              </div>
             </div>
 
             {/* Surface Type */}

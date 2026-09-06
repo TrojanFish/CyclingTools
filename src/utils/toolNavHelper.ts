@@ -18,6 +18,7 @@ import {
   Droplets,
   Disc,
   Sliders,
+  Dumbbell,
   LucideIcon
 } from 'lucide-react';
 
@@ -257,6 +258,18 @@ export const ALL_NAV_TOOLS: NavToolItem[] = [
     categoryLabelTw: '生理與代謝',
     categoryColor: 'ios-red',
     icon: LineChart
+  },
+  {
+    id: 'workout-builder',
+    title: '科学间歇训练课表工坊',
+    titleTw: '科學間歇訓練課表工坊',
+    shortTitle: '课表工坊',
+    shortTitleTw: '課表工坊',
+    category: 'health',
+    categoryLabel: '生理与代谢',
+    categoryLabelTw: '生理與代謝',
+    categoryColor: 'ios-red',
+    icon: Dumbbell
   }
 ];
 

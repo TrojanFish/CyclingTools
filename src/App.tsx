@@ -26,6 +26,7 @@ import { FitActivityAnalyzer } from './components/tools/FitActivityAnalyzer';
 import { TubelessSealantCalculator } from './components/tools/TubelessSealantCalculator';
 import { SpokeLengthCalculator } from './components/tools/SpokeLengthCalculator';
 import { MtbSuspensionTuner } from './components/tools/MtbSuspensionTuner';
+import { WorkoutBuilder } from './components/tools/WorkoutBuilder';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { TOOLS_LIST } from './data/toolsList';
@@ -273,9 +274,10 @@ const MainAppContent: React.FC = () => {
             {currentToolId === 'gpx-creator' && <GpxRouteCreator />}
             {currentToolId === 'group-ride' && <GroupRideSimulator />}
             {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
-            {currentToolId === 'power-radar' && <PowerProfileRadar />}
+            {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => setCurrentToolId(id)} />}
             {currentToolId === 'health-calculator' && <HealthCalculator />}
-            {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer />}
+            {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => setCurrentToolId(id)} />}
+            {currentToolId === 'workout-builder' && <WorkoutBuilder />}
             {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
             {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
             {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}

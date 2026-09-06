@@ -110,20 +110,64 @@ export function calculateNormalizedPower(powerValues: number[]): number {
   return Math.round(Math.pow(avgFourthPower, 0.25));
 }
 
+export interface CogganBenchmarkLevel {
+  level: string;
+  label: string;
+  color: string;
+  wkg5s: number;
+  wkg1m: number;
+  wkg5m: number;
+  wkg20m: number;
+  wkg60m: number;
+}
+
+export const COGGAN_BENCHMARKS: CogganBenchmarkLevel[] = [
+  { level: 'world_tour', label: 'WorldTour (世巡职业)', color: '#ec4899', wkg5s: 23.5, wkg1m: 11.5, wkg5m: 7.6, wkg20m: 6.7, wkg60m: 6.4 },
+  { level: 'cat1', label: 'Cat 1 (国家级精英)', color: '#8b5cf6', wkg5s: 20.0, wkg1m: 9.6, wkg5m: 5.8, wkg20m: 5.2, wkg60m: 4.9 },
+  { level: 'cat2', label: 'Cat 2 (省级健将)', color: '#3b82f6', wkg5s: 17.5, wkg1m: 8.4, wkg5m: 5.0, wkg20m: 4.4, wkg60m: 4.2 },
+  { level: 'cat3', label: 'Cat 3 (俱乐部高阶)', color: '#10b981', wkg5s: 15.2, wkg1m: 7.3, wkg5m: 4.3, wkg20m: 3.7, wkg60m: 3.5 },
+  { level: 'cat4', label: 'Cat 4 (进阶骑手)', color: '#f59e0b', wkg5s: 13.0, wkg1m: 6.2, wkg5m: 3.6, wkg20m: 3.1, wkg60m: 2.9 },
+  { level: 'cat5', label: 'Cat 5 / Untrained (业余入门)', color: '#64748b', wkg5s: 10.5, wkg1m: 5.0, wkg5m: 2.8, wkg20m: 2.4, wkg60m: 2.3 }
+];
+
+export interface WPrimeBalanceResult {
+  cpWatts: number;
+  wPrimeJoules: number;
+  minWPrimeJoules: number;
+  minWPrimePercent: number;
+  minPointSec: number;
+  matchesBurned: number;
+  workAboveCpKj: number;
+  timeAboveCpSec: number;
+  dataPoints: {
+    timeSec: number;
+    power: number;
+    wBalJoules: number;
+    wBalPercent: number;
+  }[];
+}
+
 /**
- * Calculates Mean Maximal Power (MMP) curve for key standard durations
+ * Calculates Mean Maximal Power (MMP) curve for high-resolution durations
  */
 export function calculateMmpCurve(points: ActivityPoint[], riderWeightKg: number): MmpValue[] {
   const durations = [
+    { sec: 1, label: '1s' },
     { sec: 5, label: '5s' },
+    { sec: 10, label: '10s' },
     { sec: 15, label: '15s' },
     { sec: 30, label: '30s' },
     { sec: 60, label: '1m' },
     { sec: 120, label: '2m' },
+    { sec: 180, label: '3m' },
     { sec: 300, label: '5m' },
+    { sec: 480, label: '8m' },
     { sec: 600, label: '10m' },
+    { sec: 720, label: '12m' },
+    { sec: 900, label: '15m' },
     { sec: 1200, label: '20m' },
     { sec: 1800, label: '30m' },
+    { sec: 2700, label: '45m' },
     { sec: 3600, label: '60m' }
   ];
 
@@ -158,6 +202,106 @@ export function calculateMmpCurve(points: ActivityPoint[], riderWeightKg: number
   }
 
   return results;
+}
+
+/**
+ * Calculates Skiba (2012) W' Balance dynamic anaerobic energy depletion and reconstitution
+ */
+export function calculateSkibaWPrimeBalance(
+  points: ActivityPoint[],
+  cpWatts: number,
+  wPrimeJoules = 20000,
+  downsampleTarget = 300
+): WPrimeBalanceResult {
+  if (!points || points.length === 0) {
+    return {
+      cpWatts,
+      wPrimeJoules,
+      minWPrimeJoules: wPrimeJoules,
+      minWPrimePercent: 100,
+      minPointSec: 0,
+      matchesBurned: 0,
+      workAboveCpKj: 0,
+      timeAboveCpSec: 0,
+      dataPoints: []
+    };
+  }
+
+  let currentWBal = wPrimeJoules;
+  let minWBal = wPrimeJoules;
+  let minSec = 0;
+  let matchesBurned = 0;
+  let isInDeepDeficit = false;
+  let workAboveCp = 0;
+  let timeAboveCp = 0;
+
+  const rawSeries: { timeSec: number; power: number; wBalJoules: number; wBalPercent: number }[] = [];
+
+  for (let i = 0; i < points.length; i++) {
+    const pt = points[i];
+    const power = pt.power ?? 0;
+    const dt = i === 0 ? 1 : Math.max(1, Math.min(5, pt.time - points[i - 1].time));
+
+    if (power > cpWatts) {
+      const expJ = (power - cpWatts) * dt;
+      currentWBal = Math.max(0, currentWBal - expJ);
+      workAboveCp += expJ;
+      timeAboveCp += dt;
+    } else {
+      // Dynamic exponential recovery based on Skiba (2012) tau
+      const diff = cpWatts - power;
+      const tau = 546 * Math.exp(-0.01 * diff) + 316;
+      currentWBal = wPrimeJoules - (wPrimeJoules - currentWBal) * Math.exp(-dt / tau);
+      currentWBal = Math.min(wPrimeJoules, Math.max(0, currentWBal));
+    }
+
+    const pct = Math.round((currentWBal / wPrimeJoules) * 100);
+
+    if (pct < 30 && !isInDeepDeficit) {
+      matchesBurned++;
+      isInDeepDeficit = true;
+    } else if (pct >= 35 && isInDeepDeficit) {
+      isInDeepDeficit = false;
+    }
+
+    if (currentWBal < minWBal) {
+      minWBal = currentWBal;
+      minSec = pt.time;
+    }
+
+    rawSeries.push({
+      timeSec: pt.time,
+      power,
+      wBalJoules: Math.round(currentWBal),
+      wBalPercent: pct
+    });
+  }
+
+  // Downsample for smooth chart rendering
+  let dataPoints = rawSeries;
+  if (rawSeries.length > downsampleTarget) {
+    const step = rawSeries.length / downsampleTarget;
+    dataPoints = [];
+    for (let i = 0; i < downsampleTarget; i++) {
+      const idx = Math.min(Math.floor(i * step), rawSeries.length - 1);
+      dataPoints.push(rawSeries[idx]);
+    }
+    if (dataPoints[dataPoints.length - 1] !== rawSeries[rawSeries.length - 1]) {
+      dataPoints.push(rawSeries[rawSeries.length - 1]);
+    }
+  }
+
+  return {
+    cpWatts,
+    wPrimeJoules,
+    minWPrimeJoules: Math.round(minWBal),
+    minWPrimePercent: Math.round((minWBal / wPrimeJoules) * 100),
+    minPointSec: minSec,
+    matchesBurned,
+    workAboveCpKj: parseFloat((workAboveCp / 1000).toFixed(1)),
+    timeAboveCpSec: Math.round(timeAboveCp),
+    dataPoints
+  };
 }
 
 /**
