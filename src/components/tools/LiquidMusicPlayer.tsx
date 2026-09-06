@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Music, Play, Pause, SkipForward, SkipBack, Volume2, ListMusic, Plus, Trash2, X, Move, ChevronUp, ChevronDown } from 'lucide-react';
+import { IOSCard } from '../common/IOSCard';
 
 interface Track {
   id: string;
@@ -167,7 +168,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
   if (isStandalonePage) {
     return (
       <div className="space-y-6">
-        <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
           <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-orange/15" />
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-orange/10 border border-ios-orange/20 text-ios-orange text-xs font-semibold mb-2">
@@ -179,7 +180,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
               匹配 85~105 BPM 黄金踏频节奏曲目，支持在训练与巡航中保持专注力。
             </p>
           </div>
-        </div>
+        </IOSCard>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main Big Player Card */}

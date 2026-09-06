@@ -98,7 +98,7 @@ export const BodyPainDiagram: React.FC<BodyPainDiagramProps> = ({
                   stroke={p.color}
                   strokeWidth={isSelected ? 2.5 : 1.5}
                   filter={isSelected ? 'url(#glow)' : undefined}
-                  className="transition-all duration-200 group-hover:opacity-90 dark:fill-slate-900"
+                  className="transition-all duration-200 group-hover:opacity-90 dark:fill-[#1C1C1E]"
                 />
 
                 {/* Label Text */}
@@ -108,7 +108,7 @@ export const BodyPainDiagram: React.FC<BodyPainDiagramProps> = ({
                   fontSize="8.5"
                   fontWeight="bold"
                   textAnchor="middle"
-                  fill={isSelected ? '#020617' : p.color}
+                  fill={isSelected ? '#000000' : p.color}
                   className="select-none pointer-events-none"
                 >
                   {p.name.slice(0, 2)}
@@ -124,10 +124,10 @@ export const BodyPainDiagram: React.FC<BodyPainDiagramProps> = ({
           <button
             key={p.id}
             onClick={() => onSelectArea(p.id)}
-            className={`px-2 py-0.5 rounded-md text-[10px] font-medium transition ${
+            className={`px-2.5 py-1 rounded-xl text-[11px] font-medium transition apple-touch ${
               selectedAreaId === p.id
-                ? 'bg-cyan-500 text-slate-950 font-bold'
-                : 'bg-slate-900 text-slate-400 hover:text-slate-200'
+                ? 'bg-ios-blue text-white font-bold shadow-xs'
+                : 'bg-black/[0.04] dark:bg-white/[0.08] text-slate-600 dark:text-slate-300 hover:bg-black/[0.08] dark:hover:bg-white/[0.14]'
             }`}
           >
             {p.name}

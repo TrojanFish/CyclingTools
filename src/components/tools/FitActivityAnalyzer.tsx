@@ -514,7 +514,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         x: {
           grid: { display: false },
           ticks: {
-            color: '#64748b',
+            color: '#8E8E93',
             maxTicksLimit: 8,
             font: { size: 10 }
           }
@@ -945,7 +945,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
@@ -986,7 +986,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </button>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* File Upload Zone & Rider Anchor Bar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1325,8 +1325,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       maintainAspectRatio: false,
                       plugins: { legend: { display: false } },
                       scales: {
-                        x: { ticks: { font: { size: 9 }, color: '#94a3b8' } },
-                        y: { ticks: { font: { size: 10 }, color: '#64748b' } }
+                        x: { ticks: { font: { size: 9 }, color: '#AEAEB2' } },
+                        y: { ticks: { font: { size: 10 }, color: '#8E8E93' } }
                       }
                     }}
                   />
@@ -1367,8 +1367,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       maintainAspectRatio: false,
                       plugins: { legend: { display: false } },
                       scales: {
-                        x: { ticks: { font: { size: 9 }, color: '#94a3b8' } },
-                        y: { ticks: { font: { size: 10 }, color: '#64748b' } }
+                        x: { ticks: { font: { size: 9 }, color: '#AEAEB2' } },
+                        y: { ticks: { font: { size: 10 }, color: '#8E8E93' } }
                       }
                     }}
                   />
@@ -1532,13 +1532,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                             }
                           },
                           scales: {
-                            x: { ticks: { font: { size: 10 }, color: '#94a3b8' } },
+                            x: { ticks: { font: { size: 10 }, color: '#AEAEB2' } },
                             y: {
-                              ticks: { font: { size: 10 }, color: '#64748b' },
+                              ticks: { font: { size: 10 }, color: '#8E8E93' },
                               title: {
                                 display: true,
                                 text: mmpUnit === 'wkg' ? 'W/kg (推重比)' : 'Watts (瓦特)',
-                                color: '#8b5cf6',
+                                color: '#AF52DE',
                                 font: { size: 11 }
                               }
                             }
@@ -1921,8 +1921,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           display: true,
                           position: 'left',
                           grid: { color: 'rgba(150, 150, 150, 0.08)' },
-                          ticks: { color: '#94a3b8', font: { size: 10 } },
-                          title: { display: true, text: 'CTL / ATL (负荷点)', color: '#64748b', font: { size: 11 } }
+                          ticks: { color: '#AEAEB2', font: { size: 10 } },
+                          title: { display: true, text: 'CTL / ATL (负荷点)', color: '#8E8E93', font: { size: 11 } }
                         },
                         y1: {
                           type: 'linear',

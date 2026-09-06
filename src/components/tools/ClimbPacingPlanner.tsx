@@ -608,7 +608,7 @@ export const ClimbPacingPlanner: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -621,7 +621,7 @@ export const ClimbPacingPlanner: React.FC = () => {
             </h1>
             <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
               {language === 'zh-TW'
-                ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗時與體能負荷。'
+                ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗时與體能負荷。'
                 : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'}
             </p>
           </div>
@@ -655,7 +655,7 @@ export const ClimbPacingPlanner: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Preset Mountains & Route Upload Bar */}
       <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-ios-card">
@@ -995,10 +995,10 @@ export const ClimbPacingPlanner: React.FC = () => {
 
       {/* Strava Segments & KOM Explorer Modal */}
       {isStravaModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white dark:bg-[#161618] border border-slate-200 dark:border-white/10 rounded-3xl w-full max-w-2xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/[0.08] rounded-3xl w-full max-w-2xl max-h-[88vh] flex flex-col shadow-ios-popover overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between bg-slate-50/50 dark:bg-white/[0.02]">
+            <div className="p-4 sm:p-5 border-b border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between bg-black/[0.02] dark:bg-white/[0.02]">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-[#FC4C02]/10 text-[#FC4C02] flex items-center justify-center">
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">

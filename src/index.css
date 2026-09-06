@@ -16,6 +16,17 @@
   --card-secondary: #2c2c2e;
   --separator: rgba(255, 255, 255, 0.08);
   --accent-cyan: #0a84ff;
+  --ios-blue: #0a84ff;
+  --ios-green: #30d158;
+  --ios-indigo: #5e5ce6;
+  --ios-orange: #ff9f0a;
+  --ios-pink: #ff375f;
+  --ios-purple: #bf5af2;
+  --ios-red: #ff453a;
+  --ios-teal: #40c8e0;
+  --ios-yellow: #ffd60a;
+  --ios-mint: #63e6e2;
+  --ios-gray: #8e8e93;
 }
 
 .light {
@@ -32,6 +43,17 @@
   --card-secondary: #e5e5ea;
   --separator: rgba(60, 60, 67, 0.12);
   --accent-cyan: #007aff;
+  --ios-blue: #007aff;
+  --ios-green: #34c759;
+  --ios-indigo: #5856d6;
+  --ios-orange: #ff9500;
+  --ios-pink: #ff2d55;
+  --ios-purple: #af52de;
+  --ios-red: #ff3b30;
+  --ios-teal: #30b0c7;
+  --ios-yellow: #ffcc00;
+  --ios-mint: #00c7be;
+  --ios-gray: #8e8e93;
 }
 
 html, body {
@@ -184,7 +206,7 @@ header {
 .light .hover\:bg-slate-900:hover,
 .light .hover\:bg-slate-800:hover {
   background-color: #f1f5f9 !important;
-  color: #0f172a !important;
+  color: #1c1c1e !important;
 }
 
 .light input[type="text"],
@@ -193,7 +215,7 @@ header {
 .light input[type="url"],
 .light select {
   background-color: #ffffff !important;
-  color: #0f172a !important;
+  color: #1c1c1e !important;
   border-color: #cbd5e1 !important;
 }
 
@@ -267,14 +289,14 @@ input[type="number"],
 
 .light tr.hover\:bg-slate-900\/50:hover,
 .light tr.hover\:bg-slate-900\/40:hover {
-  background-color: #f1f5f9 !important;
+  background-color: #f2f2f7 !important;
 }
 
 .light .bg-slate-800,
 .light .bg-slate-800\/60,
 .light .bg-slate-800\/80 {
-  background-color: #f1f5f9 !important;
-  color: #334155 !important;
+  background-color: #f2f2f7 !important;
+  color: #3a3a3c !important;
 }
 
 /* Custom Scrollbars (iOS macOS overlay style) */

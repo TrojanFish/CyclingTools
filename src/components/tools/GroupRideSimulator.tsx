@@ -415,7 +415,7 @@ export const GroupRideSimulator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Mode Header Banner */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -506,7 +506,7 @@ export const GroupRideSimulator: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Highlights Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -832,17 +832,17 @@ export const GroupRideSimulator: React.FC = () => {
                       min: 0,
                       max: 100,
                       grid: { color: 'rgba(150, 150, 150, 0.08)' },
-                      ticks: { color: '#94a3b8', font: { size: 10 } },
-                      title: { display: true, text: '剩余体力 (W\' %)', color: '#64748b', font: { size: 11 } }
+                      ticks: { color: '#AEAEB2', font: { size: 10 } },
+                      title: { display: true, text: '剩余体力 (W\' %)', color: '#8E8E93', font: { size: 11 } }
                     }
                   },
                   plugins: {
                     legend: {
                       position: 'top',
-                      labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 }
+                      labels: { color: '#AEAEB2', font: { size: 11 }, boxWidth: 12 }
                     },
                     tooltip: {
-                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      backgroundColor: 'rgba(28, 28, 30, 0.95)',
                       borderColor: 'rgba(0, 199, 190, 0.3)',
                       borderWidth: 1
                     }

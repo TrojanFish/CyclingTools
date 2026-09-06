@@ -98,7 +98,7 @@ export const PwaInstallPrompt: React.FC = () => {
             </button>
             <button
               onClick={handleDismiss}
-              className="p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition"
+              className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition apple-touch"
               title="Dismiss"
               aria-label="Close"
             >

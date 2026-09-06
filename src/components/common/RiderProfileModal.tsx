@@ -1269,8 +1269,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
         {/* Slot Tool Picker Modal */}
         {editingSlot !== null && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-            <div className="relative w-full max-w-md max-h-[85vh] flex flex-col bg-white dark:bg-[#1C1C1E] rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+            <div className="relative w-full max-w-md max-h-[85vh] flex flex-col bg-white dark:bg-[#1C1C1E] rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover overflow-hidden animate-in zoom-in-95 duration-200">
               {/* Header */}
               <div className="p-4 border-b border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between shrink-0">
                 <div>

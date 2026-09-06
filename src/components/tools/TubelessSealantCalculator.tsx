@@ -183,7 +183,7 @@ export const TubelessSealantCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
@@ -216,7 +216,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Hero Metric Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -552,7 +552,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <path
                   d="M 50 130 C 20 80, 40 20, 100 20 C 160 20, 180 80, 150 130"
                   fill="none"
-                  stroke={casingType === 'race' ? '#ff9500' : '#334155'}
+                  stroke={casingType === 'race' ? '#ff9500' : '#3A3A3C'}
                   strokeWidth="8"
                   strokeLinecap="round"
                 />
@@ -561,7 +561,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <path
                   d="M 54 126 C 28 82, 46 28, 100 28 C 154 28, 172 82, 146 126"
                   fill="rgba(0, 122, 255, 0.05)"
-                  stroke="#64748b"
+                  stroke="#8E8E93"
                   strokeWidth="1"
                 />
 
@@ -596,7 +596,7 @@ export const TubelessSealantCalculator: React.FC = () => {
 
                 {/* Presta Valve Stem */}
                 <line x1="100" y1="145" x2="100" y2="158" stroke="#cbd5e1" strokeWidth="4" />
-                <circle cx="100" cy="143" r="2" fill="#0f172a" />
+                <circle cx="100" cy="143" r="2" fill="#1C1C1E" />
 
                 {/* Annotations */}
                 <text x="100" y="105" textAnchor="middle" fill="#007aff" fontSize="9" fontWeight="bold">

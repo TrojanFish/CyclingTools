@@ -382,8 +382,8 @@ export const ChainLengthCalculator: React.FC = () => {
             <div className="flex justify-center bg-black/[0.02] dark:bg-white/[0.03] rounded-2xl p-4 border border-black/[0.05] dark:border-white/[0.08] transition-colors">
               <svg viewBox="0 0 360 140" className="w-full max-w-md h-auto select-none">
                 {/* Chainstay line */}
-                <line x1="80" y1="70" x2="280" y2="70" stroke="#94a3b8" strokeWidth="2.5" strokeDasharray="4 4" className="dark:stroke-slate-700" />
-                <text x="180" y="62" fontSize="9" fill="#64748b" textAnchor="middle" fontFamily="monospace">
+                <line x1="80" y1="70" x2="280" y2="70" stroke="#AEAEB2" strokeWidth="2.5" strokeDasharray="4 4" className="dark:stroke-[#3A3A3C]" />
+                <text x="180" y="62" fontSize="9" fill="#8E8E93" textAnchor="middle" fontFamily="monospace">
                   RC = {chainstayLengthMm} mm
                 </text>
 
@@ -391,36 +391,36 @@ export const ChainLengthCalculator: React.FC = () => {
                 <path
                   d="M 80 40 L 280 25 A 45 45 0 0 1 280 115 L 110 110 L 80 95 A 25 25 0 0 1 80 40"
                   fill="none"
-                  stroke="#0284c7"
+                  stroke="#007AFF"
                   strokeWidth="3"
                   strokeDasharray="6 2"
                   opacity="0.85"
-                  className="dark:stroke-[#00AFFF]"
+                  className="dark:stroke-[#0A84FF]"
                 />
 
                 {/* Front Chainring */}
-                <circle cx="280" cy="70" r="45" fill="#f1f5f9" stroke="#0284c7" strokeWidth="2.5" className="dark:fill-[#2C2C2E] dark:stroke-[#00AFFF]" />
-                <circle cx="280" cy="70" r="10" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-slate-600" />
-                <text x="280" y="74" fontSize="12" fontWeight="bold" fill="#0369a1" textAnchor="middle" fontFamily="monospace" className="dark:fill-sky-400">
+                <circle cx="280" cy="70" r="45" fill="#F2F2F7" stroke="#007AFF" strokeWidth="2.5" className="dark:fill-[#2C2C2E] dark:stroke-[#0A84FF]" />
+                <circle cx="280" cy="70" r="10" fill="#E5E5EA" stroke="#8E8E93" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-[#3A3A3C]" />
+                <text x="280" y="74" fontSize="12" fontWeight="bold" fill="#007AFF" textAnchor="middle" fontFamily="monospace" className="dark:fill-[#0A84FF]">
                   {bigRing}T
                 </text>
-                <text x="280" y="128" fontSize="9" fill="#64748b" textAnchor="middle" className="dark:fill-slate-400">
+                <text x="280" y="128" fontSize="9" fill="#8E8E93" textAnchor="middle" className="dark:fill-[#8E8E93]">
                   牙盘 (Chainring)
                 </text>
 
                 {/* Rear Cassette */}
-                <circle cx="80" cy="70" r="28" fill="#f1f5f9" stroke="#059669" strokeWidth="2.5" className="dark:fill-[#2C2C2E] dark:stroke-emerald-500" />
-                <circle cx="80" cy="70" r="8" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-slate-600" />
-                <text x="80" y="74" fontSize="11" fontWeight="bold" fill="#047857" textAnchor="middle" fontFamily="monospace" className="dark:fill-emerald-400">
+                <circle cx="80" cy="70" r="28" fill="#F2F2F7" stroke="#34C759" strokeWidth="2.5" className="dark:fill-[#2C2C2E] dark:stroke-[#30D158]" />
+                <circle cx="80" cy="70" r="8" fill="#E5E5EA" stroke="#8E8E93" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-[#3A3A3C]" />
+                <text x="80" y="74" fontSize="11" fontWeight="bold" fill="#34C759" textAnchor="middle" fontFamily="monospace" className="dark:fill-[#30D158]">
                   {bigCog}T
                 </text>
-                <text x="80" y="128" fontSize="9" fill="#64748b" textAnchor="middle" className="dark:fill-slate-400">
+                <text x="80" y="128" fontSize="9" fill="#8E8E93" textAnchor="middle" className="dark:fill-[#8E8E93]">
                   飞轮 (Cassette)
                 </text>
 
                 {/* Derailleur Pulley Cage */}
-                <circle cx="105" cy="108" r="9" fill="#fef3c7" stroke="#d97706" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-amber-500" />
-                <text x="105" y="111" fontSize="7" fontWeight="bold" fill="#b45309" textAnchor="middle" className="dark:fill-amber-400">
+                <circle cx="105" cy="108" r="9" fill="#F2F2F7" stroke="#FF9500" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-[#FF9F0A]" />
+                <text x="105" y="111" fontSize="7" fontWeight="bold" fill="#FF9500" textAnchor="middle" className="dark:fill-[#FF9F0A]">
                   {pulleyTeeth}T
                 </text>
               </svg>

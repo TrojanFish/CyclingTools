@@ -241,7 +241,7 @@ export const SpokeLengthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="space-y-2">
@@ -277,7 +277,7 @@ export const SpokeLengthCalculator: React.FC = () => {
             ))}
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Safety Warnings Banner (If any) */}
       {result.warnings.length > 0 && (
@@ -687,8 +687,8 @@ export const SpokeLengthCalculator: React.FC = () => {
             <div className="h-52 w-full flex items-center justify-center bg-black/[0.02] dark:bg-black/40 rounded-2xl p-2 border border-black/[0.05] dark:border-white/[0.08] relative overflow-hidden">
               <svg viewBox="0 0 200 200" className="w-full h-full max-h-48">
                 {/* Rim Circle */}
-                <circle cx="100" cy="100" r="85" fill="none" stroke="#64748b" strokeWidth="2.5" strokeDasharray="3 3" />
-                <circle cx="100" cy="100" r="89" fill="none" stroke="#94a3b8" strokeWidth="1" />
+                <circle cx="100" cy="100" r="85" fill="none" stroke="#8E8E93" strokeWidth="2.5" strokeDasharray="3 3" />
+                <circle cx="100" cy="100" r="89" fill="none" stroke="#AEAEB2" strokeWidth="1" />
 
                 {/* Hub Circle */}
                 <circle cx="100" cy="100" r="24" fill="rgba(6, 182, 212, 0.08)" stroke="#06b6d4" strokeWidth="2" />
