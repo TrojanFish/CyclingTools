@@ -30,6 +30,34 @@ export const GpxRouteCreator: React.FC = () => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [routeName, setRouteName] = useState<string>(ZHEJIANG_XINGZHE_ROUTES[0].name);
 
+  // Check for route transferred from RoadbookLibrary
+  useEffect(() => {
+    try {
+      const pendingRaw = localStorage.getItem('solorider_pending_gpx_route');
+      if (pendingRaw) {
+        const pending = JSON.parse(pendingRaw);
+        if (pending && Array.isArray(pending.waypoints) && pending.waypoints.length > 0) {
+          const mapped: Waypoint[] = pending.waypoints.map((wp: any, idx: number) => ({
+            id: 'wp-' + Date.now() + '-' + idx,
+            lat: wp.lat,
+            lng: wp.lng,
+            elevation: wp.elevation || 20,
+            name: wp.name || `航点 #${idx + 1}`
+          }));
+          setWaypoints(mapped);
+          if (pending.name) {
+            setRouteName(pending.name);
+          }
+          setSelectedPresetId('custom');
+          showToast(`已成功载入路书「${pending.name}」共 ${mapped.length} 个航点，可自由编辑！`, 'success');
+        }
+        localStorage.removeItem('solorider_pending_gpx_route');
+      }
+    } catch (e) {
+      console.warn('Failed to parse incoming route from RoadbookLibrary:', e);
+    }
+  }, [showToast]);
+
   // Initialize Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;

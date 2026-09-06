@@ -31,6 +31,7 @@ export interface BikeProfile {
   cda: number;
   notes?: string;
   mileageKm?: number;
+  stravaGearId?: string;
 }
 
 export const DEFAULT_TEAM_ROSTER: TeamRider[] = [

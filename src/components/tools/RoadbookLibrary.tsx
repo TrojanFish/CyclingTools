@@ -582,6 +582,49 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
     showToast(`已成功批量导入 ${stravaRoutes.length} 条 Strava 路线！`, 'success');
   };
 
+  // Transfer active route into GPX Route Creator
+  const handleSendToGpxCreator = () => {
+    if (!activeRoute) return;
+    try {
+      localStorage.setItem(
+        'solorider_pending_gpx_route',
+        JSON.stringify({
+          name: activeRoute.name,
+          waypoints: activeRoute.waypoints
+        })
+      );
+      showToast(language === 'zh-TW' ? `已將路書「${activeRoute.name}」載入 GPX 路線工坊` : `已将路书「${activeRoute.name}」载入 GPX 路线工坊`, 'success');
+      if (onNavigateTool) {
+        onNavigateTool('gpx-creator');
+      }
+    } catch (e) {
+      console.warn('Failed to transfer route to GPX creator:', e);
+    }
+  };
+
+  // Transfer active route into Climb Pacing Planner
+  const handleSendToClimbPacing = () => {
+    if (!activeRoute) return;
+    try {
+      localStorage.setItem(
+        'solorider_pending_climb_route',
+        JSON.stringify({
+          name: activeRoute.name,
+          distanceKm: activeRoute.distanceKm,
+          elevationGainM: activeRoute.elevationGainM,
+          avgGradePct: activeRoute.avgGradePct,
+          waypoints: activeRoute.waypoints
+        })
+      );
+      showToast(language === 'zh-TW' ? `已將路書「${activeRoute.name}」轉入爬坡配速規劃` : `已将路书「${activeRoute.name}」转入爬坡配速规划`, 'success');
+      if (onNavigateTool) {
+        onNavigateTool('climb-pacing');
+      }
+    } catch (e) {
+      console.warn('Failed to transfer route to Climb Pacing:', e);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -987,11 +1030,20 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                       {language === 'zh-TW' ? '沿途天氣' : '沿途天气'}
                     </button>
                     <button
-                      onClick={() => onNavigateTool('climb-pacing')}
+                      onClick={handleSendToGpxCreator}
                       className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      title={language === 'zh-TW' ? '將此路書航點載入 GPX 工坊自訂編輯' : '将此路书航点载入 GPX 工坊自定义编辑'}
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+                      {language === 'zh-TW' ? 'GPX 工坊編輯' : 'GPX 工坊编辑'}
+                    </button>
+                    <button
+                      onClick={handleSendToClimbPacing}
+                      className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      title={language === 'zh-TW' ? '將此路線坡度帶入爬坡配速規劃器' : '将此路线坡度带入爬坡配速规划器'}
                     >
                       <Mountain className="w-3.5 h-3.5 text-amber-500" />
-                      {language === 'zh-TW' ? '爬坡規劃' : '爬坡规划'}
+                      {language === 'zh-TW' ? '爬坡配速規劃' : '爬坡配速规划'}
                     </button>
                   </>
                 )}

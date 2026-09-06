@@ -35,12 +35,20 @@ import {
 import { useRiderProfile } from './RiderProfileContext';
 import { useToast } from './ToastContext';
 
+export interface StravaSyncProgress {
+  current: number;
+  total: number;
+  stage: 'profile' | 'activities' | 'saving' | 'done';
+  message: string;
+}
+
 interface StravaContextType {
   apiKeys: StravaApiKeys | null;
   tokenData: StravaTokenData | null;
   athlete: StravaAthlete | null;
   isConnected: boolean;
   isSyncing: boolean;
+  syncProgress: StravaSyncProgress | null;
   lastSyncTime: number | null;
   activities: StravaActivityRecord[];
   syncSettings: StravaSyncSettings;
@@ -65,6 +73,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [activities, setActivities] = useState<StravaActivityRecord[]>([]);
   const [lastSyncTime, setLastSyncTime] = useState<number | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [syncProgress, setSyncProgress] = useState<StravaSyncProgress | null>(null);
 
   const isConnected = Boolean(tokenData && tokenData.accessToken);
   const athlete = tokenData?.athlete || null;
@@ -137,6 +146,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
 
     setIsSyncing(true);
+    setSyncProgress({ current: 10, total: 100, stage: 'profile', message: '正在同步车手最新档案与战车装备...' });
     try {
       // Refresh athlete profile
       const latestAthlete = await fetchAthleteProfile(token);
@@ -165,12 +175,16 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (syncSettings.autoSyncBikes && latestAthlete.bikes && latestAthlete.bikes.length > 0) {
         for (const stravaBike of latestAthlete.bikes) {
           const mileageKm = Math.round(stravaBike.distance / 1000);
-          const existingBike = bikes.find(b => b.name.toLowerCase() === stravaBike.name.toLowerCase());
+          const existingBike = bikes.find(
+            b => (b.stravaGearId && b.stravaGearId === stravaBike.id) ||
+                 b.name.toLowerCase() === stravaBike.name.toLowerCase()
+          );
           if (existingBike) {
-            // Update mileage if increased
-            if ((existingBike.mileageKm || 0) < mileageKm) {
-              updateBike(existingBike.id, { mileageKm });
-            }
+            // Update mileage and attach stravaGearId
+            updateBike(existingBike.id, {
+              mileageKm,
+              stravaGearId: stravaBike.id
+            });
           } else {
             // Add as new bike
             addBike({
@@ -180,7 +194,8 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               weightKg: 8.0,
               cda: 0.32,
               crr: 0.0035,
-              mileageKm
+              mileageKm,
+              stravaGearId: stravaBike.id
             });
           }
         }
@@ -198,12 +213,20 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         afterSec = nowSec - daysBack * 86400;
       }
 
+      setSyncProgress({ current: 30, total: 100, stage: 'activities', message: '正在增量拉取 Strava 活动记录...' });
+
       // Fetch pages
       const rawActivities: any[] = [];
       let page = 1;
       let hasMore = true;
 
       while (hasMore && page <= 4) { // safety ceiling: max 200 activities per sync
+        setSyncProgress({
+          current: Math.min(75, 30 + page * 12),
+          total: 100,
+          stage: 'activities',
+          message: `正在拉取第 ${page} 页 Strava 骑行活动...`
+        });
         const pageData = await fetchAthleteActivities(token, afterSec, page, 50);
         if (pageData && pageData.length > 0) {
           rawActivities.push(...pageData);
@@ -216,6 +239,13 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           hasMore = false;
         }
       }
+
+      setSyncProgress({
+        current: 85,
+        total: 100,
+        stage: 'saving',
+        message: `正在核算 ${rawActivities.length} 条活动 TSS 并存入本地缓存...`
+      });
 
       // Process and calculate TSS for each activity
       const processed: StravaActivityRecord[] = rawActivities.map(act => {
@@ -261,10 +291,21 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const updatedList = await getAllActivitiesFromDb();
       setActivities(updatedList);
 
+      setSyncProgress({
+        current: 100,
+        total: 100,
+        stage: 'done',
+        message: `同步完成！更新 ${processed.length} 条活动`
+      });
+      setTimeout(() => {
+        setSyncProgress(null);
+      }, 1500);
+
       showToast(`Strava 骑行数据同步成功！共更新 ${processed.length} 条活动`, 'success');
       return { count: processed.length };
     } catch (err: any) {
       console.error('Strava sync error:', err);
+      setSyncProgress(null);
       showToast(`Strava 同步失败: ${err.message || '网络异常'}`, 'error');
       return { count: 0 };
     } finally {
@@ -362,6 +403,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       athlete,
       isConnected,
       isSyncing,
+      syncProgress,
       lastSyncTime,
       activities,
       syncSettings,
@@ -379,6 +421,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       athlete,
       isConnected,
       isSyncing,
+      syncProgress,
       lastSyncTime,
       activities,
       syncSettings,

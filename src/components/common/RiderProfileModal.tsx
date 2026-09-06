@@ -87,6 +87,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
     athlete,
     isConnected: isStravaConnected,
     isSyncing: isStravaSyncing,
+    syncProgress: stravaSyncProgress,
     lastSyncTime: stravaLastSyncTime,
     activities: stravaActivities,
     syncSettings: stravaSyncSettings,
@@ -544,6 +545,12 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         <span className="text-[10px] px-2 py-0.2 rounded-full bg-slate-200/60 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-medium">
                           {typeName}
                         </span>
+                        {b.stravaGearId && (
+                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-orange-500/15 text-[#FC4C02] font-semibold flex items-center gap-1">
+                            <Cloud className="w-2.5 h-2.5" />
+                            Strava
+                          </span>
+                        )}
                         {isActive && (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-ios-blue font-mono">
                             <CheckCircle2 className="w-3 h-3" />
@@ -556,8 +563,52 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         <span>整车重: <strong className="text-slate-700 dark:text-slate-300">{b.weightKg} kg</strong></span>
                         <span>滚阻 Crr: <strong className="text-slate-700 dark:text-slate-300">{b.crr}</strong></span>
                         <span>风阻 CdA: <strong className="text-slate-700 dark:text-slate-300">{b.cda} m²</strong></span>
+                        {b.mileageKm !== undefined && (
+                          <span>里程: <strong className="text-ios-blue font-bold">{b.mileageKm} km</strong></span>
+                        )}
                         {b.notes && <span className="text-slate-400 italic font-sans">{b.notes}</span>}
                       </div>
+
+                      {/* Strava Gear Binding Selector */}
+                      {isStravaConnected && athlete?.bikes && athlete.bikes.length > 0 && (
+                        <div
+                          className="mt-2 pt-2 border-t border-black/[0.04] dark:border-white/[0.06] flex items-center gap-2"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Cloud className="w-3 h-3 text-[#FC4C02] shrink-0" />
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 shrink-0">
+                            {language === 'zh-TW' ? 'Strava 裝備關聯:' : 'Strava 装备关联:'}
+                          </span>
+                          <select
+                            value={b.stravaGearId || ''}
+                            onChange={(e) => {
+                              const gearId = e.target.value;
+                              if (!gearId) {
+                                updateBike(b.id, { stravaGearId: undefined });
+                                showToast('已解除与 Strava 装备的绑定', 'info');
+                              } else {
+                                const matched = athlete?.bikes?.find(sb => sb.id === gearId);
+                                const km = matched ? Math.round(matched.distance / 1000) : (b.mileageKm || 0);
+                                updateBike(b.id, { stravaGearId: gearId, mileageKm: km });
+                                showToast(
+                                  language === 'zh-TW'
+                                    ? `戰車已成功關聯 Strava【${matched?.name || gearId}】，里程同步為 ${km} km`
+                                    : `战车已成功关联 Strava【${matched?.name || gearId}】，里程同步为 ${km} km`,
+                                  'success'
+                                );
+                              }
+                            }}
+                            className="bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-200 text-[11px] rounded-lg px-2 py-0.5 border-none focus:ring-1 focus:ring-orange-500 flex-1 min-w-0 font-sans"
+                          >
+                            <option value="">未绑定</option>
+                            {athlete.bikes.map(sb => (
+                              <option key={sb.id} value={sb.id}>
+                                {sb.name} ({Math.round(sb.distance / 1000)} km)
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -735,6 +786,27 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       <span>{isStravaSyncing ? '同步中...' : '立即同步'}</span>
                     </button>
                   </div>
+
+                  {/* Realtime Progress Bar */}
+                  {stravaSyncProgress && (
+                    <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 space-y-1.5 animate-in fade-in duration-200">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-orange-600 dark:text-orange-400 flex items-center gap-1.5">
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>{stravaSyncProgress.message}</span>
+                        </span>
+                        <span className="font-mono font-bold text-orange-600 dark:text-orange-400">
+                          {stravaSyncProgress.current}%
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-300 rounded-full"
+                          style={{ width: `${stravaSyncProgress.current}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {/* Stats Tiles */}
                   <div className="grid grid-cols-4 gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-center">

@@ -40,6 +40,66 @@ interface ClimbSegment {
   customPowerTargetPct?: number; // % of FTP
 }
 
+// Distance calc helper
+const distanceHaversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+// Intelligent auto-segmentation algorithm
+const segmentizePoints = (rawPoints: { lat: number; lon: number; ele: number }[]): ClimbSegment[] => {
+  if (rawPoints.length < 2) return [];
+
+  let totalDistM = 0;
+  const ptsWithDist: { distM: number; ele: number }[] = [{ distM: 0, ele: rawPoints[0].ele }];
+  for (let i = 1; i < rawPoints.length; i++) {
+    const d = distanceHaversine(rawPoints[i - 1].lat, rawPoints[i - 1].lon, rawPoints[i].lat, rawPoints[i].lon);
+    totalDistM += d;
+    ptsWithDist.push({ distM: totalDistM, ele: rawPoints[i].ele });
+  }
+
+  const numSegments = Math.min(7, Math.max(3, Math.round(totalDistM / 2200)));
+  const segTargetDist = totalDistM / numSegments;
+
+  const generatedSegments: ClimbSegment[] = [];
+  let currentSegStartIdx = 0;
+
+  for (let s = 1; s <= numSegments; s++) {
+    const targetDist = s * segTargetDist;
+    let endIdx = ptsWithDist.findIndex(p => p.distM >= targetDist);
+    if (endIdx === -1 || s === numSegments) endIdx = ptsWithDist.length - 1;
+
+    const startPt = ptsWithDist[currentSegStartIdx];
+    const endPt = ptsWithDist[endIdx];
+    const distKm = parseFloat(((endPt.distM - startPt.distM) / 1000).toFixed(1));
+    const eleDiff = endPt.ele - startPt.ele;
+    let gradePct = distKm > 0 ? parseFloat(((eleDiff / (distKm * 1000)) * 100).toFixed(1)) : 0;
+    gradePct = Math.max(-15, Math.min(25, gradePct));
+
+    let segTypeLabel = '平缓推进段';
+    if (gradePct >= 9.5) segTypeLabel = '极限发卡急陡坡';
+    else if (gradePct >= 6.8) segTypeLabel = '核心陡坡攻坚段';
+    else if (gradePct >= 4.0) segTypeLabel = '持续盘山爬升段';
+    else if (gradePct < 0) segTypeLabel = '起伏/下坡缓和段';
+
+    generatedSegments.push({
+      id: Date.now().toString() + s,
+      name: `第${s}段: ${segTypeLabel} (${gradePct >= 0 ? '+' : ''}${gradePct}%)`,
+      distanceKm: Math.max(0.2, distKm),
+      gradePct: gradePct
+    });
+
+    currentSegStartIdx = endIdx;
+  }
+
+  return generatedSegments;
+};
+
 export const ClimbPacingPlanner: React.FC = () => {
   const { profile } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
@@ -68,6 +128,39 @@ export const ClimbPacingPlanner: React.FC = () => {
   ]);
 
   const [climbName, setClimbName] = useState<string>('莫干山经典挑战爬坡线');
+
+  // Check for route transferred from RoadbookLibrary
+  useEffect(() => {
+    try {
+      const pendingRaw = localStorage.getItem('solorider_pending_climb_route');
+      if (pendingRaw) {
+        const pending = JSON.parse(pendingRaw);
+        if (pending && Array.isArray(pending.waypoints) && pending.waypoints.length >= 2) {
+          const rawPts = pending.waypoints.map((wp: any) => ({
+            lat: wp.lat,
+            lon: wp.lng,
+            ele: wp.elevation || 20
+          }));
+          const segs = segmentizePoints(rawPts);
+          if (segs.length > 0) {
+            setSegments(segs);
+            if (pending.name) {
+              setClimbName(pending.name);
+            }
+            showToast(
+              language === 'zh-TW'
+                ? `已根據路書「${pending.name}」智能拆解為 ${segs.length} 個爬坡配速分段！`
+                : `已根据路书「${pending.name}」智能拆解为 ${segs.length} 个爬坡配速分段！`,
+              'success'
+            );
+          }
+        }
+        localStorage.removeItem('solorider_pending_climb_route');
+      }
+    } catch (e) {
+      console.warn('Failed to parse incoming route to ClimbPacing:', e);
+    }
+  }, [showToast, language]);
 
   // Manual GPX / TCX Climbing Route Upload & Intelligent Auto-segmentation
   const handleGpxClimbUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,64 +211,17 @@ export const ClimbPacingPlanner: React.FC = () => {
           return;
         }
 
-        // Distance calc
-        const distanceHaversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-          const R = 6371000;
-          const dLat = (lat2 - lat1) * Math.PI / 180;
-          const dLon = (lon2 - lon1) * Math.PI / 180;
-          const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-          return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        };
-
-        let totalDistM = 0;
-        const ptsWithDist: { distM: number; ele: number }[] = [{ distM: 0, ele: rawPoints[0].ele }];
-        for (let i = 1; i < rawPoints.length; i++) {
-          const d = distanceHaversine(rawPoints[i - 1].lat, rawPoints[i - 1].lon, rawPoints[i].lat, rawPoints[i].lon);
-          totalDistM += d;
-          ptsWithDist.push({ distM: totalDistM, ele: rawPoints[i].ele });
+        const generatedSegments = segmentizePoints(rawPoints);
+        if (generatedSegments.length === 0) {
+          showToast('无法生成有效的爬坡分段，请检查数据！', 'warning');
+          return;
         }
 
-        // Slice into natural 3~7 segments
-        const numSegments = Math.min(7, Math.max(3, Math.round(totalDistM / 2200)));
-        const segTargetDist = totalDistM / numSegments;
-
-        const generatedSegments: ClimbSegment[] = [];
-        let currentSegStartIdx = 0;
-
-        for (let s = 1; s <= numSegments; s++) {
-          const targetDist = s * segTargetDist;
-          let endIdx = ptsWithDist.findIndex(p => p.distM >= targetDist);
-          if (endIdx === -1 || s === numSegments) endIdx = ptsWithDist.length - 1;
-
-          const startPt = ptsWithDist[currentSegStartIdx];
-          const endPt = ptsWithDist[endIdx];
-          const distKm = parseFloat(((endPt.distM - startPt.distM) / 1000).toFixed(1));
-          const eleDiff = endPt.ele - startPt.ele;
-          let gradePct = distKm > 0 ? parseFloat(((eleDiff / (distKm * 1000)) * 100).toFixed(1)) : 0;
-          gradePct = Math.max(-15, Math.min(25, gradePct));
-
-          let segTypeLabel = '平缓推进段';
-          if (gradePct >= 9.5) segTypeLabel = '极限发卡急陡坡';
-          else if (gradePct >= 6.8) segTypeLabel = '核心陡坡攻坚段';
-          else if (gradePct >= 4.0) segTypeLabel = '持续盘山爬升段';
-          else if (gradePct < 0) segTypeLabel = '起伏/下坡缓和段';
-
-          generatedSegments.push({
-            id: Date.now().toString() + s,
-            name: `第${s}段: ${segTypeLabel} (${gradePct >= 0 ? '+' : ''}${gradePct}%)`,
-            distanceKm: Math.max(0.2, distKm),
-            gradePct: gradePct
-          });
-
-          currentSegStartIdx = endIdx;
-        }
-
+        const totalDistKm = generatedSegments.reduce((acc, cur) => acc + cur.distanceKm, 0).toFixed(1);
         setSegments(generatedSegments);
         const parsedName = file.name.replace(/\.[^/.]+$/, '');
         setClimbName(parsedName);
-        showToast('GPX 爬坡路线导入成功！', 'success', `已智能拆解为 ${generatedSegments.length} 个爬坡分段，总里程 ${(totalDistM / 1000).toFixed(1)}km`);
+        showToast('GPX 爬坡路线导入成功！', 'success', `已智能拆解为 ${generatedSegments.length} 个爬坡分段，总里程 ${totalDistKm}km`);
       } catch (err) {
         showToast('GPX 文件解析失败，请检查文件格式！', 'error');
       }
