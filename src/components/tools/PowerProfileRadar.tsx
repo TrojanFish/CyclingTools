@@ -55,8 +55,11 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   const [isPasteModalOpen, setIsPasteModalOpen] = useState<boolean>(false);
   const [pasteText, setPasteText] = useState<string>('');
 
+  const [activeRiderPreset, setActiveRiderPreset] = useState<'sprinter' | 'climber' | 'rouleur' | 'allrounder' | null>('allrounder');
+
   // Preset Profiles
   const loadPreset = (type: 'sprinter' | 'climber' | 'rouleur' | 'allrounder') => {
+    setActiveRiderPreset(type);
     if (type === 'sprinter') {
       setP5s(1250);
       setP1m(620);
@@ -340,42 +343,27 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
       </div>
 
       {/* Preset Buttons */}
-      <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-ios-card">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+      <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-ios-card">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1 min-w-0">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
             {language === 'zh-TW' ? '車手預設:' : '车手预设:'}
           </span>
-          <button
-            onClick={() => loadPreset('sprinter')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-          >
-            <Zap className="w-3.5 h-3.5 text-ios-orange" />
-            <span>{language === 'zh-TW' ? '衝刺手' : '冲刺手'}</span>
-          </button>
-          <button
-            onClick={() => loadPreset('climber')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-          >
-            <Mountain className="w-3.5 h-3.5 text-ios-green" />
-            <span>{language === 'zh-TW' ? '爬坡手' : '爬坡手'}</span>
-          </button>
-          <button
-            onClick={() => loadPreset('rouleur')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-          >
-            <Timer className="w-3.5 h-3.5 text-ios-blue" />
-            <span>{language === 'zh-TW' ? '計時突圍' : '计时突围'}</span>
-          </button>
-          <button
-            onClick={() => loadPreset('allrounder')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-          >
-            <Award className="w-3.5 h-3.5 text-ios-purple" />
-            <span>{language === 'zh-TW' ? '全能型' : '全能型'}</span>
-          </button>
+          <div className="w-full sm:max-w-xl">
+            <IOSSegmentedControl
+              options={[
+                { value: 'sprinter', label: language === 'zh-TW' ? '衝刺手' : '冲刺手', icon: Zap },
+                { value: 'climber', label: language === 'zh-TW' ? '爬坡手' : '爬坡手', icon: Mountain },
+                { value: 'rouleur', label: language === 'zh-TW' ? '計時突圍' : '计时突围', icon: Timer },
+                { value: 'allrounder', label: language === 'zh-TW' ? '全能型' : '全能型', icon: Award },
+              ]}
+              value={activeRiderPreset || ''}
+              onChange={(val) => loadPreset(val as any)}
+              size="sm"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs shrink-0 self-end sm:self-auto">
           <label className="text-ios-blue hover:underline cursor-pointer font-medium flex items-center gap-1 apple-touch">
             <Upload className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '上傳功率表單' : '上传功率表单'}</span>
@@ -534,7 +522,17 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '5秒 衝刺峰值' : '5秒 冲刺峰值'} (W)
                 </label>
-                <NumberStepper value={p5s} onChange={setP5s} step={20} min={300} max={2200} unit="W" />
+                <NumberStepper
+                  value={p5s}
+                  onChange={(v) => {
+                    setP5s(v);
+                    setActiveRiderPreset(null);
+                  }}
+                  step={20}
+                  min={300}
+                  max={2200}
+                  unit="W"
+                />
                 <span className="text-[11px] text-ios-red font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w5s} W/kg
                 </span>
@@ -543,7 +541,17 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '1分鐘 無氧峰值' : '1分钟 无氧峰值'} (W)
                 </label>
-                <NumberStepper value={p1m} onChange={setP1m} step={10} min={200} max={1200} unit="W" />
+                <NumberStepper
+                  value={p1m}
+                  onChange={(v) => {
+                    setP1m(v);
+                    setActiveRiderPreset(null);
+                  }}
+                  step={10}
+                  min={200}
+                  max={1200}
+                  unit="W"
+                />
                 <span className="text-[11px] text-ios-orange font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w1m} W/kg
                 </span>
@@ -555,7 +563,17 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '5分鐘 VO₂ Max' : '5分钟 VO₂ Max'} (W)
                 </label>
-                <NumberStepper value={p5m} onChange={setP5m} step={5} min={150} max={700} unit="W" />
+                <NumberStepper
+                  value={p5m}
+                  onChange={(v) => {
+                    setP5m(v);
+                    setActiveRiderPreset(null);
+                  }}
+                  step={5}
+                  min={150}
+                  max={700}
+                  unit="W"
+                />
                 <span className="text-[11px] text-ios-blue font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w5m} W/kg
                 </span>
@@ -564,7 +582,17 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '20分鐘 閾值測試' : '20分钟 阈值测试'} (W)
                 </label>
-                <NumberStepper value={p20m} onChange={setP20m} step={5} min={120} max={600} unit="W" />
+                <NumberStepper
+                  value={p20m}
+                  onChange={(v) => {
+                    setP20m(v);
+                    setActiveRiderPreset(null);
+                  }}
+                  step={5}
+                  min={120}
+                  max={600}
+                  unit="W"
+                />
                 <span className="text-[11px] text-ios-green font-mono font-medium block mt-1">
                   {'推重比'}: {analytics.w20m} W/kg
                 </span>
