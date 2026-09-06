@@ -644,6 +644,16 @@ export const UpgradeRoiCalculator: React.FC = () => {
             </div>
           </IOSCard>
 
+          {/* Direct Share Card Action Button */}
+          <button
+            type="button"
+            onClick={handleGeneratePoster}
+            className="w-full apple-touch py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-[0.98]"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>📸 生成装备改装与省瓦战报卡片 (长图海报分享)</span>
+          </button>
+
           {/* Single Item Wattage Contribution Chart */}
           <IOSCard variant="default" className="p-5 space-y-2">
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">各单品省瓦贡献对比柱状图 (Watts @ {flatCruiseSpeedKmh}km/h)</span>

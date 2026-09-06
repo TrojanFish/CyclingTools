@@ -1221,19 +1221,29 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
           </div>
 
-          {/* Interactive Tabbed Navigation */}
-          <div className="max-w-md">
-            <IOSSegmentedControl
-              options={[
-                { value: 'trends', label: language === 'zh-TW' ? '時序趨勢' : '时序趋势' },
-                { value: 'zones', label: language === 'zh-TW' ? '區間駐留' : '区间驻留' },
-                { value: 'mmp', label: language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线' },
-                { value: 'pmc', label: language === 'zh-TW' ? 'PMC 負荷' : 'PMC 负荷' },
-                { value: 'coaching', label: language === 'zh-TW' ? '生理診斷' : '生理诊断' }
-              ]}
-              value={activeTab}
-              onChange={(v) => setActiveTab(v as any)}
-            />
+          {/* Interactive Tabbed Navigation & Poster Action */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="w-full sm:max-w-md">
+              <IOSSegmentedControl
+                options={[
+                  { value: 'trends', label: language === 'zh-TW' ? '時序趨勢' : '时序趋势' },
+                  { value: 'zones', label: language === 'zh-TW' ? '區間駐留' : '区间驻留' },
+                  { value: 'mmp', label: language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线' },
+                  { value: 'pmc', label: language === 'zh-TW' ? 'PMC 負荷' : 'PMC 负荷' },
+                  { value: 'coaching', label: language === 'zh-TW' ? '生理診斷' : '生理诊断' }
+                ]}
+                value={activeTab}
+                onChange={(v) => setActiveTab(v as any)}
+              />
+            </div>
+            <button
+              onClick={handleGeneratePoster}
+              className="apple-touch px-4 py-2.5 rounded-2xl bg-gradient-to-r from-ios-red to-orange-500 hover:opacity-95 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition shrink-0"
+              title="生成码表活动深度复盘长图海报"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>📸 {language === 'zh-TW' ? '生成深度復盤長圖' : '生成深度复盘长图'}</span>
+            </button>
           </div>
 
           {/* TAB 1: Time-Series Trends */}

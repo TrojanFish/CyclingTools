@@ -487,6 +487,18 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         </IOSCard>
       )}
 
+      {/* Action Button: Generate Gear Ratio Poster */}
+      <div className="flex justify-center pt-2">
+        <button
+          type="button"
+          onClick={handleGeneratePoster}
+          className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-blue/10 via-indigo-500/10 to-ios-blue/10 hover:from-ios-blue/20 hover:via-indigo-500/20 hover:to-ios-blue/20 border border-ios-blue/30 text-ios-blue font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition apple-touch"
+        >
+          <Share2 className="w-4 h-4" />
+          <span>📸 生成齿比与踏频极速战报长图 (高清分享)</span>
+        </button>
+      </div>
+
       {/* Social Share Poster Modal */}
       <ShareCardModal
         isOpen={isShareModalOpen}

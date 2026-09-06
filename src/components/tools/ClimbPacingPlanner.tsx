@@ -990,6 +990,17 @@ export const ClimbPacingPlanner: React.FC = () => {
               </table>
             </div>
           </div>
+
+          {/* Action Button: Generate Climb Poster */}
+          <button
+            type="button"
+            onClick={handleGeneratePoster}
+            className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-blue/10 via-sky-500/10 to-ios-blue/10 hover:from-ios-blue/20 hover:via-sky-500/20 hover:to-ios-blue/20 border border-ios-blue/30 text-ios-blue font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition apple-touch"
+            title="生成名山爬坡攻坚战报海报"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>📸 {language === 'zh-TW' ? '生成名山爬坡攻堅戰報長圖 (高清分享)' : '生成名山爬坡攻坚战报长图 (高清分享)'}</span>
+          </button>
         </div>
       </div>
 

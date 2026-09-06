@@ -369,6 +369,16 @@ export const ChainLengthCalculator: React.FC = () => {
             />
           </div>
 
+          {/* Direct Share Card Action Button */}
+          <button
+            type="button"
+            onClick={handleGeneratePoster}
+            className="w-full apple-touch py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-blue to-blue-600 hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-[0.98]"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>📸 生成技师截链规范卡 (长图海报分享)</span>
+          </button>
+
           {/* Drivetrain Visual SVG Schematic */}
           <IOSCard variant="default" className="p-5 space-y-3">
             <div className="flex justify-between items-center text-xs">

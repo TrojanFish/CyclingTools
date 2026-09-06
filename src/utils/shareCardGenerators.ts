@@ -910,12 +910,15 @@ export function generateChainLengthPoster(data: ChainLengthPosterData): string {
 
 // 8. Road Bike Pain Checker Poster
 export interface PainCheckPosterData {
-  areaTitle: string;
-  checkedCount: number;
-  totalChecks: number;
-  progressPct: number;
-  causes: Array<{ category: string; details: string[] }>;
-  checklist: string[];
+  areaTitle?: string;
+  checkedCount?: number;
+  totalChecks?: number;
+  progressPct?: number;
+  causes?: Array<{ category: string; details: string[] }>;
+  checklist?: string[];
+  symptoms?: string[];
+  solutions?: string[];
+  expertAdvice?: string;
 }
 
 export function generatePainCheckPoster(data: PainCheckPosterData): string {
@@ -924,8 +927,15 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
   const { ctx, canvas } = createPosterCanvas(w, h);
   const accent = '#BF5AF2'; // ios-purple
 
+  const areaTitle = data.areaTitle || '骑行不适部位';
+  const checklist = data.checklist || data.solutions || [];
+  const checkedCount = data.checkedCount ?? 0;
+  const totalChecks = data.totalChecks || (checklist.length > 0 ? checklist.length : 1);
+  const progressPct = data.progressPct ?? Math.round((checkedCount / totalChecks) * 100);
+  const causes = data.causes || [];
+
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🩺 运动医学 · 疼痛自诊处方', `${data.areaTitle}自纠处方卡`, `已完成排查 ${data.checkedCount}/${data.totalChecks} 项 (${data.progressPct}%) · 科学调车指南`, accent);
+  drawHeader(ctx, w, '🩺 运动医学 · 疼痛自诊处方', `${areaTitle}自纠处方卡`, `已完成排查 ${checkedCount}/${totalChecks} 项 (${progressPct}%) · 科学调车指南`, accent);
 
   // Progress banner
   roundRect(ctx, 40, 204, w - 80, 80, 20);
@@ -941,7 +951,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`${data.checkedCount} / ${data.totalChecks} 项疑点已核实 · 诊断完成率 ${data.progressPct}%`, 65, 264);
+  ctx.fillText(`${checkedCount} / ${totalChecks} 项疑点已核实 · 诊断完成率 ${progressPct}%`, 65, 264);
 
   // Targeted Prescriptions Box
   const rxY = 305;
@@ -955,7 +965,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('📋 针对性调车自纠处方清单 (Bike Fitting)', 65, rxY + 36);
 
-  data.checklist.slice(0, 6).forEach((item, idx) => {
+  checklist.slice(0, 6).forEach((item, idx) => {
     const iy = rxY + 75 + idx * 46;
     ctx.fillStyle = '#30D158';
     ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -963,7 +973,8 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
     ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(item.length > 38 ? item.slice(0, 38) + '...' : item, 155, iy);
+    const itemStr = String(item || '');
+    ctx.fillText(itemStr.length > 38 ? itemStr.slice(0, 38) + '...' : itemStr, 155, iy);
   });
 
   // Root Causes Box
@@ -978,17 +989,23 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('🔍 根本成因与生物力学机理分析', 65, causeY + 36);
 
-  data.causes.slice(0, 3).forEach((c, idx) => {
-    const cy = causeY + 75 + idx * 64;
-    ctx.fillStyle = '#FF9F0A';
-    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(`[${c.category}]`, 65, cy);
+  if (causes.length > 0) {
+    causes.slice(0, 3).forEach((c, idx) => {
+      const cy = causeY + 75 + idx * 64;
+      ctx.fillStyle = '#FF9F0A';
+      ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(`[${c.category || '诊断分析'}]`, 65, cy);
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    const detailText = c.details.join('； ');
-    ctx.fillText(detailText.length > 40 ? detailText.slice(0, 40) + '...' : detailText, 65, cy + 24);
-  });
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      const detailText = Array.isArray(c.details) ? c.details.join('； ') : String(c.details || '');
+      ctx.fillText(detailText.length > 40 ? detailText.slice(0, 40) + '...' : detailText, 65, cy + 24);
+    });
+  } else if (data.expertAdvice) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`专家建议: ${data.expertAdvice}`, 65, causeY + 80);
+  }
 
   drawFooter(ctx, w, h);
   return canvas.toDataURL('image/png');
@@ -996,14 +1013,16 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
 // 9. Structured Workout Poster
 export interface WorkoutPosterData {
-  workoutTitle: string;
+  workoutTitle?: string;
+  workoutName?: string;
   ftpWatts: number;
-  totalDurationStr: string;
+  totalDurationStr?: string;
+  totalMinutes?: number;
   tss: number;
   intensityFactor: number;
   calories: number;
-  description: string;
-  segments: Array<{ name: string; durationSec: number; powerPct: number; cadenceRpm?: number }>;
+  description?: string;
+  segments?: Array<{ name: string; durationSec: number; powerPct: number; cadenceRpm?: number; targetWatts?: number; type?: string }>;
 }
 
 export function generateWorkoutPoster(data: WorkoutPosterData): string {
@@ -1012,14 +1031,19 @@ export function generateWorkoutPoster(data: WorkoutPosterData): string {
   const { ctx, canvas } = createPosterCanvas(w, h);
   const accent = '#FF3B30';
 
+  const title = data.workoutTitle || data.workoutName || '科学间歇训练课表';
+  const desc = data.description || '根据生理动力学与代谢功率阶梯科学定制的间歇训练课表。';
+  const durationStr = data.totalDurationStr || (data.totalMinutes ? `${data.totalMinutes} 分钟` : '60 分钟');
+  const segments = data.segments || [];
+
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🏋️ 科学训练 · 结构化间歇课表', data.workoutTitle, `基准 FTP ${data.ftpWatts}W · 智能靶向踏频与功率阶梯`, accent);
+  drawHeader(ctx, w, '🏋️ 科学训练 · 结构化间歇课表', title, `基准 FTP ${data.ftpWatts || 200}W · 智能靶向踏频与功率阶梯`, accent);
 
   const tileW = (w - 80 - 15) / 2;
-  drawMetricTile(ctx, 40, 204, tileW, 85, '课表总执行时长', data.totalDurationStr, undefined, '#0A84FF');
-  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '训练压力指数 (TSS)', data.tss, undefined, '#FF9F0A');
-  drawMetricTile(ctx, 40, 304, tileW, 85, '强度系数 (IF)', data.intensityFactor, undefined, '#FF375F');
-  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '预估能量代谢消耗', data.calories, 'kcal', '#30D158');
+  drawMetricTile(ctx, 40, 204, tileW, 85, '课表总执行时长', durationStr, undefined, '#0A84FF');
+  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '训练压力指数 (TSS)', data.tss || 0, undefined, '#FF9F0A');
+  drawMetricTile(ctx, 40, 304, tileW, 85, '强度系数 (IF)', data.intensityFactor || 0, undefined, '#FF375F');
+  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '预估能量代谢消耗', data.calories || 0, 'kcal', '#30D158');
 
   // Description
   const descY = 410;
@@ -1031,7 +1055,7 @@ export function generateWorkoutPoster(data: WorkoutPosterData): string {
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(data.description.length > 50 ? data.description.slice(0, 50) + '...' : data.description, 60, descY + 45);
+  ctx.fillText(desc.length > 50 ? desc.slice(0, 50) + '...' : desc, 60, descY + 45);
 
   // Intervals Breakdown Bar & List
   const listY = 510;
@@ -1045,7 +1069,7 @@ export function generateWorkoutPoster(data: WorkoutPosterData): string {
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('⚡ 课表分段间歇执行明细', 65, listY + 35);
 
-  data.segments.slice(0, 7).forEach((seg, idx) => {
+  segments.slice(0, 7).forEach((seg, idx) => {
     const sy = listY + 75 + idx * 50;
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
     ctx.beginPath();
@@ -1172,20 +1196,33 @@ export function generateRoadbookPoster(data: RoadbookPosterData): string {
 
 // 11. Suspension Setup Poster
 export interface SuspensionPosterData {
-  riderName: string;
-  totalWeightKg: number;
-  discipline: string;
-  forkModel: string;
-  forkTravel: number;
-  forkPsi: number;
-  forkSagPct: number;
-  forkLsr: number;
-  forkLsc: number;
-  shockType: string;
-  shockTravel: number;
-  shockPsiOrSpring: string;
-  shockSagPct: number;
-  shockRebound: number;
+  riderName?: string;
+  totalWeightKg?: number;
+  riderWeightKg?: number;
+  bikeCategory?: string;
+  discipline?: string;
+  ridingStyle?: string;
+  forkModel?: string;
+  forkTravel?: number;
+  forkPsi?: number;
+  forkPressurePsi?: number;
+  forkSagPct?: number;
+  forkSagMm?: number;
+  forkLsr?: number;
+  forkReboundClicks?: number;
+  forkLsc?: number;
+  forkLscClicks?: number;
+  forkTokens?: number;
+  shockType?: string;
+  shockTravel?: number;
+  shockPsiOrSpring?: string;
+  shockPressurePsi?: number;
+  shockSagPct?: number;
+  shockSagMm?: number;
+  shockRebound?: number;
+  shockReboundClicks?: number;
+  shockLscClicks?: number;
+  shockSpacers?: number;
 }
 
 export function generateSuspensionPoster(data: SuspensionPosterData): string {
@@ -1194,8 +1231,22 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
   const { ctx, canvas } = createPosterCanvas(w, h);
   const accent = '#007AFF';
 
+  const disciplineStr = String(data.discipline || data.bikeCategory || 'MTB 越野').toUpperCase();
+  const weight = data.totalWeightKg || data.riderWeightKg || 70;
+  const forkModel = data.forkModel || '避震气压前叉';
+  const forkTravel = data.forkTravel || 120;
+  const forkPsi = data.forkPsi ?? data.forkPressurePsi ?? 80;
+  const forkSagPct = data.forkSagPct ?? 25;
+  const forkLsr = data.forkLsr ?? data.forkReboundClicks ?? 6;
+  const forkLsc = data.forkLsc ?? data.forkLscClicks ?? 4;
+  const shockType = data.shockType || 'air';
+  const shockTravel = data.shockTravel || 120;
+  const shockPsiOrSpring = data.shockPsiOrSpring || (data.shockPressurePsi ? `${data.shockPressurePsi} PSI` : '标准气压');
+  const shockSagPct = data.shockSagPct ?? 28;
+  const shockRebound = data.shockRebound ?? data.shockReboundClicks ?? 5;
+
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🚵 山地避震 · 悬挂调校设定', `${data.discipline.toUpperCase()} 战车避震调校档案`, `车手全备重 ${data.totalWeightKg} kg · 前后悬挂气压与阻尼基准`, accent);
+  drawHeader(ctx, w, '🚵 山地避震 · 悬挂调校设定', `${disciplineStr} 战车避震调校档案`, `车手全备重 ${weight} kg · 前后悬挂气压与阻尼基准`, accent);
 
   // Dual Suspension Pods
   const podW = (w - 80 - 20) / 2;
@@ -1214,13 +1265,13 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`${data.forkModel} · ${data.forkTravel}mm 行程`, 65, 266);
+  ctx.fillText(`${forkModel} · ${forkTravel}mm 行程`, 65, 266);
 
   const forkSpecs = [
-    { label: '主气室推荐气压', val: `${data.forkPsi} PSI` },
-    { label: '下沉量 (SAG)', val: `${data.forkSagPct}%` },
-    { label: '低速回弹 (LSR)', val: `${data.forkLsr} Clicks` },
-    { label: '低速压缩 (LSC)', val: `${data.forkLsc} Clicks` }
+    { label: '主气室推荐气压', val: `${forkPsi} PSI` },
+    { label: '下沉量 (SAG)', val: `${forkSagPct}%` },
+    { label: '低速回弹 (LSR)', val: `${forkLsr} Clicks` },
+    { label: '低速压缩 (LSC)', val: `${forkLsc} Clicks` }
   ];
 
   forkSpecs.forEach((s, idx) => {
@@ -1247,12 +1298,12 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`${data.shockType === 'coil' ? '弹簧胆 Coil' : '气压胆 Air'} · ${data.shockTravel}mm 行程`, 40 + podW + 45, 266);
+  ctx.fillText(`${shockType === 'coil' ? '弹簧胆 Coil' : '气压胆 Air'} · ${shockTravel}mm 行程`, 40 + podW + 45, 266);
 
   const shockSpecs = [
-    { label: '气压 / 弹簧磅数', val: data.shockPsiOrSpring },
-    { label: '后胆下沉量 (SAG)', val: `${data.shockSagPct}%` },
-    { label: '回弹阻尼 (Rebound)', val: `${data.shockRebound} Clicks` },
+    { label: '气压 / 弹簧磅数', val: shockPsiOrSpring },
+    { label: '后胆下沉量 (SAG)', val: `${shockSagPct}%` },
+    { label: '回弹阻尼 (Rebound)', val: `${shockRebound} Clicks` },
     { label: '压缩平台阻尼', val: '平衡开档' }
   ];
 
