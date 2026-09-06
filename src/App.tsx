@@ -166,26 +166,35 @@ const MainAppContent: React.FC = () => {
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
               <div className="glass-panel relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-xs no-print">
-                {/* Left: Simplified Back Button & Breadcrumbs */}
+                {/* Left: Mobile Back Button & Desktop Breadcrumbs */}
                 <div className="flex items-center gap-2 shrink-0">
+                  {/* Mobile Only: Back Button with Icon AND Text */}
                   <button
                     onClick={() => setCurrentToolId(null)}
-                    className="inline-flex items-center justify-center p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition active:scale-95 text-xs font-bold shrink-0"
+                    className="md:hidden inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition active:scale-95 text-xs font-bold shrink-0"
                     title={t('backToHome')}
                     aria-label={t('backToHome')}
                   >
-                    <ArrowLeft className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                    <span className="hidden sm:inline ml-1.5">{language === 'zh-TW' ? '返回首頁' : '返回首页'}</span>
+                    <ArrowLeft className="w-3.5 h-3.5 mr-1" />
+                    <span>{language === 'zh-TW' ? '返回首頁' : '返回首页'}</span>
                   </button>
 
-                  <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
+                  {/* Desktop & Tablet: Breadcrumb Hierarchy: 首页 > 分类 > 工具名 */}
+                  <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    <button
+                      onClick={() => setCurrentToolId(null)}
+                      className="cursor-pointer hover:text-cyan-500 dark:hover:text-cyan-400 transition font-medium hover:underline text-slate-600 dark:text-slate-300"
+                    >
+                      {language === 'zh-TW' ? '首頁' : '首页'}
+                    </button>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
                     <span>
                       {language === 'zh-TW' && currentToolMeta.categoryLabelTw
                         ? currentToolMeta.categoryLabelTw
                         : currentToolMeta.categoryLabel}
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
-                    <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[200px]">
+                    <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[220px]">
                       {language === 'zh-TW' && currentToolMeta?.titleTw
                         ? currentToolMeta.titleTw
                         : currentToolMeta?.title}
