@@ -199,26 +199,28 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               onClick={copyGearMatrix}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
+              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95 shrink-0"
             >
-              <Copy className="w-3.5 h-3.5" />
-              复制齿比表
+              <Copy className="w-3.5 h-3.5 text-ios-blue" />
+              <span>复制齿比表</span>
             </button>
 
             {/* Apple View Tab Switchers */}
-            <IOSSegmentedControl
-              options={[
-                { id: 'matrix', label: '档位矩阵' },
-                { id: 'cadence_table', label: '踏频对照' },
-                { id: 'chart', label: '速度曲线' },
-              ]}
-              value={activeTab}
-              onChange={(val) => setActiveTab(val as any)}
-              size="sm"
-            />
+            <div className="overflow-x-auto no-scrollbar py-0.5">
+              <IOSSegmentedControl
+                options={[
+                  { id: 'matrix', label: '档位矩阵' },
+                  { id: 'cadence_table', label: '踏频对照' },
+                  { id: 'chart', label: '速度曲线' },
+                ]}
+                value={activeTab}
+                onChange={(val) => setActiveTab(val as any)}
+                size="sm"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -228,7 +230,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         {/* Gruppo Presets */}
         <div>
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
-          <div className="w-full sm:max-w-2xl">
+          <div className="w-full sm:max-w-2xl overflow-x-auto no-scrollbar pb-1">
             <IOSSegmentedControl
               options={[
                 { value: 'compact', label: '公路 50/34T' },

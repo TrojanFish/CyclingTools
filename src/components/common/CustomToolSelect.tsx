@@ -100,6 +100,36 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
       : currentToolMeta.title;
   }, [currentToolMeta, language]);
 
+  const mobileTitle = useMemo(() => {
+    if (!currentToolId) return '';
+    const titles: Record<string, { zh: string; tw: string }> = {
+      'power-calc': { zh: '功率与速度计算', tw: '功率與速度計算' },
+      'tire-pressure': { zh: '智能胎压计算器', tw: '智能胎壓計算器' },
+      'gear-calculator': { zh: '齿比-速度-踏频', tw: '齒比-速度-踏頻' },
+      'chain-calculator': { zh: '链长与齿容量', tw: '鏈長與齒容量' },
+      'climb-pacing': { zh: '爬坡路段配速规划', tw: '爬坡路段配速規劃' },
+      'upgrade-roi': { zh: '零件升级省瓦ROI', tw: '零件升級省瓦ROI' },
+      'tubeless-sealant': { zh: '真空胎自补液计算', tw: '無內胎補液計算' },
+      'spoke-calculator': { zh: '编轮与辐条长度', tw: '編輪與輻條長度' },
+      'mtb-suspension': { zh: '山地避震与 SAG', tw: '山地避震與 SAG' },
+      'bike-fitter': { zh: '公路车 Fitting', tw: '公路車 Fitting' },
+      'pain-checker': { zh: '骑行疼痛自诊排查', tw: '騎乘疼痛自診排查' },
+      'roadbook-library': { zh: '经典路书精选库', tw: '經典路書精選庫' },
+      'gpx-creator': { zh: 'GPX 路线工坊', tw: 'GPX 路線工坊' },
+      'group-ride': { zh: '团骑阻力与战术', tw: '團騎阻力與戰術' },
+      'weather-advisor': { zh: '骑行天气顾问', tw: '騎乘天氣顧問' },
+      'power-radar': { zh: '功率能力雷达', tw: '功率能力雷達' },
+      'health-calculator': { zh: '运动健康计算', tw: '運動健康計算' },
+      'activity-analyzer': { zh: 'FIT 航迹深度解析', tw: 'FIT 航跡深度解析' },
+      'workout-builder': { zh: '科学间歇课表工坊', tw: '科學間歇課表工坊' },
+    };
+    const m = titles[currentToolId];
+    if (m) {
+      return language === 'zh-TW' ? m.tw : m.zh;
+    }
+    return currentTitle;
+  }, [currentToolId, language, currentTitle]);
+
   const CurrentIcon = currentToolMeta ? (ICONS_MAP[currentToolMeta.icon] || Zap) : Zap;
 
   // Group tools by domain category
@@ -130,18 +160,19 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-8 sm:h-9 px-2 sm:px-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between gap-1.5 sm:gap-2 w-auto min-w-[120px] max-w-[165px] sm:max-w-[270px] truncate apple-touch hover:border-ios-blue focus:outline-none focus:ring-2 focus:ring-ios-blue/20 transition shadow-2xs"
+        className="h-8 sm:h-9 px-2 sm:px-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between gap-1.5 sm:gap-2 flex-1 min-w-0 max-w-[195px] sm:max-w-[270px] truncate apple-touch hover:border-ios-blue focus:outline-none focus:ring-2 focus:ring-ios-blue/20 transition shadow-2xs"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-1.5 truncate min-w-0">
           <CurrentIcon className="w-3.5 h-3.5 text-ios-blue shrink-0" />
-          <span className="truncate">{currentTitle}</span>
+          <span className="truncate hidden sm:inline">{currentTitle}</span>
+          <span className="truncate sm:hidden">{mobileTitle}</span>
         </div>
         <div className="flex items-center gap-1 shrink-0 ml-1">
           {currentToolMeta?.hasStravaIntegration && (
             <span
-              className="p-0.5 rounded bg-[#FC4C02]/10 border border-[#FC4C02]/20"
+              className="p-0.5 rounded bg-[#FC4C02]/10 border border-[#FC4C02]/20 hidden sm:inline-flex"
               title="Strava"
             >
               <StravaLogo className="w-3 h-3" />

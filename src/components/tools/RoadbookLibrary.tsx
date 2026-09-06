@@ -647,10 +647,10 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             <button
               onClick={handleOpenStravaModal}
-              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-semibold border transition shadow-ios-sm apple-touch ${
+              className={`flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl text-xs font-semibold border transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0 ${
                 isStravaConnected
                   ? 'bg-orange-500/10 hover:bg-orange-500/20 text-[#FC4C02] border-orange-500/30'
                   : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
@@ -664,7 +664,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               )}
             </button>
 
-            <label className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
+            <label className="flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0">
               <Upload className="w-4 h-4 text-ios-blue" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
@@ -672,10 +672,10 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             <button
               onClick={handleExportGpx}
-              className="flex items-center gap-2 px-4 py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-2xl font-bold text-xs transition shadow-ios-md apple-touch"
+              className="flex items-center gap-1.5 sm:gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-2xl font-bold text-xs transition shadow-ios-md apple-touch whitespace-nowrap shrink-0"
             >
               <Download className="w-4 h-4" />
-              {language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}
+              <span>{language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}</span>
             </button>
           </div>
         </div>

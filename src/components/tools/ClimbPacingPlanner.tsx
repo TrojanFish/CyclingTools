@@ -608,29 +608,30 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             <button
               onClick={handleOpenStravaSegments}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm apple-touch"
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
               title="从 Strava 检索赛段 (KOM / Starred) 并导入"
             >
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                 <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
               </svg>
-              <span>{language === 'zh-TW' ? '⚡ Strava 賽段' : '⚡ Strava 赛段'}</span>
+              <span>{language === 'zh-TW' ? 'Strava 賽段' : 'Strava 赛段'}</span>
             </button>
 
-            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
-              <Upload className="w-4 h-4 text-ios-blue" />
-              <span>{language === 'zh-TW' ? '匯入 GPX 路線' : '导入 GPX 爬坡路线'}</span>
+            <label className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0">
+              <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+              <span className="hidden sm:inline">{language === 'zh-TW' ? '匯入 GPX 爬坡路線' : '导入 GPX 爬坡路线'}</span>
+              <span className="sm:hidden">{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxClimbUpload} className="hidden" />
             </label>
 
             <button
               onClick={copyPacingPlan}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
             >
-              <Copy className="w-3.5 h-3.5 text-ios-blue" />
+              <Copy className="w-3.5 h-3.5 text-ios-blue shrink-0" />
               <span>{language === 'zh-TW' ? '複製計劃' : '复制计划'}</span>
             </button>
           </div>
@@ -645,13 +646,13 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </span>
           <button
             onClick={handleOpenStravaSegments}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30 whitespace-nowrap shrink-0"
             title="浏览并导入 Strava 赛段与经典 KOM 坡度"
           >
-            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
               <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
             </svg>
-            <span>{language === 'zh-TW' ? '⚡ Strava 賽段庫' : '⚡ Strava 赛段库'}</span>
+            <span>{language === 'zh-TW' ? 'Strava 賽段庫' : 'Strava 赛段库'}</span>
           </button>
           {[
             { id: 'longjing', name: '杭州龙井', title: '杭州龙井 (3.2km)' },
@@ -1010,7 +1011,7 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
 
             {/* Direct ID Import Bar */}
             <div className="p-3 sm:p-4 bg-slate-50 dark:bg-black/20 border-b border-slate-200/80 dark:border-white/10 space-y-2.5">
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <div className="relative flex-1">
                   <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
@@ -1018,22 +1019,22 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                     value={segmentSearchQuery}
                     onChange={(e) => setSegmentSearchQuery(e.target.value)}
                     placeholder={language === 'zh-TW' ? '搜尋賽段名稱、城市或國家...' : '搜索赛段名称、城市或国家...'}
-                    className="w-full bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
+                    className="w-full bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl pl-9 pr-3 py-2 sm:py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                   />
                 </div>
 
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-1.5">
                   <input
                     type="text"
                     value={customSegmentInput}
                     onChange={(e) => setCustomSegmentInput(e.target.value)}
                     placeholder="输入赛段 ID (如 661401)"
-                    className="w-36 sm:w-44 bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-[#FC4C02]"
+                    className="flex-1 sm:w-44 bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 sm:py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-[#FC4C02]"
                   />
                   <button
                     onClick={handleFetchCustomSegment}
                     disabled={isFetchingCustomId || !customSegmentInput.trim()}
-                    className="apple-touch px-3 py-1.5 rounded-xl bg-[#FC4C02] text-white text-xs font-semibold hover:bg-[#e04300] transition disabled:opacity-50 shrink-0"
+                    className="apple-touch px-3.5 py-2 sm:py-1.5 rounded-xl bg-[#FC4C02] text-white text-xs font-semibold hover:bg-[#e04300] transition disabled:opacity-50 shrink-0 whitespace-nowrap"
                   >
                     {isFetchingCustomId ? '查询中' : '解析导入'}
                   </button>
@@ -1041,38 +1042,40 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
               </div>
 
               {/* Tabs */}
-              <div className="flex items-center gap-2 text-xs">
-                <button
-                  onClick={() => setSegmentFilterTab('all')}
-                  className={`px-3 py-1 rounded-xl transition ${
-                    segmentFilterTab === 'all'
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'
-                  }`}
-                >
-                  全部赛段 ({stravaSegments.length})
-                </button>
-                <button
-                  onClick={() => setSegmentFilterTab('tour')}
-                  className={`px-3 py-1 rounded-xl transition ${
-                    segmentFilterTab === 'tour'
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'
-                  }`}
-                >
-                  环法/环意传奇 KOM
-                </button>
-                <button
-                  onClick={() => setSegmentFilterTab('starred')}
-                  className={`px-3 py-1 rounded-xl transition flex items-center gap-1 ${
-                    segmentFilterTab === 'starred'
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'
-                  }`}
-                >
-                  <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                  <span>我的星标 ({stravaSegments.filter(s => s.starred).length})</span>
-                </button>
+              <div className="overflow-x-auto no-scrollbar py-0.5">
+                <div className="flex items-center gap-1.5 text-xs">
+                  <button
+                    onClick={() => setSegmentFilterTab('all')}
+                    className={`px-3 py-1.5 rounded-xl transition whitespace-nowrap ${
+                      segmentFilterTab === 'all'
+                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-xs'
+                        : 'bg-white/80 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 font-medium border border-slate-200/60 dark:border-white/5'
+                    }`}
+                  >
+                    全部赛段 ({stravaSegments.length})
+                  </button>
+                  <button
+                    onClick={() => setSegmentFilterTab('tour')}
+                    className={`px-3 py-1.5 rounded-xl transition whitespace-nowrap ${
+                      segmentFilterTab === 'tour'
+                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-xs'
+                        : 'bg-white/80 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 font-medium border border-slate-200/60 dark:border-white/5'
+                    }`}
+                  >
+                    环法/环意传奇 KOM
+                  </button>
+                  <button
+                    onClick={() => setSegmentFilterTab('starred')}
+                    className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1 whitespace-nowrap ${
+                      segmentFilterTab === 'starred'
+                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-xs'
+                        : 'bg-white/80 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 font-medium border border-slate-200/60 dark:border-white/5'
+                    }`}
+                  >
+                    <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                    <span>我的星标 ({stravaSegments.filter(s => s.starred).length})</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1118,12 +1121,12 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
                         key={seg.id}
                         className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C20] border border-slate-200/80 dark:border-white/10 hover:border-[#FC4C02]/40 transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
                       >
-                        <div className="space-y-1 min-w-0">
+                        <div className="space-y-1 min-w-0 flex-1">
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                               {seg.name}
                             </span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-ios-orange/15 text-ios-orange font-bold">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-ios-orange/15 text-ios-orange font-bold whitespace-nowrap shrink-0">
                               {catLabel}
                             </span>
                             {seg.starred && (

@@ -302,7 +302,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               <span>{language === 'zh-TW' ? '山地全避震工程' : '山地全避震工程'}</span>
               <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-ios-blue/15 text-ios-blue border border-ios-blue/30">PRO TUNER</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight [text-wrap:balance]">
               {language === 'zh-TW'
                 ? '山地車避震與 SAG 智能調校顧問'
                 : '山地车避震与 SAG 智能调校顾问'}
@@ -335,7 +335,7 @@ export const MtbSuspensionTuner: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5 text-ios-blue" />
             {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
           </span>
-          <div className="w-full sm:max-w-2xl">
+          <div className="w-full sm:max-w-2xl overflow-x-auto no-scrollbar pb-1">
             <IOSSegmentedControl
               options={[
                 { value: 'xc_race', label: 'XC 竞速 (120mm)' },
