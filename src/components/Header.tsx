@@ -101,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
               onClick={toggleUnitSystem}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-300 text-[11px] font-mono font-semibold transition-all apple-touch shrink-0 shadow-xs"
+              className="hidden sm:flex h-8 sm:h-9 items-center gap-1.5 px-2.5 rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all apple-touch shrink-0 shadow-xs"
               title={unitSystem === 'metric' ? 'Switch to Imperial units (miles, lbs)' : 'Switch to Metric units (km, kg)'}
             >
               <Gauge className="w-3.5 h-3.5 text-ios-blue dark:text-ios-blue-dark" />

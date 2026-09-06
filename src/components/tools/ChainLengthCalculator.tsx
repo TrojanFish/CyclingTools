@@ -21,8 +21,11 @@ export const ChainLengthCalculator: React.FC = () => {
   const [isFullSuspension, setIsFullSuspension] = useState<boolean>(false);
   const [chainstayGrowthMm, setChainstayGrowthMm] = useState<number>(20);
 
+  const [activePreset, setActivePreset] = useState<string | null>('compact_34');
+
   // Preset Configurations
   const loadPreset = (type: string) => {
+    setActivePreset(type);
     if (type === 'compact_34') {
       setIsSingleRing(false);
       setBigRing(50);
@@ -148,22 +151,23 @@ export const ChainLengthCalculator: React.FC = () => {
       </div>
 
       {/* Preset Buttons */}
-      <div className="p-4 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex flex-wrap items-center gap-2 shadow-ios-sm">
-        <span className="text-xs text-slate-500 dark:text-slate-400">规格预设:</span>
-        {[
-          { id: 'compact_34', label: '公路 50/34T' },
-          { id: 'semi_30', label: '公路 52/36T' },
-          { id: 'sram_axs', label: 'AXS 48/35T' },
-          { id: 'gravel_1x', label: 'Gravel 40T' },
-        ].map((p) => (
-          <button
-            key={p.id}
-            onClick={() => loadPreset(p.id)}
-            className="apple-touch px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition active:scale-95"
-          >
-            {p.label}
-          </button>
-        ))}
+      <div className="p-4 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex flex-col sm:flex-row sm:items-center gap-3 shadow-ios-sm">
+        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+          {language === 'zh-TW' ? '規格預設:' : '规格预设:'}
+        </span>
+        <div className="w-full sm:max-w-xl">
+          <IOSSegmentedControl
+            options={[
+              { value: 'compact_34', label: '公路 50/34T' },
+              { value: 'semi_30', label: '公路 52/36T' },
+              { value: 'sram_axs', label: 'AXS 48/35T' },
+              { value: 'gravel_1x', label: 'Gravel 40T' },
+            ]}
+            value={activePreset || ''}
+            onChange={(val) => loadPreset(val)}
+            size="sm"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

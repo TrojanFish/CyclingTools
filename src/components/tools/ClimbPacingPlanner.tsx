@@ -230,8 +230,11 @@ export const ClimbPacingPlanner: React.FC = () => {
     e.target.value = '';
   };
 
+  const [activeMountainPreset, setActiveMountainPreset] = useState<string>('longjing');
+
   // Classic Mountain Presets (Domestic & International Grand Tours)
   const loadPreset = (key: string) => {
+    setActiveMountainPreset(key);
     if (key === 'longjing') {
       setClimbName('杭州龙井问茶经典爬坡');
       setSegments([
@@ -502,58 +505,32 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
             {language === 'zh-TW' ? '精選名山:' : '精选名山:'}
           </span>
-          <button
-            onClick={() => loadPreset('longjing')}
-            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="杭州龙井 (3.2km)"
-          >
-            杭州龙井
-          </button>
-          <button
-            onClick={() => loadPreset('miaofeng')}
-            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="北京妙峰山 (20.5km)"
-          >
-            北京妙峰山
-          </button>
-          <button
-            onClick={() => loadPreset('tianhuang')}
-            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="安吉天荒坪 (18km)"
-          >
-            安吉天荒坪
-          </button>
-          <button
-            onClick={() => loadPreset('balang')}
-            className="px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="巴朗山 (30km)"
-          >
-            巴朗山
-          </button>
-          <button
-            onClick={() => loadPreset('alpedhuez')}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-ios-blue text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="环法殿堂 Alpe d'Huez 21道拐 (13.8km)"
-          >
-            <Mountain className="w-3.5 h-3.5 text-ios-blue" />
-            <span>阿尔普迪埃</span>
-          </button>
-          <button
-            onClick={() => loadPreset('stelvio')}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-ios-blue text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="环意最高峰 Passo dello Stelvio 48弯 (24.3km)"
-          >
-            <Mountain className="w-3.5 h-3.5 text-ios-blue" />
-            <span>斯泰尔维奥</span>
-          </button>
-          <button
-            onClick={() => loadPreset('sacalobra')}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-ios-blue text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            title="马略卡骑行圣地 Sa Calobra (9.4km)"
-          >
-            <Mountain className="w-3.5 h-3.5 text-ios-blue" />
-            <span>卡洛布拉</span>
-          </button>
+          {[
+            { id: 'longjing', name: '杭州龙井', title: '杭州龙井 (3.2km)' },
+            { id: 'miaofeng', name: '北京妙峰山', title: '北京妙峰山 (20.5km)' },
+            { id: 'tianhuang', name: '安吉天荒坪', title: '安吉天荒坪 (18km)' },
+            { id: 'balang', name: '巴朗山', title: '巴朗山 (30km)' },
+            { id: 'alpedhuez', name: '阿尔普迪埃', title: "环法殿堂 Alpe d'Huez 21道拐 (13.8km)", isTour: true },
+            { id: 'stelvio', name: '斯泰尔维奥', title: '环意最高峰 Passo dello Stelvio 48弯 (24.3km)', isTour: true },
+            { id: 'sacalobra', name: '卡洛布拉', title: '马略卡骑行圣地 Sa Calobra (9.4km)', isTour: true },
+          ].map((m) => {
+            const isSelected = activeMountainPreset === m.id;
+            return (
+              <button
+                key={m.id}
+                onClick={() => loadPreset(m.id)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-semibold transition shadow-ios-sm apple-touch border ${
+                  isSelected
+                    ? 'bg-ios-blue text-white border-ios-blue shadow-md font-bold'
+                    : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
+                }`}
+                title={m.title}
+              >
+                {m.isTour && <Mountain className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-ios-blue'}`} />}
+                <span>{m.name}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-2 flex-1 max-w-xs">

@@ -291,92 +291,67 @@ export const MtbSuspensionTuner: React.FC = () => {
   ]);
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-12">
+    <div className="space-y-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-500/5 to-cyan-500/10 dark:from-amber-500/20 dark:via-slate-800/40 dark:to-cyan-500/20 border border-amber-500/20 p-6 backdrop-blur-md">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/30">
-              <Sliders className="w-7 h-7" />
+      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-amber-500/15" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-semibold mb-2">
+              <Sliders className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '山地全避震工程' : '山地全避震工程'}</span>
+              <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/20">PRO TUNER</span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                  {language === 'zh-TW'
-                    ? '山地車避震與 SAG 智能調校顧問'
-                    : '山地车避震与 SAG 智能调校顾问'}
-                </h1>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                  PRO TUNER
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
-                {language === 'zh-TW'
-                  ? '前叉氣壓/後膽彈簧磅數 · 下沉量 (SAG) 標尺推導 · 阻尼點位 · 槓桿比與氣室容積'
-                  : '前叉气压/后胆弹簧磅数 · 下沉量 (SAG) 标尺推导 · 阻尼点位 · 杠杆比与气室容积'}
-              </p>
-            </div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              {language === 'zh-TW'
+                ? '山地車避震與 SAG 智能調校顧問'
+                : '山地车避震与 SAG 智能调校顾问'}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+              {language === 'zh-TW'
+                ? '前叉氣壓/後膽彈簧磅數 · 下沉量 (SAG) 標尺推導 · 阻尼點位 · 槓桿比與氣室容積'
+                : '前叉气压/后胆弹簧磅数 · 下沉量 (SAG) 标尺推导 · 阻尼点位 · 杠杆比与气室容积'}
+            </p>
           </div>
 
-          {/* Connected Active Rider Indicator */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/70 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-slate-600 dark:text-slate-300">
-              {activeRider ? activeRider.name : 'Rider'}:
-            </span>
-            <span className="font-bold text-slate-900 dark:text-white">
-              {baseWeightKg} kg
-            </span>
-            <span className="text-slate-400">+ 装具 {gearWeightKg}kg</span>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Connected Active Rider Indicator */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-white/10 border border-black/[0.05] dark:border-white/10 text-xs font-mono shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-slate-600 dark:text-slate-300">
+                {activeRider ? activeRider.name : 'Rider'}:
+              </span>
+              <span className="font-bold text-slate-900 dark:text-white">
+                {baseWeightKg} kg
+              </span>
+              <span className="text-slate-400">+ 装具 {gearWeightKg}kg</span>
+            </div>
           </div>
         </div>
 
         {/* Quick Discipline Presets */}
-        <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1 flex items-center gap-1">
+        <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center gap-3">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
           </span>
-          <button
-            onClick={() => applyPreset('xc_race')}
-            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${
-              discipline === 'xc'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10'
-            }`}
-          >
-            XC 越野竞速 (120mm)
-          </button>
-          <button
-            onClick={() => applyPreset('trail_allround')}
-            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${
-              discipline === 'trail'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10'
-            }`}
-          >
-            Trail 全能林道 (140mm)
-          </button>
-          <button
-            onClick={() => applyPreset('enduro_race')}
-            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${
-              discipline === 'enduro'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10'
-            }`}
-          >
-            Enduro 耐力重装 (170mm)
-          </button>
-          <button
-            onClick={() => applyPreset('dh_park')}
-            className={`px-3 py-1 text-xs rounded-lg font-medium transition ${
-              discipline === 'dh'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10'
-            }`}
-          >
-            DH 速降弹簧后胆 (200mm)
-          </button>
+          <div className="w-full sm:max-w-2xl">
+            <IOSSegmentedControl
+              options={[
+                { value: 'xc_race', label: 'XC 竞速 (120mm)' },
+                { value: 'trail_allround', label: 'Trail 林道 (140mm)' },
+                { value: 'enduro_race', label: 'Enduro 耐力 (170mm)' },
+                { value: 'dh_park', label: 'DH 速降 (200mm)' },
+              ]}
+              value={
+                discipline === 'xc' ? 'xc_race' :
+                discipline === 'trail' ? 'trail_allround' :
+                discipline === 'enduro' ? 'enduro_race' : 'dh_park'
+              }
+              onChange={(val) => applyPreset(val as any)}
+              size="sm"
+            />
+          </div>
         </div>
       </div>
 

@@ -37,8 +37,11 @@ export const TubelessSealantCalculator: React.FC = () => {
   const [rideFrequency, setRideFrequency] = useState<'frequent' | 'occasional' | 'stored'>('frequent');
   const [sealantType, setSealantType] = useState<'latex' | 'endurance' | 'synthetic'>('latex');
 
+  const [activePreset, setActivePreset] = useState<'road28' | 'road32' | 'gravel40' | 'gravel45' | 'mtb225' | 'mtb24' | null>('road28');
+
   // Quick Preset Handlers
   const handlePreset = (preset: 'road28' | 'road32' | 'gravel40' | 'gravel45' | 'mtb225' | 'mtb24') => {
+    setActivePreset(preset);
     if (preset === 'road28') {
       setWheelStandard('700c');
       setTireCategory('road');
@@ -198,32 +201,19 @@ export const TubelessSealantCalculator: React.FC = () => {
             </p>
           </div>
 
-          {/* Quick Presets */}
-          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
-            <button
-              onClick={() => handlePreset('road28')}
-              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            >
-              {language === 'zh-TW' ? '公路 28c' : '公路 28c'}
-            </button>
-            <button
-              onClick={() => handlePreset('road32')}
-              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            >
-              {language === 'zh-TW' ? '全路況 32c' : '全路况 32c'}
-            </button>
-            <button
-              onClick={() => handlePreset('gravel40')}
-              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            >
-              Gravel 40c
-            </button>
-            <button
-              onClick={() => handlePreset('mtb225')}
-              className="px-3.5 py-1.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
-            >
-              {language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"'}
-            </button>
+          {/* Quick Presets Capsule */}
+          <div className="w-full sm:w-auto self-start sm:self-center">
+            <IOSSegmentedControl
+              options={[
+                { value: 'road28', label: language === 'zh-TW' ? '公路 28c' : '公路 28c' },
+                { value: 'road32', label: language === 'zh-TW' ? '全路況 32c' : '全路况 32c' },
+                { value: 'gravel40', label: 'Gravel 40c' },
+                { value: 'mtb225', label: language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"' },
+              ]}
+              value={activePreset || ''}
+              onChange={(val) => handlePreset(val as any)}
+              size="sm"
+            />
           </div>
         </div>
       </div>
@@ -326,7 +316,10 @@ export const TubelessSealantCalculator: React.FC = () => {
                   max={66}
                   step={1}
                   value={tireWidthMm}
-                  onChange={(e) => setTireWidthMm(Number(e.target.value))}
+                  onChange={(e) => {
+                    setTireWidthMm(Number(e.target.value));
+                    setActivePreset(null);
+                  }}
                   className="w-full accent-cyan-500 cursor-pointer"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400">
@@ -348,7 +341,10 @@ export const TubelessSealantCalculator: React.FC = () => {
                   max={35}
                   step={1}
                   value={innerRimWidthMm}
-                  onChange={(e) => setInnerRimWidthMm(Number(e.target.value))}
+                  onChange={(e) => {
+                    setInnerRimWidthMm(Number(e.target.value));
+                    setActivePreset(null);
+                  }}
                   className="w-full accent-cyan-500 cursor-pointer"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400">

@@ -58,8 +58,11 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     return steps;
   }, [cogsList]);
 
+  const [activeGruppo, setActiveGruppo] = useState<string>('compact');
+
   // Preset Gruppos
   const loadPresetGruppo = (key: string) => {
+    setActiveGruppo(key);
     if (key === 'compact') {
       setChainringType('double');
       setBigRing(50);
@@ -224,23 +227,20 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
         {/* Gruppo Presets */}
         <div>
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { id: 'compact', label: '公路 50/34T' },
-              { id: 'semi_compact', label: '公路 52/36T' },
-              { id: 'pro_racing', label: '竞速 54/40T' },
-              { id: 'sram_axs', label: 'AXS 48/35T' },
-              { id: 'gravel_1x', label: 'Gravel 40T' },
-            ].map((preset) => (
-              <button
-                key={preset.id}
-                onClick={() => loadPresetGruppo(preset.id)}
-                className="apple-touch px-3 py-1.5 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.1] text-slate-700 dark:text-slate-300 text-xs font-medium border border-black/[0.04] dark:border-white/[0.06] transition active:scale-95"
-              >
-                {preset.label}
-              </button>
-            ))}
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
+          <div className="w-full sm:max-w-2xl">
+            <IOSSegmentedControl
+              options={[
+                { value: 'compact', label: '公路 50/34T' },
+                { value: 'semi_compact', label: '公路 52/36T' },
+                { value: 'pro_racing', label: '竞速 54/40T' },
+                { value: 'sram_axs', label: 'AXS 48/35T' },
+                { value: 'gravel_1x', label: 'Gravel 40T' },
+              ]}
+              value={activeGruppo}
+              onChange={(val) => loadPresetGruppo(val)}
+              size="sm"
+            />
           </div>
         </div>
 

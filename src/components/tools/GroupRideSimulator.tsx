@@ -161,7 +161,10 @@ export const GroupRideSimulator: React.FC = () => {
   };
 
   // Switch to preset scenarios
+  const [activePreset, setActivePreset] = useState<'peloton_standard' | 'ttt_worldtour' | 'ttt_regional' | null>('peloton_standard');
+
   const applyPreset = (presetKey: 'peloton_standard' | 'ttt_worldtour' | 'ttt_regional') => {
+    setActivePreset(presetKey);
     if (presetKey === 'peloton_standard') {
       setMode('peloton');
       setDistanceKm(80);
@@ -410,7 +413,7 @@ export const GroupRideSimulator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-12">
+    <div className="space-y-6">
       {/* Top Mode Header Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-500/10 via-slate-500/5 to-purple-500/10 dark:from-cyan-500/20 dark:via-slate-800/40 dark:to-purple-500/20 border border-cyan-500/20 p-6 backdrop-blur-md">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -472,29 +475,33 @@ export const GroupRideSimulator: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-400">预设:</span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
+              {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
+            </span>
             {mode === 'ttt' ? (
-              <>
-                <button
-                  onClick={() => applyPreset('ttt_worldtour')}
-                  className="px-2.5 py-1 text-xs rounded-lg font-medium bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
-                >
-                  世巡赛 40km TTT (53 km/h)
-                </button>
-                <button
-                  onClick={() => applyPreset('ttt_regional')}
-                  className="px-2.5 py-1 text-xs rounded-lg font-medium bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
-                >
-                  俱乐部 25km TTT (46 km/h)
-                </button>
-              </>
+              <div className="w-full sm:w-auto">
+                <IOSSegmentedControl
+                  options={[
+                    { value: 'ttt_worldtour', label: '世巡赛 40km TTT' },
+                    { value: 'ttt_regional', label: '俱乐部 25km TTT' }
+                  ]}
+                  value={activePreset === 'ttt_worldtour' || activePreset === 'ttt_regional' ? activePreset : ''}
+                  onChange={(v) => applyPreset(v as any)}
+                  size="sm"
+                />
+              </div>
             ) : (
-              <button
-                onClick={() => applyPreset('peloton_standard')}
-                className="px-2.5 py-1 text-xs rounded-lg font-medium bg-white/60 dark:bg-white/5 hover:bg-white text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
-              >
-                标准大组团骑 80km (38 km/h)
-              </button>
+              <div className="w-full sm:w-auto">
+                <IOSSegmentedControl
+                  options={[
+                    { value: 'peloton_standard', label: '标准大组团骑 80km' }
+                  ]}
+                  value={activePreset === 'peloton_standard' ? 'peloton_standard' : ''}
+                  onChange={(v) => applyPreset(v as any)}
+                  size="sm"
+                />
+              </div>
             )}
           </div>
         </div>

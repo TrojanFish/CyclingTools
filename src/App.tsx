@@ -167,7 +167,7 @@ const MainAppContent: React.FC = () => {
             {currentToolId && currentToolMeta && (
               <div className="glass-panel relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-xs no-print">
                 {/* Left: Simplified Back Button & Breadcrumbs */}
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => setCurrentToolId(null)}
                     className="inline-flex items-center justify-center p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition active:scale-95 text-xs font-bold shrink-0"
@@ -175,38 +175,21 @@ const MainAppContent: React.FC = () => {
                     aria-label={t('backToHome')}
                   >
                     <ArrowLeft className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                    <span className="hidden sm:inline ml-1.5">{t('backToHome')}</span>
+                    <span className="hidden sm:inline ml-1.5">{language === 'zh-TW' ? '返回首頁' : '返回首页'}</span>
                   </button>
 
                   <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium ml-1">
-                    <span
-                      className="cursor-pointer hover:text-cyan-500 flex items-center gap-1 transition"
-                      onClick={() => setCurrentToolId(null)}
-                    >
-                      <Home className="w-3.5 h-3.5" />
-                      {t('navHome')}
-                    </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
                     <span>
                       {language === 'zh-TW' && currentToolMeta.categoryLabelTw
                         ? currentToolMeta.categoryLabelTw
                         : currentToolMeta.categoryLabel}
                     </span>
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
-                    <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[160px]">
+                    <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[200px]">
                       {language === 'zh-TW' && currentToolMeta?.titleTw
                         ? currentToolMeta.titleTw
                         : currentToolMeta?.title}
                     </span>
-                    {currentToolMeta?.hasStravaIntegration && (
-                      <span
-                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] text-[10px] font-bold border border-[#FC4C02]/20 shrink-0 ml-0.5"
-                        title={language === 'zh-TW' ? '支援 Strava 雲端數據連動' : '支持 Strava 云端数据联动'}
-                      >
-                        <StravaLogo className="w-2.5 h-2.5" />
-                        <span>Strava</span>
-                      </span>
-                    )}
                   </div>
                 </div>
 
