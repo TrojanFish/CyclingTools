@@ -32,10 +32,10 @@ interface PowerProfileRadarProps {
 }
 
 export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigateTool }) => {
-  const { profile, updateProfile } = useRiderProfile();
+  const { profile } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
-  const { isConnected: isStravaConnected, extractBestPowerPeaks, athlete: stravaAthlete } = useStrava();
+  const { isConnected: isStravaConnected, extractBestPowerPeaks } = useStrava();
   const isImperial = unitSystem === 'imperial';
 
   const [weightKg, setWeightKg] = useState<number>(profile.weightKg || 68);
@@ -111,26 +111,6 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         setP5m(peaks.p5m);
         setP20m(peaks.p20m);
         setActiveRiderPreset(null);
-
-        const updates: any = {};
-        if (stravaAthlete?.ftp) {
-          setFtpWatts(stravaAthlete.ftp);
-          updates.ftpWatts = stravaAthlete.ftp;
-        } else if (peaks.p20m) {
-          const estFtp = Math.round(peaks.p20m * 0.95);
-          setFtpWatts(estFtp);
-          updates.ftpWatts = estFtp;
-        }
-
-        if (stravaAthlete?.weight) {
-          const w = parseFloat(stravaAthlete.weight.toFixed(1));
-          setWeightKg(w);
-          updates.weightKg = w;
-        }
-
-        if (Object.keys(updates).length > 0) {
-          updateProfile(updates);
-        }
 
         showToast(
           language === 'zh-TW'

@@ -73,7 +73,6 @@ interface StravaContextType {
     bestActivityName?: string;
     sampleCount: number;
   } | null>;
-  syncAthleteBiometrics: () => Promise<{ ftp?: number; weight?: number; updated: boolean }>;
   clearCache: () => Promise<void>;
   updateSettings: (settings: Partial<StravaSyncSettings>) => void;
 }
@@ -186,20 +185,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         saveStoredTokenData(updated);
         return updated;
       });
-
-      // Auto sync FTP & weight if enabled
-      if (syncSettings.autoSyncFtpWeight) {
-        const updates: any = {};
-        if (latestAthlete.ftp && latestAthlete.ftp !== profile.ftpWatts) {
-          updates.ftpWatts = latestAthlete.ftp;
-        }
-        if (latestAthlete.weight && Math.abs(latestAthlete.weight - profile.weightKg) > 0.2) {
-          updates.weightKg = parseFloat(latestAthlete.weight.toFixed(1));
-        }
-        if (Object.keys(updates).length > 0) {
-          updateProfile(updates);
-        }
-      }
 
       // Auto sync bikes to Garage
       if (syncSettings.autoSyncBikes && latestAthlete.bikes && latestAthlete.bikes.length > 0) {
@@ -453,50 +438,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [activities, getActivityStreams, syncActivities, showToast]);
 
-  // Sync Athlete Biometrics (FTP & Weight) directly to global Rider Profile
-  const syncAthleteBiometrics = useCallback(async (): Promise<{ ftp?: number; weight?: number; updated: boolean }> => {
-    try {
-      const token = await getValidAccessToken();
-      if (!token) {
-        showToast('请先连接 Strava 账号以同步体征数据', 'warning');
-        return { updated: false };
-      }
-
-      showToast('正在向 Strava 云端拉取最新体征数据...', 'info');
-      const latestAthlete = await fetchAthleteProfile(token);
-      setTokenData(prev => {
-        if (!prev) return null;
-        const updated = { ...prev, athlete: latestAthlete };
-        saveStoredTokenData(updated);
-        return updated;
-      });
-
-      const updates: any = {};
-      if (latestAthlete.ftp) {
-        updates.ftpWatts = latestAthlete.ftp;
-      }
-      if (latestAthlete.weight) {
-        updates.weightKg = parseFloat(latestAthlete.weight.toFixed(1));
-      }
-
-      if (Object.keys(updates).length > 0) {
-        updateProfile(updates);
-        showToast(
-          `已成功同步 Strava 体征：${updates.ftpWatts ? `FTP ${updates.ftpWatts}W` : ''} ${updates.weightKg ? `体重 ${updates.weightKg}kg` : ''}！全站计算工具已实时响应。`,
-          'success'
-        );
-        return { ftp: latestAthlete.ftp, weight: latestAthlete.weight, updated: true };
-      } else {
-        showToast('Strava 账号中未设定公开的 FTP 或体重数据', 'info');
-        return { updated: false };
-      }
-    } catch (err: any) {
-      console.error('Failed to sync athlete biometrics:', err);
-      showToast(`同步 Strava 体征失败: ${err.message}`, 'error');
-      return { updated: false };
-    }
-  }, [updateProfile, showToast]);
-
   // Capture OAuth Code from URL on page load
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -564,7 +505,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       getStarredSegments,
       getSegmentDetails,
       extractBestPowerPeaks,
-      syncAthleteBiometrics,
       clearCache,
       updateSettings
     }),
@@ -587,7 +527,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       getStarredSegments,
       getSegmentDetails,
       extractBestPowerPeaks,
-      syncAthleteBiometrics,
       clearCache,
       updateSettings
     ]

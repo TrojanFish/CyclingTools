@@ -56,13 +56,11 @@ export interface StravaTokenData {
 }
 
 export interface StravaSyncSettings {
-  autoSyncFtpWeight: boolean;
   autoSyncBikes: boolean;
   syncDays: number;
 }
 
 export const DEFAULT_SYNC_SETTINGS: StravaSyncSettings = {
-  autoSyncFtpWeight: true,
   autoSyncBikes: true,
   syncDays: 90
 };

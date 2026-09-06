@@ -99,7 +99,6 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
     disconnect: disconnectStrava,
     clearCache: clearStravaCache,
     syncActivities: syncStravaActivities,
-    syncAthleteBiometrics: syncStravaBiometrics,
     updateSettings: updateStravaSettings
   } = useStrava();
 
@@ -110,16 +109,6 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
   const [clientSecretInput, setClientSecretInput] = useState(apiKeys?.clientSecret || '');
   const [showSecret, setShowSecret] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
-  const [isSyncingBiometrics, setIsSyncingBiometrics] = useState(false);
-
-  const handleSyncBiometrics = async () => {
-    setIsSyncingBiometrics(true);
-    try {
-      await syncStravaBiometrics();
-    } finally {
-      setIsSyncingBiometrics(false);
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -241,26 +230,11 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
             {/* Inset Group: Rider Physical & Bike Specs */}
             <div className="bg-white dark:bg-[#1C1C1E] p-4 sm:p-4.5 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] space-y-3.5 shadow-xs">
-              <div className="flex items-center justify-between pb-1 border-b border-black/[0.04] dark:border-white/[0.06]">
-                <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-ios-blue dark:text-ios-blue-dark" />
-                  <span className="text-xs font-semibold text-slate-900 dark:text-white">
-                    {language === 'zh-TW' ? '車手身體與心率生理基準' : '车手身体与心率生理基准'}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSyncBiometrics}
-                  disabled={isSyncingBiometrics}
-                  className="px-2.5 py-1 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-[11px] font-semibold border border-[#FC4C02]/25 flex items-center gap-1.5 transition apple-touch disabled:opacity-50"
-                  title="从 Strava 云端拉取最新 FTP 与体重数据并更新当前车手档案"
-                >
-                  <svg className={`w-3 h-3 fill-current ${isSyncingBiometrics ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
-                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
-                  </svg>
-                  <span>{isSyncingBiometrics ? '同步中...' : (language === 'zh-TW' ? '同步 Strava 體徵' : '同步 Strava 体征')}</span>
-                </button>
+              <div className="flex items-center gap-2 pb-1 border-b border-black/[0.04] dark:border-white/[0.06]">
+                <Activity className="w-4 h-4 text-ios-blue dark:text-ios-blue-dark" />
+                <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                  {language === 'zh-TW' ? '車手身體與心率生理基準' : '车手身体与心率生理基准'}
+                </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3.5">
@@ -893,27 +867,6 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     </div>
                   </div>
 
-                  {/* One-click Apply Biometrics to Full Site Profile */}
-                  <div className="p-3 rounded-xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                    <div className="text-xs">
-                      <span className="font-semibold text-slate-900 dark:text-white block">
-                        一键应用 Strava 体征至全站档案
-                      </span>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                        将云端 FTP ({athlete?.ftp ? `${athlete.ftp}W` : '--'}) 与体重 ({athlete?.weight ? `${athlete.weight}kg` : '--'}) 同步至当前车手，赋能全站动力学计算
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleSyncBiometrics}
-                      disabled={isSyncingBiometrics}
-                      className="apple-touch px-3.5 py-1.5 rounded-xl bg-[#FC4C02] hover:bg-[#e04300] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition active:scale-95 disabled:opacity-50 shrink-0 shadow-xs"
-                    >
-                      <Zap className="w-3.5 h-3.5" />
-                      <span>{isSyncingBiometrics ? '同步中...' : '同步 FTP 与体重'}</span>
-                    </button>
-                  </div>
-
                   {stravaLastSyncTime && (
                     <div className="text-[10px] text-slate-400 flex items-center justify-between pt-1">
                       <span>上次同步时间:</span>
@@ -931,19 +884,6 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                   <div className="space-y-2.5 text-xs divide-y divide-black/[0.04] dark:divide-white/[0.06]">
                     <label className="flex items-center justify-between pt-1 cursor-pointer">
-                      <div>
-                        <span className="text-slate-800 dark:text-slate-200 block font-medium">自动同步车手 FTP 与体重</span>
-                        <span className="text-[10px] text-slate-400">拉取 Strava 最新 FTP 与体重并更新到当前档案</span>
-                      </div>
-                      <input
-                        type="checkbox"
-                        checked={stravaSyncSettings.autoSyncFtpWeight}
-                        onChange={(e) => updateStravaSettings({ autoSyncFtpWeight: e.target.checked })}
-                        className="w-4 h-4 rounded accent-[#FC4C02] cursor-pointer"
-                      />
-                    </label>
-
-                    <label className="flex items-center justify-between pt-2 cursor-pointer">
                       <div>
                         <span className="text-slate-800 dark:text-slate-200 block font-medium">自动同步单车行驶里程到战车库</span>
                         <span className="text-[10px] text-slate-400">战车里程达标时联动提醒链条拉伸与外胎磨损</span>
