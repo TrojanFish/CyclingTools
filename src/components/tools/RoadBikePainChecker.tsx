@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, Download, CheckSquare, Square, Search, RotateCcw, Copy, Sparkles, PersonStanding, Shield, Hand, Disc, Footprints } from 'lucide-react';
+import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, CheckSquare, Square, Search, RotateCcw, Share2, Sparkles, PersonStanding, Shield, Hand, Disc, Footprints } from 'lucide-react';
 import { PAIN_AREAS, GENERAL_RECOVERY_TIPS } from '../../data/painCheckerData';
 import { BodyPainDiagram } from '../common/BodyPainDiagram';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generatePainCheckPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 
 const areaIconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -17,6 +19,10 @@ export const RoadBikePainChecker: React.FC = () => {
   const { showToast } = useToast();
   const [selectedAreaId, setSelectedAreaId] = useState<string>('knee');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [completedChecks, setCompletedChecks] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem('yolo_cycling_pain_checks');
@@ -71,49 +77,17 @@ export const RoadBikePainChecker: React.FC = () => {
   const totalChecks = activeArea.specificSelfCheck.length;
   const progressPct = Math.round((checkedCount / totalChecks) * 100);
 
-  // Export Guide
-  const exportActionPlan = () => {
-    const text = `【SoloRiderTools - 骑行不适自查与调车方案】
-自查部位: ${activeArea.title}
-排查进度: ${checkedCount}/${totalChecks} 项已核实 (${progressPct}%)
-生成日期: ${new Date().toLocaleString()}
-------------------------------------------------
-【主要典型症状】
-${activeArea.symptoms.map(s => `- ${s}`).join('\n')}
-
-【针对性自查与调车排查清单】
-${activeArea.specificSelfCheck.map((sc, i) => {
-  const isDone = completedChecks[`${selectedAreaId}_${i}`];
-  return `[${isDone ? '已排查 √' : '待核验 □'}] ${i + 1}. ${sc}`;
-}).join('\n')}
-
-【根本成因分析】
-${activeArea.commonCauses.map(c => `[${c.category}]\n${c.details.map(d => `  * ${d}`).join('\n')}`).join('\n\n')}
-
-------------------------------------------------
-【通用运动康复与预防指南】
-${GENERAL_RECOVERY_TIPS.map(tip => `* ${tip.title}: ${tip.content}`).join('\n')}
-`;
-
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `骑行疼痛排查指南_${activeArea.title.split(' ')[0]}_${new Date().toISOString().slice(0,10)}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('排查调车指南文件已成功导出！', 'success');
-  };
-
-  const copyActionPlan = () => {
-    const text = `【SoloRiderTools 骑行自查方案 - ${activeArea.title}】
-排查进度: ${checkedCount}/${totalChecks} 项已核实 (${progressPct}%)
-【针对性调车清单】:
-${activeArea.specificSelfCheck.map((sc, i) => `${i + 1}. ${sc}`).join('\n')}
-【主要成因】:
-${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).join('\n')}`;
-    navigator.clipboard.writeText(text);
-    showToast('排查方案已复制到剪贴板！', 'success');
+  const handleGeneratePoster = () => {
+    const url = generatePainCheckPoster({
+      areaTitle: activeArea.title,
+      checkedCount,
+      totalChecks,
+      progressPct,
+      causes: activeArea.commonCauses,
+      checklist: activeArea.specificSelfCheck
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -134,18 +108,12 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
           </div>
           <div className="flex items-center gap-2.5">
             <button
-              onClick={copyActionPlan}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 rounded-xl border border-black/[0.05] dark:border-white/[0.08] text-xs font-semibold transition shadow-ios-sm active:scale-95"
+              onClick={handleGeneratePoster}
+              className="apple-touch flex items-center gap-1.5 px-4 py-2 bg-ios-purple/15 hover:bg-ios-purple/25 text-ios-purple dark:text-purple-300 rounded-xl font-semibold text-xs border border-ios-purple/30 transition shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+              title="生成针对性调车自纠处方海报卡片"
             >
-              <Copy className="w-3.5 h-3.5" />
-              复制清单
-            </button>
-            <button
-              onClick={exportActionPlan}
-              className="apple-touch flex items-center gap-2 px-4 py-2 bg-ios-blue hover:opacity-90 text-white rounded-xl font-semibold text-xs transition shadow-ios-sm active:scale-95"
-            >
-              <Download className="w-4 h-4" />
-              导出指南
+              <Share2 className="w-3.5 h-3.5" />
+              <span>生成自诊处方卡</span>
             </button>
           </div>
         </div>
@@ -331,6 +299,15 @@ ${activeArea.commonCauses.map(c => `- ${c.category}: ${c.details.join('; ')}`).j
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title="骑行疼痛自诊处方卡"
+        downloadFileName={`SoloRider_疼痛自诊_${activeArea.title.split(' ')[0]}.png`}
+      />
     </div>
   );
 };

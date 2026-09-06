@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Cog, Gauge, Info, Zap, AlertTriangle, ArrowUpDown, Layers, Copy, BarChart2 } from 'lucide-react';
+import { Cog, Gauge, Info, Zap, AlertTriangle, ArrowUpDown, Layers, Share2, BarChart2 } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateGearSpeedPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
@@ -19,6 +21,10 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
   const [cadenceRpm, setCadenceRpm] = useState<number>(90);
   const [tireCircumferenceMm, setTireCircumferenceMm] = useState<number>(2136); // 700x28c
   const [activeTab, setActiveTab] = useState<'matrix' | 'cadence_table' | 'chart'>('matrix');
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   // Tire circumference presets
   const TIRE_PRESETS = [
@@ -171,15 +177,25 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     };
   }, [bigRing, smallRing, chainringType, cogsList, tireCircumferenceMm, isImperial]);
 
-  const copyGearMatrix = () => {
+  const handleGeneratePoster = () => {
     const unitStr = isImperial ? 'mph' : 'km/h';
     const maxKmh = speedMatrix[0]?.row[0]?.speedKmh || 0;
     const maxSpd = isImperial ? (maxKmh * 0.621371).toFixed(1) : maxKmh;
     const minKmh = speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.speedKmh || 0;
     const minSpd = isImperial ? (minKmh * 0.621371).toFixed(1) : minKmh;
-    const text = `SoloRiderTools 齿比计算报告 (${chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`} + ${cogsStr} @ ${cadenceRpm} RPM):\n- 最大极速: ${maxSpd} ${unitStr} (齿比: ${speedMatrix[0]?.row[0]?.ratio})\n- 最小爬坡: ${minSpd} ${unitStr} (齿比: ${speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio})`;
-    navigator.clipboard.writeText(text);
-    showToast('齿比与速度矩阵报告已复制到剪贴板！', 'success');
+
+    const url = generateGearSpeedPoster({
+      chainringStr: chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`,
+      cogsStr,
+      cadenceRpm,
+      maxSpeed: maxSpd,
+      maxRatio: speedMatrix[0]?.row[0]?.ratio || 0,
+      minSpeed: minSpd,
+      minRatio: speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio || 0,
+      unitStr
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -201,11 +217,12 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
-              onClick={copyGearMatrix}
-              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95 shrink-0"
+              onClick={handleGeneratePoster}
+              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/20 hover:bg-ios-blue/20 text-ios-blue text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm active:scale-95 shrink-0"
+              title="生成齿比与踏频速度海报卡片"
             >
-              <Copy className="w-3.5 h-3.5 text-ios-blue" />
-              <span>复制齿比表</span>
+              <Share2 className="w-3.5 h-3.5 text-ios-blue" />
+              <span>生成齿比海报</span>
             </button>
 
             {/* Apple View Tab Switchers */}
@@ -468,6 +485,15 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title="传动齿比与极速战报"
+        downloadFileName={`SoloRider_齿比极速_${chainringType === 'double' ? `${bigRing}-${smallRing}T` : `${bigRing}T`}.png`}
+      />
     </div>
   );
 };

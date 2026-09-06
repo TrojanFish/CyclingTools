@@ -32,6 +32,8 @@ import {
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateRoadbookPoster } from '../../utils/shareCardGenerators';
 import { useStrava } from '../../context/StravaContext';
 import { StravaRouteRecord } from '../../utils/indexedDb';
 import { useToast } from '../../context/ToastContext';
@@ -85,6 +87,10 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
 
   // Currently selected route for detail preview
   const [selectedRouteId, setSelectedRouteId] = useState<string>(ROADBOOK_DATABASE[0].id);
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   // Sync personal routes to localStorage
   useEffect(() => {
@@ -626,6 +632,24 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
     }
   };
 
+  const handleGeneratePoster = () => {
+    if (!activeRoute) return;
+    const url = generateRoadbookPoster({
+      routeName: activeRoute.name,
+      sourceCode: activeRoute.sourceCode,
+      distanceKm: activeRoute.distanceKm,
+      elevationGainM: activeRoute.elevationGainM,
+      maxAltitudeM: activeRoute.maxAltitudeM,
+      avgGradePct: activeRoute.avgGradePct,
+      sceneryRating: activeRoute.sceneryRating,
+      roadCondition: activeRoute.roadCondition,
+      highlights: activeRoute.highlights || [],
+      description: activeRoute.description
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -669,6 +693,16 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
             </label>
+
+            <button
+              type="button"
+              onClick={handleGeneratePoster}
+              className="flex items-center gap-1.5 sm:gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-2xl font-bold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              title="生成社交打卡路书海报"
+            >
+              <Share2 className="w-4 h-4 text-ios-mint" />
+              <span>{language === 'zh-TW' ? '生成路書海報' : '生成路书海报'}</span>
+            </button>
 
             <button
               onClick={handleExportGpx}
@@ -1234,6 +1268,15 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
         </div>
       )}
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title={language === 'zh-TW' ? '經典路書打卡海報' : '经典路书打卡海报'}
+        downloadFileName={`SoloRider_经典路书_${activeRoute?.name?.replace(/\s+/g, '_') || 'route'}.png`}
+      />
     </div>
   );
 };

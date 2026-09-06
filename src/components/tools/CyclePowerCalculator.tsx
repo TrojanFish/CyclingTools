@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Copy, Award, Sliders, ChevronDown, Disc, AlertTriangle } from 'lucide-react';
+import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Share2, Award, Sliders, ChevronDown, Disc, AlertTriangle } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -16,6 +16,8 @@ import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateCyclePowerPoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -42,6 +44,10 @@ export const CyclePowerCalculator: React.FC = () => {
   const [powerInput, setPowerInput] = useState<number>(profile.ftpWatts || 220);
   const [targetSpeedKmh, setTargetSpeedKmh] = useState<number>(35);
   const [targetWkg, setTargetWkg] = useState<number>(3.5);
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [riderWeight, setRiderWeight] = useState<number>(profile.weightKg || 68);
   const [bikeWeight, setBikeWeight] = useState<number>(profile.bikeWeightKg || 8.5);
@@ -290,10 +296,21 @@ export const CyclePowerCalculator: React.FC = () => {
     };
   }, [bikeWeight, grade, airDensityRho, customCda, hasHeadShrug, yawAngleDeg, customCrr, isImperial]);
 
-  const copyFullReport = () => {
-    const text = `SoloRiderTools 科学骑行功率与推重比报告:\n- 输出功率: ${result.power} W\n- 推重比: ${result.wkg} W/kg (${result.levelTitle})\n- 巡航车速: ${result.speedKmh} km/h\n- 坡度: ${grade}% | 空气密度: ${airDensityRho} kg/m³\n- 能耗代谢: ${result.kcalPerHour} kcal/h\n- 爬坡 VAM: ${result.vam} m/h (预计 ${climbElevationGainM}m 耗时: ${result.climbTimeMinutes} 分钟)`;
-    navigator.clipboard.writeText(text);
-    showToast('完整功率与能力评估报告已复制到剪贴板！', 'success');
+  const handleGeneratePoster = () => {
+    const url = generateCyclePowerPoster({
+      speedKmh: result.speedKmh,
+      power: result.power,
+      wkg: result.wkg,
+      levelTitle: result.levelTitle,
+      grade,
+      kcalPerHour: result.kcalPerHour,
+      vam: result.vam,
+      aeroPct: result.aeroPct,
+      gravityPct: result.gravityPct,
+      rollingPct: result.rollingPct
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -319,11 +336,12 @@ export const CyclePowerCalculator: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              onClick={copyFullReport}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
+              onClick={handleGeneratePoster}
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/20 hover:bg-ios-blue/20 text-ios-blue text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+              title="生成单车功率与速度动力学海报卡片"
             >
-              <Copy className="w-3.5 h-3.5" />
-              {language === 'zh-TW' ? '複製報告' : '复制报告'}
+              <Share2 className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '生成動力海報' : '生成动力海报'}</span>
             </button>
 
             {/* Apple Mode Segmented Control */}
@@ -877,6 +895,15 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title={language === 'zh-TW' ? '騎行功率與速度戰報' : '骑行功率与速度战报'}
+        downloadFileName={`SoloRider_功率速度_${result.speedKmh}kmh_${result.power}W.png`}
+      />
     </div>
   );
 };

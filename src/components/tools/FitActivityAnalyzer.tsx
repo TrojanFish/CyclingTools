@@ -26,7 +26,8 @@ import {
   Sliders,
   ArrowRight,
   Dumbbell,
-  X
+  X,
+  Share2
 } from 'lucide-react';
 import { PoweredByStravaBadge } from '../common/PoweredByStravaBadge';
 import { WORKOUT_TEMPLATES, WorkoutTemplate, WorkoutSegment } from './WorkoutBuilder';
@@ -49,6 +50,8 @@ import { useToast } from '../../context/ToastContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateFitActivityPoster } from '../../utils/shareCardGenerators';
 import {
   ActivityAnalysis,
   ActivityPoint,
@@ -906,6 +909,39 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     return notes;
   }, [analysis, language]);
 
+  // Social Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+
+  const handleGeneratePoster = () => {
+    if (!analysis) {
+      showToast('请先加载或上传码表记录文件', 'warning');
+      return;
+    }
+    try {
+      const startDate = analysis.points?.[0]?.timestamp ? new Date(analysis.points[0].timestamp).toLocaleDateString() : new Date().toLocaleDateString();
+      const url = generateFitActivityPoster({
+        activityName: analysis.fileName?.replace(/\.[^/.]+$/, '') || '骑行活动深度复盘',
+        dateStr: startDate,
+        distanceKm: analysis.totalDistanceKm,
+        durationStr: formatDuration(analysis.movingTimeSec),
+        normalizedPower: analysis.normalizedPower,
+        avgPower: analysis.avgPower,
+        intensityFactor: analysis.intensityFactor,
+        tss: analysis.tss,
+        elevationGainM: analysis.elevationGainM,
+        maxWatts: analysis.maxPower || 0,
+        avgHeartRate: analysis.avgHeartRate || 0,
+        calories: analysis.caloriesKcal || analysis.workKj || 0,
+        powerZones: analysis.timeInPowerZones
+      });
+      setSharePosterUrl(url);
+      setIsShareModalOpen(true);
+    } catch (e) {
+      showToast('海报生成失败，请重试', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Banner */}
@@ -926,6 +962,14 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           </div>
 
           <div className="flex items-center gap-2.5 self-start sm:self-center shrink-0">
+            <button
+              onClick={handleGeneratePoster}
+              className="px-4 py-2.5 rounded-full bg-gradient-to-r from-ios-red to-orange-500 hover:opacity-90 text-white font-semibold text-xs shadow-ios-sm apple-touch transition flex items-center gap-1.5"
+              title="生成码表活动深度复盘长图海报"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>{language === 'zh-TW' ? '生成復盤海報' : '生成复盘海报'}</span>
+            </button>
             <button
               onClick={() => window.print()}
               className="px-4 py-2.5 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs apple-touch transition flex items-center gap-1.5"
@@ -2285,6 +2329,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           </div>
         </div>
       )}
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        posterUrl={sharePosterUrl}
+        fileName={`${analysis?.fileName?.replace(/\.[^/.]+$/, '') || 'Ride'}_复盘海报.png`}
+        title="FIT 码表深度复盘海报"
+      />
     </div>
   );
 };

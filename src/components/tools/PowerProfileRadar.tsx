@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Copy, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer, Dumbbell, ArrowRight } from 'lucide-react';
+import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Share2, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer, Dumbbell, ArrowRight } from 'lucide-react';
 import { Radar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -13,6 +13,8 @@ import {
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generatePowerProfilePoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -57,6 +59,10 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   // Smart Paste Modal State
   const [isPasteModalOpen, setIsPasteModalOpen] = useState<boolean>(false);
   const [pasteText, setPasteText] = useState<string>('');
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [activeRiderPreset, setActiveRiderPreset] = useState<'sprinter' | 'climber' | 'rouleur' | 'allrounder' | null>('allrounder');
 
@@ -322,14 +328,25 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
     };
   }, [analytics]);
 
-  const copyReport = () => {
-    const text = `SoloRiderTools 功率能力雷达与极化训练规划:
-- 车手类型画像: ${analytics.phenotype}
-- 核心输出: 5秒 ${p5s}W (${analytics.w5s}W/kg) | 1分 ${p1m}W (${analytics.w1m}W/kg) | 5分 ${p5m}W (${analytics.w5m}W/kg) | 20分 ${p20m}W (${analytics.w20m}W/kg)
-- 甜点区间 (Sweet Spot): ${analytics.sweetSpotMin} - ${analytics.sweetSpotMax} W
-- Seiler 80/20 极化低强度区间: < ${Math.round(ftpWatts * 0.77)} W`;
-    navigator.clipboard.writeText(text);
-    showToast('能力雷达与极化训练报告已复制到剪贴板！', 'success');
+  const handleGeneratePoster = () => {
+    const url = generatePowerProfilePoster({
+      phenotype: analytics.phenotype,
+      phenotypeDesc: analytics.phenotypeDesc,
+      p5s,
+      w5s: analytics.w5s,
+      p1m,
+      w1m: analytics.w1m,
+      p5m,
+      w5m: analytics.w5m,
+      p20m,
+      w20m: analytics.w20m,
+      ftpWatts,
+      weightKg,
+      sweetSpotMin: analytics.sweetSpotMin,
+      sweetSpotMax: analytics.sweetSpotMax
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -381,11 +398,12 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             </button>
 
             <button
-              onClick={copyReport}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+              onClick={handleGeneratePoster}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-ios-red/10 hover:bg-ios-red/20 text-ios-red rounded-2xl text-xs font-semibold border border-ios-red/25 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              title="生成高画质六维雷达与推重比海报卡片"
             >
-              <Copy className="w-3.5 h-3.5 text-ios-blue" />
-              <span>{language === 'zh-TW' ? '複製報告' : '复制报告'}</span>
+              <Share2 className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '生成戰報海報' : '生成战报海报'}</span>
             </button>
           </div>
         </div>
@@ -767,6 +785,15 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title={language === 'zh-TW' ? '車手能力雷達戰報' : '车手能力雷达战报'}
+        downloadFileName={`SoloRider_功率能力雷达_${analytics.phenotype}.png`}
+      />
     </div>
   );
 };

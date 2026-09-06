@@ -1,15 +1,21 @@
 import React, { useState, useMemo } from 'react';
-import { Link, CheckCircle2, AlertTriangle, Info, Copy, Settings, ArrowRight, ShieldCheck, Zap, Lightbulb } from 'lucide-react';
+import { Link, CheckCircle2, AlertTriangle, Info, Share2, Settings, ArrowRight, ShieldCheck, Zap, Lightbulb } from 'lucide-react';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSMetricTile } from '../common/IOSCard';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateChainLengthPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 export const ChainLengthCalculator: React.FC = () => {
   const { showToast } = useToast();
   const { language } = useLanguageAndUnit();
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [chainstayLengthMm, setChainstayLengthMm] = useState<number>(410);
   const [bigRing, setBigRing] = useState<number>(50);
@@ -117,10 +123,19 @@ export const ChainLengthCalculator: React.FC = () => {
     };
   }, [chainstayLengthMm, chainstayGrowthMm, isFullSuspension, bigRing, smallRing, isSingleRing, bigCog, smallCog, pulleyTeeth]);
 
-  const copyReport = () => {
-    const text = `SoloRiderTools 链条长度与传动计算报告:\n- 后下叉 RC: ${chainstayLengthMm} mm\n- 传动搭配: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} + ${smallCog}-${bigCog}T 飞轮\n- 推荐链条截取节数: ${result.recommendedLinks} 节 (含魔术扣)\n- 链条总长: ${result.chainLengthInches} 英寸\n- 传动总齿容量需求: ${result.requiredCapacity}T (推荐 ${result.rearDerailleurRecommendation})`;
-    navigator.clipboard.writeText(text);
-    showToast('链条长度计算报告已复制到剪贴板！', 'success');
+  const handleGeneratePoster = () => {
+    const url = generateChainLengthPoster({
+      chainstayMm: chainstayLengthMm,
+      frontRings: isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`,
+      rearCogs: `${smallCog}-${bigCog}T`,
+      recommendedLinks: result.recommendedLinks,
+      chainLengthInches: parseFloat(result.chainLengthInches) || 0,
+      requiredCapacity: result.requiredCapacity,
+      derailleurRecommendation: result.rearDerailleurRecommendation,
+      isFullSuspension
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -141,11 +156,12 @@ export const ChainLengthCalculator: React.FC = () => {
           </div>
 
           <button
-            onClick={copyReport}
-            className="apple-touch flex items-center gap-1.5 px-3.5 py-2 bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition self-start md:self-auto shadow-ios-sm active:scale-95"
+            onClick={handleGeneratePoster}
+            className="apple-touch flex items-center gap-1.5 px-3.5 py-2 bg-ios-blue/10 hover:bg-ios-blue/20 dark:bg-ios-blue/20 text-ios-blue rounded-xl text-xs font-semibold border border-ios-blue/25 transition self-start md:self-auto shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+            title="生成截链节数与后拨容量规范海报"
           >
-            <Copy className="w-3.5 h-3.5" />
-            复制报告
+            <Share2 className="w-3.5 h-3.5" />
+            <span>生成截链规范卡</span>
           </button>
         </div>
       </div>
@@ -435,6 +451,15 @@ export const ChainLengthCalculator: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title="技师截链规范卡"
+        downloadFileName={`SoloRider_截链规范_${result.recommendedLinks}节.png`}
+      />
     </div>
   );
 };

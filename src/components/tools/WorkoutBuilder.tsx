@@ -29,6 +29,8 @@ import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { Tooltip } from '../common/Tooltip';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateWorkoutPoster } from '../../utils/shareCardGenerators';
 
 export type SegmentType = 'warmup' | 'steady' | 'interval' | 'cooldown' | 'ramp';
 
@@ -195,6 +197,11 @@ export const WorkoutBuilder: React.FC = () => {
   const [riderWeightKg, setRiderWeightKg] = useState<number>(profile.weightKg || 68);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('ronnestad_30_15');
   const [workoutTitle, setWorkoutTitle] = useState<string>('Rønnestad 30/15s 微间歇课表');
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+
   const [segments, setSegments] = useState<WorkoutSegment[]>(() => {
     return JSON.parse(JSON.stringify(WORKOUT_TEMPLATES[0].segments));
   });
@@ -445,10 +452,56 @@ export const WorkoutBuilder: React.FC = () => {
     showToast(`已成功下载 ${cleanFileName}.${ext} 文件！`, 'success');
   };
 
-  const handleCopyCode = () => {
-    const content = exportFormat === 'zwo' ? zwoXmlContent : mrcContent;
-    navigator.clipboard.writeText(content);
-    showToast(`课表 ${exportFormat.toUpperCase()} 源码已复制到剪贴板！`, 'success');
+  const handleGeneratePoster = () => {
+    const formattedSegments: Array<{ name: string; durationSec: number; powerPct: number; cadenceRpm?: number }> = [];
+    segments.forEach(seg => {
+      if (seg.type === 'interval' && seg.repeatCount && seg.onDurationSec && seg.offDurationSec) {
+        for (let i = 1; i <= Math.min(seg.repeatCount, 3); i++) {
+          formattedSegments.push({
+            name: `${seg.name} (#${i} 爆发)`,
+            durationSec: seg.onDurationSec,
+            powerPct: Math.round((seg.onPowerPct || 1.0) * 100),
+            cadenceRpm: seg.cadenceRpm
+          });
+          formattedSegments.push({
+            name: `${seg.name} (#${i} 间歇)`,
+            durationSec: seg.offDurationSec,
+            powerPct: Math.round((seg.offPowerPct || 0.5) * 100),
+            cadenceRpm: seg.cadenceRpm
+          });
+        }
+        if (seg.repeatCount > 3) {
+          formattedSegments.push({
+            name: `... 循环重复剩余 ${seg.repeatCount - 3} 组`,
+            durationSec: (seg.onDurationSec + seg.offDurationSec) * (seg.repeatCount - 3),
+            powerPct: Math.round((seg.onPowerPct || 1.0) * 100)
+          });
+        }
+      } else {
+        formattedSegments.push({
+          name: seg.name,
+          durationSec: seg.durationSec || 300,
+          powerPct: Math.round(((seg.powerStartPct + seg.powerEndPct) / 2) * 100),
+          cadenceRpm: seg.cadenceRpm
+        });
+      }
+    });
+
+    const activeTmpl = WORKOUT_TEMPLATES.find(t => t.id === selectedTemplateId);
+    const desc = activeTmpl?.description || '根据生理动力学与代谢功率阶梯科学定制的间歇训练课表。';
+
+    const url = generateWorkoutPoster({
+      workoutTitle,
+      ftpWatts,
+      totalDurationStr: workoutMetrics.formattedDuration,
+      tss: workoutMetrics.tss,
+      intensityFactor: workoutMetrics.ifFactor,
+      calories: Math.round(workoutMetrics.totalKj * 1.05),
+      description: desc,
+      segments: formattedSegments
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -470,11 +523,21 @@ export const WorkoutBuilder: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={handleGeneratePoster}
+              className="apple-touch px-3.5 py-2.5 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200/80 dark:border-white/10 shadow-ios-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0"
+              title="生成社交分享课表海报"
+            >
+              <Share2 className="w-4 h-4 text-ios-red" />
+              <span>生成课表海报</span>
+            </button>
+
             <button
               type="button"
               onClick={() => setExportModalOpen(true)}
-              className="apple-touch px-4 py-2.5 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
+              className="apple-touch px-4 py-2.5 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition whitespace-nowrap shrink-0"
             >
               <Download className="w-4 h-4" />
               <span>导出课表 (ZWO / MRC)</span>
@@ -937,11 +1000,12 @@ export const WorkoutBuilder: React.FC = () => {
             <div className="flex flex-wrap items-center justify-end gap-2.5 pt-2">
               <button
                 type="button"
-                onClick={handleCopyCode}
+                onClick={handleGeneratePoster}
                 className="apple-touch px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition"
+                title="生成间歇结构课表海报卡片"
               >
-                <Copy className="w-3.5 h-3.5" />
-                <span>复制代码</span>
+                <Share2 className="w-3.5 h-3.5 text-ios-red" />
+                <span>生成课表海报</span>
               </button>
 
               <button
@@ -956,6 +1020,15 @@ export const WorkoutBuilder: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title="科学间歇训练课表"
+        downloadFileName={`SoloRider_训练课表_${workoutTitle.replace(/\s+/g, '_')}.png`}
+      />
     </div>
   );
 };

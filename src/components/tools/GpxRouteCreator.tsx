@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { MapPin, Mountain, Download, Upload, RefreshCw, Navigation, Play, Plus, Trash2, Search, ArrowRightLeft, ArrowUp, ArrowDown, FileCode, CheckCircle2 } from 'lucide-react';
+import { MapPin, Mountain, Download, Upload, RefreshCw, Navigation, Play, Plus, Trash2, Search, ArrowRightLeft, ArrowUp, ArrowDown, FileCode, CheckCircle2, Share2 } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { useToast } from '../../context/ToastContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateRoadbookPoster } from '../../utils/shareCardGenerators';
 
 interface Waypoint {
   id: string;
@@ -25,6 +27,10 @@ export const GpxRouteCreator: React.FC = () => {
 
   const [waypoints, setWaypoints] = useState<Waypoint[]>(ZHEJIANG_XINGZHE_ROUTES[0].waypoints);
   const [selectedPresetId, setSelectedPresetId] = useState<string>(ZHEJIANG_XINGZHE_ROUTES[0].id);
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -341,6 +347,35 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
     showToast('GPX 路书已生成并下载！', 'success');
   };
 
+  // Generate Social Share Poster
+  const handleGeneratePoster = () => {
+    try {
+      const maxAlt = waypoints.reduce((max, w) => Math.max(max, w.elevation), 0);
+      const avgGrade = routeStats.totalDistKm > 0 ? parseFloat(((routeStats.totalClimbM / (routeStats.totalDistKm * 1000)) * 100).toFixed(1)) : 0;
+      const url = generateRoadbookPoster({
+        routeName: routeName || '自制航迹路书',
+        sourceCode: 'GPX ROUTE',
+        distanceKm: routeStats.totalDistKm,
+        elevationGainM: routeStats.totalClimbM,
+        maxAltitudeM: maxAlt,
+        avgGradePct: avgGrade,
+        sceneryRating: 5,
+        roadCondition: routeStats.totalDistKm > 80 ? '进阶耐力路线' : '优质骑行绿道',
+        highlights: [
+          `规划航点 ${waypoints.length} 个`,
+          `累计爬升 +${routeStats.totalClimbM}m`,
+          `最高海拔标高 ${maxAlt}m`,
+          'GIS拓扑校准航迹'
+        ],
+        description: `包含 ${waypoints.length} 个核心航迹点，起止于 ${waypoints[0]?.name || '起点'} 至 ${waypoints[waypoints.length - 1]?.name || '终点'}。`
+      });
+      setSharePosterUrl(url);
+      setIsShareModalOpen(true);
+    } catch (e) {
+      showToast('海报生成失败，请重试', 'error');
+    }
+  };
+
   // Waypoint operations
   const deleteWaypoint = (id: string) => {
     setWaypoints(prev => prev.filter(w => w.id !== id));
@@ -378,6 +413,14 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+            <button
+              onClick={handleGeneratePoster}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-ios-mint to-teal-500 hover:opacity-90 text-white rounded-full font-semibold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              title="生成航迹长图海报"
+            >
+              <Share2 className="w-3.5 h-3.5 shrink-0" />
+              <span>生成航迹海报</span>
+            </button>
             <label className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs apple-touch transition whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
               <span>导入 GPX</span>
@@ -625,6 +668,15 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        posterUrl={sharePosterUrl}
+        fileName={`${routeName || 'GPX_Route'}_路书海报.png`}
+        title="GPX 航迹路书海报"
+      />
     </div>
   );
 };

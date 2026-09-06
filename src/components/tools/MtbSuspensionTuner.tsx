@@ -15,13 +15,16 @@ import {
   Zap,
   Layers,
   Wrench,
-  Compass
+  Compass,
+  Share2
 } from 'lucide-react';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateSuspensionPoster } from '../../utils/shareCardGenerators';
 
 export const MtbSuspensionTuner: React.FC = () => {
   const { language, unitSystem } = useLanguageAndUnit();
@@ -290,6 +293,35 @@ export const MtbSuspensionTuner: React.FC = () => {
     measuredShockSagMm
   ]);
 
+  // Social Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+
+  const handleGeneratePoster = async () => {
+    try {
+      const url = await generateSuspensionPoster({
+        riderName: activeRider?.name || 'Rider',
+        totalWeightKg: Math.round(totalRiderWeightKg * 10) / 10,
+        discipline: discipline.toUpperCase() + ' 越野',
+        forkModel: forkBrand.toUpperCase() + ' ' + forkStanchionMm + 'mm',
+        forkTravel: forkTravelMm,
+        forkPsi: calc.finalForkPsi,
+        forkSagPct: calc.targetForkSagPct,
+        forkLsr: calc.reboundClicksOut,
+        forkLsc: calc.lscClicksOut,
+        shockType: shockType,
+        shockTravel: frameRearTravelMm,
+        shockPsiOrSpring: shockType === 'air' ? `${calc.finalShockPsi} PSI` : `${calc.closestSpringRate} lbs/in`,
+        shockSagPct: calc.targetShockSagPct,
+        shockRebound: calc.shockReboundClicks
+      });
+      setSharePosterUrl(url);
+      setIsShareModalOpen(true);
+    } catch (e) {
+      showToast('海报生成失败，请重试', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Banner */}
@@ -315,6 +347,15 @@ export const MtbSuspensionTuner: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={handleGeneratePoster}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-ios-blue to-indigo-600 hover:opacity-90 text-white rounded-full font-semibold text-xs transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              title="生成避震设定卡"
+            >
+              <Share2 className="w-3.5 h-3.5 shrink-0" />
+              <span>生成设定卡</span>
+            </button>
+
             {/* Connected Active Rider Indicator */}
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-white/10 border border-black/[0.05] dark:border-white/10 text-xs font-mono shadow-2xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -1046,6 +1087,15 @@ export const MtbSuspensionTuner: React.FC = () => {
           </div>
         </div>
       </IOSCard>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        posterUrl={sharePosterUrl}
+        fileName={`避震调校设定卡_${discipline.toUpperCase()}_${forkBrand}.png`}
+        title="山地车避震设定海报"
+      />
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Gauge, Info, AlertTriangle, Layers, Copy, Check, User } from 'lucide-react';
+import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User } from 'lucide-react';
 import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/tirePressureConfig';
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateTirePressurePoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -14,6 +16,10 @@ export const TirePressureCalculator: React.FC = () => {
   const { profile } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const isImperial = unitSystem === 'imperial';
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [bikeType, setBikeType] = useState<'road' | 'gravel' | 'mtb'>('road');
   const [riderWeight, setRiderWeight] = useState<number>(profile.weightKg || 68);
@@ -143,10 +149,22 @@ export const TirePressureCalculator: React.FC = () => {
     };
   }, [bikeType, totalSystemWeight, tireSetup, nominalWidth, actualWidth, rimInnerWidth, isHookless, hasTireInsert, effectiveFrontPct, effectiveRearPct, isBikepacking, effectiveLuggage, luggageBias, surfaceKey, pressureUnit]);
 
-  const copyPressureToClipboard = () => {
-    const text = `前轮: ${result.front.rec} ${pressureUnit.toUpperCase()} | 后轮: ${result.rear.rec} ${pressureUnit.toUpperCase()} (建议区间: 前 ${result.front.min}-${result.front.max} / 后 ${result.rear.min}-${result.rear.max})`;
-    navigator.clipboard.writeText(text);
-    showToast('胎压数据已复制到剪贴板！', 'success', text);
+  const handleGeneratePoster = () => {
+    const url = generateTirePressurePoster({
+      bikeType: bikeType === 'road' ? '公路车 Road' : bikeType === 'gravel' ? '全地形 Gravel' : '山地车 MTB',
+      totalWeightKg: totalSystemWeight,
+      tireSetup: tireSetup === 'tubeless' ? '真空胎 Tubeless' : tireSetup === 'tube' ? '开口胎 + 内胎 Tube' : '管胎 Tubular',
+      tireWidth: actualWidth,
+      surface: surfaceKey,
+      frontRec: parseFloat(result.front.rec) || 0,
+      rearRec: parseFloat(result.rear.rec) || 0,
+      frontRange: `${result.front.min}-${result.front.max}`,
+      rearRange: `${result.rear.min}-${result.rear.max}`,
+      unit: pressureUnit,
+      isHookless
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -167,11 +185,12 @@ export const TirePressureCalculator: React.FC = () => {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={copyPressureToClipboard}
-              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
+              onClick={handleGeneratePoster}
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 dark:bg-ios-blue/20 text-ios-blue text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+              title="生成科学胎压调校海报卡片"
             >
-              <Copy className="w-3.5 h-3.5" />
-              复制胎压
+              <Share2 className="w-3.5 h-3.5" />
+              <span>生成胎压卡片</span>
             </button>
 
             {/* Apple Unit Segmented Control */}
@@ -578,6 +597,15 @@ export const TirePressureCalculator: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title="科学胎压调校卡"
+        downloadFileName={`SoloRider_科学胎压_${actualWidth}mm_${pressureUnit.toUpperCase()}.png`}
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles } from 'lucide-react';
+import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Share2 } from 'lucide-react';
 import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -8,6 +8,8 @@ import { IOSMetricTile } from '../common/IOSCard';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateFittingPoster } from '../../utils/shareCardGenerators';
 
 export const RoadBikeFitter: React.FC = () => {
   const { profile } = useRiderProfile();
@@ -130,6 +132,34 @@ export const RoadBikeFitter: React.FC = () => {
     };
   }, [height, inseam, torso, armLength, shoulderWidth, sittingHeight, thighLength, lowerLegLength, footLength, ridingStyle, flexibility]);
 
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+
+  const handleGeneratePoster = async () => {
+    try {
+      const url = await generateFittingPoster({
+        height,
+        inseam,
+        armLength,
+        torso,
+        ridingStyle,
+        saddleHeight: result.saddleHeight,
+        effectiveTopTube: result.effectiveTopTube,
+        stemLength: result.stemLength,
+        saddleDrop: result.saddleDrop,
+        handlebarWidth: result.handlebarWidth * 10,
+        crankLength: parseFloat(result.crankLength) || 170,
+        frameSize: result.conceptualFrameSize,
+        sittingNote: result.sittingHeightNote
+      });
+      setSharePosterUrl(url);
+      setIsShareModalOpen(true);
+    } catch (e) {
+      showToast('海报生成失败，请重试', 'error');
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -152,6 +182,14 @@ export const RoadBikeFitter: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleGeneratePoster}
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-indigo-600 hover:opacity-90 text-white text-xs font-semibold shadow-ios-sm transition active:scale-95 whitespace-nowrap"
+              title="生成个人 Fitting 档案长图"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>生成档案卡</span>
+            </button>
             <button
               onClick={handlePrint}
               className="apple-touch flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
@@ -448,6 +486,15 @@ export const RoadBikeFitter: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        posterUrl={sharePosterUrl}
+        fileName={`Fitting调校档案_${height}cm_${result.conceptualFrameSize}.png`}
+        title="公路车 Fitting 档案海报"
+      />
     </div>
   );
 };

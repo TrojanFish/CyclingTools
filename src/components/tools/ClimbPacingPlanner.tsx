@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, Copy, CheckCircle2, TrendingUp, Upload, Search, ExternalLink, X, ChevronRight, Star } from 'lucide-react';
+import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, Share2, CheckCircle2, TrendingUp, Upload, Search, ExternalLink, X, ChevronRight, Star } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -16,6 +16,8 @@ import {
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateClimbPacingPoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -132,6 +134,10 @@ export const ClimbPacingPlanner: React.FC = () => {
   ]);
 
   const [climbName, setClimbName] = useState<string>('莫干山经典挑战爬坡线');
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   // Strava Segments & KOM Modal State
   const [isStravaModalOpen, setIsStravaModalOpen] = useState<boolean>(false);
@@ -575,16 +581,28 @@ export const ClimbPacingPlanner: React.FC = () => {
     setSegments(prev => prev.filter(s => s.id !== id));
   };
 
-  const copyPacingPlan = () => {
-    const text = `SoloRiderTools 爬坡路段分段配速与功率规划 (${climbName}):
-- 路线全长: ${planResults.totalDistanceKm} km | 累计爬升: +${planResults.totalElevationM} m (平均坡度 ${planResults.avgGrade}%)
-- 预计登顶总耗时: ${planResults.overallTimeStr}
-- 建议全程均瓦: ${planResults.avgWatts} W (${planResults.avgWkg} W/kg) | 平均 VAM: ${planResults.overallVam} m/h
-----------------------------------------
-分段目标功率明细:
-${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distanceKm}km @ ${s.gradePct}% -> 目标 ${s.targetWatts}W (${s.targetFtpPct}% FTP, ${s.speedKmh}km/h, 耗时 ${s.timeStr})`).join('\n')}`;
-    navigator.clipboard.writeText(text);
-    showToast('完整爬坡配速规划报告已复制到剪贴板！', 'success');
+  const handleGeneratePoster = () => {
+    const url = generateClimbPacingPoster({
+      climbName,
+      totalDistanceKm: planResults.totalDistanceKm,
+      totalElevationM: planResults.totalElevationM,
+      avgGrade: planResults.avgGrade,
+      overallTimeStr: planResults.overallTimeStr,
+      avgWatts: planResults.avgWatts,
+      avgWkg: planResults.avgWkg,
+      overallVam: planResults.overallVam,
+      ftpWatts,
+      segments: planResults.segmentOutputs.map(s => ({
+        name: s.name,
+        distanceKm: s.distanceKm,
+        gradePct: s.gradePct,
+        targetWatts: s.targetWatts,
+        targetFtpPct: s.targetFtpPct,
+        timeStr: s.timeStr
+      }))
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -628,11 +646,12 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
             </label>
 
             <button
-              onClick={copyPacingPlan}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              onClick={handleGeneratePoster}
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue rounded-2xl text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
+              title="生成名山爬坡攻坚与分段配速海报卡片"
             >
-              <Copy className="w-3.5 h-3.5 text-ios-blue shrink-0" />
-              <span>{language === 'zh-TW' ? '複製計劃' : '复制计划'}</span>
+              <Share2 className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+              <span>{language === 'zh-TW' ? '生成配速海報' : '生成配速海报'}</span>
             </button>
           </div>
         </div>
@@ -1195,6 +1214,15 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </div>
         </div>
       )}
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title={language === 'zh-TW' ? '名山爬坡攻堅戰報' : '名山爬坡攻坚战报'}
+        downloadFileName={`SoloRider_爬坡配速_${climbName}.png`}
+      />
     </div>
   );
 };

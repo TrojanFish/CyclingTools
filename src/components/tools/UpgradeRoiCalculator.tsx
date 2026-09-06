@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Copy, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check, Star, Lightbulb } from 'lucide-react';
+import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Share2, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check, Star, Lightbulb } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -14,6 +14,8 @@ import { NumberStepper } from '../common/NumberStepper';
 import { Tooltip } from '../common/Tooltip';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSMetricTile } from '../common/IOSCard';
+import { ShareCardModal } from '../common/ShareCardModal';
+import { generateUpgradeRoiPoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -163,6 +165,10 @@ export const UpgradeRoiCalculator: React.FC = () => {
   const [climbPowerWatts, setClimbPowerWatts] = useState<number>(profile.ftpWatts || 240);
   const [climbGradePct, setClimbGradePct] = useState<number>(7.5);
   const [currency, setCurrency] = useState<'CNY' | 'USD' | 'EUR' | 'GBP'>(isImperial ? 'USD' : 'CNY');
+
+  // Share Poster State
+  const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   // Reactively synchronize with global rider profile and unit system
   useEffect(() => {
@@ -325,16 +331,20 @@ export const UpgradeRoiCalculator: React.FC = () => {
     };
   }, [items]);
 
-  const copyReport = () => {
-    const text = `SoloRiderTools 零件减重与气动升级省瓦性价比报告:
-- 选定升级件数: ${analysis.activeCount} 项
-- 总减重: -${analysis.totalWeightSaveG} g | 气动/滚阻总省瓦: +${analysis.totalPowerSaveWatts} W
-- 自定义总预算: ${currencySymbol}${analysis.totalCostYuan} (${currency})
-- 40km 平路预计节省: ${analysis.flatTimeSavedSec} 秒 (~${(analysis.flatTimeSavedSec / 60).toFixed(1)} 分钟)
-- 10km 爬坡预计节省: ${analysis.climbTimeSavedSec} 秒 (~${(analysis.climbTimeSavedSec / 60).toFixed(1)} 分钟)
-- 每省 1 瓦成本: ${currencySymbol}${analysis.costPerWatt} /W (${analysis.roiLevel})`;
-    navigator.clipboard.writeText(text);
-    showToast('改装升级性价比报告已复制到剪贴板！', 'success');
+  const handleGeneratePoster = () => {
+    const url = generateUpgradeRoiPoster({
+      activeCount: analysis.activeCount,
+      totalWeightSaveG: analysis.totalWeightSaveG,
+      totalPowerSaveWatts: analysis.totalPowerSaveWatts,
+      totalCost: analysis.totalCostYuan,
+      currency: currencySymbol,
+      flatTimeSavedSec: analysis.flatTimeSavedSec,
+      climbTimeSavedSec: analysis.climbTimeSavedSec,
+      costPerWatt: analysis.costPerWatt,
+      roiLevel: analysis.roiLevel
+    });
+    setSharePosterUrl(url);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -369,11 +379,12 @@ export const UpgradeRoiCalculator: React.FC = () => {
             />
 
             <button
-              onClick={copyReport}
-              className="apple-touch flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.05] dark:border-white/[0.08] transition shadow-ios-sm active:scale-95"
+              onClick={handleGeneratePoster}
+              className="apple-touch flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 dark:bg-ios-blue/20 text-ios-blue text-xs font-semibold border border-ios-blue/25 transition shadow-ios-sm active:scale-95 whitespace-nowrap shrink-0"
+              title="生成改装升级省瓦战报海报"
             >
-              <Copy className="w-3.5 h-3.5" />
-              复制报告
+              <Share2 className="w-3.5 h-3.5" />
+              <span>生成省瓦海报</span>
             </button>
 
             <button
@@ -650,6 +661,15 @@ export const UpgradeRoiCalculator: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Social Share Poster Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        imageUrl={sharePosterUrl}
+        title="改装升级省瓦战报"
+        downloadFileName={`SoloRider_改装省瓦_${analysis.activeCount}项_${analysis.totalWeightSaveG}g.png`}
+      />
     </div>
   );
 };
