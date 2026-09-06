@@ -19,7 +19,7 @@ export const BodyPainDiagram: React.FC<BodyPainDiagramProps> = ({
   ];
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-4 text-center space-y-2 transition-colors">
+    <div className="w-full bg-black/[0.02] dark:bg-white/[0.03] rounded-2xl border border-black/[0.05] dark:border-white/[0.08] p-4 text-center space-y-2 transition-colors">
       <div className="flex justify-between items-center text-xs">
         <span className="text-slate-800 dark:text-slate-300 font-semibold">交互式人体疼痛定位图</span>
         <span className="text-slate-500 dark:text-slate-400 text-[10px]">点击身体高亮部位切换</span>
@@ -36,15 +36,15 @@ export const BodyPainDiagram: React.FC<BodyPainDiagramProps> = ({
 
           {/* Stylized Human Body Silhouette */}
           {/* Head */}
-          <circle cx="120" cy="30" r="18" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="2" className="dark:fill-slate-800 dark:stroke-slate-700" />
+          <circle cx="120" cy="30" r="18" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="2" className="dark:fill-[#2C2C2E] dark:stroke-[#3A3A3C]" />
           {/* Torso */}
-          <path d="M 100 50 L 140 50 L 132 140 L 108 140 Z" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="2" className="dark:fill-slate-800 dark:stroke-slate-700" />
+          <path d="M 100 50 L 140 50 L 132 140 L 108 140 Z" fill="#cbd5e1" stroke="#94a3b8" strokeWidth="2" className="dark:fill-[#2C2C2E] dark:stroke-[#3A3A3C]" />
           {/* Arms */}
-          <path d="M 100 52 L 65 120 L 58 125" fill="none" stroke="#94a3b8" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-slate-700" />
-          <path d="M 140 52 L 175 120 L 182 125" fill="none" stroke="#94a3b8" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-slate-700" />
+          <path d="M 100 52 L 65 120 L 58 125" fill="none" stroke="#94a3b8" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-[#3A3A3C]" />
+          <path d="M 140 52 L 175 120 L 182 125" fill="none" stroke="#94a3b8" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-[#3A3A3C]" />
           {/* Legs */}
-          <path d="M 112 140 L 105 195 L 100 255" fill="none" stroke="#94a3b8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-slate-700" />
-          <path d="M 128 140 L 135 195 L 140 255" fill="none" stroke="#94a3b8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-slate-700" />
+          <path d="M 112 140 L 105 195 L 100 255" fill="none" stroke="#94a3b8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-[#3A3A3C]" />
+          <path d="M 128 140 L 135 195 L 140 255" fill="none" stroke="#94a3b8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" className="dark:stroke-[#3A3A3C]" />
 
           {/* Interactive Clickable Hotspots */}
           {parts.map(p => {

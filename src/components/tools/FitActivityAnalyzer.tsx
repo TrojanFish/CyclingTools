@@ -1416,8 +1416,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <button
                         type="button"
                         onClick={() => setMmpUnit('wkg')}
-                        className={`px-2.5 py-1 rounded-lg font-medium transition ${
-                          mmpUnit === 'wkg' ? 'bg-white dark:bg-slate-800 text-ios-purple shadow-2xs font-bold' : 'text-slate-500'
+                        className={`px-2.5 py-1 rounded-lg font-medium transition apple-touch ${
+                          mmpUnit === 'wkg' ? 'bg-white dark:bg-[#2C2C2E] text-ios-purple shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
                         W/kg (推重比)
@@ -1425,8 +1425,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <button
                         type="button"
                         onClick={() => setMmpUnit('watts')}
-                        className={`px-2.5 py-1 rounded-lg font-medium transition ${
-                          mmpUnit === 'watts' ? 'bg-white dark:bg-slate-800 text-ios-purple shadow-2xs font-bold' : 'text-slate-500'
+                        className={`px-2.5 py-1 rounded-lg font-medium transition apple-touch ${
+                          mmpUnit === 'watts' ? 'bg-white dark:bg-[#2C2C2E] text-ios-purple shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
                         Watts (瓦特)
@@ -2001,7 +2001,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       max={25}
                       value={targetTsbForPeak}
                       onChange={(e) => setTargetTsbForPeak(parseInt(e.target.value))}
-                      className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-amber-500"
                     />
                     <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
                       <span>+5 (稳健参赛)</span>

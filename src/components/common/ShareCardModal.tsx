@@ -65,15 +65,15 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-slate-900 border border-slate-700/70 rounded-3xl shadow-2xl overflow-hidden text-white isolate">
+      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-[#1C1C1E] border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white isolate">
         {/* Ambient Top Glow */}
         <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-40 bg-ios-blue/25 blur-3xl rounded-full" />
 
         {/* Modal Header */}
-        <div className="relative z-10 flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md">
+        <div className="relative z-10 flex items-center justify-between px-5 py-4 border-b border-white/10 bg-[#1C1C1E]/90 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-ios-blue/15 border border-ios-blue/30 text-ios-blue flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <Sparkles className="w-4 h-4 text-ios-blue" />
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">{title}</h3>
@@ -90,8 +90,8 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
         </div>
 
         {/* Poster Image Preview Body */}
-        <div className="relative z-10 flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col items-center justify-center bg-slate-950/60">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60 max-w-full bg-slate-900">
+        <div className="relative z-10 flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col items-center justify-center bg-black/40">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-w-full bg-[#1C1C1E]">
             <img
               src={finalImageUrl}
               alt={title}
@@ -100,14 +100,14 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
           </div>
 
           {/* Mobile Long Press Hint */}
-          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-[11px] text-slate-400">
+          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[11px] text-slate-400">
             <ImageIcon className="w-3.5 h-3.5 text-ios-blue shrink-0" />
             <span>手机端支持长按上方图片直接保存到系统相册</span>
           </div>
         </div>
 
         {/* Modal Footer Actions */}
-        <div className="relative z-10 p-4 border-t border-slate-800 bg-slate-900/95 flex flex-wrap items-center justify-between gap-2.5">
+        <div className="relative z-10 p-4 border-t border-white/10 bg-[#1C1C1E]/95 flex flex-wrap items-center justify-between gap-2.5">
           <button
             type="button"
             onClick={handleCopyImage}
@@ -120,7 +120,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5 text-cyan-400" />
+                <Copy className="w-3.5 h-3.5 text-ios-blue" />
                 <span>复制图片</span>
               </>
             )}

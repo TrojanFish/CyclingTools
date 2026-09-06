@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, CheckSquare, Square, Search, RotateCcw, Share2, Sparkles, PersonStanding, Shield, Hand, Disc, Footprints } from 'lucide-react';
 import { PAIN_AREAS, GENERAL_RECOVERY_TIPS } from '../../data/painCheckerData';
 import { BodyPainDiagram } from '../common/BodyPainDiagram';
+import { IOSCard, IOSCardHeader } from '../common/IOSCard';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generatePainCheckPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
@@ -93,7 +94,7 @@ export const RoadBikePainChecker: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-purple/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -175,7 +176,7 @@ export const RoadBikePainChecker: React.FC = () => {
             );
           })}
         </div>
-      </div>
+      </IOSCard>
 
       {/* Main Analysis Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -188,26 +189,26 @@ export const RoadBikePainChecker: React.FC = () => {
           />
 
           {/* Symptoms Card */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <IOSCard variant="default" className="p-6 space-y-4">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-amber-500 dark:text-amber-400" />
               常见不适症状表现 ({activeArea.title.split(' ')[0]})
             </h2>
             <div className="space-y-2.5">
               {activeArea.symptoms.map((sym, idx) => (
-                <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/10 text-slate-700 dark:text-slate-300 text-xs">
+                <div key={idx} className="flex items-start gap-2.5 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-slate-700 dark:text-slate-200 text-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 shrink-0"></span>
                   <span className="leading-relaxed">{sym}</span>
                 </div>
               ))}
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Column: Step by Step Action Plan & Checklist */}
         <div className="lg:col-span-7 space-y-6">
           {/* Specific Self-Check Action Items with Checklist */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <IOSCard variant="default" className="p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
@@ -216,7 +217,7 @@ export const RoadBikePainChecker: React.FC = () => {
               {checkedCount > 0 && (
                 <button
                   onClick={resetCurrentAreaChecks}
-                  className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-rose-500 self-start sm:self-auto transition"
+                  className="flex items-center gap-1 text-[11px] text-slate-500 hover:text-rose-500 self-start sm:self-auto transition apple-touch"
                 >
                   <RotateCcw className="w-3 h-3" />
                   重置勾选
@@ -225,7 +226,7 @@ export const RoadBikePainChecker: React.FC = () => {
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
               <div
                 className="bg-emerald-500 h-full transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
@@ -241,10 +242,10 @@ export const RoadBikePainChecker: React.FC = () => {
                   <div
                     key={idx}
                     onClick={() => toggleCheck(key)}
-                    className={`p-4 rounded-xl border flex items-start gap-3 cursor-pointer transition ${
+                    className={`p-4 rounded-2xl border flex items-start gap-3 cursor-pointer transition apple-touch ${
                       isChecked
-                        ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/30 text-slate-500 line-through'
-                        : 'bg-slate-50 dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-slate-500 line-through'
+                        : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-800 dark:text-slate-200 hover:border-black/10 dark:hover:border-white/15'
                     }`}
                   >
                     <button className="mt-0.5 text-emerald-500 dark:text-emerald-400 shrink-0">
@@ -257,19 +258,19 @@ export const RoadBikePainChecker: React.FC = () => {
                 );
               })}
             </div>
-          </div>
+          </IOSCard>
 
           {/* Root Causes Accordion / List */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <IOSCard variant="default" className="p-6 space-y-4">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              <Wrench className="w-4 h-4 text-ios-blue" />
               根源成因深度剖析
             </h2>
             <div className="space-y-3">
               {activeArea.commonCauses.map((cause, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <h3 className="text-xs font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400"></span>
+                <div key={idx} className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
+                  <h3 className="text-xs font-bold text-ios-blue flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-ios-blue"></span>
                     {cause.category}
                   </h3>
                   <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 pl-3.5 list-disc">
@@ -280,23 +281,23 @@ export const RoadBikePainChecker: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </IOSCard>
 
           {/* General Rehabilitation & Care Tips */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <IOSCard variant="default" className="p-6 space-y-4">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
               运动康复与损伤预防通用法则
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {GENERAL_RECOVERY_TIPS.map((tip, idx) => (
-                <div key={idx} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1.5">
-                  <h4 className="text-xs font-semibold text-rose-600 dark:text-rose-300">{tip.title}</h4>
+                <div key={idx} className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5">
+                  <h4 className="text-xs font-semibold text-rose-500 dark:text-rose-400">{tip.title}</h4>
                   <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">{tip.content}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

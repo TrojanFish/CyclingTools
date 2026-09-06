@@ -3,6 +3,7 @@ import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User } from 'lucide-
 import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/tirePressureConfig';
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
+import { IOSCard } from '../common/IOSCard';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { ShareCardModal } from '../common/ShareCardModal';
@@ -170,7 +171,7 @@ export const TirePressureCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -206,12 +207,12 @@ export const TirePressureCalculator: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-6 space-y-6">
-          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+          <IOSCard variant="default" className="space-y-5">
             <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-ios-blue" />
               车辆与骑行参数
@@ -245,12 +246,12 @@ export const TirePressureCalculator: React.FC = () => {
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
                     {language === 'zh-TW' ? '車手淨體重' : '车手净体重'}
                     {profile.weightKg ? (
-                      <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-normal">
+                      <span className="text-[10px] text-ios-blue font-normal">
                         {language === 'zh-TW' ? '已同步檔案' : '已同步档案'}
                       </span>
                     ) : null}
                   </label>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
+                  <span className="text-ios-blue font-mono font-semibold text-xs">
                     {isImperial ? `${(riderWeight * 2.20462).toFixed(1)} lbs` : `${riderWeight} kg`}
                   </span>
                 </div>
@@ -269,7 +270,7 @@ export const TirePressureCalculator: React.FC = () => {
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
                     {language === 'zh-TW' ? '車重 + 裝備水壺' : '车重 + 装备水壶'}
                   </label>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
+                  <span className="text-ios-blue font-mono font-semibold text-xs">
                     {isImperial ? `${(bikeGearWeight * 2.20462).toFixed(1)} lbs` : `${bikeGearWeight} kg`}
                   </span>
                 </div>
@@ -292,7 +293,7 @@ export const TirePressureCalculator: React.FC = () => {
                   前后轮重量分配 (Front / Rear Distribution)
                   <Tooltip content="公路车上体前倾常见比例为前轮 42%~45%，后轮 55%~58%" />
                 </label>
-                <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">前 {weightDistFront}% / 后 {weightDistRear}%</span>
+                <span className="text-ios-blue font-mono font-semibold text-xs">前 {weightDistFront}% / 后 {weightDistRear}%</span>
               </div>
               <input
                 type="range"
@@ -301,7 +302,7 @@ export const TirePressureCalculator: React.FC = () => {
                 step="1"
                 value={weightDistFront}
                 onChange={(e) => setWeightDistFront(Number(e.target.value))}
-                className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
               />
             </div>
 
@@ -399,7 +400,7 @@ export const TirePressureCalculator: React.FC = () => {
                     setNominalWidth(w);
                     setActualWidth(w + 1);
                   }}
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                 >
                   {[23, 25, 28, 30, 32, 35, 38, 40, 42, 45, 50, 54].map((w) => (
                     <option key={w} value={w}>{w}c / {w}mm</option>
@@ -437,7 +438,7 @@ export const TirePressureCalculator: React.FC = () => {
             {/* Hookless & Tire Insert Options */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {/* Hookless Rim Option */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
                 <div>
                   <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">无钩车圈 (Hookless Rim)</span>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
@@ -446,12 +447,12 @@ export const TirePressureCalculator: React.FC = () => {
                   type="checkbox"
                   checked={isHookless}
                   onChange={(e) => setIsHookless(e.target.checked)}
-                  className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                  className="w-4 h-4 rounded accent-ios-blue cursor-pointer"
                 />
               </div>
 
               {/* Tire Insert Option */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
                 <div>
                   <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">防爆胎垫 / 内衬 (Tire Insert)</span>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">如 CushCore/Vittoria，防磕圈自适应降压 2.5 PSI</span>
@@ -460,7 +461,7 @@ export const TirePressureCalculator: React.FC = () => {
                   type="checkbox"
                   checked={hasTireInsert}
                   onChange={(e) => setHasTireInsert(e.target.checked)}
-                  className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                  className="w-4 h-4 rounded accent-ios-blue cursor-pointer"
                 />
               </div>
             </div>
@@ -478,7 +479,7 @@ export const TirePressureCalculator: React.FC = () => {
                       className={`p-2.5 rounded-xl border text-left transition apple-touch ${
                         isSelected
                           ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-sm ring-1.5 ring-ios-blue/30 scale-[1.01]'
-                          : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                          : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
                       }`}
                     >
                       <div className={`text-xs ${isSelected ? 'font-bold text-white' : 'font-medium'}`}>{s.label}</div>
@@ -488,7 +489,7 @@ export const TirePressureCalculator: React.FC = () => {
                 })}
               </div>
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output Results */}
@@ -553,48 +554,48 @@ export const TirePressureCalculator: React.FC = () => {
 
           {/* Numerical Display Cards */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 shadow-xs">
+            <IOSCard variant="default" className="p-5 space-y-1">
               <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 uppercase">前轮建议区间</span>
+                <span className="text-xs font-semibold text-ios-blue uppercase">前轮建议区间</span>
               </div>
               <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1">
                 {result.front.min} - {result.front.max} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{pressureUnit.toUpperCase()}</span>
               </div>
               <span className="text-[10px] text-slate-500">前轴抓地与舒适滤震</span>
-            </div>
+            </IOSCard>
 
-            <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 shadow-xs">
+            <IOSCard variant="default" className="p-5 space-y-1">
               <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 uppercase">后轮建议区间</span>
+                <span className="text-xs font-semibold text-ios-blue uppercase">后轮建议区间</span>
               </div>
               <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1">
                 {result.rear.min} - {result.rear.max} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{pressureUnit.toUpperCase()}</span>
               </div>
               <span className="text-[10px] text-slate-500">驱动承重与低滚阻</span>
-            </div>
+            </IOSCard>
           </div>
 
           {/* Tips and Explanation Box */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <IOSCard variant="default" className="p-6 space-y-4">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Info className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              <Info className="w-4 h-4 text-ios-blue" />
               气压微调与防扎防护建议
             </h3>
             <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
               {result.notes.map((note, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-ios-blue mt-1.5 shrink-0"></span>
                   <span className="leading-relaxed">{note}</span>
                 </li>
               ))}
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-ios-blue mt-1.5 shrink-0"></span>
                 <span className="leading-relaxed">
                   <strong>温度气压效应：</strong>气温每上升或下降 5°C，外胎气压会随之波动约 1~1.5 PSI。夏季室外暴晒骑行前建议留有余量。
                 </span>
               </li>
             </ul>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

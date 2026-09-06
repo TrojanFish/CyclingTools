@@ -352,7 +352,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -399,19 +399,19 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
             <button
               onClick={handleGeneratePoster}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-ios-red/10 hover:bg-ios-red/20 text-ios-red rounded-2xl text-xs font-semibold border border-ios-red/25 transition shadow-ios-sm apple-touch whitespace-nowrap shrink-0"
-              title="生成高画质六维雷达与推重比海报卡片"
+              className="flex items-center gap-1.5 px-4 py-2 bg-ios-red hover:bg-ios-red/90 text-white rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch shrink-0"
+              title="生成六维能力画像与极化训练海报"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '生成戰報海報' : '生成战报海报'}</span>
             </button>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
-      {/* Preset Buttons */}
-      <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-ios-card">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1 min-w-0">
+      {/* Rider Preset Bar */}
+      <div className="ios-card p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-ios-sm">
+        <div className="flex items-center gap-2 flex-1">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
             {language === 'zh-TW' ? '車手預設:' : '车手预设:'}
           </span>
@@ -453,16 +453,16 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
       {/* Smart Text Paste Modal */}
       {isPasteModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-2xl z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-cyan-500" />
+                <FileText className="w-5 h-5 text-ios-blue" />
                 <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">智能功率文本一键识别与导入</h3>
               </div>
               <button
                 onClick={() => setIsPasteModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition apple-touch"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -477,35 +477,35 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
               value={pasteText}
               onChange={(e) => setPasteText(e.target.value)}
               placeholder="例如：5秒: 1120W, 1分钟: 580W, 5分钟: 360W, 20分钟: 275W, FTP: 260W, 体重: 67kg"
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+              className="w-full bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-2xl p-3 text-xs text-slate-900 dark:text-slate-200 font-mono focus:outline-none focus:ring-1 focus:ring-ios-blue"
             />
 
             {/* Live Detected Preview */}
             {liveParsed && (
-              <div className="bg-slate-50 dark:bg-slate-950/60 rounded-xl p-3 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="bg-slate-100/80 dark:bg-white/5 rounded-2xl p-3 border border-black/[0.05] dark:border-white/[0.08] space-y-2">
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">实时识别结果预览:</span>
                 <div className="grid grid-cols-3 gap-2 text-xs font-mono">
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                  <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5秒 冲刺</span>
-                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p5s ? `${liveParsed.p5s} W` : '未识别'}</span>
+                    <span className="text-ios-blue font-bold">{liveParsed.p5s ? `${liveParsed.p5s} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                  <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 block">1分钟 无氧</span>
-                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p1m ? `${liveParsed.p1m} W` : '未识别'}</span>
+                    <span className="text-ios-blue font-bold">{liveParsed.p1m ? `${liveParsed.p1m} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                  <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5分钟 VO₂</span>
-                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p5m ? `${liveParsed.p5m} W` : '未识别'}</span>
+                    <span className="text-ios-blue font-bold">{liveParsed.p5m ? `${liveParsed.p5m} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                  <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 block">20分钟 阈值</span>
-                    <span className="text-cyan-600 dark:text-cyan-400 font-bold">{liveParsed.p20m ? `${liveParsed.p20m} W` : '未识别'}</span>
+                    <span className="text-ios-blue font-bold">{liveParsed.p20m ? `${liveParsed.p20m} W` : '未识别'}</span>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                  <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 block">FTP 阈值功率</span>
                     <span className="text-emerald-600 dark:text-emerald-400 font-bold">{liveParsed.ftp ? `${liveParsed.ftp} W` : '保持现值'}</span>
                   </div>
-                  <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                  <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 block">车手体重</span>
                     <span className="text-amber-600 dark:text-amber-400 font-bold">{liveParsed.weight ? `${liveParsed.weight} kg` : '保持现值'}</span>
                   </div>
@@ -516,14 +516,14 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <div className="flex justify-end gap-2.5 pt-2">
               <button
                 onClick={() => setIsPasteModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition apple-touch"
               >
                 取消
               </button>
               <button
                 onClick={applyParsedText}
                 disabled={!liveParsed}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+                className="px-5 py-2 rounded-xl text-xs font-bold bg-ios-blue hover:bg-ios-blue/90 text-white transition shadow-ios-md apple-touch disabled:opacity-50"
               >
                 {language === 'zh-TW' ? '載入並生成雷達' : '载入并生成雷达'}
               </button>

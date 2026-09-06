@@ -255,7 +255,7 @@ export const TubelessSealantCalculator: React.FC = () => {
         {/* Left Input Configuration (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
           {/* Section 1: Wheel & Tire Geometry */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+          <IOSCard variant="default" className="space-y-4">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Gauge className="w-4 h-4 text-ios-blue" />
               <span>{language === 'zh-TW' ? '輪組規格與幾何參數' : '轮组规格与几何参数'}</span>
@@ -306,7 +306,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-600 dark:text-slate-400">{'标称外胎胎宽'}</span>
-                  <span className="font-mono font-bold text-cyan-500">
+                  <span className="font-mono font-bold text-ios-blue">
                     {tireWidthMm} mm {tireCategory === 'mtb' ? `(~${(tireWidthMm / 25.4).toFixed(2)}")` : `${tireWidthMm}c`}
                   </span>
                 </div>
@@ -320,7 +320,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                     setTireWidthMm(Number(e.target.value));
                     setActivePreset(null);
                   }}
-                  className="w-full accent-cyan-500 cursor-pointer"
+                  className="w-full accent-ios-blue cursor-pointer"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400">
                   <span>23c (公路细胎)</span>
@@ -333,7 +333,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-600 dark:text-slate-400">{'车圈内部宽度 (IW)'}</span>
-                  <span className="font-mono font-bold text-cyan-500">{innerRimWidthMm} mm</span>
+                  <span className="font-mono font-bold text-ios-blue">{innerRimWidthMm} mm</span>
                 </div>
                 <input
                   type="range"
@@ -345,7 +345,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                     setInnerRimWidthMm(Number(e.target.value));
                     setActivePreset(null);
                   }}
-                  className="w-full accent-cyan-500 cursor-pointer"
+                  className="w-full accent-ios-blue cursor-pointer"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400">
                   <span>19mm (公路标配)</span>
@@ -354,10 +354,10 @@ export const TubelessSealantCalculator: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </IOSCard>
 
           {/* Section 2: Casing Type & Climate */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+          <IOSCard variant="default" className="space-y-4">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Thermometer className="w-4 h-4 text-ios-red" />
               <span>{language === 'zh-TW' ? '胎體孔隙率與環境揮發工況' : '胎体孔隙率与环境挥发工况'}</span>
@@ -451,13 +451,13 @@ export const TubelessSealantCalculator: React.FC = () => {
                 </select>
               </div>
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output Scoreboard (5 cols) */}
         <div className="lg:col-span-5 space-y-5">
           {/* Main Dosage Recommendation Card */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 relative overflow-hidden space-y-5 shadow-ios-card">
+          <IOSCard variant="default" className="space-y-5 relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-ios-blue uppercase tracking-wider flex items-center gap-1.5">
                 <Droplets className="w-4 h-4" />
@@ -474,7 +474,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 {language === 'zh-TW' ? '單輪首次加注推薦量' : '单轮首次加注推荐量'}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
                   {calculation.initialDoseMl}
                 </span>
                 <span className="text-lg font-bold text-ios-blue">ml</span>
@@ -485,13 +485,13 @@ export const TubelessSealantCalculator: React.FC = () => {
             </div>
 
             {/* Secondary Output Grid */}
-            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10">
-              <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-1">
+            <div className="grid grid-cols-2 gap-3 pt-3 border-t border-black/[0.05] dark:border-white/[0.08]">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
                   <Layers className="w-3.5 h-3.5 text-ios-blue" />
                   <span>{language === 'zh-TW' ? '整車前後雙輪總量' : '整车前后双轮总量'}</span>
                 </div>
-                <div className="text-lg font-extrabold text-ios-blue">
+                <div className="text-lg font-extrabold text-ios-blue font-mono">
                   {calculation.pairTotalMl} ml
                 </div>
                 <div className="text-[11px] text-slate-400">
@@ -499,12 +499,12 @@ export const TubelessSealantCalculator: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
                   <RotateCcw className="w-3.5 h-3.5 text-ios-purple" />
                   <span>{language === 'zh-TW' ? '單輪定期補液量' : '单轮定期补液量'}</span>
                 </div>
-                <div className="text-lg font-extrabold text-ios-purple">
+                <div className="text-lg font-extrabold text-ios-purple font-mono">
                   {calculation.topUpDoseMl} ml
                 </div>
                 <div className="text-[11px] text-slate-400">
@@ -530,17 +530,17 @@ export const TubelessSealantCalculator: React.FC = () => {
             </div>
 
             {/* Puncture Threshold Gauge */}
-            <div className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-white/60 dark:bg-white/5 border border-slate-200/80 dark:border-white/10">
+            <div className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
               <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-ios-green" />
                 <span>{language === 'zh-TW' ? '最大刺穿自封孔徑能力' : '最大刺穿自封孔径能力'}</span>
               </span>
               <strong className="text-ios-green font-mono text-sm">≤ {calculation.maxPunctureMm} mm</strong>
             </div>
-          </div>
+          </IOSCard>
 
           {/* Interactive Cross-Section SVG Diagram */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+          <IOSCard variant="default" className="space-y-3">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
               <span>{language === 'zh-TW' ? '無內胎截面與注膠池物理示意' : '真空轮胎截面与注胶池物理示意'}</span>
               <span className="text-[10px] text-slate-400">容积 ~{calculation.volumeLiters} L</span>
@@ -607,12 +607,12 @@ export const TubelessSealantCalculator: React.FC = () => {
                 </text>
               </svg>
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 
       {/* Workshop Pro Tips & Tubeless FAQ */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+      <IOSCard variant="default" className="space-y-4">
         <div className="flex items-center gap-2">
           <Wrench className="w-5 h-5 text-ios-blue" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -621,7 +621,7 @@ export const TubelessSealantCalculator: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-ios-blue flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>1. 摇轮听声法 (Slosh Test)</span>
@@ -631,7 +631,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-ios-blue flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>2. 气门嘴注胶与气芯防堵</span>
@@ -641,7 +641,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-ios-orange flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
               <span>3. 开封保质期与仓储</span>
@@ -651,7 +651,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-ios-purple flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
               <span>4. 扎钉与培根胶条配合</span>
@@ -661,7 +661,7 @@ export const TubelessSealantCalculator: React.FC = () => {
             </p>
           </div>
         </div>
-      </div>
+      </IOSCard>
     </div>
   );
 };

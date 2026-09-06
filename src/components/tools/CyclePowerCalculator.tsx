@@ -316,7 +316,7 @@ export const CyclePowerCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -325,7 +325,7 @@ export const CyclePowerCalculator: React.FC = () => {
               {language === 'zh-TW' ? '空氣動力學與重力方程' : '空气动力学与重力方程'}
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
-              {language === 'zh-TW' ? '單車功率與速度計算器' : '骑行功率与速度计算器'}
+              {language === 'zh-TW' ? '公路車功率與速度物理計算器' : '公路车功率与速度物理计算器'}
             </h1>
             <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
               {language === 'zh-TW'
@@ -357,16 +357,18 @@ export const CyclePowerCalculator: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 shadow-xs">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
-              动力与环境变量输入
-            </h2>
+          <IOSCard variant="default" className="p-6 space-y-5">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '動力與環境變量輸入' : '动力与环境变量输入'}
+              subtitle={language === 'zh-TW' ? '精密動力學與氣象設定' : '精密动力学与气象设定'}
+              icon={Activity}
+              iconColor="blue"
+            />
 
             {/* Target Input */}
             {calcMode === 'speed' && (
@@ -402,15 +404,19 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
             )}
 
-            {/* Rider & Bike Weight with imperial support */}
+            {/* Weight Inputs */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '車手淨重' : '车手体重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '騎士體重' : '骑士体重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
-                  onChange={(v) => setRiderWeight(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
+                  onChange={(v) => {
+                    const kg = isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v;
+                    setRiderWeight(kg);
+                    updateProfile({ weightKg: kg });
+                  }}
                   step={isImperial ? 1 : 0.5}
                   min={isImperial ? 66 : 30}
                   max={isImperial ? 330 : 150}
@@ -420,28 +426,32 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '整車裝備重' : '整车装备重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '整車自重' : '整车自重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((bikeWeight * 2.20462).toFixed(1)) : bikeWeight}
-                  onChange={(v) => setBikeWeight(isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v)}
-                  step={isImperial ? 0.2 : 0.1}
-                  min={isImperial ? 9 : 4}
-                  max={isImperial ? 55 : 25}
+                  onChange={(v) => {
+                    const kg = isImperial ? parseFloat((v / 2.20462).toFixed(1)) : v;
+                    setBikeWeight(kg);
+                    updateProfile({ bikeWeightKg: kg });
+                  }}
+                  step={0.1}
+                  min={isImperial ? 11 : 5}
+                  max={isImperial ? 44 : 20}
                   unit={isImperial ? 'lbs' : 'kg'}
                   decimals={1}
                 />
               </div>
             </div>
 
-            {/* Grade & Wind */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Slope & Wind */}
+            <div className="space-y-4 pt-1">
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
                     {language === 'zh-TW' ? '道路坡度' : '道路坡度'} (%)
                   </label>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{grade}%</span>
+                  <span className="text-ios-blue font-mono font-semibold text-xs">{grade}%</span>
                 </div>
                 <input
                   type="range"
@@ -450,7 +460,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   step="0.5"
                   value={grade}
                   onChange={(e) => setGrade(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                  className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
               </div>
 
@@ -459,7 +469,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
                     {language === 'zh-TW' ? '風速與方向' : '风速与方向'}
                   </label>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">
+                  <span className="text-ios-blue font-mono font-semibold text-xs">
                     {isImperial ? `${(windSpeedKmh * 0.621371).toFixed(1)} mph` : `${windSpeedKmh} km/h`}{' '}
                     ({windDirection === 'headwind' ? (language === 'zh-TW' ? '頂風' : '顶风') : (language === 'zh-TW' ? '順風' : '顺风')})
                   </span>
@@ -472,11 +482,11 @@ export const CyclePowerCalculator: React.FC = () => {
                     step="1"
                     value={windSpeedKmh}
                     onChange={(e) => setWindSpeedKmh(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                    className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                   />
                   <button
                     onClick={() => setWindDirection(windDirection === 'headwind' ? 'tailwind' : 'headwind')}
-                    className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-800 rounded-xl text-[10px] text-cyan-600 dark:text-cyan-400 shrink-0 font-semibold transition"
+                    className="px-2.5 py-1 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 border border-black/[0.05] dark:border-white/[0.08] rounded-xl text-[10px] text-ios-blue shrink-0 font-semibold transition apple-touch"
                   >
                     {windDirection === 'headwind' ? (language === 'zh-TW' ? '頂風' : '顶风') : (language === 'zh-TW' ? '順風' : '顺风')}
                   </button>
@@ -506,7 +516,7 @@ export const CyclePowerCalculator: React.FC = () => {
                       className={`py-1.5 sm:py-2 px-0.5 sm:px-1 rounded-xl border text-center transition apple-touch ${
                         isSelected
                           ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-sm ring-1.5 ring-ios-blue/30 scale-[1.01]'
-                          : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                          : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-black/10 dark:hover:border-white/15'
                       }`}
                     >
                       <div className={`text-[10px] leading-tight truncate ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
@@ -518,7 +528,7 @@ export const CyclePowerCalculator: React.FC = () => {
             </div>
 
             {/* Head Shrug / Turtle Head Aero Technique */}
-            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-1.5">
@@ -541,21 +551,21 @@ export const CyclePowerCalculator: React.FC = () => {
                     type="checkbox"
                     checked={hasHeadShrug}
                     onChange={(e) => setHasHeadShrug(e.target.checked)}
-                    className="w-4 h-4 rounded accent-cyan-500 cursor-pointer"
+                    className="w-4 h-4 rounded accent-ios-blue cursor-pointer"
                   />
                 </div>
               </div>
             </div>
 
             {/* Yaw Angle (Crosswind Angle) */}
-            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2.5">
+            <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-2.5">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
-                  <Wind className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                  <Wind className="w-3.5 h-3.5 text-ios-blue" />
                   {language === 'zh-TW' ? '側風偏航角 (Yaw Angle ψ)' : '侧风偏航角 (Yaw Angle ψ)'}
                   <Tooltip content="偏航角为车手行进方向与合成风矢量的夹角（0°为正迎风，5°~12°为典型公路侧风，20°为强横风）。偏航角增加时身体侧向受风投影面积增大，气动阻力相应上升。" />
                 </span>
-                <span className="font-mono font-bold text-xs text-cyan-600 dark:text-cyan-400">
+                <span className="font-mono font-bold text-xs text-ios-blue">
                   {yawAngleDeg}° {yawAngleDeg === 0 ? '(正迎风 0°)' : yawAngleDeg <= 10 ? '(小角度侧风)' : '(强横风迎风面积修正)'}
                 </span>
               </div>
@@ -567,7 +577,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   step="1"
                   value={yawAngleDeg}
                   onChange={(e) => setYawAngleDeg(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                  className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
               </div>
               <div className="flex flex-wrap items-center gap-1 text-[10px]">
@@ -582,10 +592,10 @@ export const CyclePowerCalculator: React.FC = () => {
                     key={item.val}
                     type="button"
                     onClick={() => setYawAngleDeg(item.val)}
-                    className={`px-2 py-0.5 rounded-lg border transition font-medium ${
+                    className={`px-2 py-0.5 rounded-lg border transition font-medium apple-touch ${
                       yawAngleDeg === item.val
                         ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs'
-                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                        : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-black/10 dark:hover:border-white/15'
                     }`}
                   >
                     {item.label}
@@ -595,14 +605,14 @@ export const CyclePowerCalculator: React.FC = () => {
             </div>
 
             {/* Precision Altitude & Temperature Air Density */}
-            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+            <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
-                  <Wind className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                  <Wind className="w-3.5 h-3.5 text-ios-blue" />
                   {language === 'zh-TW' ? '海拔與氣壓密度校正' : '海拔与气压密度校正'}
                 </span>
                 <div className="flex items-center gap-1.5 font-mono">
-                  <span className="text-cyan-600 dark:text-cyan-400 font-bold text-xs">ρ = {airDensityRho} kg/m³</span>
+                  <span className="text-ios-blue font-bold text-xs">ρ = {airDensityRho} kg/m³</span>
                   {altitudeM > 100 && (
                     <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
                       气阻 -{Math.round((1 - airDensityRho / 1.225) * 100)}%
@@ -622,10 +632,10 @@ export const CyclePowerCalculator: React.FC = () => {
                   <button
                     key={item.val}
                     onClick={() => setAltitudeM(item.val)}
-                    className={`px-2 py-0.5 rounded-lg border transition font-medium ${
+                    className={`px-2 py-0.5 rounded-lg border transition font-medium apple-touch ${
                       altitudeM === item.val
                         ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs'
-                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                        : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-black/10 dark:hover:border-white/15'
                     }`}
                   >
                     {item.label}
@@ -645,7 +655,7 @@ export const CyclePowerCalculator: React.FC = () => {
                     step="50"
                     value={altitudeM}
                     onChange={(e) => setAltitudeM(Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                   />
                 </div>
                 <div>
@@ -659,12 +669,12 @@ export const CyclePowerCalculator: React.FC = () => {
                     step="1"
                     value={tempC}
                     onChange={(e) => setTempC(Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                   />
                 </div>
               </div>
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output Results & Full Analytics */}

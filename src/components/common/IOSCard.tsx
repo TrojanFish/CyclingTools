@@ -3,7 +3,7 @@ import React from 'react';
 interface IOSCardProps {
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'inset' | 'glass';
+  variant?: 'default' | 'inset' | 'glass' | 'elevated';
   padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
@@ -20,6 +20,8 @@ export const IOSCard: React.FC<IOSCardProps> = ({
       'bg-slate-50 dark:bg-[#2C2C2E]/60 border border-black/[0.04] dark:border-white/[0.06]',
     glass:
       'bg-white/75 dark:bg-[#1C1C1E]/75 backdrop-blur-2xl saturate-180 border border-black/[0.05] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)]',
+    elevated:
+      'bg-white dark:bg-[#2C2C2E] border border-black/[0.05] dark:border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_28px_rgba(0,0,0,0.5)]',
   }[variant];
 
   const paddingClasses = {

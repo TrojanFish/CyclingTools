@@ -13,7 +13,7 @@ import {
 import { NumberStepper } from '../common/NumberStepper';
 import { Tooltip } from '../common/Tooltip';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
-import { IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateUpgradeRoiPoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
@@ -350,7 +350,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -396,13 +396,13 @@ export const UpgradeRoiCalculator: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Cruise speed and baseline controls */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <IOSCard variant="inset" className="p-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+            <Zap className="w-3.5 h-3.5 text-ios-blue" />
             {language === 'zh-TW' ? '基準巡航車速' : '基准巡航车速'}:
           </span>
           <div className="w-36">
@@ -415,7 +415,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
               unit="km/h"
             />
           </div>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline">
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:inline font-mono">
             {isImperial ? `(${(flatCruiseSpeedKmh * 0.621371).toFixed(1)} mph)` : ''} (P ∝ v³: ×{(speedScalingFactor).toFixed(2)})
           </span>
         </div>
@@ -436,15 +436,15 @@ export const UpgradeRoiCalculator: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Upgrade Items (Spec Picker + Custom In-place Inputs) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <IOSCard variant="default" className="p-6 space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+                <Sparkles className="w-4 h-4 text-ios-blue" />
                 备选改装清单（下拉选择规格自动带出实测参数）
               </h2>
               <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
@@ -456,17 +456,17 @@ export const UpgradeRoiCalculator: React.FC = () => {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className={`p-4 rounded-xl border space-y-3 transition ${
+                  className={`p-4 rounded-2xl border space-y-3 transition ${
                     item.enabled
-                      ? 'bg-slate-50/90 dark:bg-slate-900/90 border-cyan-500/40 ring-1 ring-cyan-500/20'
-                      : 'bg-white/60 dark:bg-slate-950/40 border-slate-200 dark:border-slate-800/80 opacity-60'
+                      ? 'bg-black/[0.02] dark:bg-white/[0.04] border-ios-blue/40 ring-1 ring-ios-blue/20'
+                      : 'bg-white/40 dark:bg-white/[0.02] border-black/[0.05] dark:border-white/[0.08] opacity-60'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
                       <button
                         onClick={() => toggleItem(item.id)}
-                        className="text-cyan-500 dark:text-cyan-400 shrink-0 hover:scale-110 transition"
+                        className="text-ios-blue shrink-0 hover:scale-110 transition"
                       >
                         {item.enabled ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4 text-slate-400 dark:text-slate-600" />}
                       </button>
@@ -474,7 +474,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                         type="text"
                         value={item.name}
                         onChange={(e) => updateItemField(item.id, 'name', e.target.value)}
-                        className="bg-transparent font-bold text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:text-cyan-600 dark:focus:text-cyan-400 w-full truncate border-b border-transparent focus:border-cyan-500/50 pb-0.5"
+                        className="bg-transparent font-bold text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:text-ios-blue w-full truncate border-b border-transparent focus:border-ios-blue/50 pb-0.5"
                       />
                     </div>
 
@@ -500,7 +500,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                       <select
                         value={item.selectedSpecIndex ?? 0}
                         onChange={(e) => handleSelectSpec(item.id, parseInt(e.target.value, 10))}
-                        className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-cyan-700 dark:text-cyan-300 font-medium focus:outline-none focus:border-cyan-500 truncate"
+                        className="w-full bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-ios-blue font-medium focus:outline-none focus:ring-1 focus:ring-ios-blue truncate"
                       >
                         {item.specs.map((sp, sIdx) => (
                           <option key={sIdx} value={sIdx}>
@@ -518,8 +518,8 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   )}
 
                   {/* Editable 3 Inputs: Price, Weight Save, Watt Save */}
-                  <div className="grid grid-cols-3 gap-2 text-xs pt-1.5 border-t border-slate-200 dark:border-slate-800/60 font-mono">
-                    <div className="bg-slate-100 dark:bg-slate-950/80 rounded-lg p-2 border border-slate-200 dark:border-slate-800/80">
+                  <div className="grid grid-cols-3 gap-2 text-xs pt-1.5 border-t border-black/[0.05] dark:border-white/[0.08] font-mono">
+                    <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">实际价格 ({currency})</span>
                       <div className="flex items-center text-amber-500 dark:text-amber-400 font-bold">
                         <span className="text-[11px] mr-1">{currencySymbol}</span>
@@ -532,7 +532,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="bg-slate-100 dark:bg-slate-950/80 rounded-lg p-2 border border-slate-200 dark:border-slate-800/80">
+                    <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">减重幅度 (克)</span>
                       <div className="flex items-center text-emerald-600 dark:text-emerald-400 font-bold">
                         <input
@@ -545,17 +545,17 @@ export const UpgradeRoiCalculator: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="bg-slate-100 dark:bg-slate-950/80 rounded-lg p-2 border border-slate-200 dark:border-slate-800/80">
+                    <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">
                         省瓦收益 ({flatCruiseSpeedKmh}km/h)
                       </span>
-                      <div className="flex items-center text-cyan-600 dark:text-cyan-400 font-bold">
+                      <div className="flex items-center text-ios-blue font-bold">
                         <input
                           type="number"
                           step="0.1"
                           value={item.powerSaveWatts}
                           onChange={(e) => updateItemField(item.id, 'powerSaveWatts', parseFloat(e.target.value) || 0)}
-                          className="bg-transparent w-full focus:outline-none text-cyan-600 dark:text-cyan-400 text-xs font-mono"
+                          className="bg-transparent w-full focus:outline-none text-ios-blue text-xs font-mono"
                         />
                         <span className="text-[10px] text-slate-500 font-normal ml-0.5">W</span>
                       </div>
@@ -564,62 +564,65 @@ export const UpgradeRoiCalculator: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output Dashboard & ROI Rating */}
         <div className="lg:col-span-5 space-y-6">
           {/* Key Metric Cards */}
-          <div className="grid grid-cols-3 gap-2.5">
-            <div className="glass-card p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium block">总计省瓦收益</span>
-              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
-                +{analysis.totalPowerSaveWatts} <span className="text-xs text-slate-400 font-sans font-normal">W</span>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <IOSMetricTile
+              label="总计省瓦收益"
+              value={`+${analysis.totalPowerSaveWatts}`}
+              unit="W"
+              accentColor="blue"
+              icon={Zap}
+            />
 
-            <div className="glass-card p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium block">整车总减重</span>
-              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1">
-                -{analysis.totalWeightSaveG} <span className="text-xs text-slate-400 font-sans font-normal">g</span>
-              </div>
-            </div>
+            <IOSMetricTile
+              label="整车总减重"
+              value={`-${analysis.totalWeightSaveG}`}
+              unit="g"
+              accentColor="green"
+              icon={Scale}
+            />
 
-            <div className="glass-card p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-center shadow-xs">
-              <span className="text-slate-500 dark:text-slate-400 text-[11px] font-medium block">改装总投资</span>
-              <div className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 mt-1">
-                {currencySymbol}{analysis.totalCostYuan}
-              </div>
-            </div>
+            <IOSMetricTile
+              label="改装总投资"
+              value={`${currencySymbol}${analysis.totalCostYuan}`}
+              unit=""
+              accentColor="orange"
+              icon={DollarSign}
+            />
           </div>
 
           {/* Time Saved Comparisons */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="glass-panel p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-xs">
+            <IOSCard variant="inset" className="p-4 space-y-1">
               <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                <Clock className="w-3.5 h-3.5 text-ios-blue" />
                 40km 平路巡航省时
               </span>
-              <div className="text-xl font-bold font-mono text-cyan-600 dark:text-cyan-300">
+              <div className="text-xl font-bold font-mono text-ios-blue">
                 节省 {analysis.flatTimeSavedSec} 秒
               </div>
               <span className="text-[10px] text-slate-500">约 {(analysis.flatTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
-            </div>
+            </IOSCard>
 
-            <div className="glass-panel p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1 shadow-xs">
+            <IOSCard variant="inset" className="p-4 space-y-1">
               <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                 10km 7.5% 爬坡省时
               </span>
-              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-300">
+              <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
                 节省 {analysis.climbTimeSavedSec} 秒
               </div>
               <span className="text-[10px] text-slate-500">约 {(analysis.climbTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
-            </div>
+            </IOSCard>
           </div>
 
           {/* ROI Metric & Badge */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+          <IOSCard variant="default" className="p-5 space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-xs text-slate-600 dark:text-slate-400">改装性价比与边际收益评级</span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold border ${analysis.roiBadgeColor}`}>
@@ -639,10 +642,10 @@ export const UpgradeRoiCalculator: React.FC = () => {
               <p>• <strong>进阶第二阶 ({currencySymbol}300~600/W)</strong>：50mm 综合气动碳轮、一体把、气动头盔，兼具巡航破风与整车颜值。</p>
               <p>• <strong>边际递减阶 (&gt;{currencySymbol}1000/W)</strong>：陶瓷大导轮、钛合金螺丝，适合发烧竞技车手追求极限边际增益。</p>
             </div>
-          </div>
+          </IOSCard>
 
           {/* Single Item Wattage Contribution Chart */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2 shadow-xs">
+          <IOSCard variant="default" className="p-5 space-y-2">
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">各单品省瓦贡献对比柱状图 (Watts @ {flatCruiseSpeedKmh}km/h)</span>
             <div className="h-44">
               <Bar
@@ -658,7 +661,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                 }}
               />
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

@@ -811,13 +811,13 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         {/* Left Column: Route Cards Matrix */}
         <div className="lg:col-span-5 space-y-3.5 max-h-[860px] overflow-y-auto pr-1">
           {filteredRoutes.length === 0 ? (
-            <div className="glass-panel p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
+            <div className="p-8 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl text-center space-y-3 shadow-ios-sm">
               <Compass className="w-10 h-10 text-slate-400 mx-auto opacity-50" />
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 {'未找到符合筛选条件的路书'}
               </p>
               {activeTab === 'personal' && (
-                <label className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-bold cursor-pointer">
+                <label className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-ios-blue text-white text-xs font-bold cursor-pointer apple-touch">
                   <Upload className="w-3.5 h-3.5" />
                   {'立即导入本地 GPX'}
                   <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
@@ -944,7 +944,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             {/* Leaflet Map Box */}
             <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 dark:border-white/10 z-10 shadow-inner">
-              <div ref={mapContainerRef} className="w-full h-80 bg-slate-900"></div>
+              <div ref={mapContainerRef} className="w-full h-80 bg-black"></div>
             </div>
 
             {/* Quick Waypoints sequence */}

@@ -815,7 +815,7 @@ export const ClimbPacingPlanner: React.FC = () => {
 
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
               {segments.map((seg, idx) => (
-                <div key={seg.id} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2.5">
+                <div key={seg.id} className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2.5">
                   <div className="flex justify-between items-center">
                     <input
                       type="text"
@@ -825,7 +825,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                         copy[idx].name = e.target.value;
                         setSegments(copy);
                       }}
-                      className="text-xs font-bold text-slate-900 dark:text-slate-200 bg-transparent focus:outline-none focus:text-cyan-500 flex-1 mr-2"
+                      className="text-xs font-bold text-slate-900 dark:text-slate-200 bg-transparent focus:outline-none focus:text-ios-blue flex-1 mr-2"
                     />
                     {segments.length > 1 && (
                       <button
@@ -1065,9 +1065,9 @@ export const ClimbPacingPlanner: React.FC = () => {
                 <div className="flex items-center gap-1.5 text-xs">
                   <button
                     onClick={() => setSegmentFilterTab('all')}
-                    className={`px-3 py-1.5 rounded-xl transition whitespace-nowrap ${
+                    className={`px-3 py-1.5 rounded-xl transition apple-touch whitespace-nowrap ${
                       segmentFilterTab === 'all'
-                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-xs'
+                        ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-xs'
                         : 'bg-white/80 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 font-medium border border-slate-200/60 dark:border-white/5'
                     }`}
                   >
@@ -1075,9 +1075,9 @@ export const ClimbPacingPlanner: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setSegmentFilterTab('tour')}
-                    className={`px-3 py-1.5 rounded-xl transition whitespace-nowrap ${
+                    className={`px-3 py-1.5 rounded-xl transition apple-touch whitespace-nowrap ${
                       segmentFilterTab === 'tour'
-                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-xs'
+                        ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-xs'
                         : 'bg-white/80 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 font-medium border border-slate-200/60 dark:border-white/5'
                     }`}
                   >
@@ -1085,9 +1085,9 @@ export const ClimbPacingPlanner: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setSegmentFilterTab('starred')}
-                    className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1 whitespace-nowrap ${
+                    className={`px-3 py-1.5 rounded-xl transition apple-touch flex items-center gap-1 whitespace-nowrap ${
                       segmentFilterTab === 'starred'
-                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-xs'
+                        ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-xs'
                         : 'bg-white/80 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/10 font-medium border border-slate-200/60 dark:border-white/5'
                     }`}
                   >

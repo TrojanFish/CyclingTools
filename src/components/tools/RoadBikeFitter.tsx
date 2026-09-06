@@ -4,7 +4,7 @@ import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
-import { IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -167,7 +167,7 @@ export const RoadBikeFitter: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-purple/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -199,16 +199,18 @@ export const RoadBikeFitter: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <User className="w-4 h-4 text-ios-purple" />
-              {language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
-            </h2>
+          <IOSCard variant="default" className="p-6 space-y-5">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
+              subtitle={language === 'zh-TW' ? '人體解剖學精密擬合' : '人体解剖学精密拟合'}
+              icon={User}
+              iconColor="purple"
+            />
 
             {/* Height & Inseam */}
             <div className="grid grid-cols-2 gap-3">
@@ -300,16 +302,16 @@ export const RoadBikeFitter: React.FC = () => {
             </div>
 
             {/* Advanced Extra Measurements Accordion */}
-            <div className="border-t border-slate-200 dark:border-slate-800/80 pt-3">
+            <div className="border-t border-black/[0.05] dark:border-white/[0.08] pt-3">
               <button
                 onClick={() => setShowAdvancedInputs(!showAdvancedInputs)}
-                className="w-full flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition py-1"
+                className="w-full flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition py-1 apple-touch"
               >
                 <span className="flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-ios-purple" />
                   {language === 'zh-TW' ? '進階測量 (坐高/腿長)' : '进阶测量 (坐高/腿长)'}
                 </span>
-                <span className="text-cyan-600 dark:text-cyan-400 font-mono text-[11px]">{showAdvancedInputs ? '▲' : '▼'}</span>
+                <span className="text-ios-purple font-mono text-[11px]">{showAdvancedInputs ? '▲' : '▼'}</span>
               </button>
 
               {showAdvancedInputs && (
@@ -341,18 +343,18 @@ export const RoadBikeFitter: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output & Interactive Bike Diagram */}
         <div className="lg:col-span-7 space-y-6">
           {/* Interactive Bike Diagram */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+          <IOSCard variant="default" className="p-5 space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {language === 'zh-TW' ? '公路車關鍵擬合幾何實時矢量圖譜' : '公路车关键拟合几何实时矢量图谱'}
               </span>
-              <span className="text-xs font-mono text-cyan-600 dark:text-cyan-400 font-bold">
+              <span className="text-xs font-mono text-ios-blue font-bold">
                 {'推荐车架标号'}: {result.conceptualFrameSize}
               </span>
             </div>
@@ -364,7 +366,7 @@ export const RoadBikeFitter: React.FC = () => {
               saddleSetback={result.saddleSetback}
               saddleDrop={result.saddleDrop}
             />
-          </div>
+          </IOSCard>
 
           {/* Key Output Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -402,32 +404,32 @@ export const RoadBikeFitter: React.FC = () => {
           </div>
 
           {/* Stack & Reach + Body Proportion Analysis */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+          <IOSCard variant="default" className="p-5 space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
-              <Activity className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              <Activity className="w-4 h-4 text-ios-purple" />
               {language === 'zh-TW' ? '車架堆高與前伸量 (Stack & Reach) 與身材特徵推斷' : '车架堆高与前伸量 (Stack & Reach) 与身材特征推断'}
             </h3>
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+              <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {'建议车架 Stack (堆高)'}
                 </span>
-                <span className="text-base font-bold font-mono text-cyan-600 dark:text-cyan-400">
+                <span className="text-base font-bold font-mono text-ios-blue">
                   ~{result.estimatedStack} mm {isImperial ? `(${(result.estimatedStack / 25.4).toFixed(1)} in)` : ''}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+              <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {'建议车架 Reach (前伸)'}
                 </span>
-                <span className="text-base font-bold font-mono text-cyan-600 dark:text-cyan-400">
+                <span className="text-base font-bold font-mono text-ios-blue">
                   ~{result.estimatedReach} mm {isImperial ? `(${(result.estimatedReach / 25.4).toFixed(1)} in)` : ''}
                 </span>
               </div>
             </div>
             <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
               <div className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-ios-purple mt-1.5 shrink-0"></span>
                 <span>{result.sittingHeightNote}</span>
               </div>
               <div className="flex items-start gap-2">
@@ -435,17 +437,17 @@ export const RoadBikeFitter: React.FC = () => {
                 <span>{result.thighLowerLegNote}</span>
               </div>
             </div>
-          </div>
+          </IOSCard>
 
           {/* Cleat & Cockpit Advice Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 space-y-3 shadow-xs">
+          <IOSCard variant="default" className="p-5 space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
-              <Footprints className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+              <Footprints className="w-4 h-4 text-ios-purple" />
               {language === 'zh-TW' ? 'KOPS 膝關節鉛垂線檢測與鎖片生物力學' : 'KOPS 膝关节铅垂线检测与锁片生物力学'}
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5">
                 <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <Activity className="w-3.5 h-3.5" />
                   {'KOPS 膝盖铅垂线校准'}
@@ -455,8 +457,8 @@ export const RoadBikeFitter: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
-                <span className="font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5">
+                <span className="font-semibold text-ios-blue flex items-center gap-1.5">
                   <Footprints className="w-3.5 h-3.5" />
                   {'锁片前后位与肌群负荷'}
                 </span>
@@ -465,7 +467,7 @@ export const RoadBikeFitter: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <span className="font-semibold text-purple-600 dark:text-purple-300 block">
                   {`推荐把立: ${result.stemLength}mm | 弯把宽: ${result.handlebarWidth}cm`}
                 </span>
@@ -474,7 +476,7 @@ export const RoadBikeFitter: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <span className="font-semibold text-amber-600 dark:text-amber-300 block">
                   {`推荐曲柄: ${result.crankLength} | 浮动锁片`}
                 </span>
@@ -483,7 +485,7 @@ export const RoadBikeFitter: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

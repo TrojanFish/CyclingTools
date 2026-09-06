@@ -165,7 +165,7 @@ const MainAppContent: React.FC = () => {
           <main className="space-y-4 sm:space-y-6">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
-              <div className="glass-panel relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shadow-xs no-print">
+              <div className="relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex items-center justify-between gap-2 shadow-ios-sm no-print">
                 {/* Left: Mobile Back Button & Desktop Breadcrumbs */}
                 <div className="flex items-center gap-2 shrink-0">
                   {/* Mobile Only: Back Button with Icon AND Text */}
@@ -207,7 +207,7 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handlePrevTool}
                     disabled={currentToolIndex <= 0}
-                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
                     title={t('prevTool')}
                     aria-label={t('prevTool')}
                   >
@@ -224,7 +224,7 @@ const MainAppContent: React.FC = () => {
                   <button
                     onClick={handleNextTool}
                     disabled={currentToolIndex >= TOOLS_LIST.length - 1}
-                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
+                    className="flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch"
                     title={t('nextTool')}
                     aria-label={t('nextTool')}
                   >

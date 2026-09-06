@@ -110,8 +110,8 @@ export const PwaInstallPrompt: React.FC = () => {
 
       {/* iOS Safari Add to Home Screen Instructions Modal */}
       {showIosGuide && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-sm w-full space-y-4 text-slate-900 dark:text-slate-100 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+          <div className="bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.1] max-w-sm w-full space-y-4 text-slate-900 dark:text-white shadow-2xl relative">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-2xl bg-ios-blue/15 text-ios-blue">
@@ -133,7 +133,7 @@ export const PwaInstallPrompt: React.FC = () => {
             </p>
 
             <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="w-5 h-5 rounded-full bg-ios-blue text-white flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
                 <span>
                   {language === 'zh-TW' ? '點擊 Safari 底部的 ' : '点击 Safari 底部的 '}
@@ -141,7 +141,7 @@ export const PwaInstallPrompt: React.FC = () => {
                   {language === 'zh-TW' ? '分享按鈕' : '分享按钮'}
                 </span>
               </div>
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="w-5 h-5 rounded-full bg-ios-blue text-white flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
                 <span>
                   {language === 'zh-TW'
@@ -149,7 +149,7 @@ export const PwaInstallPrompt: React.FC = () => {
                     : '下滑选择「添加到主屏幕」图标。'}
                 </span>
               </div>
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="w-5 h-5 rounded-full bg-ios-blue text-white flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
                 <span>
                   {language === 'zh-TW' ? '點擊右上角「加入」，即可從桌面啟動！' : '点击右上角「添加」，即可从桌面启动！'}
@@ -159,7 +159,7 @@ export const PwaInstallPrompt: React.FC = () => {
 
             <button
               onClick={() => setShowIosGuide(false)}
-              className="w-full py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl font-bold text-xs transition shadow-md shadow-ios-blue/20"
+              className="apple-touch w-full py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl font-bold text-xs transition shadow-md shadow-ios-blue/20"
             >
               {language === 'zh-TW' ? '我知道了' : '我知道了'}
             </button>

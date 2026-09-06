@@ -629,7 +629,7 @@ export const GroupRideSimulator: React.FC = () => {
                   step="0.5"
                   value={rotationMinutes}
                   onChange={(e) => setRotationMinutes(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-ios-mint"
+                  className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-mint"
                 />
               </div>
             )}

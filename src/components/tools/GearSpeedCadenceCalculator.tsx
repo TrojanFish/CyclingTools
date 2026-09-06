@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateGearSpeedPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
@@ -201,7 +202,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -240,10 +241,10 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Inputs & Presets */}
-      <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+      <IOSCard variant="default" className="p-6 space-y-5">
         {/* Gruppo Presets */}
         <div>
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
@@ -298,7 +299,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               type="text"
               value={cogsStr}
               onChange={(e) => setCogsStr(e.target.value)}
-              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-cyan-600 dark:text-cyan-400 font-mono focus:border-cyan-500 focus:outline-none"
+              className="w-full bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs text-ios-blue font-mono focus:outline-none focus:ring-1 focus:ring-ios-blue"
             />
           </div>
 
@@ -316,7 +317,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         </div>
 
         {/* Tire preset picker */}
-        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-800/80">
+        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-black/[0.05] dark:border-white/[0.08]">
           <span className="text-xs text-slate-500 dark:text-slate-400">外胎周长规格:</span>
           {TIRE_PRESETS.map((p) => {
             const isSelected = tireCircumferenceMm === p.value;
@@ -324,10 +325,10 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               <button
                 key={p.value}
                 onClick={() => setTireCircumferenceMm(p.value)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-mono transition apple-touch ${
+                className={`px-2.5 py-1 rounded-xl text-xs font-mono transition apple-touch ${
                   isSelected
                     ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
-                    : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800'
+                    : 'bg-black/[0.02] dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-black/[0.05] dark:border-white/[0.08]'
                 }`}
               >
                 {p.label}
@@ -335,38 +336,38 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
             );
           })}
         </div>
-      </div>
+      </IOSCard>
 
       {/* Step % Difference Analysis */}
-      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 space-y-2">
+      <IOSCard variant="inset" className="p-4 space-y-2">
         <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block flex items-center gap-1.5">
-          <ArrowUpDown className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+          <ArrowUpDown className="w-3.5 h-3.5 text-ios-blue" />
           相邻档位齿比变动阶梯 (Gear Step % Jump)
         </span>
         <div className="flex flex-wrap gap-2 text-xs font-mono">
           {gearSteps.map((s, idx) => (
-            <div key={idx} className="p-2 rounded-xl bg-slate-100 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
+            <div key={idx} className="p-2 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/[0.05] dark:border-white/[0.08] flex items-center gap-1.5">
               <span className="font-bold text-slate-800 dark:text-slate-200">{s.cog}T</span>
               {s.nextCog && (
                 <>
                   <span className="text-slate-400 dark:text-slate-500">→</span>
-                  <span className="text-cyan-600 dark:text-cyan-400 font-semibold">+{s.jumpPct}%</span>
+                  <span className="text-ios-blue font-semibold">+{s.jumpPct}%</span>
                 </>
               )}
             </div>
           ))}
         </div>
-      </div>
+      </IOSCard>
 
       {/* TAB 1: Speed & Gear Ratio Matrix */}
       {activeTab === 'matrix' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
+        <IOSCard variant="default" className="p-5 space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
             <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
               在 {cadenceRpm} RPM 踏频下的全档位速度 ({isImperial ? 'mph' : 'km/h'}) 与前进距离 ({isImperial ? 'gear in' : 'm'}) 矩阵
             </span>
             <div className="flex items-center gap-2 text-[11px]">
-              <span className="text-cyan-600 dark:text-cyan-400 sm:hidden font-medium">↔ 可横向滑动查看</span>
+              <span className="text-ios-blue sm:hidden font-medium">↔ 可横向滑动查看</span>
               <span className="text-slate-500">
                 *黄色标记为极限斜链位 (Crossed-Chaining)
               </span>
@@ -376,17 +377,17 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-center border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono">
+                <tr className="border-b border-black/[0.05] dark:border-white/[0.08] text-slate-500 dark:text-slate-400 font-mono">
                   <th className="p-2.5 text-left font-sans">牙盘</th>
                   {cogsList.map(c => (
                     <th key={c} className="p-2.5 font-bold text-slate-700 dark:text-slate-300">{c}T</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono">
                 {speedMatrix.map((item, rowIdx) => (
-                  <tr key={rowIdx} className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition">
-                    <td className="p-2.5 text-left font-bold text-cyan-600 dark:text-cyan-400 font-sans">
+                  <tr key={rowIdx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.04] transition">
+                    <td className="p-2.5 text-left font-bold text-ios-blue font-sans">
                       {item.ring}T
                     </td>
                     {item.row.map((cell, cIdx) => (
@@ -412,39 +413,39 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </IOSCard>
       )}
 
       {/* TAB 2: Multi-Cadence Sweep Table */}
       {activeTab === 'cadence_table' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs">
+        <IOSCard variant="default" className="p-5 space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
             <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
               大盘 {bigRing}T 在不同踏频 (70 ~ 110 RPM) 下的速度对照 ({isImperial ? 'mph' : 'km/h'})
             </span>
-            <span className="text-[11px] text-cyan-600 dark:text-cyan-400 sm:hidden font-medium">↔ 可横向滑动查看</span>
+            <span className="text-[11px] text-ios-blue sm:hidden font-medium">↔ 可横向滑动查看</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-center border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono">
+                <tr className="border-b border-black/[0.05] dark:border-white/[0.08] text-slate-500 dark:text-slate-400 font-mono">
                   <th className="p-2.5 text-left font-sans">飞轮齿片</th>
                   <th className="p-2.5">传动比</th>
                   <th className="p-2.5">70 RPM</th>
                   <th className="p-2.5">80 RPM</th>
-                  <th className="p-2.5 font-bold text-cyan-600 dark:text-cyan-400">90 RPM (基准)</th>
+                  <th className="p-2.5 font-bold text-ios-blue">90 RPM (基准)</th>
                   <th className="p-2.5">100 RPM</th>
                   <th className="p-2.5">110 RPM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono">
                 {multiCadenceData.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition">
+                  <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.04] transition">
                     <td className="p-2.5 text-left font-bold text-slate-800 dark:text-slate-200 font-sans">{bigRing}x{row.cog}T</td>
                     <td className="p-2.5 text-slate-500 dark:text-slate-400">{row.ratio}</td>
                     <td className="p-2.5 text-slate-800 dark:text-slate-200">{row.speeds[0]}</td>
                     <td className="p-2.5 text-slate-800 dark:text-slate-200">{row.speeds[1]}</td>
-                    <td className="p-2.5 font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/5">{row.speeds[2]}</td>
+                    <td className="p-2.5 font-bold text-ios-blue bg-ios-blue/5">{row.speeds[2]}</td>
                     <td className="p-2.5 text-slate-800 dark:text-slate-200">{row.speeds[3]}</td>
                     <td className="p-2.5 text-emerald-600 dark:text-emerald-400 font-semibold">{row.speeds[4]}</td>
                   </tr>
@@ -452,12 +453,12 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </IOSCard>
       )}
 
       {/* TAB 3: Speed vs Cadence Visual Chart */}
       {activeTab === 'chart' && (
-        <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <IOSCard variant="default" className="p-5 space-y-4">
           <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
             高速档、中盘巡航与爬坡极限档 踏频-车速线性曲线
           </span>
@@ -483,7 +484,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
               }}
             />
           </div>
-        </div>
+        </IOSCard>
       )}
 
       {/* Social Share Poster Modal */}

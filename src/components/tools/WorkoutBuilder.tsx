@@ -655,7 +655,7 @@ export const WorkoutBuilder: React.FC = () => {
                 type="text"
                 value={workoutTitle}
                 onChange={(e) => setWorkoutTitle(e.target.value)}
-                className="text-base sm:text-lg font-bold text-slate-900 dark:text-white bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 hover:border-ios-red focus:outline-none focus:border-ios-red px-1 py-0.5"
+                className="text-base sm:text-lg font-bold text-slate-900 dark:text-white bg-transparent border-b border-dashed border-slate-300 dark:border-white/20 hover:border-ios-red focus:outline-none focus:border-ios-red px-1 py-0.5"
                 placeholder="课表名称..."
               />
             </div>
@@ -977,7 +977,7 @@ export const WorkoutBuilder: React.FC = () => {
 
             {/* Code Preview Box */}
             <div className="relative">
-              <pre className="p-4 rounded-2xl bg-slate-900 text-slate-200 text-xs font-mono h-64 overflow-y-auto leading-relaxed border border-slate-800 selection:bg-ios-red selection:text-white">
+              <pre className="p-4 rounded-2xl bg-[#1C1C1E] text-slate-200 text-xs font-mono h-64 overflow-y-auto leading-relaxed border border-white/10 selection:bg-ios-red selection:text-white">
                 {exportFormat === 'zwo' ? zwoXmlContent : mrcContent}
               </pre>
             </div>

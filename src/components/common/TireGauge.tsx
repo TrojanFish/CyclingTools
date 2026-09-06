@@ -26,8 +26,8 @@ export const TireGauge: React.FC<TireGaugeProps> = ({
   const ny = 100 - 60 * Math.sin(rad);
 
   return (
-    <div className="flex flex-col items-center justify-center p-3 bg-slate-950/50 rounded-2xl border border-slate-800/80 text-center">
-      <span className="text-[11px] font-semibold text-slate-300">{label}</span>
+    <div className="flex flex-col items-center justify-center p-3 bg-black/[0.02] dark:bg-white/[0.03] rounded-2xl border border-black/[0.05] dark:border-white/[0.08] text-center">
+      <span className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{label}</span>
 
       <svg viewBox="0 0 200 120" className="w-40 h-auto select-none">
         <defs>
@@ -43,7 +43,8 @@ export const TireGauge: React.FC<TireGaugeProps> = ({
         <path
           d="M 30 100 A 70 70 0 0 1 170 100"
           fill="none"
-          stroke="#1e293b"
+          stroke="currentColor"
+          className="text-slate-200 dark:text-white/10"
           strokeWidth="12"
           strokeLinecap="round"
         />

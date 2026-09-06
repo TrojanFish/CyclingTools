@@ -10,10 +10,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
   const { t } = useLanguageAndUnit();
 
   return (
-    <footer className="mt-12 border-t border-slate-200 dark:border-slate-800/80 bg-white/85 dark:bg-slate-950/70 backdrop-blur-xl no-print transition-colors">
+    <footer className="mt-12 border-t border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-black/60 backdrop-blur-xl no-print transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Compliance & Legal Disclaimer Box */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-500 dark:text-slate-400 p-4 rounded-2xl bg-slate-100/70 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/60">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-500 dark:text-slate-400 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-300">
               <Shield className="w-3.5 h-3.5 text-ios-blue" />
@@ -57,17 +57,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
 
           {/* Quick Keyboard Shortcuts Capsule */}
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600 dark:text-slate-400">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800/80 text-[11px]">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerSearch')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-slate-800/90 rounded border border-slate-300 dark:border-slate-700 shadow-2xs">/</kbd>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-slate-200 dark:border-white/10 shadow-2xs">/</kbd>
             </div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800/80 text-[11px]">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerClose')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-slate-800/90 rounded border border-slate-300 dark:border-slate-700 shadow-2xs">ESC</kbd>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-slate-200 dark:border-white/10 shadow-2xs">ESC</kbd>
             </div>
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800/80 text-[11px]">
+            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerPrint')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-slate-800/90 rounded border border-slate-300 dark:border-slate-700 shadow-2xs">Ctrl+P</kbd>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-slate-200 dark:border-white/10 shadow-2xs">Ctrl+P</kbd>
             </div>
           </div>
 

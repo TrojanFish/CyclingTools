@@ -3,7 +3,7 @@ import { Link, CheckCircle2, AlertTriangle, Info, Share2, Settings, ArrowRight, 
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
-import { IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateChainLengthPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
@@ -141,7 +141,7 @@ export const ChainLengthCalculator: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -164,10 +164,10 @@ export const ChainLengthCalculator: React.FC = () => {
             <span>生成截链规范卡</span>
           </button>
         </div>
-      </div>
+      </IOSCard>
 
       {/* Preset Buttons */}
-      <div className="p-4 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex flex-col sm:flex-row sm:items-center gap-3 shadow-ios-sm">
+      <IOSCard variant="default" className="flex flex-col sm:flex-row sm:items-center gap-3">
         <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
           {language === 'zh-TW' ? '規格預設:' : '规格预设:'}
         </span>
@@ -184,12 +184,12 @@ export const ChainLengthCalculator: React.FC = () => {
             size="sm"
           />
         </div>
-      </div>
+      </IOSCard>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
+          <IOSCard variant="default" className="space-y-5">
             <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
               <Settings className="w-4 h-4 text-ios-blue" />
               车架几何与齿盘参数
@@ -292,7 +292,7 @@ export const ChainLengthCalculator: React.FC = () => {
             </div>
 
             {/* Pulley Teeth */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="pt-2 border-t border-black/[0.05] dark:border-white/[0.08]">
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5 flex items-center">
                 后拨导轮规格 (Pulley Wheels)
                 <Tooltip content="标准原厂导轮一般为 11T/12T；若改装超大导轮系统（如 14T/16T/18T 大鸡腿），需相应补偿链节。" />
@@ -311,7 +311,7 @@ export const ChainLengthCalculator: React.FC = () => {
                       className={`py-2 px-1 rounded-xl border text-center transition apple-touch ${
                         isSelected
                           ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-xs ring-1.5 ring-ios-blue/30 scale-[1.01]'
-                          : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                          : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20'
                       }`}
                     >
                       <span className={isSelected ? 'font-bold text-white' : ''}>{p.label}</span>
@@ -320,7 +320,7 @@ export const ChainLengthCalculator: React.FC = () => {
                 })}
               </div>
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Outputs & Visualization */}
@@ -370,16 +370,16 @@ export const ChainLengthCalculator: React.FC = () => {
           </div>
 
           {/* Drivetrain Visual SVG Schematic */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+          <IOSCard variant="default" className="p-5 space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-cyan-500 dark:text-cyan-400" />
+                <Zap className="w-3.5 h-3.5 text-ios-blue" />
                 传动链条闭环受力几何示意
               </span>
-              <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">RC: {chainstayLengthMm}mm</span>
+              <span className="font-mono text-ios-blue font-bold">RC: {chainstayLengthMm}mm</span>
             </div>
 
-            <div className="flex justify-center bg-slate-50 dark:bg-slate-950/40 rounded-xl p-4 border border-slate-200 dark:border-slate-800/60 transition-colors">
+            <div className="flex justify-center bg-black/[0.02] dark:bg-white/[0.03] rounded-2xl p-4 border border-black/[0.05] dark:border-white/[0.08] transition-colors">
               <svg viewBox="0 0 360 140" className="w-full max-w-md h-auto select-none">
                 {/* Chainstay line */}
                 <line x1="80" y1="70" x2="280" y2="70" stroke="#94a3b8" strokeWidth="2.5" strokeDasharray="4 4" className="dark:stroke-slate-700" />
@@ -399,8 +399,8 @@ export const ChainLengthCalculator: React.FC = () => {
                 />
 
                 {/* Front Chainring */}
-                <circle cx="280" cy="70" r="45" fill="#f1f5f9" stroke="#0284c7" strokeWidth="2.5" className="dark:fill-slate-800 dark:stroke-[#00AFFF]" />
-                <circle cx="280" cy="70" r="10" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-slate-900 dark:stroke-slate-600" />
+                <circle cx="280" cy="70" r="45" fill="#f1f5f9" stroke="#0284c7" strokeWidth="2.5" className="dark:fill-[#2C2C2E] dark:stroke-[#00AFFF]" />
+                <circle cx="280" cy="70" r="10" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-slate-600" />
                 <text x="280" y="74" fontSize="12" fontWeight="bold" fill="#0369a1" textAnchor="middle" fontFamily="monospace" className="dark:fill-sky-400">
                   {bigRing}T
                 </text>
@@ -409,8 +409,8 @@ export const ChainLengthCalculator: React.FC = () => {
                 </text>
 
                 {/* Rear Cassette */}
-                <circle cx="80" cy="70" r="28" fill="#f1f5f9" stroke="#059669" strokeWidth="2.5" className="dark:fill-slate-800 dark:stroke-emerald-500" />
-                <circle cx="80" cy="70" r="8" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-slate-900 dark:stroke-slate-600" />
+                <circle cx="80" cy="70" r="28" fill="#f1f5f9" stroke="#059669" strokeWidth="2.5" className="dark:fill-[#2C2C2E] dark:stroke-emerald-500" />
+                <circle cx="80" cy="70" r="8" fill="#e2e8f0" stroke="#64748b" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-slate-600" />
                 <text x="80" y="74" fontSize="11" fontWeight="bold" fill="#047857" textAnchor="middle" fontFamily="monospace" className="dark:fill-emerald-400">
                   {bigCog}T
                 </text>
@@ -419,36 +419,36 @@ export const ChainLengthCalculator: React.FC = () => {
                 </text>
 
                 {/* Derailleur Pulley Cage */}
-                <circle cx="105" cy="108" r="9" fill="#fef3c7" stroke="#d97706" strokeWidth="2" className="dark:fill-slate-900 dark:stroke-amber-500" />
+                <circle cx="105" cy="108" r="9" fill="#fef3c7" stroke="#d97706" strokeWidth="2" className="dark:fill-[#1C1C1E] dark:stroke-amber-500" />
                 <text x="105" y="111" fontSize="7" fontWeight="bold" fill="#b45309" textAnchor="middle" className="dark:fill-amber-400">
                   {pulleyTeeth}T
                 </text>
               </svg>
             </div>
-          </div>
+          </IOSCard>
 
           {/* Installation Best Practices Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+          <IOSCard variant="default" className="p-5 space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               官方装配与物理测量截链法则
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
-                <span className="font-semibold text-cyan-600 dark:text-cyan-300 block">Shimano 经典大对大法</span>
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5">
+                <span className="font-semibold text-ios-blue block">Shimano 经典大对大法</span>
                 <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
                   链条不经过后拨导轮，直接绕过最大大盘与最大飞轮拉紧，在两端闭合重合处额外加 <strong>2 节 (含魔术扣)</strong> 即为标准长度。
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 space-y-1.5">
-                <span className="font-semibold text-emerald-600 dark:text-emerald-300 block">小盘小飞下垂校验</span>
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5">
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400 block">小盘小飞下垂校验</span>
                 <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
                   截链装好后切换至小盘最小飞轮，确认后拨导板仍保有微小张力且链条不会刮蹭后拨上导轮下沿。
                 </p>
               </div>
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

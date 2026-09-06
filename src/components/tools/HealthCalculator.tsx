@@ -4,7 +4,7 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
-import { IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 
 export const HealthCalculator: React.FC = () => {
   const { profile } = useRiderProfile();
@@ -100,104 +100,117 @@ export const HealthCalculator: React.FC = () => {
         zone: 'Zone 3 节奏区间 (Tempo Zone)',
         range: `${Math.round(restingHr + hrr * 0.70)} - ${Math.round(restingHr + hrr * 0.80)} bpm`,
         pct: '70% - 80% HRR',
-        desc: '高效率中长途巡航，糖原与脂肪混合代谢，呼吸加深但仍可简短交谈。'
+        desc: '有氧与糖原氧化混合供能，接近马拉松/长距离爬坡配速。'
       },
       {
         zone: 'Zone 4 乳酸阈值 (Lactate Threshold)',
         range: `${Math.round(restingHr + hrr * 0.80)} - ${Math.round(restingHr + hrr * 0.90)} bpm`,
         pct: '80% - 90% HRR',
-        desc: '乳酸生成与清除平衡临界点，提升竞技巡航耐受力的关键训练区间。'
+        desc: '临界功率区间，乳酸产生与清除处于动态平衡，提升 FTP 的关键区间。'
       },
       {
-        zone: 'Zone 5 无氧极限 (Anaerobic / VO₂ Max)',
+        zone: 'Zone 5 无氧耐力与冲刺 (Anaerobic / VO2max)',
         range: `${Math.round(restingHr + hrr * 0.90)} - ${maxHr} bpm`,
         pct: '90% - 100% HRR',
-        desc: '陡坡进攻、卡位冲刺与全速突围极限，肌肉迅速堆积乳酸。'
+        desc: '高心率极限刺激，极度依赖无氧糖酵解，快速产生乳酸，用于短坡突围与冲刺。'
       }
     ];
 
     return { hrr, zones };
   }, [restingHr, maxHr]);
 
-  // 3. BMI Calculation
-  const bmiResult = useMemo(() => {
-    const safeHM = Math.max(0.5, (heightCm || 175) / 100);
-    const safeWeight = Math.max(20, weightKg || 68);
-    const bmi = safeWeight / (safeHM * safeHM);
-    const idealMin = 18.5 * safeHM * safeHM;
-    const idealMax = 23.9 * safeHM * safeHM;
-
-    let category = '正常健康体重';
-    let color = 'text-emerald-400';
-    if (bmi < 18.5) { category = '偏瘦 / 体重过轻'; color = 'text-sky-400'; }
-    else if (bmi <= 23.9) { category = '标准健康体重'; color = 'text-emerald-400'; }
-    else if (bmi <= 27.9) { category = '超重 / 偏重'; color = 'text-amber-400'; }
-    else if (bmi <= 31.9) { category = '肥胖 (I级)'; color = 'text-rose-400'; }
-    else { category = '重度肥胖 (II级)'; color = 'text-rose-500'; }
-
-    return {
-      bmi: parseFloat(bmi.toFixed(1)),
-      category,
-      color,
-      idealMin: idealMin.toFixed(1),
-      idealMax: idealMax.toFixed(1)
-    };
-  }, [heightCm, weightKg]);
-
-  // 4. BMR & TDEE (Mifflin-St Jeor)
+  // 3. Mifflin-St Jeor BMR & TDEE Formula
   const bmrResult = useMemo(() => {
     let bmr = 10 * weightKg + 6.25 * heightCm - 5 * age;
-    if (gender === 'male') bmr += 5;
-    else bmr -= 161;
+    bmr += gender === 'male' ? 5 : -161;
+    bmr = Math.round(bmr);
 
-    const tdee = bmr * activityFactor;
-    const loseWeightCal = Math.round(tdee * 0.8);
-    const maintainCal = Math.round(tdee);
+    const tdee = Math.round(bmr * activityFactor);
+    const loseWeightCal = Math.round(tdee * 0.80);
+    const maintainCal = tdee;
     const gainMuscleCal = Math.round(tdee * 1.15);
 
     return {
-      bmr: Math.round(bmr),
-      tdee: Math.round(tdee),
+      bmr,
+      tdee,
       loseWeightCal,
       maintainCal,
       gainMuscleCal
     };
-  }, [heightCm, weightKg, age, gender, activityFactor]);
+  }, [weightKg, heightCm, age, gender, activityFactor]);
 
-  // 5. Body Fat Percentage (Deurenberg)
-  const bfpResult = useMemo(() => {
-    const bmi = bmiResult.bmi;
-    const genderVal = gender === 'male' ? 1 : 0;
-    const bfp = 1.20 * bmi + 0.23 * age - 10.8 * genderVal - 5.4;
-    const bfpClamped = Math.max(3, Math.min(60, bfp));
+  // 4. BMI Formula: weight(kg) / [height(m)]²
+  const bmiResult = useMemo(() => {
+    const heightM = heightCm / 100;
+    const bmiVal = parseFloat((weightKg / (heightM * heightM)).toFixed(1));
 
-    let level = '健康水平';
-    let levelColor = 'text-emerald-400';
-    if (gender === 'male') {
-      if (bfpClamped < 6) { level = '必需脂肪 (极低)'; levelColor = 'text-sky-400'; }
-      else if (bfpClamped <= 13) { level = '竞技运动员级别'; levelColor = 'text-cyan-400'; }
-      else if (bfpClamped <= 17) { level = '健美 / 良好健身'; levelColor = 'text-emerald-400'; }
-      else if (bfpClamped <= 24) { level = '健康可接受区间'; levelColor = 'text-amber-400'; }
-      else { level = '体脂偏高 / 肥胖'; levelColor = 'text-rose-400'; }
+    let category = '正常健康标准';
+    let color = 'text-emerald-500';
+
+    if (bmiVal < 18.5) {
+      category = '偏瘦 (爬坡手体型)';
+      color = 'text-amber-500';
+    } else if (bmiVal < 24.0) {
+      category = '正常健康 (标准耐力体型)';
+      color = 'text-emerald-500';
+    } else if (bmiVal < 28.0) {
+      category = '过重 (壮实鲁贝车手)';
+      color = 'text-orange-500';
     } else {
-      if (bfpClamped < 14) { level = '必需脂肪 (极低)'; levelColor = 'text-sky-400'; }
-      else if (bfpClamped <= 20) { level = '竞技运动员级别'; levelColor = 'text-cyan-400'; }
-      else if (bfpClamped <= 24) { level = '健美 / 良好健身'; levelColor = 'text-emerald-400'; }
-      else if (bfpClamped <= 31) { level = '健康可接受区间'; levelColor = 'text-amber-400'; }
-      else { level = '体脂偏高 / 肥胖'; levelColor = 'text-rose-400'; }
+      category = '肥胖 (建议减重减脂)';
+      color = 'text-rose-500';
+    }
+
+    const idealMin = parseFloat((18.5 * heightM * heightM).toFixed(1));
+    const idealMax = parseFloat((23.9 * heightM * heightM).toFixed(1));
+
+    return {
+      bmi: bmiVal,
+      category,
+      color,
+      idealMin,
+      idealMax
+    };
+  }, [weightKg, heightCm]);
+
+  // 5. Deurenberg Adult Body Fat Percentage (BFP) formula:
+  // BFP = (1.20 × BMI) + (0.23 × Age) − (10.8 × gender_factor) − 5.4  (male=1, female=0)
+  const bfpResult = useMemo(() => {
+    const heightM = heightCm / 100;
+    const bmiVal = weightKg / (heightM * heightM);
+    const genderFactor = gender === 'male' ? 1 : 0;
+
+    let bfpVal = 1.2 * bmiVal + 0.23 * age - 10.8 * genderFactor - 5.4;
+    bfpVal = parseFloat(Math.max(3, Math.min(60, bfpVal)).toFixed(1));
+
+    let level = '标准';
+    let levelColor = 'text-emerald-500';
+
+    if (gender === 'male') {
+      if (bfpVal < 6) { level = '极端偏低 (职业大环赛车手)'; levelColor = 'text-amber-500'; }
+      else if (bfpVal <= 13) { level = '竞技运动员级别'; levelColor = 'text-blue-500'; }
+      else if (bfpVal <= 17) { level = '优秀健康健美'; levelColor = 'text-emerald-500'; }
+      else if (bfpVal <= 24) { level = '正常水平'; levelColor = 'text-slate-500'; }
+      else { level = '体脂偏高'; levelColor = 'text-rose-500'; }
+    } else {
+      if (bfpVal < 14) { level = '极端偏低 (女性选手极值)'; levelColor = 'text-amber-500'; }
+      else if (bfpVal <= 20) { level = '竞技运动员级别'; levelColor = 'text-blue-500'; }
+      else if (bfpVal <= 24) { level = '优秀健康健美'; levelColor = 'text-emerald-500'; }
+      else if (bfpVal <= 31) { level = '正常水平'; levelColor = 'text-slate-500'; }
+      else { level = '体脂偏高'; levelColor = 'text-rose-500'; }
     }
 
     return {
-      bfp: parseFloat(bfpClamped.toFixed(1)),
+      bfp: bfpVal,
       level,
       levelColor
     };
-  }, [bmiResult.bmi, age, gender]);
+  }, [weightKg, heightCm, age, gender]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="ios-card p-6 sm:p-7 rounded-3xl relative overflow-hidden shadow-ios-sm isolate">
+    <div className="space-y-6 max-w-6xl mx-auto pb-12">
+      {/* Top Banner */}
+      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -227,17 +240,19 @@ export const HealthCalculator: React.FC = () => {
             size="sm"
           />
         </div>
-      </div>
+      </IOSCard>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Inputs */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl space-y-5 shadow-ios-sm">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <User className="w-4 h-4 text-ios-red" />
-              {language === 'zh-TW' ? '個人身體與心率數據 (自動同步車手檔案)' : '个人身体与心率数据 (自动同步车手档案)'}
-            </h2>
+          <IOSCard variant="default" className="p-6 space-y-5">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '個人身體與心率數據' : '个人身体与心率数据'}
+              subtitle={language === 'zh-TW' ? '自動同步車手檔案' : '自动同步车手档案'}
+              icon={User}
+              iconColor="red"
+            />
 
             {/* Gender & Age */}
             <div className="grid grid-cols-2 gap-3">
@@ -271,7 +286,7 @@ export const HealthCalculator: React.FC = () => {
                     {language === 'zh-TW' ? '身高' : '身高'} (cm)
                   </label>
                   {isImperial && (
-                    <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-mono font-medium">
+                    <span className="text-[10px] text-ios-blue font-mono font-medium">
                       {Math.floor(heightCm / 30.48)}'{Math.round((heightCm % 30.48) / 2.54)}"
                     </span>
                   )}
@@ -295,7 +310,7 @@ export const HealthCalculator: React.FC = () => {
             </div>
 
             {/* Heart Rate Inputs */}
-            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="grid grid-cols-2 gap-3 pt-2 border-t border-black/[0.05] dark:border-white/[0.08]">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
                   {language === 'zh-TW' ? '靜息心率' : '静息心率'} (bpm)
@@ -318,7 +333,7 @@ export const HealthCalculator: React.FC = () => {
               <select
                 value={activityFactor}
                 onChange={(e) => setActivityFactor(parseFloat(e.target.value))}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-ios-blue"
               >
                 <option value={1.2}>久坐不动 (办公室办公，极少运动) × 1.2</option>
                 <option value={1.375}>轻度活跃 (每周轻度骑行 1-3 天) × 1.375</option>
@@ -327,7 +342,7 @@ export const HealthCalculator: React.FC = () => {
                 <option value={1.9}>专业运动员 (每天高负荷骑行两练) × 1.9</option>
               </select>
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output Panels */}
@@ -336,7 +351,7 @@ export const HealthCalculator: React.FC = () => {
           {activeTab === 'fueling' && (
             <div className="space-y-6">
               {/* Ride Duration & Intensity Selectors */}
-              <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+              <IOSCard variant="inset" className="p-5 space-y-4">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                   <Apple className="w-4 h-4 text-emerald-500" />
                   本次骑行规划与补给策略
@@ -346,7 +361,7 @@ export const HealthCalculator: React.FC = () => {
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="text-xs text-slate-700 dark:text-slate-300">计划骑行时长</label>
-                      <span className="text-cyan-600 dark:text-cyan-400 font-mono font-semibold text-xs">{rideDurationHours} 小时</span>
+                      <span className="text-ios-blue font-mono font-semibold text-xs">{rideDurationHours} 小时</span>
                     </div>
                     <input
                       type="range"
@@ -355,7 +370,7 @@ export const HealthCalculator: React.FC = () => {
                       step="0.5"
                       value={rideDurationHours}
                       onChange={(e) => setRideDurationHours(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded appearance-none cursor-pointer accent-cyan-500"
+                      className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-red"
                     />
                   </div>
 
@@ -364,7 +379,7 @@ export const HealthCalculator: React.FC = () => {
                     <select
                       value={rideIntensity}
                       onChange={(e) => setRideIntensity(e.target.value as any)}
-                      className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200"
+                      className="w-full bg-white dark:bg-[#2C2C2E] border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200"
                     >
                       <option value="z2">Z2 轻松长距离耐力 (有氧消耗脂肪为主)</option>
                       <option value="z3">Z3 节奏与爬坡团骑 (中高糖原消耗)</option>
@@ -372,7 +387,7 @@ export const HealthCalculator: React.FC = () => {
                     </select>
                   </div>
                 </div>
-              </div>
+              </IOSCard>
 
               {/* Fueling Highlights */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
@@ -408,7 +423,7 @@ export const HealthCalculator: React.FC = () => {
 
           {/* TAB 2: Karvonen Heart Rate Training Zones */}
           {activeTab === 'hr_zones' && (
-            <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <IOSCard variant="default" className="p-5 sm:p-6 space-y-4">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
@@ -422,16 +437,16 @@ export const HealthCalculator: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-xs text-left">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                    <tr className="border-b border-black/[0.05] dark:border-white/[0.08] text-slate-500 dark:text-slate-400">
                       <th className="pb-2 font-medium">心率区间</th>
                       <th className="pb-2 font-medium">心率储备比例</th>
                       <th className="pb-2 font-medium">目标心率范围 (BPM)</th>
                       <th className="pb-2 font-medium">主要生理刺激</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 font-mono text-slate-700 dark:text-slate-300">
+                  <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono text-slate-700 dark:text-slate-300">
                     {hrZonesResult.zones.map((z, idx) => (
-                      <tr key={idx} className="hover:bg-slate-100 dark:hover:bg-slate-900/40">
+                      <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.04] transition-colors">
                         <td className="py-2.5 font-sans font-semibold text-slate-900 dark:text-slate-200">{z.zone}</td>
                         <td className="text-slate-500 dark:text-slate-400">{z.pct}</td>
                         <td className="text-rose-500 font-bold font-mono">{z.range}</td>
@@ -441,38 +456,40 @@ export const HealthCalculator: React.FC = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </IOSCard>
           )}
 
           {/* TAB 3: BMR & TDEE View */}
           {activeTab === 'bmr' && (
             <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white via-slate-50 to-cyan-50/20 dark:from-slate-900/90 dark:to-cyan-950/20">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">基础代谢率 (BMR)</span>
-                  <div className="text-3xl font-bold font-mono text-cyan-600 dark:text-cyan-400 my-2">
-                    {bmrResult.bmr} <span className="text-sm font-sans font-normal text-slate-500 dark:text-slate-400">kcal/天</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500">维持机体存活最基本的能量消耗</span>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <IOSMetricTile
+                  label="基础代谢率 (BMR)"
+                  value={bmrResult.bmr}
+                  unit="kcal/天"
+                  subtext="维持机体存活最基本的能量消耗"
+                  accentColor="blue"
+                  icon={Flame}
+                />
 
-                <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white via-slate-50 to-cyan-50/20 dark:from-slate-900/90 dark:to-cyan-950/20">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 block">每日总能量消耗 (TDEE)</span>
-                  <div className="text-3xl font-bold font-mono text-emerald-600 dark:text-emerald-400 my-2">
-                    {bmrResult.tdee} <span className="text-sm font-sans font-normal text-slate-500 dark:text-slate-400">kcal/天</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500">包含日常骑行及所有活动能耗</span>
-                </div>
+                <IOSMetricTile
+                  label="每日总能量消耗 (TDEE)"
+                  value={bmrResult.tdee}
+                  unit="kcal/天"
+                  subtext="包含日常骑行及所有活动能耗"
+                  accentColor="green"
+                  icon={Activity}
+                />
               </div>
 
               {/* Goals Targets */}
-              <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+              <IOSCard variant="default" className="p-5 sm:p-6 space-y-4">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                   <Flame className="w-4 h-4 text-amber-500" />
                   不同目标每日推荐热量摄入 (Calorie Goals)
                 </h3>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                     <div className="text-xs font-medium text-sky-500 dark:text-sky-400 flex items-center gap-1.5">
                       <TrendingDown className="w-3.5 h-3.5" />
                       <span>{language === 'zh-TW' ? '減脂減重目標' : '减脂减重目标'}</span>
@@ -481,7 +498,7 @@ export const HealthCalculator: React.FC = () => {
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">热量缺口 20%，稳步减脂保持肌肉</p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-1">
+                  <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                     <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                       <Scale className="w-3.5 h-3.5" />
                       <span>{language === 'zh-TW' ? '體重維持平衡' : '体重维持平衡'}</span>
@@ -490,7 +507,7 @@ export const HealthCalculator: React.FC = () => {
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">收支平衡，维持当前竞技体重</p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-1">
+                  <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                     <div className="text-xs font-medium text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
                       <TrendingUp className="w-3.5 h-3.5" />
                       <span>{language === 'zh-TW' ? '增肌增力目標' : '增肌增力目标'}</span>
@@ -499,17 +516,17 @@ export const HealthCalculator: React.FC = () => {
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">轻微盈余 15%，配合力量训练</p>
                   </div>
                 </div>
-              </div>
+              </IOSCard>
             </div>
           )}
 
           {/* TAB 4: BMI View */}
           {activeTab === 'bmi' && (
-            <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+            <IOSCard variant="default" className="p-5 sm:p-6 space-y-6">
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-xs text-slate-500 dark:text-slate-400 block">{language === 'zh-TW' ? '身體質量指數 (BMI, kg/m²)' : '身体质量指数 (BMI, kg/m²)'}</span>
-                  <div className="text-4xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
+                  <div className="text-4xl font-bold font-mono text-ios-blue mt-1">
                     {bmiResult.bmi}
                   </div>
                 </div>
@@ -521,22 +538,22 @@ export const HealthCalculator: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1">
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <span className="text-xs text-slate-500 dark:text-slate-400 block">同身高健康理想体重参考区间:</span>
                 <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">
                   {bmiResult.idealMin} kg - {bmiResult.idealMax} kg
                 </div>
               </div>
-            </div>
+            </IOSCard>
           )}
 
           {/* TAB 5: BFP View */}
           {activeTab === 'bfp' && (
-            <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-6">
+            <IOSCard variant="default" className="p-5 sm:p-6 space-y-6">
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-xs text-slate-500 dark:text-slate-400 block">估算体脂率 (BFP)</span>
-                  <div className="text-4xl font-bold font-mono text-cyan-600 dark:text-cyan-400 mt-1">
+                  <div className="text-4xl font-bold font-mono text-ios-blue mt-1">
                     {bfpResult.bfp} <span className="text-xl text-slate-500 dark:text-slate-400 font-normal">%</span>
                   </div>
                 </div>
@@ -551,22 +568,22 @@ export const HealthCalculator: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-xs text-left">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                    <tr className="border-b border-black/[0.05] dark:border-white/[0.08] text-slate-500 dark:text-slate-400">
                       <th className="pb-2 font-medium">体脂分类</th>
                       <th className="pb-2 font-medium">男性范围</th>
                       <th className="pb-2 font-medium">女性范围</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 font-mono text-slate-700 dark:text-slate-300">
+                  <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono text-slate-700 dark:text-slate-300">
                     <tr><td className="py-2 font-sans">必需脂肪 (极低)</td><td>2% - 5%</td><td>10% - 13%</td></tr>
-                    <tr><td className="py-2 font-sans text-cyan-600 dark:text-cyan-400">竞技运动员</td><td>6% - 13%</td><td>14% - 20%</td></tr>
-                    <tr><td className="py-2 font-sans text-emerald-600 dark:text-emerald-400">健身良好</td><td>14% - 17%</td><td>21% - 24%</td></tr>
+                    <tr><td className="py-2 font-sans text-ios-blue font-semibold">竞技运动员</td><td>6% - 13%</td><td>14% - 20%</td></tr>
+                    <tr><td className="py-2 font-sans text-emerald-600 dark:text-emerald-400 font-semibold">健身良好</td><td>14% - 17%</td><td>21% - 24%</td></tr>
                     <tr><td className="py-2 font-sans">可接受区间</td><td>18% - 24%</td><td>25% - 31%</td></tr>
-                    <tr><td className="py-2 font-sans text-rose-500 dark:text-rose-400">肥胖</td><td>&gt; 25%</td><td>&gt; 32%</td></tr>
+                    <tr><td className="py-2 font-sans text-rose-500 dark:text-rose-400 font-semibold">肥胖</td><td>&gt; 25%</td><td>&gt; 32%</td></tr>
                   </tbody>
                 </table>
               </div>
-            </div>
+            </IOSCard>
           )}
         </div>
       </div>

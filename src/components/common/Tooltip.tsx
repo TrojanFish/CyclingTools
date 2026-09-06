@@ -22,9 +22,9 @@ export const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
       </button>
 
       {visible && (
-        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-60 p-2.5 bg-slate-900/95 border border-slate-700 text-slate-200 text-[11px] rounded-xl shadow-2xl backdrop-blur-xl leading-relaxed animate-in fade-in zoom-in-95 pointer-events-none">
+        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-60 p-2.5 bg-[#1C1C1E]/95 border border-white/15 text-white text-[11px] rounded-xl shadow-2xl backdrop-blur-xl leading-relaxed animate-in fade-in zoom-in-95 pointer-events-none">
           {content}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-700"></div>
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1C1C1E]"></div>
         </div>
       )}
     </div>

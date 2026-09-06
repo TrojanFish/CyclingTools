@@ -427,7 +427,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 step={0.5}
                 value={gearWeightKg}
                 onChange={(e) => setGearWeightKg(parseFloat(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
+                className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
               />
               <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                 <span>轻装 2kg</span>
@@ -613,7 +613,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   step={10}
                   value={forkTravelMm}
                   onChange={(e) => setForkTravelMm(parseInt(e.target.value))}
-                  className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
+                  className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
               </div>
 
@@ -632,7 +632,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+                <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-center">
                   <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
                     标准静态下沉量 (SAG)
                   </div>
@@ -655,7 +655,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   max={15}
                   value={forkPsiOffset}
                   onChange={(e) => setForkPsiOffset(parseInt(e.target.value))}
-                  className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
+                  className="flex-1 h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
                 <button
                   onClick={() => setForkPsiOffset(0)}
@@ -720,7 +720,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   max={Math.round(forkTravelMm * 0.55)}
                   value={measuredForkSagMm}
                   onChange={(e) => setMeasuredForkSagMm(parseInt(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
+                  className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
 
                 {/* Status Indicator */}
@@ -832,7 +832,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                       max={20}
                       value={shockPsiOffset}
                       onChange={(e) => setShockPsiOffset(parseInt(e.target.value))}
-                      className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
+                      className="flex-1 h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                     />
                     <button
                       onClick={() => setShockPsiOffset(0)}
@@ -860,7 +860,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+                    <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-center">
                       <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
                         预紧环调节圈数 (Preload)
                       </div>
@@ -874,7 +874,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-100 dark:bg-white/5 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
                     <span className="font-semibold text-slate-800 dark:text-slate-200">
                       弹簧选型提示：
                     </span>
@@ -927,7 +927,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   step={0.5}
                   value={measuredShockSagMm}
                   onChange={(e) => setMeasuredShockSagMm(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-ios-blue"
+                  className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
 
                 {/* Status Indicator */}
@@ -971,7 +971,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       <IOSCard>
         <IOSCardHeader title={language === 'zh-TW' ? '動態視覺化避震行程標尺與 O 圈狀態' : '动态可视化避震行程标尺与 O 圈状态'} />
         <div className="space-y-4 pt-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
             {/* Fork SVG */}
             <div>
               <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">
@@ -980,7 +980,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   {measuredForkSagMm}mm / {forkTravelMm}mm ({calc.actualForkSagPct}%)
                 </span>
               </div>
-              <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl relative overflow-hidden border border-slate-300 dark:border-white/10">
+              <div className="h-10 bg-black/[0.05] dark:bg-white/[0.08] rounded-xl relative overflow-hidden border border-black/[0.05] dark:border-white/[0.08]">
                 {/* Target Zone */}
                 <div
                   className="absolute top-0 bottom-0 bg-emerald-500/25 border-r-2 border-emerald-500 z-0"
@@ -1017,7 +1017,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   {measuredShockSagMm}mm / {shockStrokeMm}mm ({calc.actualShockSagPct}%)
                 </span>
               </div>
-              <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl relative overflow-hidden border border-slate-300 dark:border-white/10">
+              <div className="h-10 bg-black/[0.05] dark:bg-white/[0.08] rounded-xl relative overflow-hidden border border-black/[0.05] dark:border-white/[0.08]">
                 {/* Target Zone */}
                 <div
                   className="absolute top-0 bottom-0 bg-ios-blue/25 border-r-2 border-ios-blue z-0"
