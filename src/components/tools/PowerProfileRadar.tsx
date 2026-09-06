@@ -16,6 +16,7 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { useStrava } from '../../context/StravaContext';
 
 ChartJS.register(
   RadialLinearScale,
@@ -31,13 +32,15 @@ interface PowerProfileRadarProps {
 }
 
 export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigateTool }) => {
-  const { profile } = useRiderProfile();
+  const { profile, updateProfile } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
+  const { isConnected: isStravaConnected, extractBestPowerPeaks, athlete: stravaAthlete } = useStrava();
   const isImperial = unitSystem === 'imperial';
 
   const [weightKg, setWeightKg] = useState<number>(profile.weightKg || 68);
   const [ftpWatts, setFtpWatts] = useState<number>(profile.ftpWatts || 240);
+  const [isExtractingStrava, setIsExtractingStrava] = useState<boolean>(false);
 
   // Reactively synchronize with global rider profile
   useEffect(() => {
@@ -84,6 +87,60 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
       setP5m(340);
       setP20m(260);
       showToast('已载入均衡全能型 (All-Rounder) 数据模型', 'info');
+    }
+  };
+
+  // Extract Peak Power directly from Strava Activities
+  const handleExtractFromStrava = async () => {
+    if (!isStravaConnected) {
+      showToast(
+        language === 'zh-TW'
+          ? '請先在「車隊與車手設定」中連接 Strava 帳號'
+          : '请先在「车队与车手设置」中连接 Strava 账号',
+        'warning'
+      );
+      return;
+    }
+
+    setIsExtractingStrava(true);
+    try {
+      const peaks = await extractBestPowerPeaks();
+      if (peaks) {
+        setP5s(peaks.p5s);
+        setP1m(peaks.p1m);
+        setP5m(peaks.p5m);
+        setP20m(peaks.p20m);
+        setActiveRiderPreset(null);
+
+        const updates: any = {};
+        if (stravaAthlete?.ftp) {
+          setFtpWatts(stravaAthlete.ftp);
+          updates.ftpWatts = stravaAthlete.ftp;
+        } else if (peaks.p20m) {
+          const estFtp = Math.round(peaks.p20m * 0.95);
+          setFtpWatts(estFtp);
+          updates.ftpWatts = estFtp;
+        }
+
+        if (stravaAthlete?.weight) {
+          const w = parseFloat(stravaAthlete.weight.toFixed(1));
+          setWeightKg(w);
+          updates.weightKg = w;
+        }
+
+        if (Object.keys(updates).length > 0) {
+          updateProfile(updates);
+        }
+
+        showToast(
+          language === 'zh-TW'
+            ? `已從 Strava 提取近期最佳峰值功率：5s ${peaks.p5s}W | 1m ${peaks.p1m}W | 5m ${peaks.p5m}W | 20m ${peaks.p20m}W！`
+            : `已从 Strava 提取近期最佳峰值功率：5s ${peaks.p5s}W | 1m ${peaks.p1m}W | 5m ${peaks.p5m}W | 20m ${peaks.p20m}W！`,
+          'success'
+        );
+      }
+    } finally {
+      setIsExtractingStrava(false);
     }
   };
 
@@ -317,6 +374,18 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           </div>
 
           <div className="flex items-center gap-2.5">
+            <button
+              onClick={handleExtractFromStrava}
+              disabled={isExtractingStrava}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] rounded-2xl text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm apple-touch disabled:opacity-50"
+              title={isStravaConnected ? '从 Strava 历史活动中一键提取最佳 5s、1min、5min、20min 峰值功率' : '连接 Strava 账号以一键提取最佳峰值功率'}
+            >
+              <svg className={`w-3.5 h-3.5 fill-current ${isExtractingStrava ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
+                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
+              </svg>
+              <span>{isExtractingStrava ? (language === 'zh-TW' ? '提取中...' : '提取中...') : (language === 'zh-TW' ? '⚡ Strava 提取' : '⚡ Strava 提取')}</span>
+            </button>
+
             <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
               <Upload className="w-4 h-4 text-ios-red" />
               <span>{language === 'zh-TW' ? '匯入 CSV/JSON' : '导入 CSV/JSON'}</span>
@@ -364,6 +433,18 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         </div>
 
         <div className="flex items-center gap-2 text-xs shrink-0 self-end sm:self-auto">
+          <button
+            onClick={handleExtractFromStrava}
+            disabled={isExtractingStrava}
+            className="px-2.5 py-1 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] font-medium flex items-center gap-1 apple-touch border border-[#FC4C02]/20 transition disabled:opacity-50"
+            title="从 Strava 历史活动提取 5s/1m/5m/20m 最佳功率"
+          >
+            <svg className={`w-3.5 h-3.5 fill-current ${isExtractingStrava ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
+              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
+            </svg>
+            <span>{language === 'zh-TW' ? '從 Strava 提取近期峰值' : '从 Strava 提取近期峰值'}</span>
+          </button>
+          <span className="text-slate-300 dark:text-slate-700">|</span>
           <label className="text-ios-blue hover:underline cursor-pointer font-medium flex items-center gap-1 apple-touch">
             <Upload className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '上傳功率表單' : '上传功率表单'}</span>

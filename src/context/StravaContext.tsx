@@ -18,7 +18,12 @@ import {
   fetchAthleteActivities,
   fetchActivityStreams,
   fetchAthleteRoutes,
-  calculateActivityTss
+  calculateActivityTss,
+  StravaSegmentItem,
+  CURATED_STRAVA_SEGMENTS,
+  fetchStarredSegments,
+  fetchSegmentDetails,
+  extractBestMmpFromActivities
 } from '../services/stravaService';
 import {
   StravaActivityRecord,
@@ -58,6 +63,17 @@ interface StravaContextType {
   syncActivities: (forceFullRefresh?: boolean) => Promise<{ count: number }>;
   getActivityStreams: (activityId: number) => Promise<StravaStreamsRecord | null>;
   getRoutes: () => Promise<StravaRouteRecord[]>;
+  getStarredSegments: () => Promise<StravaSegmentItem[]>;
+  getSegmentDetails: (segmentId: number) => Promise<any>;
+  extractBestPowerPeaks: () => Promise<{
+    p5s: number;
+    p1m: number;
+    p5m: number;
+    p20m: number;
+    bestActivityName?: string;
+    sampleCount: number;
+  } | null>;
+  syncAthleteBiometrics: () => Promise<{ ftp?: number; weight?: number; updated: boolean }>;
   clearCache: () => Promise<void>;
   updateSettings: (settings: Partial<StravaSyncSettings>) => void;
 }
@@ -363,6 +379,124 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, []);
 
+  // Get Starred Segments with fallback to Curated Segments
+  const getStarredSegments = useCallback(async (): Promise<StravaSegmentItem[]> => {
+    try {
+      const token = await getValidAccessToken();
+      if (token) {
+        const liveStarred = await fetchStarredSegments(token);
+        if (liveStarred && liveStarred.length > 0) {
+          // Merge with curated to give rich choice
+          const merged = [...liveStarred];
+          for (const c of CURATED_STRAVA_SEGMENTS) {
+            if (!merged.some(s => s.id === c.id)) {
+              merged.push(c);
+            }
+          }
+          return merged;
+        }
+      }
+      return CURATED_STRAVA_SEGMENTS;
+    } catch (err) {
+      console.warn('Failed to fetch Strava starred segments, falling back to curated KOMs:', err);
+      return CURATED_STRAVA_SEGMENTS;
+    }
+  }, []);
+
+  // Get Segment Details
+  const getSegmentDetails = useCallback(async (segmentId: number): Promise<any> => {
+    try {
+      const curated = CURATED_STRAVA_SEGMENTS.find(s => s.id === segmentId);
+      const token = await getValidAccessToken();
+      if (token) {
+        const details = await fetchSegmentDetails(token, segmentId);
+        return { ...curated, ...details };
+      }
+      return curated || null;
+    } catch (err) {
+      console.warn(`Failed to fetch segment ${segmentId} details:`, err);
+      return CURATED_STRAVA_SEGMENTS.find(s => s.id === segmentId) || null;
+    }
+  }, []);
+
+  // Extract Best MMP (5s, 1m, 5m, 20m) from activities and streams
+  const extractBestPowerPeaks = useCallback(async () => {
+    try {
+      let activityList = activities;
+      if (activityList.length === 0) {
+        activityList = await getAllActivitiesFromDb();
+      }
+
+      if (activityList.length === 0) {
+        const token = await getValidAccessToken();
+        if (token) {
+          showToast('正在从 Strava 获取近期骑行活动...', 'info');
+          const syncRes = await syncActivities(false);
+          if (syncRes.count > 0) {
+            activityList = await getAllActivitiesFromDb();
+          }
+        }
+      }
+
+      if (activityList.length === 0) {
+        showToast('未在本地找到 Strava 骑行活动，请先连接并同步 Strava 活动', 'warning');
+        return null;
+      }
+
+      showToast('正在计算分析近期活动 MMP 功率曲线...', 'info');
+      const result = await extractBestMmpFromActivities(activityList, getActivityStreams, 8);
+      return result;
+    } catch (err: any) {
+      console.error('Failed to extract best power peaks:', err);
+      showToast(`提取 Strava 峰值功率失败: ${err.message}`, 'error');
+      return null;
+    }
+  }, [activities, getActivityStreams, syncActivities, showToast]);
+
+  // Sync Athlete Biometrics (FTP & Weight) directly to global Rider Profile
+  const syncAthleteBiometrics = useCallback(async (): Promise<{ ftp?: number; weight?: number; updated: boolean }> => {
+    try {
+      const token = await getValidAccessToken();
+      if (!token) {
+        showToast('请先连接 Strava 账号以同步体征数据', 'warning');
+        return { updated: false };
+      }
+
+      showToast('正在向 Strava 云端拉取最新体征数据...', 'info');
+      const latestAthlete = await fetchAthleteProfile(token);
+      setTokenData(prev => {
+        if (!prev) return null;
+        const updated = { ...prev, athlete: latestAthlete };
+        saveStoredTokenData(updated);
+        return updated;
+      });
+
+      const updates: any = {};
+      if (latestAthlete.ftp) {
+        updates.ftpWatts = latestAthlete.ftp;
+      }
+      if (latestAthlete.weight) {
+        updates.weightKg = parseFloat(latestAthlete.weight.toFixed(1));
+      }
+
+      if (Object.keys(updates).length > 0) {
+        updateProfile(updates);
+        showToast(
+          `已成功同步 Strava 体征：${updates.ftpWatts ? `FTP ${updates.ftpWatts}W` : ''} ${updates.weightKg ? `体重 ${updates.weightKg}kg` : ''}！全站计算工具已实时响应。`,
+          'success'
+        );
+        return { ftp: latestAthlete.ftp, weight: latestAthlete.weight, updated: true };
+      } else {
+        showToast('Strava 账号中未设定公开的 FTP 或体重数据', 'info');
+        return { updated: false };
+      }
+    } catch (err: any) {
+      console.error('Failed to sync athlete biometrics:', err);
+      showToast(`同步 Strava 体征失败: ${err.message}`, 'error');
+      return { updated: false };
+    }
+  }, [updateProfile, showToast]);
+
   // Capture OAuth Code from URL on page load
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -427,6 +561,10 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       syncActivities,
       getActivityStreams,
       getRoutes,
+      getStarredSegments,
+      getSegmentDetails,
+      extractBestPowerPeaks,
+      syncAthleteBiometrics,
       clearCache,
       updateSettings
     }),
@@ -446,6 +584,10 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       syncActivities,
       getActivityStreams,
       getRoutes,
+      getStarredSegments,
+      getSegmentDetails,
+      extractBestPowerPeaks,
+      syncAthleteBiometrics,
       clearCache,
       updateSettings
     ]

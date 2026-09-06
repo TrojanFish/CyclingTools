@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, Copy, CheckCircle2, TrendingUp, Upload } from 'lucide-react';
+import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, Copy, CheckCircle2, TrendingUp, Upload, Search, ExternalLink, X, ChevronRight, Star } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -19,6 +19,8 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useStrava } from '../../context/StravaContext';
+import { StravaSegmentItem } from '../../services/stravaService';
 
 ChartJS.register(
   CategoryScale,
@@ -118,6 +120,8 @@ export const ClimbPacingPlanner: React.FC = () => {
     if (profile.ftpWatts) setFtpWatts(profile.ftpWatts);
   }, [profile.weightKg, profile.bikeWeightKg, profile.ftpWatts]);
 
+  const { isConnected: isStravaConnected, getStarredSegments, getSegmentDetails } = useStrava();
+
   const [pacingStrategy, setPacingStrategy] = useState<'conservative' | 'balanced' | 'aggressive'>('balanced');
 
   const [segments, setSegments] = useState<ClimbSegment[]>([
@@ -128,6 +132,129 @@ export const ClimbPacingPlanner: React.FC = () => {
   ]);
 
   const [climbName, setClimbName] = useState<string>('莫干山经典挑战爬坡线');
+
+  // Strava Segments & KOM Modal State
+  const [isStravaModalOpen, setIsStravaModalOpen] = useState<boolean>(false);
+  const [stravaSegments, setStravaSegments] = useState<StravaSegmentItem[]>([]);
+  const [isLoadingSegments, setIsLoadingSegments] = useState<boolean>(false);
+  const [segmentSearchQuery, setSegmentSearchQuery] = useState<string>('');
+  const [customSegmentInput, setCustomSegmentInput] = useState<string>('');
+  const [isFetchingCustomId, setIsFetchingCustomId] = useState<boolean>(false);
+  const [segmentFilterTab, setSegmentFilterTab] = useState<'all' | 'tour' | 'starred'>('all');
+
+  // Open Strava Segments modal and fetch segments
+  const handleOpenStravaSegments = async () => {
+    setIsStravaModalOpen(true);
+    setIsLoadingSegments(true);
+    try {
+      const segs = await getStarredSegments();
+      setStravaSegments(segs);
+    } catch (err) {
+      console.warn('Failed to load Strava segments:', err);
+    } finally {
+      setIsLoadingSegments(false);
+    }
+  };
+
+  // Import a segment (either curated or starred or by ID)
+  const handleSelectSegment = (segment: StravaSegmentItem) => {
+    if (segment.climbSegments && segment.climbSegments.length > 0) {
+      const segs: ClimbSegment[] = segment.climbSegments.map((s, idx) => ({
+        id: `${Date.now()}-${idx}`,
+        name: s.name,
+        distanceKm: s.distanceKm,
+        gradePct: s.gradePct
+      }));
+      setSegments(segs);
+    } else {
+      const distKm = parseFloat((segment.distance / 1000).toFixed(1));
+      const avgGrade = segment.average_grade;
+      const maxGrade = segment.maximum_grade || Math.round(avgGrade * 1.6);
+
+      const s1Dist = parseFloat((distKm * 0.25).toFixed(1));
+      const s2Dist = parseFloat((distKm * 0.35).toFixed(1));
+      const s3Dist = parseFloat((distKm * 0.25).toFixed(1));
+      const s4Dist = Math.max(0.2, parseFloat((distKm - s1Dist - s2Dist - s3Dist).toFixed(1)));
+
+      const generated: ClimbSegment[] = [
+        {
+          id: `${Date.now()}-1`,
+          name: '第1段: 起步暖身过渡段',
+          distanceKm: s1Dist,
+          gradePct: parseFloat((avgGrade * 0.65).toFixed(1))
+        },
+        {
+          id: `${Date.now()}-2`,
+          name: '第2段: 核心稳态爬升段',
+          distanceKm: s2Dist,
+          gradePct: parseFloat((avgGrade * 1.05).toFixed(1))
+        },
+        {
+          id: `${Date.now()}-3`,
+          name: '第3段: 连续发卡攻坚陡坡',
+          distanceKm: s3Dist,
+          gradePct: parseFloat(Math.min(maxGrade, avgGrade * 1.35).toFixed(1))
+        },
+        {
+          id: `${Date.now()}-4`,
+          name: '第4段: 终点冲线顶峰段',
+          distanceKm: s4Dist,
+          gradePct: parseFloat((avgGrade * 0.9).toFixed(1))
+        }
+      ];
+      setSegments(generated);
+    }
+
+    setClimbName(segment.name);
+    setActiveMountainPreset('');
+    setIsStravaModalOpen(false);
+    showToast(
+      language === 'zh-TW'
+        ? `已成功從 Strava 匯入「${segment.name}」並完成配速分段拆解！`
+        : `已成功从 Strava 导入「${segment.name}」并完成配速分段拆解！`,
+      'success'
+    );
+  };
+
+  const handleFetchCustomSegment = async () => {
+    if (!customSegmentInput.trim()) return;
+
+    const match = customSegmentInput.match(/(\d{4,12})/);
+    if (!match) {
+      showToast('请输入有效的 Strava 赛段 ID 或链接 (例如: 661401)', 'warning');
+      return;
+    }
+
+    const segId = parseInt(match[1], 10);
+    setIsFetchingCustomId(true);
+    try {
+      const details = await getSegmentDetails(segId);
+      if (details) {
+        const item: StravaSegmentItem = {
+          id: details.id || segId,
+          name: details.name || `Strava 赛段 #${segId}`,
+          distance: details.distance || 5000,
+          average_grade: details.average_grade || 6.5,
+          maximum_grade: details.maximum_grade || 10.0,
+          elevation_high: details.elevation_high || 800,
+          elevation_low: details.elevation_low || 200,
+          total_elevation_gain: details.total_elevation_gain || 600,
+          climb_category: details.climb_category || 2,
+          city: details.city,
+          state: details.state,
+          country: details.country,
+          climbSegments: details.climbSegments
+        };
+        handleSelectSegment(item);
+      } else {
+        showToast(`未能获取赛段 #${segId} 数据，请确认 ID 是否正确或已授权 Strava`, 'error');
+      }
+    } catch (e: any) {
+      showToast(`获取赛段失败: ${e.message}`, 'error');
+    } finally {
+      setIsFetchingCustomId(false);
+    }
+  };
 
   // Check for route transferred from RoadbookLibrary
   useEffect(() => {
@@ -482,6 +609,17 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </div>
 
           <div className="flex items-center gap-2.5">
+            <button
+              onClick={handleOpenStravaSegments}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm apple-touch"
+              title="从 Strava 检索赛段 (KOM / Starred) 并导入"
+            >
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
+              </svg>
+              <span>{language === 'zh-TW' ? '⚡ Strava 賽段' : '⚡ Strava 赛段'}</span>
+            </button>
+
             <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-ios-sm apple-touch">
               <Upload className="w-4 h-4 text-ios-blue" />
               <span>{language === 'zh-TW' ? '匯入 GPX 路線' : '导入 GPX 爬坡路线'}</span>
@@ -505,6 +643,16 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
             {language === 'zh-TW' ? '精選名山:' : '精选名山:'}
           </span>
+          <button
+            onClick={handleOpenStravaSegments}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30"
+            title="浏览并导入 Strava 赛段与经典 KOM 坡度"
+          >
+            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
+            </svg>
+            <span>{language === 'zh-TW' ? '⚡ Strava 賽段庫' : '⚡ Strava 赛段库'}</span>
+          </button>
           {[
             { id: 'longjing', name: '杭州龙井', title: '杭州龙井 (3.2km)' },
             { id: 'miaofeng', name: '北京妙峰山', title: '北京妙峰山 (20.5km)' },
@@ -824,6 +972,226 @@ ${planResults.segmentOutputs.map((s, idx) => `${idx + 1}. [${s.name}] ${s.distan
           </div>
         </div>
       </div>
+
+      {/* Strava Segments & KOM Explorer Modal */}
+      {isStravaModalOpen && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white dark:bg-[#161618] border border-slate-200 dark:border-white/10 rounded-3xl w-full max-w-2xl max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between bg-slate-50/50 dark:bg-white/[0.02]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#FC4C02]/10 text-[#FC4C02] flex items-center justify-center">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>{language === 'zh-TW' ? 'Strava 賽段與經典 KOM 智慧匯入' : 'Strava 赛段与经典 KOM 智能导入'}</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] font-bold">
+                      Segments
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    {language === 'zh-TW'
+                      ? '直接檢索 Strava 經典 KOM / 星標賽段，將坡度與里程自動拆解為科學配速區間'
+                      : '直接检索 Strava 经典 KOM / 星标赛段，将坡度与里程自动拆解为科学配速区间'}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsStravaModalOpen(false)}
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Direct ID Import Bar */}
+            <div className="p-3 sm:p-4 bg-slate-50 dark:bg-black/20 border-b border-slate-200/80 dark:border-white/10 space-y-2.5">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={segmentSearchQuery}
+                    onChange={(e) => setSegmentSearchQuery(e.target.value)}
+                    placeholder={language === 'zh-TW' ? '搜尋賽段名稱、城市或國家...' : '搜索赛段名称、城市或国家...'}
+                    className="w-full bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <input
+                    type="text"
+                    value={customSegmentInput}
+                    onChange={(e) => setCustomSegmentInput(e.target.value)}
+                    placeholder="输入赛段 ID (如 661401)"
+                    className="w-36 sm:w-44 bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-[#FC4C02]"
+                  />
+                  <button
+                    onClick={handleFetchCustomSegment}
+                    disabled={isFetchingCustomId || !customSegmentInput.trim()}
+                    className="apple-touch px-3 py-1.5 rounded-xl bg-[#FC4C02] text-white text-xs font-semibold hover:bg-[#e04300] transition disabled:opacity-50 shrink-0"
+                  >
+                    {isFetchingCustomId ? '查询中' : '解析导入'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-2 text-xs">
+                <button
+                  onClick={() => setSegmentFilterTab('all')}
+                  className={`px-3 py-1 rounded-xl transition ${
+                    segmentFilterTab === 'all'
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'
+                  }`}
+                >
+                  全部赛段 ({stravaSegments.length})
+                </button>
+                <button
+                  onClick={() => setSegmentFilterTab('tour')}
+                  className={`px-3 py-1 rounded-xl transition ${
+                    segmentFilterTab === 'tour'
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'
+                  }`}
+                >
+                  环法/环意传奇 KOM
+                </button>
+                <button
+                  onClick={() => setSegmentFilterTab('starred')}
+                  className={`px-3 py-1 rounded-xl transition flex items-center gap-1 ${
+                    segmentFilterTab === 'starred'
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5'
+                  }`}
+                >
+                  <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                  <span>我的星标 ({stravaSegments.filter(s => s.starred).length})</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Segments List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2.5 min-h-[260px]">
+              {isLoadingSegments ? (
+                <div className="h-48 flex flex-col items-center justify-center gap-2 text-slate-400">
+                  <div className="w-6 h-6 border-2 border-[#FC4C02] border-t-transparent rounded-full animate-spin" />
+                  <span className="text-xs">正在从 Strava 检索赛段数据...</span>
+                </div>
+              ) : (
+                (() => {
+                  const filtered = stravaSegments.filter(s => {
+                    if (segmentFilterTab === 'starred' && !s.starred) return false;
+                    if (segmentFilterTab === 'tour' && (s.country === 'China' || !s.country)) return false;
+                    if (segmentSearchQuery.trim()) {
+                      const q = segmentSearchQuery.toLowerCase();
+                      const matchName = s.name.toLowerCase().includes(q);
+                      const matchLoc = (s.city || '').toLowerCase().includes(q) || (s.country || '').toLowerCase().includes(q);
+                      return matchName || matchLoc;
+                    }
+                    return true;
+                  });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="h-48 flex flex-col items-center justify-center gap-1.5 text-slate-400 text-xs">
+                        <Mountain className="w-8 h-8 opacity-40 mb-1" />
+                        <span>未找到匹配的赛段</span>
+                        <span className="text-[11px] text-slate-500">
+                          可直接在上方的输入框填入 Strava 赛段 ID 一键抓取
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  return filtered.map((seg) => {
+                    const distKm = (seg.distance / 1000).toFixed(1);
+                    const catLabel = seg.climb_category === 5 ? 'HC 级' : seg.climb_category > 0 ? `Cat ${5 - seg.climb_category}` : '爬坡段';
+
+                    return (
+                      <div
+                        key={seg.id}
+                        className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C20] border border-slate-200/80 dark:border-white/10 hover:border-[#FC4C02]/40 transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                      >
+                        <div className="space-y-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                              {seg.name}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-ios-orange/15 text-ios-orange font-bold">
+                              {catLabel}
+                            </span>
+                            {seg.starred && (
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 flex items-center gap-0.5">
+                                <Star className="w-2.5 h-2.5 fill-current" />
+                                <span>已星标</span>
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                            <span>里程: <strong className="text-slate-800 dark:text-slate-200">{distKm} km</strong></span>
+                            <span>爬升: <strong className="text-slate-800 dark:text-slate-200">+{seg.total_elevation_gain} m</strong></span>
+                            <span>均坡: <strong className="text-ios-orange">{seg.average_grade}%</strong></span>
+                            {seg.maximum_grade ? (
+                              <span>极陡: <strong className="text-ios-red">{seg.maximum_grade}%</strong></span>
+                            ) : null}
+                            {seg.country && (
+                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/5 dark:bg-white/5 font-sans">
+                                {seg.country} {seg.city ? `· ${seg.city}` : ''}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                          <a
+                            href={`https://www.strava.com/segments/${seg.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-xl text-slate-400 hover:text-[#FC4C02] hover:bg-[#FC4C02]/10 transition"
+                            title="在 Strava 查看赛段主页"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+
+                          <button
+                            onClick={() => handleSelectSegment(seg)}
+                            className="apple-touch px-3 py-1.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold flex items-center gap-1 transition active:scale-95 shadow-xs"
+                          >
+                            <span>导入配速分段</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 sm:p-3.5 border-t border-slate-200/80 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${isStravaConnected ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                <span>{isStravaConnected ? '已连接 Strava 官方 API' : '离线状态 (可导入经典 KOM 或输入赛段 ID)'}</span>
+              </span>
+
+              <button
+                onClick={() => setIsStravaModalOpen(false)}
+                className="px-3.5 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 rounded-xl transition"
+              >
+                关闭
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
