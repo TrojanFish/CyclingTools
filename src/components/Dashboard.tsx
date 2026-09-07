@@ -107,14 +107,24 @@ export const Dashboard: React.FC<DashboardProps> = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
+      {/* iOS Large Title Header (Mobile Only, Apple HIG Style) */}
+      <div className="md:hidden pt-0.5 pb-1">
+        <span className="text-[11px] font-bold text-ios-blue dark:text-ios-blue-dark uppercase tracking-wider">
+          {language === 'zh-TW' ? '科學單車動力學' : '科学骑行动力学'}
+        </span>
+        <h1 className="text-lg sm:text-xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
+          {language === 'zh-TW' ? '專業工具箱' : '专业工具箱'}
+        </h1>
+      </div>
+
       {/* Apple Keynote Style Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl p-7 sm:p-9 border border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20 shadow-ios-sm">
+      <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20 shadow-ios-sm">
         <div className="absolute -right-16 -top-16 w-80 h-80 bg-ios-blue/10 dark:bg-ios-blue/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute right-32 bottom-0 w-64 h-64 bg-ios-purple/10 dark:bg-ios-purple/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10 max-w-2xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold tracking-wide">
+        <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] sm:text-xs font-semibold tracking-wide">
             <Sparkles className="w-3.5 h-3.5" />
             <span>
               {language === 'zh-TW'
@@ -123,17 +133,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
             {language === 'zh-TW' ? (
               <>
-                精準計算每一瓦 <br />
+                精準計算每一瓦 <br className="hidden sm:inline" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-ios-blue via-blue-500 to-ios-purple">
                   數據驅動的科學單車與擬合模擬
                 </span>
               </>
             ) : (
               <>
-                精准计算每一瓦 <br />
+                精准计算每一瓦 <br className="hidden sm:inline" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-ios-blue via-blue-500 to-ios-purple">
                   数据驱动的科学骑行与拟合仿真
                 </span>
@@ -181,9 +191,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Tools Grid */}
       {filteredTools.length === 0 ? (
-        <div className="p-12 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl text-center space-y-3 shadow-ios-sm">
-          <div className="w-12 h-12 rounded-2xl bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center mx-auto text-slate-400">
-            <Search className="w-6 h-6" />
+        <div className="p-8 sm:p-10 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl text-center space-y-3 shadow-ios-sm">
+          <div className="w-11 h-11 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center mx-auto text-slate-400">
+            <Search className="w-5 h-5" />
           </div>
           <h3 className="text-base font-semibold text-slate-900 dark:text-white">
             {language === 'zh-TW' ? '未找到匹配的單車工具' : '未找到匹配的骑行工具'}
@@ -196,7 +206,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               setSearchTerm('');
               setSelectedCategory('all');
             }}
-            className="px-4 py-2 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:opacity-90 active:scale-95 transition apple-touch"
+            className="h-8.5 px-4 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:opacity-90 active:scale-95 transition apple-touch"
           >
             {language === 'zh-TW' ? '重設篩選條件' : '重置筛选条件'}
           </button>
@@ -215,12 +225,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div
                 key={tool.id}
                 onClick={() => onSelectTool(tool.id)}
-                className="group relative flex flex-col justify-between p-6 rounded-3xl bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm hover:shadow-ios-card active:scale-[0.985] transition-all duration-200 cursor-pointer apple-touch"
+                className="group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm hover:shadow-ios-card active:scale-[0.985] transition-all duration-200 cursor-pointer apple-touch"
               >
                 <div className="space-y-3.5">
                   <div className="flex items-start justify-between">
-                    <div className={`w-12 h-12 rounded-2xl ${colorTheme.bg} ${colorTheme.text} flex items-center justify-center ring-1 ${colorTheme.ring} group-hover:scale-105 transition duration-200`}>
-                      <IconComp className="w-6 h-6" />
+                    <div className={`w-11 h-11 rounded-xl ${colorTheme.bg} ${colorTheme.text} flex items-center justify-center ring-1 ${colorTheme.ring} group-hover:scale-105 transition duration-200`}>
+                      <IconComp className="w-5 h-5" />
                     </div>
                     <div className="flex items-center gap-1.5 flex-wrap justify-end">
                       {tool.hasStravaIntegration && (

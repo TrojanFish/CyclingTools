@@ -239,20 +239,20 @@ export const SpokeLengthCalculator: React.FC = () => {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold">
               <Disc className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '技師級編輪幾何學' : '技师级编轮几何学'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
               {language === 'zh-TW' ? '單車編輪與輻條長度計算器' : '自行车编轮与辐条长度计算器'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl mt-0.5">
               {language === 'zh-TW'
                 ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
                 : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧 (DS) 与非驱动侧 (NDS) 毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'}
@@ -260,7 +260,7 @@ export const SpokeLengthCalculator: React.FC = () => {
           </div>
 
           {/* Preset Buttons */}
-          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 self-start sm:self-center shrink-0">
             {[
               { id: 'dt350_rear_50', label: 'DT350 后轮' },
               { id: 'dt350_front_50', label: 'DT350 前轮' },
@@ -270,7 +270,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               <button
                 key={p.id}
                 onClick={() => applyPreset(p.id as any)}
-                className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-ios-blue/10 dark:hover:bg-ios-blue/20 hover:text-ios-blue hover:border-ios-blue/30 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center whitespace-nowrap shrink-0"
+                className="apple-touch h-8.5 px-2.5 sm:px-3 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-ios-blue/10 dark:hover:bg-ios-blue/20 hover:text-ios-blue hover:border-ios-blue/30 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center whitespace-nowrap shrink-0"
               >
                 {p.label}
               </button>
@@ -296,7 +296,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       )}
 
       {/* Main Grid: Inputs (7 cols) + Results (5 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
           {/* Wheel Position & Brake System */}
@@ -587,8 +587,8 @@ export const SpokeLengthCalculator: React.FC = () => {
           </IOSCard>
         </div>
 
-        {/* Right Output Results (5 cols) */}
-        <div className="lg:col-span-5 space-y-5">
+        {/* Right Output Results (macOS Sticky Canvas) */}
+        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
           {/* Main Spoke Length Result Card */}
           <IOSCard variant="default" className="space-y-5">
             <div className="flex items-center justify-between">
@@ -602,37 +602,37 @@ export const SpokeLengthCalculator: React.FC = () => {
             </div>
 
             {/* Left & Right Twin Big Numbers */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {/* Left Spoke Length */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-between">
                   <span>左侧 ({wheelPosition === 'rear' ? 'NDS' : 'Disc'})</span>
                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-500/10 font-mono">{leftCross}X</span>
                 </div>
-                <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
+                <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-display tabular-nums">
                   {result.roundedLeft} <span className="text-sm font-bold text-blue-500 font-sans">mm</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono">
+                <div className="text-[10px] text-slate-500 font-mono tabular-nums">
                   精算值: {result.netLeft} mm
                 </div>
-                <div className="text-[10px] text-slate-400">
+                <div className="text-[10px] text-slate-400 tabular-nums">
                   张力角: {result.angleLeftDeg}° · 需 {spokeCount / 2} 根
                 </div>
               </div>
 
               {/* Right Spoke Length */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center justify-between">
                   <span>右侧 ({wheelPosition === 'rear' ? 'DS' : 'Non-Disc'})</span>
                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-rose-500/10 font-mono">{rightCross}X</span>
                 </div>
-                <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
+                <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-display tabular-nums">
                   {result.roundedRight} <span className="text-sm font-bold text-rose-500 font-sans">mm</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono">
+                <div className="text-[10px] text-slate-500 font-mono tabular-nums">
                   精算值: {result.netRight} mm
                 </div>
-                <div className="text-[10px] text-slate-400">
+                <div className="text-[10px] text-slate-400 tabular-nums">
                   张力角: {result.angleRightDeg}° · 需 {spokeCount / 2} 根
                 </div>
               </div>

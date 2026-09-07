@@ -314,30 +314,30 @@ export const CyclePowerCalculator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
               <Zap className="w-3.5 h-3.5" />
-              {language === 'zh-TW' ? '空氣動力學與重力方程' : '空气动力学与重力方程'}
+              <span>{language === 'zh-TW' ? '經典動力學推導引擎' : '经典动力学推导引擎'}</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
-              {language === 'zh-TW' ? '公路車功率與速度物理計算器' : '公路车功率与速度物理计算器'}
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              {language === 'zh-TW' ? '單車功率與速度動態計算器' : '骑行功率与速度动力学计算器'}
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
               {language === 'zh-TW'
                 ? '高精度空氣阻力、滾阻、重力分量與海拔密度推算，支援功速互推、Coggan 7 區間劃分與 VAM 爬坡耗時求解。'
                 : '高精度空气阻力、滚阻、重力分量与海拔密度推算，支持功速互推、Coggan 7 区间划分与 VAM 爬坡耗时求解。'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成单车功率与速度动力学海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -359,10 +359,10 @@ export const CyclePowerCalculator: React.FC = () => {
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-6">
-          <IOSCard variant="default" className="p-6 space-y-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+        {/* Left Inputs (macOS Inspector) */}
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
+          <IOSCard variant="default" className="space-y-5">
             <IOSCardHeader
               title={language === 'zh-TW' ? '動力與環境變量輸入' : '动力与环境变量输入'}
               subtitle={language === 'zh-TW' ? '精密動力學與氣象設定' : '精密动力学与气象设定'}
@@ -677,8 +677,8 @@ export const CyclePowerCalculator: React.FC = () => {
           </IOSCard>
         </div>
 
-        {/* Right Output Results & Full Analytics */}
-        <div className="lg:col-span-7 space-y-6">
+        {/* Right Output Results & Full Analytics (macOS Sticky Canvas) */}
+        <div className="lg:col-span-7 space-y-5 lg:sticky lg:top-20 self-start">
           {/* Downhill High Speed & Thermal Warning */}
           {grade < 0 && (
             <div className={`p-4 rounded-2xl border transition-all shadow-ios-sm ${
@@ -758,13 +758,13 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* VAM Climbing Estimator Card */}
-          <div className="p-5 rounded-3xl border border-ios-blue/20 bg-ios-blue/[0.04] dark:bg-ios-blue/[0.08] backdrop-blur-xl space-y-4 shadow-ios-sm">
+          <div className="p-4 sm:p-5 rounded-2xl border border-ios-blue/20 bg-ios-blue/[0.04] dark:bg-ios-blue/[0.08] backdrop-blur-xl space-y-4 shadow-ios-sm">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-ios-blue" />
                 {language === 'zh-TW' ? '爬坡性能與 VAM (垂直上升速度) 推算' : '爬坡性能与 VAM (垂直上升速度) 推算'}
               </h3>
-              <span className="text-xs font-mono text-ios-blue dark:text-blue-400 font-bold">
+              <span className="text-xs font-mono text-ios-blue dark:text-blue-400 font-bold tabular-nums">
                 VAM: {result.vam} m/h {isImperial ? `(${Math.round(result.vam * 3.28084)} ft/h)` : ''}
               </span>
             </div>
@@ -774,7 +774,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {language === 'zh-TW' ? '爬坡路程' : '爬坡路程'}
                 </span>
-                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">
+                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold tabular-nums">
                   {climbDistanceKm} km {isImperial ? `(${(climbDistanceKm * 0.621371).toFixed(1)} mi)` : ''}
                 </span>
               </div>
@@ -782,7 +782,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {language === 'zh-TW' ? '累計爬升' : '累计爬升'}
                 </span>
-                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">
+                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold tabular-nums">
                   +{climbElevationGainM} m {isImperial ? `(+${Math.round(climbElevationGainM * 3.28084)} ft)` : ''}
                 </span>
               </div>
@@ -790,13 +790,13 @@ export const CyclePowerCalculator: React.FC = () => {
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {language === 'zh-TW' ? '平均坡度' : '平均坡度'}
                 </span>
-                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold">{result.avgClimbGrade}%</span>
+                <span className="text-slate-900 dark:text-slate-200 font-mono font-bold tabular-nums">{result.avgClimbGrade}%</span>
               </div>
               <div>
                 <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
                   {language === 'zh-TW' ? '預計登頂耗時' : '预计登顶耗时'}
                 </span>
-                <span className="text-ios-green font-mono font-bold">
+                <span className="text-ios-green font-mono font-bold tabular-nums">
                   {result.climbTimeMinutes} {language === 'zh-TW' ? '分鐘' : '分钟'}
                 </span>
               </div>
@@ -804,7 +804,7 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Resistance Breakdown Bar */}
-          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
+          <div className="p-4 sm:p-5 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 block">
               {language === 'zh-TW' ? '三大物理阻力占比分解' : '三大物理阻力占比分解'}
             </span>
@@ -814,7 +814,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <div style={{ width: `${result.gravityPct}%` }} className="bg-ios-orange h-full transition-all duration-300" title={`Gravity: ${result.gravityPct}%`} />
             </div>
 
-            <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+            <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400 tabular-nums">
               <span className="text-ios-blue font-semibold flex items-center gap-1">
                 <Wind className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '風阻' : '风阻'} {result.aeroPct}% ({result.fAero}N)</span>
@@ -831,7 +831,7 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Coggan 7-Zone FTP Table */}
-          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
+          <div className="p-4 sm:p-5 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-900 dark:text-white">
                 {language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
@@ -847,7 +847,7 @@ export const CyclePowerCalculator: React.FC = () => {
                     <th className="pb-2 font-medium">{language === 'zh-TW' ? '主要訓練效益' : '主要训练效益'}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-black/[0.03] dark:divide-white/[0.04] text-slate-700 dark:text-slate-300 font-mono">
+                <tbody className="divide-y divide-black/[0.03] dark:divide-white/[0.04] text-slate-700 dark:text-slate-300 font-mono tabular-nums">
                   {result.ftpZones.map((z, idx) => (
                     <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
                       <td className="py-2 font-sans font-semibold text-slate-900 dark:text-white">{z.zone}</td>
@@ -862,7 +862,7 @@ export const CyclePowerCalculator: React.FC = () => {
           </div>
 
           {/* Interactive Chart Tabs */}
-          <div className="p-5 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-4 shadow-ios-sm">
+          <div className="p-4 sm:p-5 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-4 shadow-ios-sm">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {language === 'zh-TW' ? '多維動力學預測曲線' : '多维动力学预测曲线'}

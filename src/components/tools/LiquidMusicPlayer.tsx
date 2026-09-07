@@ -167,41 +167,41 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
   // If standalone full page
   if (isStandalonePage) {
     return (
-      <div className="space-y-6">
-        <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
+      <div className="space-y-4 sm:space-y-5">
+        <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
           <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
+          <div className="relative z-10 space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold">
               <Music className="w-3.5 h-3.5" />
-              骑行踏频节奏电台
+              <span>骑行踏频节奏电台</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">骑行节奏与动感音乐播放器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-lg sm:text-xl font-bold font-display text-slate-900 dark:text-white">骑行节奏与动感音乐播放器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs">
               匹配 85~105 BPM 黄金踏频节奏曲目，支持在训练与巡航中保持专注力。
             </p>
           </div>
         </IOSCard>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           {/* Main Big Player Card */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="ios-card p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card text-center space-y-6">
-              <div className="w-44 h-44 mx-auto rounded-3xl bg-gradient-to-br from-ios-blue/15 to-ios-purple/15 border border-slate-200/80 dark:border-white/10 flex items-center justify-center relative shadow-ios-sm group">
-                <Music className={`w-16 h-16 text-ios-blue ${isPlaying ? 'animate-pulse' : ''}`} />
+          <div className="lg:col-span-6 space-y-4">
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card text-center space-y-4">
+              <div className="w-36 h-36 sm:w-40 sm:h-40 mx-auto rounded-2xl bg-gradient-to-br from-ios-blue/15 to-ios-purple/15 border border-slate-200/80 dark:border-white/10 flex items-center justify-center relative shadow-ios-sm group">
+                <Music className={`w-12 h-12 text-ios-blue ${isPlaying ? 'animate-pulse' : ''}`} />
                 {currentTrack?.bpm && (
-                  <span className="absolute bottom-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-mono text-white font-bold">
+                  <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-mono text-white font-bold tabular-nums">
                     {currentTrack.bpm} BPM
                   </span>
                 )}
               </div>
 
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{currentTrack?.name || '未播放'}</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{currentTrack?.artist || 'SoloRider Audio Station'}</p>
+                <h2 className="text-base sm:text-lg font-bold font-display text-slate-900 dark:text-white">{currentTrack?.name || '未播放'}</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{currentTrack?.artist || 'SoloRider Audio Station'}</p>
               </div>
 
               {/* Progress Bar */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <input
                   type="range"
                   min="0"
@@ -210,37 +210,37 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                   onChange={handleSeek}
                   className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-ios-blue"
                 />
-                <div className="flex justify-between text-xs font-mono text-slate-500 dark:text-slate-400">
+                <div className="flex justify-between text-xs font-mono text-slate-500 dark:text-slate-400 tabular-nums">
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(duration)}</span>
                 </div>
               </div>
 
               {/* Controls */}
-              <div className="flex items-center justify-center gap-6 pt-2">
+              <div className="flex items-center justify-center gap-4 pt-1">
                 <button
                   onClick={handlePrev}
-                  className="w-11 h-11 rounded-full bg-slate-100/80 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 flex items-center justify-center apple-touch transition shadow-xs"
+                  className="w-9 h-9 rounded-full bg-slate-100/80 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 flex items-center justify-center apple-touch transition shadow-xs"
                 >
-                  <SkipBack className="w-5 h-5" />
+                  <SkipBack className="w-4 h-4" />
                 </button>
                 <button
                   onClick={togglePlay}
-                  className="w-16 h-16 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center shadow-ios-sm apple-touch transition"
+                  className="w-12 h-12 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center shadow-ios-sm apple-touch transition"
                 >
-                  {isPlaying ? <Pause className="w-7 h-7 fill-current" /> : <Play className="w-7 h-7 fill-current ml-1" />}
+                  {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
                 </button>
                 <button
                   onClick={handleNext}
-                  className="w-11 h-11 rounded-full bg-slate-100/80 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 flex items-center justify-center apple-touch transition shadow-xs"
+                  className="w-9 h-9 rounded-full bg-slate-100/80 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 flex items-center justify-center apple-touch transition shadow-xs"
                 >
-                  <SkipForward className="w-5 h-5" />
+                  <SkipForward className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Volume */}
-              <div className="flex items-center justify-center gap-3 pt-2 max-w-xs mx-auto text-xs text-slate-500 dark:text-slate-400">
-                <Volume2 className="w-4 h-4" />
+              <div className="flex items-center justify-center gap-2.5 pt-1 max-w-xs mx-auto text-xs text-slate-500 dark:text-slate-400">
+                <Volume2 className="w-3.5 h-3.5 shrink-0" />
                 <input
                   type="range"
                   min="0"
@@ -255,14 +255,14 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
           </div>
 
           {/* Playlist & Add Song */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
-              <h3 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="lg:col-span-6 space-y-4">
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+              <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <ListMusic className="w-4 h-4 text-ios-blue" />
                 骑行播放列表 ({playlist.length} 首)
               </h3>
 
-              <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                 {playlist.map((t, idx) => (
                   <div
                     key={t.id}
@@ -270,14 +270,14 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                       setCurrentTrackIndex(idx);
                       setIsPlaying(true);
                     }}
-                    className={`p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer apple-touch transition ${
+                    className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer apple-touch transition ${
                       currentTrackIndex === idx
                         ? 'bg-ios-blue/10 border-ios-blue text-ios-blue font-semibold shadow-xs'
                         : 'bg-white/70 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono text-slate-400 dark:text-slate-500 w-4">{idx + 1}</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xs font-mono text-slate-400 dark:text-slate-500 w-4 tabular-nums">{idx + 1}</span>
                       <div>
                         <div className="text-xs font-semibold text-slate-900 dark:text-white">{t.name}</div>
                         <div className="text-[10px] text-slate-500 dark:text-slate-400">{t.artist}</div>
@@ -285,7 +285,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {t.bpm && <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200/70 dark:bg-white/10 text-ios-blue font-mono">{t.bpm} BPM</span>}
+                      {t.bpm && <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200/70 dark:bg-white/10 text-ios-blue font-mono tabular-nums">{t.bpm} BPM</span>}
                       {playlist.length > 1 && (
                         <button
                           onClick={(e) => removeTrack(t.id, e)}
@@ -300,7 +300,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
               </div>
 
               {/* Add Custom URL */}
-              <div className="pt-4 border-t border-slate-200/80 dark:border-white/10 space-y-3">
+              <div className="pt-3 border-t border-slate-200/80 dark:border-white/10 space-y-2.5">
                 <h4 className="text-xs font-semibold text-slate-700 dark:text-slate-300">添加自定义骑行音频链接</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input
@@ -308,20 +308,20 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                     placeholder="曲目名称 (可选)"
                     value={newSongName}
                     onChange={(e) => setNewSongName(e.target.value)}
-                    className="bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
+                    className="bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
                   />
                   <input
                     type="url"
                     placeholder="直接音频链接 (.mp3/.wav/.ogg)"
                     value={newSongUrl}
                     onChange={(e) => setNewSongUrl(e.target.value)}
-                    className="bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
+                    className="bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
                   />
                 </div>
                 <button
                   onClick={addCustomTrack}
                   disabled={!newSongUrl}
-                  className="w-full py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold disabled:opacity-40 rounded-2xl text-xs transition shadow-ios-sm apple-touch"
+                  className="w-full h-8.5 bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold disabled:opacity-40 rounded-xl text-xs transition shadow-ios-sm apple-touch flex items-center justify-center"
                 >
                   添加到当前歌单
                 </button>
@@ -336,7 +336,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
   // Floating Widget Mode
   return (
     <div className="fixed bottom-5 right-5 z-50">
-      <div className="ios-card p-4 rounded-3xl border border-black/[0.08] dark:border-white/15 shadow-2xl bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl w-80 space-y-3">
+      <div className="ios-card p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/15 shadow-ios-popover bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl w-80 space-y-2.5">
         {/* Widget Top Bar */}
         <div className="flex items-center justify-between border-b border-black/[0.05] dark:border-white/10 pb-2">
           <div className="flex items-center gap-2">
@@ -375,7 +375,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                 onChange={handleSeek}
                 className="w-full h-1 bg-slate-200 dark:bg-white/10 rounded appearance-none cursor-pointer accent-ios-blue"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
+              <div className="flex justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400 tabular-nums">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -388,7 +388,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
               </button>
               <button
                 onClick={togglePlay}
-                className="w-9 h-9 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center shadow-ios-sm font-bold transition apple-touch"
+                className="w-8.5 h-8.5 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center shadow-ios-sm font-bold transition apple-touch"
               >
                 {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
               </button>

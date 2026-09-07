@@ -169,29 +169,33 @@ export const TirePressureCalculator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header */}
-      <IOSCard variant="glass" className="relative overflow-hidden isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
               <Gauge className="w-3.5 h-3.5" />
-              滚阻与形变算法
+              <span>滚阻与形变算法</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">公路/全地形智能胎压计算器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
-              综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮差异化最佳气压。
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              {language === 'zh-TW' ? '公路/全地形智能胎壓計算器' : '公路/全地形智能胎压计算器'}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
+              {language === 'zh-TW'
+                ? '綜合車手體重、無內胎結構、實測胎寬與路面狀況，精準計算前後輪差異化最佳胎壓。'
+                : '综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮差异化最佳气压。'}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成科学胎压调校海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>生成胎压卡片</span>
+              <span>{language === 'zh-TW' ? '生成胎壓卡片' : '生成胎压卡片'}</span>
             </button>
 
             {/* Apple Unit Segmented Control */}
@@ -209,9 +213,9 @@ export const TirePressureCalculator: React.FC = () => {
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className="lg:col-span-6 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="space-y-5">
             <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-ios-blue" />
@@ -492,8 +496,8 @@ export const TirePressureCalculator: React.FC = () => {
           </IOSCard>
         </div>
 
-        {/* Right Output Results */}
-        <div className="lg:col-span-6 space-y-6">
+        {/* Right Output Results (macOS Sticky Canvas / Inspector on desktop) */}
+        <div className="lg:col-span-6 space-y-5 lg:sticky lg:top-20 self-start">
           {/* Hookless ETRTO Width Mismatch Banner */}
           {result.isHooklessWidthMismatch && (
             <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-950 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm animate-pulse">
@@ -533,9 +537,9 @@ export const TirePressureCalculator: React.FC = () => {
           )}
 
           {/* Visual Dials Row */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
             <TireGauge
-              label="前轮推荐气压仪表"
+              label={language === 'zh-TW' ? '前輪推薦胎壓儀表' : '前轮推荐气压仪表'}
               psi={result.front.rawPsi}
               minPsi={result.front.rawPsi * 0.94}
               maxPsi={result.front.rawPsi * 1.06}
@@ -543,7 +547,7 @@ export const TirePressureCalculator: React.FC = () => {
               displayValue={result.front.rec}
             />
             <TireGauge
-              label="后轮推荐气压仪表"
+              label={language === 'zh-TW' ? '後輪推薦胎壓儀表' : '后轮推荐气压仪表'}
               psi={result.rear.rawPsi}
               minPsi={result.rear.rawPsi * 0.94}
               maxPsi={result.rear.rawPsi * 1.06}
@@ -553,30 +557,38 @@ export const TirePressureCalculator: React.FC = () => {
           </div>
 
           {/* Numerical Display Cards */}
-          <div className="grid grid-cols-2 gap-4">
-            <IOSCard variant="default" className="p-5 space-y-1">
+          <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
+            <IOSCard variant="default" className="p-4 sm:p-5 space-y-1">
               <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-ios-blue uppercase">前轮建议区间</span>
+                <span className="text-xs font-semibold text-ios-blue uppercase tracking-wide">
+                  {language === 'zh-TW' ? '前輪建議區間' : '前轮建议区间'}
+                </span>
               </div>
-              <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1">
+              <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1 tabular-nums tracking-tight">
                 {result.front.min} - {result.front.max} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{pressureUnit.toUpperCase()}</span>
               </div>
-              <span className="text-[10px] text-slate-500">前轴抓地与舒适滤震</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                {language === 'zh-TW' ? '前軸抓地與舒適濾震' : '前轴抓地与舒适滤震'}
+              </span>
             </IOSCard>
 
-            <IOSCard variant="default" className="p-5 space-y-1">
+            <IOSCard variant="default" className="p-4 sm:p-5 space-y-1">
               <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-ios-blue uppercase">后轮建议区间</span>
+                <span className="text-xs font-semibold text-ios-blue uppercase tracking-wide">
+                  {language === 'zh-TW' ? '後輪建議區間' : '后轮建议区间'}
+                </span>
               </div>
-              <div className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1">
+              <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1 tabular-nums tracking-tight">
                 {result.rear.min} - {result.rear.max} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{pressureUnit.toUpperCase()}</span>
               </div>
-              <span className="text-[10px] text-slate-500">驱动承重与低滚阻</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                {language === 'zh-TW' ? '驅動承重與低滾阻' : '驱动承重与低滚阻'}
+              </span>
             </IOSCard>
           </div>
 
           {/* Tips and Explanation Box */}
-          <IOSCard variant="default" className="p-6 space-y-4">
+          <IOSCard variant="default" className="space-y-4">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <Info className="w-4 h-4 text-ios-blue" />
               气压微调与防扎防护建议

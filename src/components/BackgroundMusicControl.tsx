@@ -51,7 +51,7 @@ export const BackgroundMusicControl: React.FC = () => {
       <div className="flex items-center">
         <button
           onClick={() => setIsOpenPopover(!isOpenPopover)}
-          className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl border transition select-none active:scale-95 relative shrink-0 apple-touch ${
+          className={`w-8.5 h-8.5 flex items-center justify-center rounded-xl border transition select-none active:scale-95 relative shrink-0 apple-touch ${
             isPlaying
               ? 'bg-ios-blue text-white border-ios-blue shadow-ios-sm'
               : 'bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20'
@@ -69,28 +69,34 @@ export const BackgroundMusicControl: React.FC = () => {
         </button>
       </div>
 
-      {/* Streamlined Compact Popover */}
+      {/* macOS Control Center Style Frosted Popover */}
       {isOpenPopover && (
-        <div className="absolute right-0 top-11 w-72 p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-2xl bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl z-50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute right-0 top-11 w-76 p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-ios-popover bg-white/85 dark:bg-[#252528]/85 backdrop-blur-3xl saturate-180 z-50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+          {/* Header indicator */}
+          <div className="flex items-center justify-between text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-0.5">
+            <span>Now Playing · 骑行电台</span>
+            {currentTrack?.bpm && <span className="font-mono text-ios-blue">{currentTrack.bpm} RPM</span>}
+          </div>
+
           {/* Current Track & Direct Play/Pause */}
-          <div className="flex items-center justify-between gap-2 border-b border-black/[0.05] dark:border-white/[0.08] pb-2.5">
+          <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.06]">
             <div className="truncate max-w-[170px]">
               <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">{currentTrack?.name || '骑行踏频电台'}</span>
-              <span className="text-[10px] text-ios-blue font-mono block">
-                {currentTrack?.bpm ? `${currentTrack.bpm} RPM 踏频节奏` : currentTrack?.artist}
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate block">
+                {currentTrack?.artist || 'SoloRider Studio'}
               </span>
             </div>
 
             <div className="flex items-center gap-1">
               <button
                 onClick={toggleBgm}
-                className="w-8 h-8 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center font-bold shadow transition active:scale-95 apple-touch"
+                className="w-8 h-8 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center font-bold shadow-xs transition active:scale-95 apple-touch"
               >
                 {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
               </button>
               <button
                 onClick={nextTrack}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition apple-touch"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition apple-touch"
                 title="下一首"
               >
                 <SkipForward className="w-4 h-4" />

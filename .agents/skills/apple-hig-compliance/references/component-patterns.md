@@ -1,0 +1,451 @@
+# Component Patterns Reference
+
+> Canonical recipes for every UI component pattern in yolo-cycling.
+> Each pattern shows the **iOS mobile** and **macOS desktop** treatment.
+
+---
+
+## 1. Page Layout Shell
+
+### 1.1 Desktop (≥640 px)
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Header (glass-panel, h-12, safe-area top)          │
+├────────┬────────────────────────────────────────────┤
+│ macOS  │                                            │
+│ Sidebar│     Content Area (scrollable)              │
+│ 240px  │     p-5, max-w constrained                 │
+│ frosted│                                            │
+│        │                                            │
+└────────┴────────────────────────────────────────────┘
+```
+
+- Header: `glass-panel` with `backdrop-blur-[28px]`, `h-12`
+- Sidebar: `MacosSidebar.tsx`, 240 px fixed width, frosted glass
+- Content: scrollable, `p-5` padding
+
+### 1.2 Mobile (<640 px)
+
+```
+┌─────────────────────┐
+│ Header (safe-area)  │
+├─────────────────────┤
+│                     │
+│   Content Area      │
+│   p-4, full width   │
+│                     │
+│                     │
+├─────────────────────┤
+│ Bottom TabBar       │
+│ (MobileBottomNav)   │
+└─────────────────────┘
+```
+
+- Header: full-width, `env(safe-area-inset-top)` padding
+- Content: `p-4` padding, `pb-20` for bottom nav clearance
+- TabBar: `MobileBottomNav.tsx` with `env(safe-area-inset-bottom)`
+
+---
+
+## 2. Cards
+
+### 2.1 Standard Card
+
+```jsx
+<div className="ios-card rounded-2xl p-4 sm:p-5">
+  {/* content */}
+</div>
+```
+
+Or using the `IOSCard` component:
+
+```jsx
+<IOSCard variant="default" padding="md">
+  {/* content */}
+</IOSCard>
+```
+
+**Variants available:**
+- `default` — solid white/dark background, subtle border, `shadow-ios-card`
+- `inset` — recessed `bg-slate-50 dark:bg-[#2C2C2E]/60`, minimal shadow
+- `glass` — translucent with `backdrop-blur-2xl saturate-180`
+- `elevated` — higher shadow for floating cards
+
+### 2.2 Metric Tile (数值卡片)
+
+For displaying numeric KPIs. Always use `tabular-nums`.
+
+```jsx
+<div className="ios-card rounded-xl p-3 sm:p-4">
+  <p className="text-xs text-slate-400">{label}</p>
+  <p className="text-lg sm:text-xl font-bold tabular-nums font-display">
+    {value}
+  </p>
+  <p className="text-[11px] text-slate-500">{unit}</p>
+</div>
+```
+
+Grid layout: `grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4`
+
+### 2.3 Inset Grouped Table (iOS Settings style)
+
+```jsx
+<div className="ios-inset-group rounded-2xl overflow-hidden">
+  <div className="ios-inset-row">
+    <span className="text-sm">{label}</span>
+    <span className="text-sm text-ios-blue tabular-nums">{value}</span>
+  </div>
+  {/* more rows */}
+</div>
+```
+
+---
+
+## 3. Modals / Panels
+
+### 3.1 Desktop — Centered Panel (macOS style)
+
+```jsx
+<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  {/* Backdrop */}
+  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+  
+  {/* Panel */}
+  <div className="relative w-full max-w-lg rounded-2xl shadow-ios-popover
+    bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/8
+    max-h-[85vh] overflow-y-auto">
+    <div className="p-5">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold font-display">{title}</h2>
+        <button className="apple-touch p-1.5 rounded-full
+          bg-slate-100 dark:bg-white/10">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+      {/* Content */}
+      {children}
+    </div>
+  </div>
+</div>
+```
+
+### 3.2 Mobile — iOS Bottom Sheet (底部抽屉)
+
+```jsx
+<div className="fixed inset-0 z-50 flex items-end sm:items-center
+  p-0 sm:p-4">
+  {/* Backdrop */}
+  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+  
+  {/* Sheet */}
+  <div className="relative w-full sm:max-w-lg
+    rounded-t-[28px] sm:rounded-2xl shadow-ios-popover
+    bg-white dark:bg-[#1C1C1E]
+    max-h-[90vh] sm:max-h-[85vh] overflow-y-auto">
+    
+    {/* Drag Handle (mobile only) */}
+    <div className="flex justify-center pt-2 pb-1 sm:hidden">
+      <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+    </div>
+    
+    <div className="p-4 sm:p-5">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-bold font-display">{title}</h2>
+        <button className="apple-touch p-1.5 rounded-full
+          bg-slate-100 dark:bg-white/10">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+      {/* Content */}
+      {children}
+    </div>
+  </div>
+</div>
+```
+
+**Key differences:**
+- Mobile: `items-end`, `rounded-t-[28px]`, drag handle visible
+- Desktop: `items-center`, `rounded-2xl`, no drag handle
+
+---
+
+## 4. Header Banner (Tool Page Hero)
+
+The top hero section of each tool page:
+
+```jsx
+<div className="ios-card rounded-2xl p-4 sm:p-5">
+  {/* Category tag */}
+  <div className="flex items-center gap-2 mb-2">
+    <span className="px-2.5 py-0.5 text-[11px] font-medium rounded-full
+      bg-ios-blue/10 text-ios-blue">
+      {categoryName}
+    </span>
+  </div>
+  
+  {/* Title */}
+  <h1 className="text-lg sm:text-xl font-bold font-display mb-1">
+    {toolName}
+  </h1>
+  
+  {/* Subtitle */}
+  <p className="text-xs text-slate-400">
+    {description}
+  </p>
+</div>
+```
+
+---
+
+## 5. Buttons
+
+### 5.1 Primary Button
+
+```jsx
+<button className="apple-touch h-8.5 px-4 rounded-xl
+  bg-ios-blue text-white text-sm font-medium
+  hover:bg-ios-blue/90 active:scale-[0.975]
+  transition-all ease-apple-spring">
+  {label}
+</button>
+```
+
+### 5.2 Secondary Button
+
+```jsx
+<button className="apple-touch h-8.5 px-4 rounded-xl
+  bg-ios-blue/10 text-ios-blue text-sm font-medium
+  hover:bg-ios-blue/15 transition-all ease-apple-spring">
+  {label}
+</button>
+```
+
+### 5.3 Ghost / Toolbar Button
+
+```jsx
+<button className="apple-touch h-8 px-3 rounded-lg
+  text-sm text-slate-400 hover:text-white hover:bg-white/5
+  transition-all ease-apple-spring">
+  {label}
+</button>
+```
+
+### 5.4 Icon Button (Close / Action)
+
+```jsx
+<button className="apple-touch p-1.5 rounded-full
+  bg-slate-100 dark:bg-white/10
+  hover:bg-slate-200 dark:hover:bg-white/15
+  transition-all ease-apple-spring">
+  <Icon className="w-4 h-4" />
+</button>
+```
+
+---
+
+## 6. Form Controls
+
+### 6.1 Input Field
+
+```jsx
+<div className="space-y-1.5">
+  <label className="text-xs text-slate-400">{label}</label>
+  <input
+    type="number"
+    className="w-full h-10 px-3.5 rounded-xl text-sm tabular-nums
+      bg-white dark:bg-[#1C1C1E]
+      border border-black/10 dark:border-white/10
+      focus:ring-2 focus:ring-ios-blue/30 focus:border-ios-blue
+      transition-all ease-apple-spring"
+  />
+</div>
+```
+
+### 6.2 NumberStepper
+
+Use the `NumberStepper` component for numeric inputs with ± controls.
+Located at `src/components/common/NumberStepper.tsx`.
+
+### 6.3 Select / Dropdown
+
+```jsx
+<select className="h-10 px-3 rounded-xl text-sm
+  bg-white dark:bg-[#1C1C1E]
+  border border-black/10 dark:border-white/10
+  focus:ring-2 focus:ring-ios-blue/30">
+  <option>{...}</option>
+</select>
+```
+
+### 6.4 Segmented Control (Tab Switcher)
+
+Use the `IOSSegmentedControl` component:
+```jsx
+<IOSSegmentedControl
+  options={['Tab 1', 'Tab 2', 'Tab 3']}
+  value={activeTab}
+  onChange={setActiveTab}
+/>
+```
+
+Or with CSS classes:
+```jsx
+<div className="ios-segmented-control">
+  <button className={`ios-segment-item ${active ? 'active' : ''}`}>
+    {label}
+  </button>
+</div>
+```
+
+---
+
+## 7. Tags & Badges
+
+### 7.1 Category Tag
+
+```jsx
+<span className="px-2.5 py-0.5 text-[11px] font-medium rounded-full
+  bg-ios-{color}/10 text-ios-{color}">
+  {label}
+</span>
+```
+
+### 7.2 Status Badge
+
+```jsx
+<span className="inline-flex items-center gap-1 px-2 py-0.5
+  text-[11px] font-medium rounded-full
+  bg-ios-green/10 text-ios-green">
+  <span className="w-1.5 h-1.5 rounded-full bg-current" />
+  {status}
+</span>
+```
+
+---
+
+## 8. Navigation
+
+### 8.1 macOS Sidebar (`MacosSidebar.tsx`)
+
+Structure:
+- Search filter input at top
+- Categories with disclosure triangles (`ChevronDown` / `ChevronRight`)
+- Tool items: icon (16 px) + label (13 px SF Pro)
+- Active state: `bg-ios-blue/15 text-ios-blue` with `rounded-lg`
+- Profile card at bottom
+- Collapsed mode: icons only, 56 px width
+
+### 8.2 Mobile Bottom Tab Bar (`MobileBottomNav.tsx`)
+
+- Fixed bottom, safe-area padding
+- 4-5 tabs with icons (20 px) + labels (10 px)
+- Active tab: `text-ios-blue`
+- Inactive tab: `text-ios-gray`
+
+---
+
+## 9. Charts (Chart.js)
+
+### 9.1 Styling Guidelines
+
+```js
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        font: { family: '-apple-system, "SF Pro Text", system-ui', size: 11 },
+        usePointStyle: true,
+        pointStyleWidth: 8,
+      }
+    }
+  },
+  scales: {
+    x: {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { font: { size: 10 } }
+    },
+    y: {
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { font: { size: 10 } }
+    }
+  }
+};
+```
+
+### 9.2 Color Palette for Charts
+
+Use iOS system colors in order:
+1. `#0A84FF` (Blue)
+2. `#30D158` (Green)
+3. `#FF9F0A` (Orange)
+4. `#BF5AF2` (Purple)
+5. `#FF453A` (Red)
+6. `#40C8E0` (Teal)
+7. `#FFD60A` (Yellow)
+8. `#FF375F` (Pink)
+
+---
+
+## 10. Responsive Grid Patterns
+
+### 10.1 Metric Grid
+
+```jsx
+<div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+  {metrics.map(m => <MetricTile key={m.id} {...m} />)}
+</div>
+```
+
+### 10.2 Tool Card Grid (Dashboard)
+
+```jsx
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+  {tools.map(t => <ToolCard key={t.id} {...t} />)}
+</div>
+```
+
+### 10.3 Two-Column Form Layout (Desktop)
+
+```jsx
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+  <div className="space-y-4">{/* Left column inputs */}</div>
+  <div className="space-y-4">{/* Right column inputs */}</div>
+</div>
+```
+
+---
+
+## 11. Loading & Empty States
+
+### 11.1 Loading Skeleton
+
+```jsx
+<div className="animate-pulse space-y-3">
+  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded-lg w-3/4" />
+  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded-lg w-1/2" />
+</div>
+```
+
+### 11.2 Empty State
+
+```jsx
+<div className="flex flex-col items-center justify-center py-12 text-center">
+  <Icon className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" />
+  <p className="text-sm text-slate-400">{emptyMessage}</p>
+</div>
+```
+
+---
+
+## 12. Accessibility Checklist
+
+- All interactive elements must have `aria-label` or visible text
+- Focus rings: `focus:ring-2 focus:ring-ios-blue/30 focus:border-ios-blue`
+- Contrast: text on bg must meet WCAG AA (4.5:1 for body, 3:1 for large text)
+- Reduced motion: respect `prefers-reduced-motion` for animations
+- Tab order: logical, top-to-bottom, left-to-right

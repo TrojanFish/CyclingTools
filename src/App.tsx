@@ -30,6 +30,7 @@ import { WorkoutBuilder } from './components/tools/WorkoutBuilder';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
+import { MacosSidebar } from './components/common/MacosSidebar';
 import { TOOLS_LIST } from './data/toolsList';
 import { ArrowLeft, ChevronRight, ChevronLeft } from 'lucide-react';
 
@@ -37,6 +38,24 @@ const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('solorider_sidebar_open');
+      if (saved !== null) return saved === 'true';
+      return true;
+    }
+    return true;
+  });
+
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen(prev => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('solorider_sidebar_open', String(next));
+      }
+      return next;
+    });
+  };
   
   // Theme Mode: 'system' | 'dark' | 'light'
   // Auto-detect phone OS prefers-color-scheme, plus persistent manual toggle
@@ -155,14 +174,31 @@ const MainAppContent: React.FC = () => {
           onSelectTool={(id) => setCurrentToolId(id)}
           profileModalOpen={profileModalOpen}
           setProfileModalOpen={setProfileModalOpen}
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={handleToggleSidebar}
         />
 
         {/* PWA Installation Prompt Bar (Mobile & Desktop, positioned below header) */}
         <PwaInstallPrompt />
 
-        {/* Main Container with extra bottom padding on mobile for MobileBottomNav */}
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 pb-24 md:pb-8">
-          <main className="space-y-4 sm:space-y-6">
+        {/* Dual-Personality Split-View Container: macOS Sidebar on Desktop, Inset Grouped on Mobile */}
+        <div className="w-full max-w-[1920px] mx-auto flex flex-1">
+          {/* macOS Studio Sidebar (Desktop only) */}
+          <div className="hidden lg:block">
+            <MacosSidebar
+              currentToolId={currentToolId}
+              onSelectTool={(id) => {
+                setCurrentToolId(id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenProfile={() => setProfileModalOpen(true)}
+              isCollapsed={!isSidebarOpen}
+            />
+          </div>
+
+          {/* Main Content Workspace */}
+          <div className="flex-1 min-w-0 p-4 sm:p-5 pb-24 md:pb-8">
+            <main className="max-w-7xl mx-auto space-y-4 sm:space-y-5">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
               <div className="relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex items-center justify-between gap-2 shadow-ios-sm no-print">
@@ -272,6 +308,7 @@ const MainAppContent: React.FC = () => {
           </main>
         </div>
       </div>
+    </div>
 
       {/* Mobile Bottom Dock Navigation */}
       <MobileBottomNav

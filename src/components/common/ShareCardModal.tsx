@@ -64,13 +64,21 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg max-h-[92vh] flex flex-col bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 rounded-3xl shadow-ios-popover overflow-hidden text-slate-900 dark:text-white isolate animate-in zoom-in-95 duration-200">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
+    >
+      <div className="relative w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] flex flex-col bg-white dark:bg-[#1C1C1E] border-t sm:border border-slate-200/80 dark:border-white/10 rounded-t-[28px] sm:rounded-2xl shadow-ios-popover overflow-hidden text-slate-900 dark:text-white isolate animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0">
+        {/* iOS Presentation Detent Drag Indicator (Mobile only) */}
+        <div className="sm:hidden w-10 h-1.5 rounded-full bg-black/15 dark:bg-white/20 mx-auto mt-2 mb-1 shrink-0" />
+
         {/* Ambient Top Glow */}
         <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-40 bg-ios-blue/10 dark:bg-ios-blue/25 blur-3xl rounded-full" />
 
         {/* Modal Header */}
-        <div className="relative z-10 flex items-center justify-between px-5 py-4 border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/90 backdrop-blur-md">
+        <div className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/90 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/15 border border-ios-blue/20 dark:border-ios-blue/30 text-ios-blue flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-ios-blue" />
@@ -91,7 +99,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 
         {/* Poster Image Preview Body */}
         <div className="relative z-10 flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col items-center justify-center bg-slate-100/80 dark:bg-black/40">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-white/10 max-w-full bg-[#1C1C1E]">
+          <div className="relative rounded-2xl overflow-hidden shadow-ios-popover border border-slate-200/80 dark:border-white/10 max-w-full bg-[#1C1C1E]">
             <img
               src={finalImageUrl}
               alt={title}

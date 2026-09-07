@@ -181,20 +181,20 @@ export const TubelessSealantCalculator: React.FC = () => {
   }, [wheelStandard, tireCategory, tireWidthMm, innerRimWidthMm, casingType, climate, rideFrequency, sealantType]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold">
               <Droplets className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '無內胎系統工程與養護' : '真空胎系统工程与养护'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
               {language === 'zh-TW' ? '無內胎自補液加注量與週期計算器' : '真空胎自补液加注量与补液周期计算器'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl">
+            <p className="text-xs text-slate-600 dark:text-slate-300 max-w-2xl mt-0.5">
               {language === 'zh-TW'
                 ? '基於外胎環面 (Torus) 幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'
                 : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量。'}
@@ -202,7 +202,7 @@ export const TubelessSealantCalculator: React.FC = () => {
           </div>
 
           {/* Quick Presets Capsule */}
-          <div className="w-full sm:w-auto self-start sm:self-center">
+          <div className="w-full sm:w-auto self-start sm:self-center shrink-0">
             <IOSSegmentedControl
               options={[
                 { value: 'road28', label: language === 'zh-TW' ? '公路 28c' : '公路 28c' },
@@ -251,7 +251,7 @@ export const TubelessSealantCalculator: React.FC = () => {
       </div>
 
       {/* Main Interactive Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Input Configuration (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
           {/* Section 1: Wheel & Tire Geometry */}
@@ -454,8 +454,8 @@ export const TubelessSealantCalculator: React.FC = () => {
           </IOSCard>
         </div>
 
-        {/* Right Output Scoreboard (5 cols) */}
-        <div className="lg:col-span-5 space-y-5">
+        {/* Right Output Scoreboard (macOS Sticky Canvas) */}
+        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
           {/* Main Dosage Recommendation Card */}
           <IOSCard variant="default" className="space-y-5 relative overflow-hidden">
             <div className="flex items-center justify-between">
@@ -474,11 +474,11 @@ export const TubelessSealantCalculator: React.FC = () => {
                 {language === 'zh-TW' ? '單輪首次加注推薦量' : '单轮首次加注推荐量'}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
+                <span className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white tracking-tight font-display tabular-nums">
                   {calculation.initialDoseMl}
                 </span>
                 <span className="text-lg font-bold text-ios-blue">ml</span>
-                <span className="text-sm font-mono text-slate-400 ml-1">
+                <span className="text-sm font-mono text-slate-400 ml-1 tabular-nums">
                   ({calculation.initialDoseFlOz} fl oz)
                 </span>
               </div>
@@ -486,28 +486,28 @@ export const TubelessSealantCalculator: React.FC = () => {
 
             {/* Secondary Output Grid */}
             <div className="grid grid-cols-2 gap-3 pt-3 border-t border-black/[0.05] dark:border-white/[0.08]">
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
                   <Layers className="w-3.5 h-3.5 text-ios-blue" />
                   <span>{language === 'zh-TW' ? '整車前後雙輪總量' : '整车前后双轮总量'}</span>
                 </div>
-                <div className="text-lg font-extrabold text-ios-blue font-mono">
+                <div className="text-lg font-bold text-ios-blue font-mono tabular-nums">
                   {calculation.pairTotalMl} ml
                 </div>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-slate-400 tabular-nums">
                   {calculation.pairTotalFlOz} fl oz
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
                   <RotateCcw className="w-3.5 h-3.5 text-ios-purple" />
                   <span>{language === 'zh-TW' ? '單輪定期補液量' : '单轮定期补液量'}</span>
                 </div>
-                <div className="text-lg font-extrabold text-ios-purple font-mono">
+                <div className="text-lg font-bold text-ios-purple font-mono tabular-nums">
                   {calculation.topUpDoseMl} ml
                 </div>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[11px] text-slate-400 tabular-nums">
                   {calculation.topUpDoseFlOz} fl oz
                 </div>
               </div>

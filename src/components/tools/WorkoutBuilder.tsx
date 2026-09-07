@@ -505,29 +505,29 @@ export const WorkoutBuilder: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold mb-1.5">
               <Dumbbell className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '結構化間歇課表工坊' : '结构化间歇课表工坊'}</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight font-display">
               {language === 'zh-TW' ? '科學間歇訓練課表工坊 (Workout Builder)' : '科学间歇训练课表工坊 (Workout Builder)'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-2xl">
               内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，一键无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
               title="生成社交分享课表海报"
             >
               <Share2 className="w-3.5 h-3.5 text-ios-red" />
@@ -537,7 +537,7 @@ export const WorkoutBuilder: React.FC = () => {
             <button
               type="button"
               onClick={() => setExportModalOpen(true)}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span>导出课表 (ZWO / MRC)</span>
@@ -547,8 +547,8 @@ export const WorkoutBuilder: React.FC = () => {
       </IOSCard>
 
       {/* Physiological Anchors Bar */}
-      <div className="ios-card p-4 sm:p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-5 text-xs">
+      <div className="ios-card p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card flex flex-wrap items-center justify-between gap-3.5">
+        <div className="flex flex-wrap items-center gap-4 text-xs">
           <div className="flex items-center gap-2">
             <span className="text-slate-500 font-medium">车手阈值功率 (FTP):</span>
             <NumberStepper
@@ -577,19 +577,19 @@ export const WorkoutBuilder: React.FC = () => {
         {/* Live Summary Chips */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
           <span className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 text-slate-700 dark:text-slate-300">
-            总时长: <strong>{workoutMetrics.formattedDuration}</strong>
+            总时长: <strong className="tabular-nums">{workoutMetrics.formattedDuration}</strong>
           </span>
           <span className="px-2.5 py-1 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-bold">
-            NP: <strong>{workoutMetrics.np}W</strong>
+            NP: <strong className="tabular-nums">{workoutMetrics.np}W</strong>
           </span>
           <span className="px-2.5 py-1 rounded-xl bg-ios-purple/10 border border-ios-purple/20 text-ios-purple font-bold">
-            IF: <strong>{workoutMetrics.ifFactor}</strong>
+            IF: <strong className="tabular-nums">{workoutMetrics.ifFactor}</strong>
           </span>
           <span className="px-2.5 py-1 rounded-xl bg-ios-orange/10 border border-ios-orange/20 text-ios-orange font-bold">
-            TSS: <strong>{workoutMetrics.tss}</strong>
+            TSS: <strong className="tabular-nums">{workoutMetrics.tss}</strong>
           </span>
           <span className="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5 text-slate-500">
-            总做功: <strong>{workoutMetrics.totalKj} kJ</strong>
+            总做功: <strong className="tabular-nums">{workoutMetrics.totalKj} kJ</strong>
           </span>
         </div>
       </div>
@@ -610,7 +610,7 @@ export const WorkoutBuilder: React.FC = () => {
               <div
                 key={tmpl.id}
                 onClick={() => handleSelectTemplate(tmpl)}
-                className={`p-4 rounded-3xl border transition cursor-pointer apple-touch flex flex-col justify-between gap-3 ${
+                className={`p-3.5 sm:p-4 rounded-2xl border transition cursor-pointer apple-touch flex flex-col justify-between gap-3 ${
                   isSelected
                     ? 'bg-ios-red/5 dark:bg-ios-red/10 border-ios-red shadow-ios-sm'
                     : 'bg-white/80 dark:bg-[#1C1C1E]/80 border-slate-200/80 dark:border-white/10 hover:border-slate-300'
@@ -647,7 +647,7 @@ export const WorkoutBuilder: React.FC = () => {
       </div>
 
       {/* Workout Visual Profile Timeline */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+      <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <div className="flex items-center gap-2">
@@ -685,7 +685,7 @@ export const WorkoutBuilder: React.FC = () => {
         </div>
 
         {/* SVG Workout Timeline Profile */}
-        <div className="w-full h-36 bg-slate-50 dark:bg-white/5 rounded-2xl p-3 border border-slate-200/60 dark:border-white/5 relative overflow-hidden flex items-end gap-1">
+        <div className="w-full h-32 sm:h-36 bg-slate-50 dark:bg-white/5 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-white/5 relative overflow-hidden flex items-end gap-1">
           {segments.map((seg, idx) => {
             const widthPct = Math.max(2, (seg.durationSec / Math.max(1, workoutMetrics.totalSec)) * 100);
             const avgPct = (seg.powerStartPct + seg.powerEndPct) / 2;
@@ -699,10 +699,10 @@ export const WorkoutBuilder: React.FC = () => {
                 className="rounded-t-md relative group transition-all hover:opacity-90 flex flex-col justify-between p-1 overflow-hidden"
                 title={`${seg.name}: ${Math.round(seg.durationSec / 60)}分 @ ${Math.round(avgPct * 100)}% (${Math.round(avgPct * ftpWatts)}W)`}
               >
-                <span className="text-[9px] text-white font-mono font-bold truncate drop-shadow-xs">
+                <span className="text-[9px] text-white font-mono font-bold truncate drop-shadow-xs tabular-nums">
                   {Math.round(avgPct * 100)}%
                 </span>
-                <span className="text-[8px] text-white/90 font-mono truncate hidden sm:block drop-shadow-xs">
+                <span className="text-[8px] text-white/90 font-mono truncate hidden sm:block drop-shadow-xs tabular-nums">
                   {Math.round(seg.durationSec / 60)}m
                 </span>
               </div>
@@ -712,25 +712,25 @@ export const WorkoutBuilder: React.FC = () => {
 
         {/* Coggan Zones Legend Bar */}
         <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px]">
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#94a3b8' }}></span> Z1 恢复 &lt;55%</span>
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#3b82f6' }}></span> Z2 有氧 55-75%</span>
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#10b981' }}></span> Z3 节奏 76-90%</span>
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#f59e0b' }}></span> Z4 阈值 91-105%</span>
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#f97316' }}></span> Z5 摄氧 106-120%</span>
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#ef4444' }}></span> Z6 无氧 121-150%</span>
-          <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#a855f7' }}></span> Z7 冲刺 &gt;150%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#94a3b8' }}></span> Z1 恢复 &lt;55%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#3b82f6' }}></span> Z2 有氧 55-75%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#10b981' }}></span> Z3 节奏 76-90%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#f59e0b' }}></span> Z4 阈值 91-105%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#f97316' }}></span> Z5 摄氧 106-120%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#ef4444' }}></span> Z6 无氧 121-150%</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#a855f7' }}></span> Z7 冲刺 &gt;150%</span>
         </div>
       </div>
 
       {/* Segments Detailed Editor List */}
-      <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+      <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
         <div className="flex items-center justify-between">
           <div className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
             课表段落明细编辑器 ({segments.length} 个训练分段)
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {segments.map((seg, idx) => {
             const isInterval = seg.type === 'interval';
             const avgWatts = Math.round(((seg.powerStartPct + seg.powerEndPct) / 2) * ftpWatts);
@@ -738,15 +738,15 @@ export const WorkoutBuilder: React.FC = () => {
             return (
               <div
                 key={seg.id}
-                className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition"
+                className="p-3 sm:p-3.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3.5 transition"
               >
                 {/* Left: Sequence & Info */}
-                <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 flex items-center justify-center font-mono font-bold text-xs shrink-0">
                     {idx + 1}
                   </div>
 
-                  <div className="min-w-0 flex-1 space-y-1">
+                  <div className="min-w-0 flex-1 space-y-0.5">
                     <input
                       type="text"
                       value={seg.name}
@@ -755,24 +755,24 @@ export const WorkoutBuilder: React.FC = () => {
                     />
 
                     <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 font-mono">
-                      <span>{Math.round(seg.durationSec / 60)} 分钟</span>
+                      <span className="tabular-nums">{Math.round(seg.durationSec / 60)} 分钟</span>
                       <span>·</span>
                       {isInterval ? (
-                        <span>
+                        <span className="tabular-nums">
                           {seg.repeatCount}次 x ({seg.onDurationSec}s @ {Math.round((seg.onPowerPct || 1.0) * 100)}% + {seg.offDurationSec}s @ {Math.round((seg.offPowerPct || 0.5) * 100)}%)
                         </span>
                       ) : (
-                        <span>
+                        <span className="tabular-nums">
                           {Math.round(seg.powerStartPct * 100)}%~{Math.round(seg.powerEndPct * 100)}% FTP ({avgWatts}W · {(avgWatts / riderWeightKg).toFixed(1)} W/kg)
                         </span>
                       )}
-                      {seg.cadenceRpm && <span>· 目标踏频: {seg.cadenceRpm} rpm</span>}
+                      {seg.cadenceRpm && <span className="tabular-nums">· 目标踏频: {seg.cadenceRpm} rpm</span>}
                     </div>
                   </div>
                 </div>
 
                 {/* Center / Right: Power & Cadence Controls */}
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
                   {!isInterval ? (
                     <div className="flex items-center gap-2">
                       <div className="text-center">
@@ -787,7 +787,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'powerStartPct', (parseInt(e.target.value) || 50) / 100)
                             }
-                            className="w-14 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                            className="w-13 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                           />
                           <span className="text-slate-400 text-xs">%</span>
                         </div>
@@ -805,7 +805,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'cadenceRpm', parseInt(e.target.value) || 90)
                             }
-                            className="w-14 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                            className="w-13 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                           />
                           <span className="text-slate-400 text-xs">rpm</span>
                         </div>
@@ -823,7 +823,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'durationSec', (parseInt(e.target.value) || 1) * 60)
                             }
-                            className="w-14 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                            className="w-13 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                           />
                           <span className="text-slate-400 text-xs">分</span>
                         </div>
@@ -841,7 +841,7 @@ export const WorkoutBuilder: React.FC = () => {
                           onChange={(e) =>
                             handleUpdateSegment(seg.id, 'repeatCount', parseInt(e.target.value) || 1)
                           }
-                          className="w-12 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white"
+                          className="w-11 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                         />
                       </div>
 
@@ -857,7 +857,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'onDurationSec', parseInt(e.target.value) || 30)
                             }
-                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold"
+                            className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold tabular-nums"
                           />
                           <span className="text-[10px] text-slate-400">s@</span>
                           <input
@@ -869,7 +869,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'onPowerPct', (parseInt(e.target.value) || 100) / 100)
                             }
-                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold"
+                            className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold tabular-nums"
                           />
                           <span className="text-[10px] text-slate-400">%</span>
                         </div>
@@ -887,7 +887,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'offDurationSec', parseInt(e.target.value) || 30)
                             }
-                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
+                            className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold tabular-nums"
                           />
                           <span className="text-[10px] text-slate-400">s@</span>
                           <input
@@ -899,7 +899,7 @@ export const WorkoutBuilder: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateSegment(seg.id, 'offPowerPct', (parseInt(e.target.value) || 50) / 100)
                             }
-                            className="w-12 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
+                            className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold tabular-nums"
                           />
                           <span className="text-[10px] text-slate-400">%</span>
                         </div>
@@ -945,8 +945,11 @@ export const WorkoutBuilder: React.FC = () => {
 
       {/* Export Drawer / Modal */}
       {exportModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-          <div className="w-full max-w-2xl p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-5 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 sm:space-y-5 animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
+            {/* iOS Bottom Sheet Drag Handle */}
+            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto -mt-1 mb-1 sm:hidden shrink-0" />
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileCode className="w-5 h-5 text-ios-red" />
@@ -957,7 +960,7 @@ export const WorkoutBuilder: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setExportModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition"
+                className="apple-touch w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition"
               >
                 ✕
               </button>
@@ -977,13 +980,13 @@ export const WorkoutBuilder: React.FC = () => {
 
             {/* Code Preview Box */}
             <div className="relative">
-              <pre className="p-4 rounded-2xl bg-[#1C1C1E] text-slate-200 text-xs font-mono h-64 overflow-y-auto leading-relaxed border border-white/10 selection:bg-ios-red selection:text-white">
+              <pre className="p-3.5 sm:p-4 rounded-2xl bg-[#1C1C1E] text-slate-200 text-xs font-mono h-60 sm:h-64 overflow-y-auto leading-relaxed border border-white/10 selection:bg-ios-red selection:text-white">
                 {exportFormat === 'zwo' ? zwoXmlContent : mrcContent}
               </pre>
             </div>
 
             {/* Hardware Import Guidelines */}
-            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
+            <div className="p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
               <div className="font-bold text-slate-700 dark:text-slate-300">📁 码表与软件导入指引：</div>
               {exportFormat === 'zwo' ? (
                 <p>
@@ -997,11 +1000,11 @@ export const WorkoutBuilder: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center justify-end gap-2.5 pt-2">
+            <div className="flex flex-wrap items-center justify-end gap-2.5 pt-1 sm:pt-2">
               <button
                 type="button"
                 onClick={handleDownloadFile}
-                className="apple-touch px-5 py-2 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
+                className="apple-touch px-4.5 py-2 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
               >
                 <Download className="w-4 h-4" />
                 <span>下载 .{exportFormat} 文件</span>

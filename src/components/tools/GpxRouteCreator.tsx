@@ -396,39 +396,39 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold mb-2">
-              <Navigation className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold mb-1.5">
+              <Navigation className="w-3 h-3" />
               GIS 地理拓扑与路书工坊
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">GPX 路线规划与路书工坊</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">GPX 路线规划与路书工坊</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
               地名智能搜索、已有 GPX 导入解析、海拔剖面图联动定位与专业标准 GPX 文件导出。
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-2xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成航迹长图海报"
             >
               <Share2 className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>生成航迹海报</span>
             </button>
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>导入 GPX</span>
               <input type="file" accept=".gpx,.xml" onChange={handleGpxFileUpload} className="hidden" />
             </label>
             <button
               onClick={handleReverseRoute}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="一键反转起点与终点"
             >
               <ArrowRightLeft className="w-3.5 h-3.5 text-ios-mint shrink-0" />
@@ -436,7 +436,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
             </button>
             <button
               onClick={handleExportGpx}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-2xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5 shrink-0" />
               <span>导出 .GPX</span>
@@ -446,7 +446,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
       </IOSCard>
 
       {/* Xingzhe Verified Zhejiang Routes Showcase Bar */}
-      <IOSCard variant="default" padding="none" className="p-5 sm:p-6 space-y-3">
+      <IOSCard variant="default" padding="none" className="p-3.5 sm:p-4 space-y-2.5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
@@ -461,7 +461,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               type="text"
               value={routeName}
               onChange={(e) => setRouteName(e.target.value)}
-              className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-ios-blue font-bold focus:outline-none focus:border-ios-blue truncate"
+              className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1 text-xs text-ios-blue font-bold focus:outline-none focus:border-ios-blue truncate"
             />
           </div>
         </div>
@@ -474,7 +474,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               <button
                 key={route.id}
                 onClick={() => loadPresetRoute(route.id)}
-                className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between apple-touch ${
+                className={`p-2.5 rounded-xl border text-left transition flex flex-col justify-between apple-touch ${
                   isSelected
                     ? 'bg-ios-blue text-white border-ios-blue ring-2 ring-ios-blue/30 shadow-ios-md scale-[1.01]'
                     : 'bg-white/70 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
@@ -498,7 +498,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                   </div>
                 </div>
 
-                <div className={`flex items-center justify-between text-[10px] font-mono mt-2 pt-1.5 border-t ${
+                <div className={`flex items-center justify-between text-[10px] font-mono mt-1.5 pt-1.5 border-t ${
                   isSelected
                     ? 'border-white/20 text-white/80'
                     : 'border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400'
@@ -512,26 +512,26 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Map Area */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-3.5">
           {/* Search Bar */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="搜索定位地名/山峰 (如: 杭州西湖, 莫干山, 雁荡山)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearchLocation()}
-                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue shadow-xs"
+                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue shadow-xs"
               />
             </div>
             <button
               onClick={handleSearchLocation}
               disabled={isSearching}
-              className="px-4 py-2.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-2xl text-xs font-semibold shadow-ios-sm shrink-0 transition apple-touch"
+              className="px-3.5 py-2 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl text-xs font-semibold shadow-ios-sm shrink-0 transition apple-touch"
             >
               {isSearching ? '搜索中...' : '定位'}
             </button>
@@ -539,12 +539,12 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
 
           {/* Leaflet Map Canvas */}
           <IOSCard variant="default" padding="none" className="p-2 overflow-hidden">
-            <div ref={mapContainerRef} className="w-full h-96 rounded-2xl border border-slate-200/60 dark:border-white/10 overflow-hidden"></div>
+            <div ref={mapContainerRef} className="w-full h-[400px] rounded-xl border border-slate-200/60 dark:border-white/10 overflow-hidden"></div>
           </IOSCard>
         </div>
 
         {/* Right Route Stats & Elevation Profile */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-4">
           {/* Key Distance & Elevation Stats */}
           <div className="grid grid-cols-3 gap-3">
             <IOSMetricTile
@@ -571,7 +571,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </div>
 
           {/* Elevation Profile Chart with Hover Sync */}
-          <IOSCard variant="default" padding="none" className="p-5 sm:p-6 space-y-2">
+          <IOSCard variant="default" padding="none" className="p-4 space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-white flex items-center gap-1.5">
                 <Mountain className="w-3.5 h-3.5 text-ios-blue" />
@@ -580,7 +580,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               <span className="text-[10px] text-slate-400 dark:text-slate-500">*悬浮联动地图坐标</span>
             </div>
 
-            <div className="h-48">
+            <div className="h-44">
               <Line
                 data={chartData}
                 options={{
@@ -608,14 +608,14 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </IOSCard>
 
           {/* Waypoints List with Move/Delete Operations */}
-          <IOSCard variant="default" padding="none" className="p-5 space-y-3">
+          <IOSCard variant="default" padding="none" className="p-4 space-y-2.5">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-white">航点序列明细:</span>
               <span className="text-slate-500 text-[11px]">可调整顺序或重命名</span>
             </div>
-            <div className="max-h-40 overflow-y-auto space-y-2 pr-1">
+            <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1">
               {waypoints.map((w, idx) => (
-                <div key={w.id} className="p-2.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex items-center justify-between text-xs gap-2">
+                <div key={w.id} className="p-2 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex items-center justify-between text-xs gap-2">
                   <div className="flex items-center gap-2 truncate flex-1">
                     <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[10px] font-bold font-mono shrink-0">
                       {idx + 1}

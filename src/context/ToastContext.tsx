@@ -45,7 +45,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto p-3 sm:p-3.5 rounded-2xl border shadow-xl backdrop-blur-2xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200 transition-all ${
+              className={`pointer-events-auto p-3 sm:p-3.5 rounded-2xl border shadow-ios-popover backdrop-blur-2xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200 transition-all ${
                 isSuccess
                   ? 'bg-white/95 dark:bg-[#1C1C1E]/95 border-emerald-500/35 dark:border-emerald-500/40 shadow-emerald-500/5'
                   : isError

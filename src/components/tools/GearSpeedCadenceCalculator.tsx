@@ -200,26 +200,28 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
               <Cog className="w-3.5 h-3.5" />
-              传动比与踏频动力学
+              <span>传动比与踏频动力学</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">齿比-速度-踏频多功能计算器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              齿比-速度-踏频多功能计算器
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
               全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成齿比与踏频速度海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -244,7 +246,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       </IOSCard>
 
       {/* Inputs & Presets */}
-      <IOSCard variant="default" className="p-6 space-y-5">
+      <IOSCard variant="default" className="space-y-5">
         {/* Gruppo Presets */}
         <div>
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
@@ -400,10 +402,10 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                         }`}
                         title={cell.crossType || `齿比 ${cell.ratio} | 前进 ${isImperial ? `${cell.gearInches}"` : `${cell.devMeters}m`}`}
                       >
-                        <div className="text-sm font-bold">
+                        <div className="text-sm font-bold tabular-nums tracking-tight">
                           {isImperial ? (cell.speedKmh * 0.621371).toFixed(1) : cell.speedKmh}
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400/80">
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400/80 tabular-nums">
                           {cell.ratio} / {isImperial ? `${cell.gearInches}"` : `${cell.devMeters}m`}
                         </div>
                       </td>

@@ -413,39 +413,39 @@ export const GroupRideSimulator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Top Mode Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold">
-                <Users className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold">
+                <Users className="w-3 h-3" />
                 {mode === 'ttt'
                   ? (language === 'zh-TW' ? 'TTT 車隊計時賽極限輪轉' : 'TTT 车队计时赛极限轮转')
                   : (language === 'zh-TW' ? '公路大組團騎氣動仿真' : '公路大组团骑气动仿真')}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-ios-mint/15 text-ios-mint border border-ios-mint/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-ios-mint/15 text-ios-mint border border-ios-mint/30">
                 PRO STRATEGY
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               {mode === 'ttt'
                 ? (language === 'zh-TW' ? 'TTT 車隊計時賽秒級推演與戰術模擬器' : 'TTT 车队计时赛秒级推演与战术模拟器')
                 : (language === 'zh-TW' ? '公路車團騎/跟騎阻力與戰術模擬器' : '公路车团骑/跟骑阻力与战术模拟器')}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
+            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
               {mode === 'ttt'
                 ? '世巡赛 TTT 计时赛秒级轮转换位、侧后方脱离风阻扰动、牺牲副将燃尽退场与 UCI 第 4 人冲线成绩推导。'
                 : '模拟大组编队破风减阻（高达 35%~42% 瓦数节省）、轮转策略及各车手 $W\'$ 无氧储备消耗与掉队预警。'}
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <button
               onClick={findOptimalCruiseSpeed}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-2xl text-xs font-bold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5" />
               {language === 'zh-TW' ? '求解最高不破產均速' : '求解最高不破产均速'}
@@ -454,8 +454,8 @@ export const GroupRideSimulator: React.FC = () => {
         </div>
 
         {/* Mode Switcher & Presets */}
-        <div className="relative z-10 mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="w-full sm:w-80">
+        <div className="relative z-10 mt-4 pt-3.5 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="w-full sm:w-72">
             <IOSSegmentedControl
               options={[
                 { value: 'peloton', label: language === 'zh-TW' ? '公路大組團騎' : '公路大组团骑' },
@@ -472,6 +472,7 @@ export const GroupRideSimulator: React.FC = () => {
                   setDistanceKm(80);
                 }
               }}
+              size="sm"
             />
           </div>
 
@@ -548,11 +549,11 @@ export const GroupRideSimulator: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Settings & Rider List */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
+        <div className="lg:col-span-5 space-y-4">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-ios-mint" />
                 {mode === 'ttt' ? 'TTT 赛道与极限节奏参数' : '编队巡航与环境设定'}
@@ -663,7 +664,7 @@ export const GroupRideSimulator: React.FC = () => {
           </div>
 
           {/* Rider Roster Management */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <Users className="w-4 h-4 text-ios-mint" />
@@ -805,10 +806,10 @@ export const GroupRideSimulator: React.FC = () => {
         </div>
 
         {/* Right Charts & Survival Panel */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {/* W' Balance Timeline Chart */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card">
-            <div className="flex justify-between items-center mb-4">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card">
+            <div className="flex justify-between items-center mb-3">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-ios-mint" />
                 {mode === 'ttt'
@@ -817,7 +818,7 @@ export const GroupRideSimulator: React.FC = () => {
               </h3>
               <span className="text-xs text-slate-400">低于 0% 即破产脱离</span>
             </div>
-            <div className="h-64 w-full">
+            <div className="h-60 w-full">
               <Line
                 data={chartData}
                 options={{
@@ -853,7 +854,7 @@ export const GroupRideSimulator: React.FC = () => {
           </div>
 
           {/* Rider Survival Analysis Summary */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                 {mode === 'ttt' ? 'TTT 战术角色履职与体能负载评估' : '团队战术与体能负荷分析'}
@@ -904,7 +905,7 @@ export const GroupRideSimulator: React.FC = () => {
 
           {/* TTT Tactical Guidance Card */}
           {mode === 'ttt' && (
-            <div className="p-4 rounded-3xl bg-ios-mint/10 border border-ios-mint/20 space-y-2">
+            <div className="p-4 rounded-2xl bg-ios-mint/10 border border-ios-mint/20 space-y-2">
               <div className="flex items-center gap-2 text-xs font-bold text-ios-mint">
                 <Flag className="w-4 h-4 text-ios-mint" />
                 世巡赛顶级车队 TTT 战术锦囊

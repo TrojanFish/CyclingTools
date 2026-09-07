@@ -11,7 +11,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
 
   return (
     <footer className="mt-12 border-t border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-black/60 backdrop-blur-xl no-print transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4 sm:space-y-5">
         {/* Compliance & Legal Disclaimer Box */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-500 dark:text-slate-400 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
           <div className="space-y-1.5">
@@ -47,7 +47,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
               <div className="flex items-center gap-1 font-mono">
-                <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
+                <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
                 <span className="text-ios-blue dark:text-ios-blue font-bold text-sm">{t('brandSuffix')}</span>
                 <span className="text-[9px] px-1.5 py-0.2 rounded bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-mono font-semibold">{t('brandPro')}</span>
               </div>

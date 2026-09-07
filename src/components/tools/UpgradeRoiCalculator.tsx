@@ -348,24 +348,25 @@ export const UpgradeRoiCalculator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
               <Scale className="w-3.5 h-3.5" />
-              风洞实测基准与改装边际效益测算
+              <span>风洞实测基准与改装边际效益测算</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">零件减重与气动升级省瓦推算器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
-              内置各大实验室风洞实测基准（轮组/头盔/骑行服/内胎），支持<strong>规格下拉一键自动推算省瓦</strong>或手动自定义，自动随巡航车速折算真实收益。
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              单车改装边际效益与克瓦比 ROI 计算器
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
+              科学量化每一分改装预算！精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，计算“每瓦投入金钱”，杜绝玄学智商税升级。
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Apple Currency Selector */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
             <IOSSegmentedControl
               options={[
                 { id: 'CNY', label: '¥ CNY' },
@@ -380,7 +381,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成改装升级省瓦战报海报"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -389,10 +390,10 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
             <button
               onClick={resetToDefaults}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3 sm:px-3 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <RotateCcw className="w-3.5 h-3.5 text-ios-blue" />
-              重置预设
+              <span>重置预设</span>
             </button>
           </div>
         </div>
@@ -438,10 +439,10 @@ export const UpgradeRoiCalculator: React.FC = () => {
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Upgrade Items (Spec Picker + Custom In-place Inputs) */}
-        <div className="lg:col-span-7 space-y-6">
-          <IOSCard variant="default" className="p-6 space-y-4">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-ios-blue" />
@@ -567,8 +568,8 @@ export const UpgradeRoiCalculator: React.FC = () => {
           </IOSCard>
         </div>
 
-        {/* Right Output Dashboard & ROI Rating */}
-        <div className="lg:col-span-5 space-y-6">
+        {/* Right Output Dashboard & ROI Rating (macOS Sticky Canvas) */}
+        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
           {/* Key Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <IOSMetricTile

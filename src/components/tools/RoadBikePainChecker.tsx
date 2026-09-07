@@ -92,25 +92,25 @@ export const RoadBikePainChecker: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Top Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-purple/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-xs font-semibold mb-2">
-              <Activity className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-[11px] font-semibold mb-1.5">
+              <Activity className="w-3 h-3" />
               骑行运动医学与 Fitting 诊断
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">公路车骑行疼痛排查与自诊指南</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">公路车骑行疼痛排查与自诊指南</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
               覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。
             </p>
           </div>
           <div className="flex items-center gap-2.5">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成针对性调车自纠处方海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -120,24 +120,24 @@ export const RoadBikePainChecker: React.FC = () => {
         </div>
 
         {/* Apple Spotlight Search Input */}
-        <div className="relative mt-5">
-          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <div className="relative mt-4">
+          <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="搜索不适关键词快速定位 (如: 髌骨, 膝前痛, 手麻, 会阴, 锁片, 塌腰)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"
+            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-8.5 pr-4 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"
           />
           {searchQuery && (
-            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] text-ios-purple font-mono">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-ios-purple font-mono">
               匹配到 {matchingAreaIds.length} 个部位
             </span>
           )}
         </div>
 
         {/* Body Area Navigation Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mt-3.5">
           {Object.entries(PAIN_AREAS).map(([key, item]) => {
             const isMatch = matchingAreaIds.includes(key);
             const isSelected = selectedAreaId === key;
@@ -146,9 +146,9 @@ export const RoadBikePainChecker: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setSelectedAreaId(key)}
-                className={`apple-touch p-3 rounded-2xl border text-center transition-all flex flex-col items-center gap-1.5 relative active:scale-95 ${
+                className={`apple-touch p-2.5 rounded-xl border text-center transition-all flex flex-col items-center gap-1 relative active:scale-95 ${
                   isSelected
-                    ? 'bg-ios-red text-white border-ios-red shadow-md shadow-ios-red/25 ring-2 ring-ios-red/30 font-bold scale-[1.02] z-10'
+                    ? 'bg-ios-red text-white border-ios-red shadow-ios-sm shadow-ios-red/25 ring-2 ring-ios-red/30 font-bold scale-[1.02] z-10'
                     : isMatch
                     ? 'bg-amber-500/15 border-amber-500/50 text-amber-700 dark:text-amber-300 font-semibold ring-1 ring-amber-500/30'
                     : 'bg-black/[0.03] dark:bg-white/[0.06] border-black/[0.05] dark:border-white/[0.06] text-slate-700 dark:text-slate-300 hover:bg-black/[0.06] dark:hover:bg-white/[0.1]'
@@ -161,7 +161,7 @@ export const RoadBikePainChecker: React.FC = () => {
                   const AreaIcon = areaIconMap[key] || Activity;
                   return (
                     <AreaIcon
-                      className={`w-5 h-5 transition-colors ${
+                      className={`w-4 h-4 transition-colors ${
                         isSelected
                           ? 'text-white'
                           : isMatch
@@ -179,9 +179,9 @@ export const RoadBikePainChecker: React.FC = () => {
       </IOSCard>
 
       {/* Main Analysis Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Symptoms & Interactive Body Map */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-4">
           {/* Interactive Body Visualizer */}
           <BodyPainDiagram
             selectedAreaId={selectedAreaId}
@@ -189,7 +189,7 @@ export const RoadBikePainChecker: React.FC = () => {
           />
 
           {/* Symptoms Card */}
-          <IOSCard variant="default" className="p-6 space-y-4">
+          <IOSCard variant="default" className="space-y-4">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-amber-500 dark:text-amber-400" />
               常见不适症状表现 ({activeArea.title.split(' ')[0]})
@@ -206,11 +206,11 @@ export const RoadBikePainChecker: React.FC = () => {
         </div>
 
         {/* Right Column: Step by Step Action Plan & Checklist */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {/* Specific Self-Check Action Items with Checklist */}
-          <IOSCard variant="default" className="p-6 space-y-4">
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+              <h2 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
                 针对性自查与调车清单 ({checkedCount}/{totalChecks} 已排查)
               </h2>
@@ -233,7 +233,7 @@ export const RoadBikePainChecker: React.FC = () => {
               ></div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {activeArea.specificSelfCheck.map((item, idx) => {
                 const key = `${selectedAreaId}_${idx}`;
                 const isChecked = !!completedChecks[key];
@@ -242,14 +242,14 @@ export const RoadBikePainChecker: React.FC = () => {
                   <div
                     key={idx}
                     onClick={() => toggleCheck(key)}
-                    className={`p-4 rounded-2xl border flex items-start gap-3 cursor-pointer transition apple-touch ${
+                    className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition apple-touch ${
                       isChecked
                         ? 'bg-emerald-500/10 border-emerald-500/30 text-slate-500 line-through'
                         : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-800 dark:text-slate-200 hover:border-black/10 dark:hover:border-white/15'
                     }`}
                   >
                     <button className="mt-0.5 text-emerald-500 dark:text-emerald-400 shrink-0">
-                      {isChecked ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5 text-slate-400 dark:text-slate-600" />}
+                      {isChecked ? <CheckSquare className="w-4.5 h-4.5" /> : <Square className="w-4.5 h-4.5 text-slate-400 dark:text-slate-600" />}
                     </button>
                     <p className={`text-xs leading-relaxed ${isChecked ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
                       {item}
@@ -261,8 +261,8 @@ export const RoadBikePainChecker: React.FC = () => {
           </IOSCard>
 
           {/* Root Causes Accordion / List */}
-          <IOSCard variant="default" className="p-6 space-y-4">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
+            <h2 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <Wrench className="w-4 h-4 text-ios-blue" />
               根源成因深度剖析
             </h2>
@@ -284,7 +284,7 @@ export const RoadBikePainChecker: React.FC = () => {
           </IOSCard>
 
           {/* General Rehabilitation & Care Tips */}
-          <IOSCard variant="default" className="p-6 space-y-4">
+          <IOSCard variant="default" className="space-y-4">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
               运动康复与损伤预防通用法则

@@ -335,23 +335,23 @@ export const CyclingWeatherAdvisor: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold mb-2">
-              <CloudSun className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold mb-1.5">
+              <CloudSun className="w-3 h-3" />
               高精度气象与风向研判
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">骑行天气与路线气象顾问</h1>
-            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">骑行天气与路线气象顾问</h1>
+            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
               结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint" />
               <span>导入 GPX / TCX 路线</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxUpload} className="hidden" />
@@ -360,7 +360,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             <button
               onClick={fetchWeatherAdvice}
               disabled={isLoading}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-2xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               {isLoading ? '正在获取沿途气象...' : '生成全路段天气顾问'}
@@ -401,12 +401,12 @@ export const CyclingWeatherAdvisor: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Inputs & Map */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
+        <div className="lg:col-span-5 space-y-4">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Compass className="w-4 h-4 text-ios-blue" />
                 路线与出发参数
               </h2>
@@ -423,7 +423,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                   type="time"
                   value={departureTime}
                   onChange={(e) => setDepartureTime(e.target.value)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-sm text-ios-blue font-mono focus:border-ios-blue focus:outline-none"
+                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-ios-blue font-mono focus:border-ios-blue focus:outline-none"
                 />
               </div>
               <div>
@@ -458,7 +458,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                     <button
                       key={r.id}
                       onClick={() => loadPresetRoute(r.id)}
-                      className={`px-2.5 py-2 rounded-2xl border text-left text-xs transition apple-touch ${
+                      className={`px-2 py-1.5 rounded-xl border text-left text-xs transition apple-touch ${
                         isSelected
                           ? 'bg-ios-blue text-white border-ios-blue font-bold shadow-ios-md ring-2 ring-ios-blue/30 scale-[1.01]'
                           : 'bg-white/70 dark:bg-white/5 border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-white/20'
@@ -477,33 +477,33 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             </div>
 
             {/* Map Canvas */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-medium">
                 <span>在地图上点击添加/微调路线航点</span>
                 <span className="font-mono text-ios-blue font-semibold">{routePoints.length} 个航点</span>
               </div>
-              <div ref={mapContainerRef} className="w-full h-72 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-inner overflow-hidden"></div>
+              <div ref={mapContainerRef} className="w-full h-72 rounded-xl border border-slate-200/80 dark:border-white/10 shadow-inner overflow-hidden"></div>
             </div>
           </div>
         </div>
 
         {/* Right Segment Weather Details */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {weatherSegments.length === 0 ? (
-            <div className="ios-card p-12 rounded-3xl border border-slate-200/80 dark:border-white/10 text-center flex flex-col items-center justify-center space-y-3 shadow-ios-card">
-              <div className="w-14 h-14 rounded-2xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-center text-ios-blue shadow-ios-sm">
-                <CloudSun className="w-7 h-7" />
+            <div className="ios-card p-10 rounded-2xl border border-slate-200/80 dark:border-white/10 text-center flex flex-col items-center justify-center space-y-2.5 shadow-ios-card">
+              <div className="w-12 h-12 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-center text-ios-blue shadow-ios-sm">
+                <CloudSun className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">暂无路段气象数据</h3>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">暂无路段气象数据</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
                 请在左侧设定出发时间与均速，点击上方「生成全路段天气顾问」按钮获取实时气象分析。
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               {/* Cycling Gear & Hydration Recommendations Card */}
-              <div className="ios-card p-5 rounded-3xl border border-ios-blue/25 bg-ios-blue/10 flex items-start gap-3 shadow-ios-card">
-                <ShieldCheck className="w-5 h-5 text-ios-blue shrink-0 mt-0.5" />
+              <div className="ios-card p-4 rounded-2xl border border-ios-blue/25 bg-ios-blue/10 flex items-start gap-3 shadow-ios-card">
+                <ShieldCheck className="w-4 h-4 text-ios-blue shrink-0 mt-0.5" />
                 <div className="space-y-1 text-xs">
                   <span className="font-bold text-slate-900 dark:text-white block">智能装备与补水补给建议</span>
                   <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -516,8 +516,8 @@ export const CyclingWeatherAdvisor: React.FC = () => {
 
               {/* Crosswind Gust Alert for Carbon Wheels */}
               {maxCrosswindKmh >= 20 && (
-                <div className="ios-card p-5 rounded-3xl border border-ios-orange/30 bg-ios-orange/10 flex items-start gap-3 shadow-ios-card">
-                  <AlertTriangle className="w-5 h-5 text-ios-orange shrink-0 mt-0.5" />
+                <div className="ios-card p-4 rounded-2xl border border-ios-orange/30 bg-ios-orange/10 flex items-start gap-3 shadow-ios-card">
+                  <AlertTriangle className="w-4 h-4 text-ios-orange shrink-0 mt-0.5" />
                   <div className="space-y-1 text-xs">
                     <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <span>强侧风预警 (Crosswind Hazard Alert)</span>
@@ -532,15 +532,15 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                 </div>
               )}
 
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {weatherSegments.map((seg) => (
-                  <div key={seg.pointIndex} className="ios-card p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-2.5">
+                  <div key={seg.pointIndex} className="ios-card p-3.5 rounded-xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-xs font-bold font-mono">
+                        <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[10px] font-bold font-mono">
                           {seg.pointIndex}
                         </span>
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                        <span className="text-xs font-semibold text-slate-900 dark:text-white">
                           {seg.distanceKm === 0 ? '出发起点' : `路程 ${isImperial ? `${(seg.distanceKm * 0.621371).toFixed(1)} mi` : `${seg.distanceKm} km`} 处`}
                         </span>
                         <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">

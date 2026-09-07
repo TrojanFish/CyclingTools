@@ -350,31 +350,31 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
-              <Target className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold mb-1.5">
+              <Target className="w-3 h-3" />
               {language === 'zh-TW' ? '生理動力學畫像與現代極化訓練' : '生理动力学画像与现代极化训练'}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               {language === 'zh-TW' ? '功率能力雷達與極化訓練區間' : '功率能力雷达与极化训练区间'}
             </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
               {language === 'zh-TW'
                 ? '基於 5s 衝刺、1min 無氧、5min VO₂ 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'
                 : '基于 5s 冲刺、1min 无氧、5min VO₂ 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleExtractFromStrava}
               disabled={isExtractingStrava}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] rounded-2xl text-xs font-semibold border border-[#FC4C02]/25 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] rounded-xl text-xs font-semibold border border-[#FC4C02]/25 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
               title={isStravaConnected ? '从 Strava 历史活动中一键提取最佳 5s、1min、5min、20min 峰值功率' : '连接 Strava 账号以一键提取最佳峰值功率'}
             >
               <svg className={`w-3.5 h-3.5 fill-current ${isExtractingStrava ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
@@ -383,7 +383,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
               <span>{isExtractingStrava ? (language === 'zh-TW' ? '提取中...' : '提取中...') : (language === 'zh-TW' ? '⚡ Strava 提取' : '⚡ Strava 提取')}</span>
             </button>
 
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '匯入 CSV/JSON' : '导入 CSV/JSON'}</span>
               <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
@@ -391,7 +391,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
             <button
               onClick={() => setIsPasteModalOpen(true)}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <FileText className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '貼上功率' : '粘贴功率'}</span>
@@ -399,7 +399,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-red hover:bg-ios-red/90 text-white rounded-2xl text-xs font-semibold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-red hover:bg-ios-red/90 text-white rounded-xl text-xs font-semibold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成六维能力画像与极化训练海报"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -410,7 +410,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
       </IOSCard>
 
       {/* Rider Preset Bar */}
-      <div className="ios-card p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-ios-sm">
+      <div className="ios-card p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-ios-sm">
         <div className="flex items-center gap-2 flex-1">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
             {language === 'zh-TW' ? '車手預設:' : '车手预设:'}
@@ -453,8 +453,10 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
       {/* Smart Text Paste Modal */}
       {isPasteModalOpen && (
-        <div className="fixed inset-0 bg-black/40 dark:bg-black/75 backdrop-blur-2xl z-50 flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-ios-popover animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-black/40 dark:bg-black/75 backdrop-blur-2xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-t-[28px] sm:rounded-2xl w-full max-w-lg p-4 sm:p-5 space-y-4 shadow-ios-popover animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
+            {/* Mobile Sheet Drag Handle */}
+            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto -mt-1 mb-1 sm:hidden shrink-0" />
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-ios-blue" />
@@ -516,14 +518,14 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <div className="flex justify-end gap-2.5 pt-2">
               <button
                 onClick={() => setIsPasteModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition apple-touch"
+                className="apple-touch h-8.5 px-4 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition"
               >
                 取消
               </button>
               <button
                 onClick={applyParsedText}
                 disabled={!liveParsed}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-ios-blue hover:bg-ios-blue/90 text-white transition shadow-ios-md apple-touch disabled:opacity-50"
+                className="apple-touch h-8.5 px-4 sm:px-5 rounded-xl text-xs font-bold bg-ios-blue hover:bg-ios-blue/90 text-white transition shadow-ios-sm disabled:opacity-50"
               >
                 {language === 'zh-TW' ? '載入並生成雷達' : '载入并生成雷达'}
               </button>
@@ -564,11 +566,11 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <div className="lg:col-span-5 space-y-4">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Activity className="w-4 h-4 text-ios-blue" />
               {language === 'zh-TW' ? '車手巔峰功率數據 (Peak Power)' : '车手巅峰功率数据 (Peak Power)'}
             </h2>
@@ -681,9 +683,9 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         </div>
 
         {/* Right Radar Visual & Polarized Plan */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {/* Phenotype Badge */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-2 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2 shadow-ios-card">
             <div className="flex justify-between items-center">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                 {language === 'zh-TW' ? '車手生理表型判定 (Rider Phenotype)' : '车手生理表型判定 (Rider Phenotype)'}
@@ -698,7 +700,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           </div>
 
           {/* Radar Chart */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-ios-blue" />
@@ -707,7 +709,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
               <span className="text-slate-400 dark:text-slate-500 text-[10px]">*Coggan 竞技数据库标定</span>
             </div>
 
-            <div className="h-64 flex justify-center">
+            <div className="h-60 flex justify-center">
               <Radar
                 data={chartData}
                 options={{
@@ -732,7 +734,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           </div>
 
           {/* Seiler Polarized 80/20 Table & Sweet Spot */}
-          <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-3.5 shadow-ios-card">
             <div className="flex justify-between items-center">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Flame className="w-4 h-4 text-ios-orange" />

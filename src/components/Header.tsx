@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sun, Moon, Bike, User, X, Gauge, Settings } from 'lucide-react';
+import { Search, Sun, Moon, Bike, User, X, Gauge, Settings, PanelLeft } from 'lucide-react';
 import { BackgroundMusicControl } from './BackgroundMusicControl';
 import { RiderProfileModal } from './common/RiderProfileModal';
 import { useRiderProfile } from '../context/RiderProfileContext';
@@ -17,6 +17,8 @@ interface HeaderProps {
   onSelectTool: (id: string) => void;
   profileModalOpen?: boolean;
   setProfileModalOpen?: (open: boolean) => void;
+  isSidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,7 +30,9 @@ export const Header: React.FC<HeaderProps> = ({
   setThemeMode,
   onNavigateHome,
   profileModalOpen,
-  setProfileModalOpen
+  setProfileModalOpen,
+  isSidebarOpen = true,
+  onToggleSidebar
 }) => {
   const [internalProfileOpen, setInternalProfileOpen] = useState<boolean>(false);
   const isProfileOpen = profileModalOpen !== undefined ? profileModalOpen : internalProfileOpen;
@@ -60,20 +64,33 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-black/[0.05] dark:border-white/[0.08] backdrop-blur-2xl saturate-180 bg-white/75 dark:bg-[#1C1C1E]/80 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-[52px] sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
-          {/* Left: Clean Brand Logo with Bike Icon */}
-          <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none shrink-0 group apple-touch" onClick={onNavigateHome}>
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-ios-blue to-blue-600 flex items-center justify-center text-white shadow-sm shadow-ios-blue/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
-              <Bike className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1 sm:gap-1.5 font-sans">
-                <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">{t('brandName')}</span>
-                <span className="text-ios-blue dark:text-ios-blue-dark font-semibold text-sm sm:text-base">{t('brandSuffix')}</span>
-                <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark font-mono font-bold tracking-tight">{t('brandPro')}</span>
+        <div className="w-full max-w-[1920px] mx-auto px-3 sm:px-5 lg:px-6 h-[52px] sm:h-14 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Left: Sidebar Toggle + Clean Brand Logo with Bike Icon */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {onToggleSidebar && (
+              <button
+                onClick={onToggleSidebar}
+                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg bg-black/[0.04] dark:bg-white/[0.08] border border-black/[0.04] dark:border-white/[0.06] text-slate-600 dark:text-slate-300 hover:text-ios-blue hover:bg-black/[0.08] dark:hover:bg-white/[0.12] transition-all apple-touch shrink-0"
+                title={isSidebarOpen ? '收起侧边栏 (Toggle Sidebar)' : '展开侧边栏 (Toggle Sidebar)'}
+                aria-label="Toggle Sidebar"
+              >
+                <PanelLeft className="w-4 h-4" />
+              </button>
+            )}
+
+            <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none shrink-0 group apple-touch" onClick={onNavigateHome}>
+              <div className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-xl bg-gradient-to-tr from-ios-blue to-blue-600 flex items-center justify-center text-white shadow-sm shadow-ios-blue/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
+                <Bike className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 tracking-normal hidden sm:block">
-                {t('slogan')}
+              <div>
+                <div className="flex items-center gap-1 sm:gap-1.5 font-sans">
+                  <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">{t('brandName')}</span>
+                  <span className="text-ios-blue dark:text-ios-blue-dark font-semibold text-sm sm:text-base">{t('brandSuffix')}</span>
+                  <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark font-mono font-bold tracking-tight">{t('brandPro')}</span>
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 tracking-normal hidden xl:block">
+                  {t('slogan')}
+                </div>
               </div>
             </div>
           </div>
@@ -101,17 +118,17 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Unit System Toggle (Metric / Imperial) - Desktop & Tablet */}
             <button
               onClick={toggleUnitSystem}
-              className="hidden sm:flex h-8 sm:h-9 items-center gap-1.5 px-2.5 rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all apple-touch shrink-0 shadow-xs"
+              className="hidden sm:flex h-8.5 items-center gap-1.5 px-2.5 rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all apple-touch shrink-0 shadow-xs"
               title={unitSystem === 'metric' ? 'Switch to Imperial units (miles, lbs)' : 'Switch to Metric units (km, kg)'}
             >
               <Gauge className="w-3.5 h-3.5 text-ios-blue dark:text-ios-blue-dark" />
               <span>{unitSystem === 'metric' ? 'km/kg' : 'mi/lbs'}</span>
             </button>
 
-            {/* Mobile Search Button - Uniform 32-36px button */}
+            {/* Mobile Search Button - Uniform Apple HIG 34px button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition shrink-0"
+              className="md:hidden w-8.5 h-8.5 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition shrink-0"
               title="Search Tools"
               aria-label="Search Tools"
             >
@@ -121,7 +138,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Rider Profile & Settings Button */}
             <button
               onClick={() => setProfileOpen(true)}
-              className="w-8 h-8 sm:w-auto sm:h-9 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 hover:text-ios-blue dark:hover:text-ios-blue-dark apple-touch transition gap-1.5 group shrink-0 shadow-xs"
+              className="w-8.5 h-8.5 sm:w-auto sm:h-8.5 sm:px-2.5 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 hover:text-ios-blue dark:hover:text-ios-blue-dark apple-touch transition gap-1.5 group shrink-0 shadow-xs"
               title={language === 'zh-TW' ? '系統設定與車手檔案' : '系统设置与车手档案'}
               aria-label="Settings & Rider Profile"
             >
@@ -141,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setIsDark(!isDark);
                 }
               }}
-              className="apple-touch w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20 active:scale-95 transition shrink-0"
+              className="apple-touch w-8.5 h-8.5 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20 active:scale-95 transition shrink-0"
               title={
                 themeMode === 'system'
                   ? (isDark
@@ -149,7 +166,7 @@ export const Header: React.FC<HeaderProps> = ({
                       : (language === 'zh-TW' ? '跟隨手機(淺色) - 點擊切換為深色' : '跟随手机(浅色) - 点击切换为深色'))
                   : (isDark
                       ? (language === 'zh-TW' ? '深色模式 - 點擊切換為淺色' : '深色模式 - 点击切换为浅色')
-                      : (language === 'zh-TW' ? '淺色模式 - 點擊切換為深色' : '浅色模式 - 点击切换为深色'))
+                      : (language === 'zh-TW' ? '淺色模式 - 點擊切换为深色' : '浅色模式 - 点击切换为深色'))
               }
               aria-label="Toggle Theme"
             >

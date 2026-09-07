@@ -606,30 +606,30 @@ export const ClimbPacingPlanner: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
-              <Mountain className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
+              <Mountain className="w-3 h-3" />
               {language === 'zh-TW' ? '爬坡體能分配與動力學模擬' : '爬坡体能分配与动力学仿真'}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               {language === 'zh-TW' ? '爬坡路段分段配速與功率規劃器' : '爬坡路段分段配速与功率规划器'}
             </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
               {language === 'zh-TW'
                 ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗时與體能負荷。'
                 : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleOpenStravaSegments}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="从 Strava 检索赛段 (KOM / Starred) 并导入"
             >
               <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
@@ -638,7 +638,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               <span>{language === 'zh-TW' ? 'Strava 賽段' : 'Strava 赛段'}</span>
             </button>
 
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
               <span className="hidden sm:inline">{language === 'zh-TW' ? '匯入 GPX 爬坡路線' : '导入 GPX 爬坡路线'}</span>
               <span className="sm:hidden">{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
@@ -647,7 +647,7 @@ export const ClimbPacingPlanner: React.FC = () => {
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成名山爬坡攻坚与分段配速海报卡片"
             >
               <Share2 className="w-3.5 h-3.5 shrink-0" />
@@ -658,17 +658,17 @@ export const ClimbPacingPlanner: React.FC = () => {
       </IOSCard>
 
       {/* Preset Mountains & Route Upload Bar */}
-      <div className="ios-card p-4 rounded-3xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 shadow-ios-card">
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+      <div className="ios-card p-3 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-2.5 shadow-ios-card">
+        <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
             {language === 'zh-TW' ? '精選名山:' : '精选名山:'}
           </span>
           <button
             onClick={handleOpenStravaSegments}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30 whitespace-nowrap shrink-0"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30 whitespace-nowrap shrink-0"
             title="浏览并导入 Strava 赛段与经典 KOM 坡度"
           >
-            <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24">
               <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
             </svg>
             <span>{language === 'zh-TW' ? 'Strava 賽段庫' : 'Strava 赛段库'}</span>
@@ -687,14 +687,14 @@ export const ClimbPacingPlanner: React.FC = () => {
               <button
                 key={m.id}
                 onClick={() => loadPreset(m.id)}
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-semibold transition shadow-ios-sm apple-touch border ${
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold transition shadow-ios-sm apple-touch border ${
                   isSelected
-                    ? 'bg-ios-blue text-white border-ios-blue shadow-md font-bold'
+                    ? 'bg-ios-blue text-white border-ios-blue shadow-ios-sm font-bold'
                     : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
                 }`}
                 title={m.title}
               >
-                {m.isTour && <Mountain className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-ios-blue'}`} />}
+                {m.isTour && <Mountain className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-ios-blue'}`} />}
                 <span>{m.name}</span>
               </button>
             );
@@ -709,7 +709,7 @@ export const ClimbPacingPlanner: React.FC = () => {
             type="text"
             value={climbName}
             onChange={(e) => setClimbName(e.target.value)}
-            className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-1 text-xs text-ios-blue font-semibold focus:outline-none focus:border-ios-blue"
+            className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-1 text-xs text-ios-blue font-semibold focus:outline-none focus:border-ios-blue"
           />
         </div>
       </div>
@@ -747,12 +747,12 @@ export const ClimbPacingPlanner: React.FC = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Inputs & Segments */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 space-y-4">
           {/* Rider Parameters */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-5 shadow-ios-card">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Zap className="w-4 h-4 text-ios-blue" />
               {language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
             </h2>
@@ -798,7 +798,7 @@ export const ClimbPacingPlanner: React.FC = () => {
           </div>
 
           {/* Segments Editor */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="flex justify-between items-center">
               <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-ios-blue" />
@@ -882,9 +882,9 @@ export const ClimbPacingPlanner: React.FC = () => {
         </div>
 
         {/* Right Output & Pacing Blueprint */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {/* Visual Chart: Elevation Profile & Target Watts */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <TrendingUp className="w-3.5 h-3.5 text-ios-blue" />
@@ -895,7 +895,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               </span>
             </div>
 
-            <div className="h-56">
+            <div className="h-52">
               <Line
                 data={chartData as any}
                 options={{
@@ -925,7 +925,7 @@ export const ClimbPacingPlanner: React.FC = () => {
 
           {/* Steep Slope Low-Cadence Torque Alert */}
           {planResults.hasSteepTorqueHazard && (
-            <div className="ios-card p-5 rounded-3xl border border-ios-red/30 bg-ios-red/10 flex items-start gap-3 shadow-ios-card">
+            <div className="ios-card p-4 rounded-2xl border border-ios-red/30 bg-ios-red/10 flex items-start gap-3 shadow-ios-card">
               <ShieldAlert className="w-5 h-5 text-ios-red shrink-0 mt-0.5" />
               <div className="space-y-1 text-xs">
                 <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -944,7 +944,7 @@ export const ClimbPacingPlanner: React.FC = () => {
           )}
 
           {/* Segment Details Table */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
             <h3 className="text-xs font-bold text-slate-900 dark:text-white">
               {language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
             </h3>
@@ -995,8 +995,10 @@ export const ClimbPacingPlanner: React.FC = () => {
 
       {/* Strava Segments & KOM Explorer Modal */}
       {isStravaModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/[0.08] rounded-3xl w-full max-w-2xl max-h-[88vh] flex flex-col shadow-ios-popover overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/[0.08] rounded-t-[28px] sm:rounded-2xl w-full max-w-2xl max-h-[90vh] sm:max-h-[88vh] flex flex-col shadow-ios-popover overflow-hidden animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-safe sm:pb-0">
+            {/* Mobile Sheet Drag Handle */}
+            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto mt-2.5 mb-1 sm:hidden shrink-0" />
             {/* Modal Header */}
             <div className="p-4 sm:p-5 border-b border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between bg-black/[0.02] dark:bg-white/[0.02]">
               <div className="flex items-center gap-2.5">

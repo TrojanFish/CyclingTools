@@ -143,12 +143,20 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-4 sm:p-6 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in zoom-in-95 duration-200">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
+    >
+      <div className="relative w-full max-w-xl max-h-[90vh] sm:max-h-[85vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl border-t sm:border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
+        {/* iOS Presentation Detent Drag Indicator Handle (Mobile only) */}
+        <div className="sm:hidden w-10 h-1.5 rounded-full bg-black/15 dark:bg-white/20 mx-auto -mt-1 mb-2 shrink-0 cursor-grab active:cursor-grabbing" />
+
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-black/[0.05] dark:border-white/[0.08]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-xl bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark flex items-center justify-center font-bold">
               <User className="w-5 h-5" />
             </div>
             <div>
@@ -1269,8 +1277,11 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
         {/* Slot Tool Picker Modal */}
         {editingSlot !== null && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-            <div className="relative w-full max-w-md max-h-[85vh] flex flex-col bg-white dark:bg-[#1C1C1E] rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+            <div className="relative w-full max-w-md max-h-[85vh] flex flex-col bg-white dark:bg-[#1C1C1E] rounded-t-[28px] sm:rounded-2xl border-t sm:border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover overflow-hidden animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0">
+              {/* iOS Presentation Detent Drag Indicator (Mobile only) */}
+              <div className="sm:hidden w-10 h-1.5 rounded-full bg-black/15 dark:bg-white/20 mx-auto mt-2 mb-1 shrink-0" />
+
               {/* Header */}
               <div className="p-4 border-b border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between shrink-0">
                 <div>

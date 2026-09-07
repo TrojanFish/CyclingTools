@@ -139,35 +139,39 @@ export const ChainLengthCalculator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header */}
-      <IOSCard variant="glass" className="relative overflow-hidden isolate">
+      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
               <Link className="w-3.5 h-3.5" />
-              传动几何与链条物理
+              <span>{language === 'zh-TW' ? '傳動幾何與鏈條物理' : '传动几何与链条物理'}</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">链条长度与齿容量计算器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
-              换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
+              {language === 'zh-TW' ? '鏈條長度與齒容量計算器' : '链条长度与齿容量计算器'}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
+              {language === 'zh-TW'
+                ? '換大飛輪或大盤必備！根據後下叉 RC 長度、齒數與大導輪補償，精準計算最佳截鏈節數，並校驗後撥總齒容量。'
+                : '换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。'}
             </p>
           </div>
 
           <button
             onClick={handleGeneratePoster}
-            className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 self-start md:self-auto"
+            className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 self-start md:self-auto"
             title="生成截链节数与后拨容量规范海报"
           >
             <Share2 className="w-3.5 h-3.5" />
-            <span>生成截链规范卡</span>
+            <span>{language === 'zh-TW' ? '生成截鏈規範卡' : '生成截链规范卡'}</span>
           </button>
         </div>
       </IOSCard>
 
       {/* Preset Buttons */}
-      <IOSCard variant="default" className="flex flex-col sm:flex-row sm:items-center gap-3">
+      <IOSCard variant="default" className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3">
         <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
           {language === 'zh-TW' ? '規格預設:' : '规格预设:'}
         </span>
@@ -186,9 +190,9 @@ export const ChainLengthCalculator: React.FC = () => {
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+        {/* Left Inputs (macOS Inspector) */}
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="space-y-5">
             <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
               <Settings className="w-4 h-4 text-ios-blue" />
@@ -323,8 +327,8 @@ export const ChainLengthCalculator: React.FC = () => {
           </IOSCard>
         </div>
 
-        {/* Right Outputs & Visualization */}
-        <div className="lg:col-span-7 space-y-6">
+        {/* Right Outputs & Visualization (macOS Sticky Canvas) */}
+        <div className="lg:col-span-7 space-y-5 lg:sticky lg:top-20 self-start">
           {(result.isRingInverted || result.isCogInverted) && (
             <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-amber-700 dark:text-amber-400 text-xs shadow-ios-sm animate-pulse">
               <AlertTriangle className="w-5 h-5 shrink-0 text-amber-500 mt-0.5" />

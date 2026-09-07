@@ -208,45 +208,46 @@ export const HealthCalculator: React.FC = () => {
   }, [weightKg, heightCm, age, gender]);
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12">
+    <div className="space-y-5 max-w-6xl mx-auto pb-12">
       {/* Top Banner */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold mb-1.5">
               <HeartPulse className="w-3.5 h-3.5" />
               运动生理学与能量代谢
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">骑行与运动健康综合计算器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">骑行与运动健康综合计算器</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
               一站式计算骑行能量补给、Karvonen 靶心率区间、BMR 基础代谢、TDEE 每日总能耗及体脂率(BFP)。
             </p>
           </div>
 
           {/* Apple HIG Tab buttons */}
-          <IOSSegmentedControl
-            options={[
-              { id: 'fueling', label: language === 'zh-TW' ? '補給' : '补给', icon: Apple },
-              { id: 'hr_zones', label: language === 'zh-TW' ? '心率' : '心率', icon: Heart },
-              { id: 'bmr', label: language === 'zh-TW' ? '代謝' : '代谢', icon: Flame },
-              { id: 'bmi', label: 'BMI', icon: Scale },
-              { id: 'bfp', label: language === 'zh-TW' ? '體脂' : '体脂', icon: Percent },
-            ]}
-            value={activeTab}
-            onChange={(val) => setActiveTab(val as any)}
-            fullWidth
-            hideIconOnMobile
-            size="sm"
-          />
+          <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+            <IOSSegmentedControl
+              options={[
+                { id: 'fueling', label: language === 'zh-TW' ? '補給' : '补给', icon: Apple },
+                { id: 'hr_zones', label: language === 'zh-TW' ? '心率' : '心率', icon: Heart },
+                { id: 'bmr', label: language === 'zh-TW' ? '代謝' : '代谢', icon: Flame },
+                { id: 'bmi', label: 'BMI', icon: Scale },
+                { id: 'bfp', label: language === 'zh-TW' ? '體脂' : '体脂', icon: Percent },
+              ]}
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as any)}
+              fullWidth={false}
+              size="sm"
+            />
+          </div>
         </div>
       </IOSCard>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-6">
-          <IOSCard variant="default" className="p-6 space-y-5">
+        <div className="lg:col-span-5 space-y-5">
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '個人身體與心率數據' : '个人身体与心率数据'}
               subtitle={language === 'zh-TW' ? '自動同步車手檔案' : '自动同步车手档案'}
@@ -346,12 +347,12 @@ export const HealthCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Panels */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-5">
           {/* TAB 1: In-ride Fueling Plan View */}
           {activeTab === 'fueling' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Ride Duration & Intensity Selectors */}
-              <IOSCard variant="inset" className="p-5 space-y-4">
+              <IOSCard variant="inset" className="p-4 sm:p-5 space-y-3.5">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                   <Apple className="w-4 h-4 text-emerald-500" />
                   本次骑行规划与补给策略
@@ -361,7 +362,7 @@ export const HealthCalculator: React.FC = () => {
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label className="text-xs text-slate-700 dark:text-slate-300">计划骑行时长</label>
-                      <span className="text-ios-blue font-mono font-semibold text-xs">{rideDurationHours} 小时</span>
+                      <span className="text-ios-blue font-mono font-semibold text-xs tabular-nums">{rideDurationHours} 小时</span>
                     </div>
                     <input
                       type="range"
@@ -423,12 +424,12 @@ export const HealthCalculator: React.FC = () => {
 
           {/* TAB 2: Karvonen Heart Rate Training Zones */}
           {activeTab === 'hr_zones' && (
-            <IOSCard variant="default" className="p-5 sm:p-6 space-y-4">
+            <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-rose-500" />
-                    Karvonen 靶心率储备区间 (HRR: {hrZonesResult.hrr} bpm)
+                    Karvonen 靶心率储备区间 (HRR: <span className="tabular-nums font-mono">{hrZonesResult.hrr}</span> bpm)
                   </h3>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400">结合静息心率与最大心率的科学心率区间推导</span>
                 </div>
@@ -447,9 +448,9 @@ export const HealthCalculator: React.FC = () => {
                   <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono text-slate-700 dark:text-slate-300">
                     {hrZonesResult.zones.map((z, idx) => (
                       <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.04] transition-colors">
-                        <td className="py-2.5 font-sans font-semibold text-slate-900 dark:text-slate-200">{z.zone}</td>
-                        <td className="text-slate-500 dark:text-slate-400">{z.pct}</td>
-                        <td className="text-rose-500 font-bold font-mono">{z.range}</td>
+                        <td className="py-2 font-sans font-semibold text-slate-900 dark:text-slate-200">{z.zone}</td>
+                        <td className="text-slate-500 dark:text-slate-400 tabular-nums">{z.pct}</td>
+                        <td className="text-rose-500 font-bold font-mono tabular-nums">{z.range}</td>
                         <td className="font-sans text-slate-600 dark:text-slate-400 text-[11px]">{z.desc}</td>
                       </tr>
                     ))}
@@ -461,7 +462,7 @@ export const HealthCalculator: React.FC = () => {
 
           {/* TAB 3: BMR & TDEE View */}
           {activeTab === 'bmr' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <IOSMetricTile
                   label="基础代谢率 (BMR)"
@@ -483,36 +484,36 @@ export const HealthCalculator: React.FC = () => {
               </div>
 
               {/* Goals Targets */}
-              <IOSCard variant="default" className="p-5 sm:p-6 space-y-4">
+              <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                   <Flame className="w-4 h-4 text-amber-500" />
                   不同目标每日推荐热量摄入 (Calorie Goals)
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+                  <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                     <div className="text-xs font-medium text-sky-500 dark:text-sky-400 flex items-center gap-1.5">
                       <TrendingDown className="w-3.5 h-3.5" />
                       <span>{language === 'zh-TW' ? '減脂減重目標' : '减脂减重目标'}</span>
                     </div>
-                    <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">{bmrResult.loseWeightCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
+                    <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">{bmrResult.loseWeightCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">热量缺口 20%，稳步减脂保持肌肉</p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+                  <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                     <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                       <Scale className="w-3.5 h-3.5" />
                       <span>{language === 'zh-TW' ? '體重維持平衡' : '体重维持平衡'}</span>
                     </div>
-                    <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">{bmrResult.maintainCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
+                    <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">{bmrResult.maintainCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">收支平衡，维持当前竞技体重</p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+                  <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                     <div className="text-xs font-medium text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
                       <TrendingUp className="w-3.5 h-3.5" />
                       <span>{language === 'zh-TW' ? '增肌增力目標' : '增肌增力目标'}</span>
                     </div>
-                    <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100">{bmrResult.gainMuscleCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
+                    <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">{bmrResult.gainMuscleCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500">轻微盈余 15%，配合力量训练</p>
                   </div>
                 </div>
@@ -522,25 +523,25 @@ export const HealthCalculator: React.FC = () => {
 
           {/* TAB 4: BMI View */}
           {activeTab === 'bmi' && (
-            <IOSCard variant="default" className="p-5 sm:p-6 space-y-6">
+            <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-xs text-slate-500 dark:text-slate-400 block">{language === 'zh-TW' ? '身體質量指數 (BMI, kg/m²)' : '身体质量指数 (BMI, kg/m²)'}</span>
-                  <div className="text-4xl font-bold font-mono text-ios-blue mt-1">
+                  <div className="text-3xl sm:text-4xl font-bold font-mono text-ios-blue mt-1 tabular-nums">
                     {bmiResult.bmi}
                   </div>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-slate-500 dark:text-slate-400 block">体型评估结论</span>
-                  <div className={`text-xl font-bold ${bmiResult.color} mt-1`}>
+                  <div className={`text-lg sm:text-xl font-bold ${bmiResult.color} mt-1`}>
                     {bmiResult.category}
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <span className="text-xs text-slate-500 dark:text-slate-400 block">同身高健康理想体重参考区间:</span>
-                <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                <div className="text-base sm:text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {bmiResult.idealMin} kg - {bmiResult.idealMax} kg
                 </div>
               </div>
@@ -549,17 +550,17 @@ export const HealthCalculator: React.FC = () => {
 
           {/* TAB 5: BFP View */}
           {activeTab === 'bfp' && (
-            <IOSCard variant="default" className="p-5 sm:p-6 space-y-6">
+            <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-xs text-slate-500 dark:text-slate-400 block">估算体脂率 (BFP)</span>
-                  <div className="text-4xl font-bold font-mono text-ios-blue mt-1">
+                  <div className="text-3xl sm:text-4xl font-bold font-mono text-ios-blue mt-1 tabular-nums">
                     {bfpResult.bfp} <span className="text-xl text-slate-500 dark:text-slate-400 font-normal">%</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-slate-500 dark:text-slate-400 block">体脂等级划分</span>
-                  <div className={`text-xl font-bold ${bfpResult.levelColor} mt-1`}>
+                  <div className={`text-lg sm:text-xl font-bold ${bfpResult.levelColor} mt-1`}>
                     {bfpResult.level}
                   </div>
                 </div>
@@ -575,11 +576,11 @@ export const HealthCalculator: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono text-slate-700 dark:text-slate-300">
-                    <tr><td className="py-2 font-sans">必需脂肪 (极低)</td><td>2% - 5%</td><td>10% - 13%</td></tr>
-                    <tr><td className="py-2 font-sans text-ios-blue font-semibold">竞技运动员</td><td>6% - 13%</td><td>14% - 20%</td></tr>
-                    <tr><td className="py-2 font-sans text-emerald-600 dark:text-emerald-400 font-semibold">健身良好</td><td>14% - 17%</td><td>21% - 24%</td></tr>
-                    <tr><td className="py-2 font-sans">可接受区间</td><td>18% - 24%</td><td>25% - 31%</td></tr>
-                    <tr><td className="py-2 font-sans text-rose-500 dark:text-rose-400 font-semibold">肥胖</td><td>&gt; 25%</td><td>&gt; 32%</td></tr>
+                    <tr><td className="py-2 font-sans">必需脂肪 (极低)</td><td className="tabular-nums">2% - 5%</td><td className="tabular-nums">10% - 13%</td></tr>
+                    <tr><td className="py-2 font-sans text-ios-blue font-semibold">竞技运动员</td><td className="tabular-nums">6% - 13%</td><td className="tabular-nums">14% - 20%</td></tr>
+                    <tr><td className="py-2 font-sans text-emerald-600 dark:text-emerald-400 font-semibold">健身良好</td><td className="tabular-nums">14% - 17%</td><td className="tabular-nums">21% - 24%</td></tr>
+                    <tr><td className="py-2 font-sans">可接受区间</td><td className="tabular-nums">18% - 24%</td><td className="tabular-nums">25% - 31%</td></tr>
+                    <tr><td className="py-2 font-sans text-rose-500 dark:text-rose-400 font-semibold">肥胖</td><td className="tabular-nums">&gt; 25%</td><td className="tabular-nums">&gt; 32%</td></tr>
                   </tbody>
                 </table>
               </div>

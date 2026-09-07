@@ -56,6 +56,12 @@
   --ios-gray: #8e8e93;
 }
 
+/* Apple HIG Tabular Numbers Utility */
+.apple-nums {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
 html, body {
   overflow-x: clip;
   max-width: 100vw;

@@ -651,30 +651,30 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-xs font-semibold mb-2">
-              <Compass className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold mb-1.5">
+              <Compass className="w-3 h-3" />
               {language === 'zh-TW' ? '精選世界與全國經典單車路書工坊' : '行者实测·全国及世界经典骑行路书精选工坊'}
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               {language === 'zh-TW' ? '經典單車路書與航跡精選庫' : '经典骑行路书与航迹精选库'}
             </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
               {language === 'zh-TW'
                 ? '匯聚歐洲環法環義傳奇天路與經典實測單車路書，支援互動式地圖漫遊、高程起伏剖面、一鍵匯出 GPX 及與天氣/爬坡工具連動。'
                 : '汇聚浙江与全国高热度实测骑行路书及欧洲环法环意传奇天路，支持交互式地图漫游、高程起伏剖面、一键导出 GPX 及与天气/爬坡工具联动。'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleOpenStravaModal}
-              className={`apple-touch h-9 px-3.5 sm:px-4 rounded-2xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
+              className={`apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
                 isStravaConnected
                   ? 'bg-orange-500/10 hover:bg-orange-500/20 text-[#FC4C02] border-orange-500/30'
                   : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
@@ -688,7 +688,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               )}
             </button>
 
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
@@ -697,7 +697,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <button
               type="button"
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-2xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成社交打卡路书海报"
             >
               <Share2 className="w-3.5 h-3.5 text-ios-mint" />
@@ -706,7 +706,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             <button
               onClick={handleExportGpx}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-2xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}</span>
@@ -715,7 +715,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         </div>
 
         {/* Tabs & Search Filter Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-200/80 dark:border-white/10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div className="mt-4 pt-3.5 border-t border-slate-200/80 dark:border-white/10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           {/* IOSSegmentedControl Tabs */}
           <div className="w-full sm:w-auto">
             <IOSSegmentedControl
@@ -725,20 +725,21 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               ]}
               value={activeTab}
               onChange={(v) => setActiveTab(v as any)}
+              size="sm"
             />
           </div>
 
           {/* Quick Filters */}
-          <div className="flex flex-wrap items-center gap-2.5 flex-1 max-w-2xl">
+          <div className="flex flex-wrap items-center gap-2 flex-1 max-w-2xl">
             {/* Search Input */}
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <div className="relative flex-1 min-w-[180px]">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder={language === 'zh-TW' ? '搜尋路書名稱、城市、景點、行者編號...' : '搜索路书名、城市、景点、行者编号...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
+                className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
               />
             </div>
 
@@ -746,7 +747,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <select
               value={selectedProvince}
               onChange={(e) => setSelectedProvince(e.target.value)}
-              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
+              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
             >
               <option value="all">{language === 'zh-TW' ? '全部地區' : '全部地区'}</option>
               <option value="Europe">{language === 'zh-TW' ? '歐洲經典 (阿爾卑斯/馬略卡)' : '欧洲经典 (阿尔卑斯/马略卡)'}</option>
@@ -760,7 +761,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
+              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
             >
               <option value="all">{language === 'zh-TW' ? '全部難度' : '全部难度'}</option>
               <option value="入门休闲">{language === 'zh-TW' ? '入門休閒' : '入门休闲'}</option>
@@ -807,11 +808,11 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
       )}
 
       {/* Main Grid: Left Route Cards + Right Interactive Map & Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Route Cards Matrix */}
-        <div className="lg:col-span-5 space-y-3.5 max-h-[860px] overflow-y-auto pr-1">
+        <div className="lg:col-span-5 space-y-3 max-h-[820px] overflow-y-auto pr-1">
           {filteredRoutes.length === 0 ? (
-            <div className="p-8 rounded-3xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl text-center space-y-3 shadow-ios-sm">
+            <div className="p-6 sm:p-8 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl text-center space-y-3 shadow-ios-sm">
               <Compass className="w-10 h-10 text-slate-400 mx-auto opacity-50" />
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 {'未找到符合筛选条件的路书'}
@@ -836,7 +837,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 <div
                   key={route.id}
                   onClick={() => setSelectedRouteId(route.id)}
-                    className={`ios-card p-4 rounded-3xl border transition cursor-pointer relative group apple-touch shadow-ios-card ${
+                    className={`ios-card p-3.5 rounded-2xl border transition cursor-pointer relative group apple-touch shadow-ios-card ${
                       isSelected
                         ? 'border-ios-blue ring-2 ring-ios-blue/40 bg-ios-blue/10 dark:bg-ios-blue/20 shadow-ios-md scale-[1.005]'
                         : 'border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
@@ -925,13 +926,13 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         </div>
 
         {/* Right Column: Full Interactive Map + Elevation Chart + Deep Notes */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {/* Map Card */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-ios-blue" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {activeRoute.name}
                 </h2>
               </div>
@@ -943,8 +944,8 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             </div>
 
             {/* Leaflet Map Box */}
-            <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 dark:border-white/10 z-10 shadow-inner">
-              <div ref={mapContainerRef} className="w-full h-80 bg-black"></div>
+            <div className="relative rounded-xl overflow-hidden border border-slate-200/80 dark:border-white/10 z-10 shadow-inner">
+              <div ref={mapContainerRef} className="w-full h-72 bg-black"></div>
             </div>
 
             {/* Quick Waypoints sequence */}
@@ -964,7 +965,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
 
           {/* Elevation Profile Chart */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-3 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-ios-blue" />
@@ -974,7 +975,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 {'鼠标悬浮图表可在地图上定位对应点'}
               </span>
             </div>
-            <div className="h-44 w-full">
+            <div className="h-40 w-full">
               <Line
                 data={elevationChartData}
                 options={{
@@ -1006,7 +1007,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
           </div>
 
           {/* Route Deep Intel & Tips */}
-          <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
+          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-3.5 shadow-ios-card">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-ios-orange" />
               {'路线实测指引与安全贴士'}
@@ -1087,7 +1088,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleExportGpx}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-md shadow-cyan-500/20"
+                  className="apple-touch h-8.5 flex items-center gap-1.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm shadow-cyan-500/20"
                 >
                   <Download className="w-3.5 h-3.5" />
                   {language === 'zh-TW' ? '下載 GPX 檔' : '下载 GPX 文件'}
@@ -1100,8 +1101,10 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
       {/* Strava Route Import Modal */}
       {isStravaModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-5 sm:p-6 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg max-h-[90vh] sm:max-h-[85vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
+            {/* Mobile Sheet Drag Handle */}
+            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto mt-0 mb-2 sm:hidden shrink-0" />
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-black/[0.05] dark:border-white/[0.08]">
               <div className="flex items-center gap-2.5">
@@ -1178,7 +1181,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                     <p className="text-xs">正在从 Strava 云端拉取路线列表与航迹流...</p>
                   </div>
                 ) : stravaRoutes.length === 0 ? (
-                  <div className="p-6 rounded-2xl bg-slate-100 dark:bg-white/5 text-center space-y-2">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-slate-100 dark:bg-white/5 text-center space-y-2">
                     <Compass className="w-8 h-8 text-slate-400 mx-auto opacity-50" />
                     <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                       Strava 暂无已保存路线

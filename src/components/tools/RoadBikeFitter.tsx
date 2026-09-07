@@ -165,18 +165,18 @@ export const RoadBikeFitter: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <IOSCard variant="default" className="p-6 sm:p-7 relative overflow-hidden isolate">
+      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-purple/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-xs font-semibold mb-2">
-              <Ruler className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-[11px] font-semibold mb-1.5">
+              <Ruler className="w-3 h-3" />
               生物力学与几何拟合
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-display tracking-tight">专业公路车 Fitting 尺寸拟合器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">专业公路车 Fitting 尺寸拟合器</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
               根据人体解剖学多维测量，科学推导有效上管 ETT、坐高、座舱落差、Stack/Reach、把立及锁片安装方案。
             </p>
           </div>
@@ -184,7 +184,7 @@ export const RoadBikeFitter: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成个人 Fitting 档案长图"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -192,7 +192,7 @@ export const RoadBikeFitter: React.FC = () => {
             </button>
             <button
               onClick={handlePrint}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Printer className="w-3.5 h-3.5 text-ios-purple" />
               {language === 'zh-TW' ? '列印工單' : '打印工单'}
@@ -201,10 +201,10 @@ export const RoadBikeFitter: React.FC = () => {
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-6">
-          <IOSCard variant="default" className="p-6 space-y-5">
+        <div className="lg:col-span-5 space-y-5">
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
               subtitle={language === 'zh-TW' ? '人體解剖學精密擬合' : '人体解剖学精密拟合'}
@@ -347,9 +347,9 @@ export const RoadBikeFitter: React.FC = () => {
         </div>
 
         {/* Right Output & Interactive Bike Diagram */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-4">
           {/* Interactive Bike Diagram */}
-          <IOSCard variant="default" className="p-5 space-y-3">
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {language === 'zh-TW' ? '公路車關鍵擬合幾何實時矢量圖譜' : '公路车关键拟合几何实时矢量图谱'}

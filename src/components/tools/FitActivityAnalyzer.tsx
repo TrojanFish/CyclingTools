@@ -942,28 +942,28 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-6 sm:p-7 relative overflow-hidden shadow-ios-sm isolate">
+      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
         <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-xs font-semibold">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 relative z-10">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold">
               <LineChartIcon className="w-3.5 h-3.5" />
               <span>{'数据复盘与运动生理学'}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
               {'码表活动与 FIT 航迹深度解析器'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-normal mt-0.5">
               {'纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-center shrink-0">
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center shrink-0">
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成码表活动深度复盘长图海报"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -971,7 +971,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </button>
             <button
               onClick={handleLoadDemo}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
@@ -981,13 +981,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       </IOSCard>
 
       {/* File Upload Zone & Rider Anchor Bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Upload Dropzone & Strava Quick Load Bar */}
         <div className="lg:col-span-2 space-y-3">
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="ios-card p-6 sm:p-7 rounded-3xl border-2 border-dashed border-slate-300/80 dark:border-white/20 hover:border-ios-blue dark:hover:border-ios-blue transition flex flex-col items-center justify-center text-center group cursor-pointer relative shadow-ios-card"
+            className="ios-card p-4 sm:p-5 rounded-2xl border-2 border-dashed border-slate-300/80 dark:border-white/20 hover:border-ios-blue dark:hover:border-ios-blue transition flex flex-col items-center justify-center text-center group cursor-pointer relative shadow-ios-card"
           >
             <input
               type="file"
@@ -1000,7 +1000,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
             />
 
-            <div className="w-12 h-12 rounded-2xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue flex items-center justify-center mb-3 group-hover:scale-105 transition apple-touch">
+            <div className="w-11 h-11 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue flex items-center justify-center mb-2.5 group-hover:scale-105 transition apple-touch">
               <Upload className="w-5 h-5" />
             </div>
 
@@ -1012,7 +1012,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
 
             {analysis && (
-              <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono">
+              <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono">
                 <CheckCircle2 className="w-3.5 h-3.5 text-ios-green" />
                 <span className="font-semibold">{analysis.fileName}</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-blue text-white uppercase font-bold">{analysis.fileType}</span>
@@ -1062,7 +1062,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         </div>
 
         {/* Dynamic Rider Physiological Anchor Card */}
-        <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+        <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
               <Gauge className="w-4 h-4 text-ios-red" />
@@ -1070,7 +1070,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </span>
             <span className="text-[10px] text-slate-400 flex items-center gap-1">
               <span>{language === 'zh-TW' ? '檔案體重' : '档案体重'}</span>
-              <span className="font-mono font-semibold text-slate-700 dark:text-slate-200">{weightKg} kg</span>
+              <span className="font-mono font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{weightKg} kg</span>
             </span>
           </div>
 
@@ -1104,7 +1104,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           <button
             onClick={handleProfileRecompute}
-            className="w-full py-2 rounded-2xl bg-slate-100/80 dark:bg-white/10 hover:bg-ios-red/10 hover:text-ios-red text-slate-700 dark:text-slate-300 text-xs font-semibold transition apple-touch flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-xl bg-slate-100/80 dark:bg-white/10 hover:bg-ios-red/10 hover:text-ios-red text-slate-700 dark:text-slate-300 text-xs font-semibold transition apple-touch flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '更新分析' : '更新分析'}</span>
@@ -1114,9 +1114,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
       {/* Main Analysis Display */}
       {analysis && (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Key Metrics Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-3.5">
             <IOSMetricTile
               label="标准化功率 NP"
               value={analysis.normalizedPower}
@@ -1165,39 +1165,39 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           </div>
 
           {/* Secondary Biological & Efficiency Strip */}
-          <div className="ios-card px-5 py-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs flex flex-wrap items-center justify-between gap-4 text-xs">
-            <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
+          <div className="ios-card px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex flex-wrap items-center gap-4 text-slate-600 dark:text-slate-300">
               <span className="flex items-center gap-1.5">
                 <Heart className="w-4 h-4 text-ios-red" />
-                <span>{'平均心率'}: <strong className="text-slate-900 dark:text-white">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
-                <span className="text-slate-400 text-[10px]">({'最高'} {analysis.maxHeartRate ?? '--'})</span>
+                <span>{'平均心率'}: <strong className="text-slate-900 dark:text-white tabular-nums">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
+                <span className="text-slate-400 text-[10px]">({'最高'} <span className="tabular-nums">{analysis.maxHeartRate ?? '--'}</span>)</span>
               </span>
 
               <span className="flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-ios-orange" />
-                <span>{'平均踏频'}: <strong className="text-slate-900 dark:text-white">{analysis.avgCadence ?? '--'} rpm</strong></span>
+                <span>{'平均踏频'}: <strong className="text-slate-900 dark:text-white tabular-nums">{analysis.avgCadence ?? '--'} rpm</strong></span>
                 <span className="text-slate-400 text-[10px]">
-                  ({'踩踏'} {analysis.pedalingPercent ?? 100}% · {'滑行'} {100 - (analysis.pedalingPercent ?? 100)}%)
+                  ({'踩踏'} <span className="tabular-nums">{analysis.pedalingPercent ?? 100}%</span> · {'滑行'} <span className="tabular-nums">{100 - (analysis.pedalingPercent ?? 100)}%</span>)
                 </span>
               </span>
 
               {analysis.efficiencyFactor && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
                   <Gauge className="w-4 h-4 text-ios-blue" />
-                  <span>{'效率因子 (EF)'}: <strong className="text-ios-blue">{analysis.efficiencyFactor} W/bpm</strong></span>
+                  <span>{'效率因子 (EF)'}: <strong className="text-ios-blue tabular-nums">{analysis.efficiencyFactor} W/bpm</strong></span>
                 </span>
               )}
 
               {analysis.aerobicDecoupling !== undefined && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4 text-ios-purple" />
-                  <span>{'有氧解耦率 (Pw:HR)'}: <strong className={analysis.aerobicDecoupling > 5 ? 'text-ios-orange' : 'text-ios-green'}>{analysis.aerobicDecoupling}%</strong></span>
+                  <span>{'有氧解耦率 (Pw:HR)'}: <strong className={`tabular-nums ${analysis.aerobicDecoupling > 5 ? 'text-ios-orange' : 'text-ios-green'}`}>{analysis.aerobicDecoupling}%</strong></span>
                 </span>
               )}
             </div>
 
             <div className="text-[11px] text-slate-500 dark:text-slate-400">
-              {'总历时'}: {formatDuration(analysis.totalDurationSec)} · {analysis.points.length} {'个秒级采样点'}
+              {'总历时'}: <span className="tabular-nums">{formatDuration(analysis.totalDurationSec)}</span> · <span className="tabular-nums">{analysis.points.length}</span> {'个秒级采样点'}
             </div>
           </div>
 
@@ -1220,7 +1220,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB 1: Time-Series Trends */}
           {activeTab === 'trends' && (
-            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="text-xs font-bold text-slate-850 dark:text-white">
                   {'多轨遥测曲线 (时间轴：分:秒)'}
@@ -1288,15 +1288,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB 2: Time in Zones */}
           {activeTab === 'zones' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {/* Coggan 7-Zone Power Distribution */}
-              <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+              <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                     <Zap className="w-4 h-4 text-ios-blue" />
                     {'Coggan 功率 7 区分布'}
                   </span>
-                  <span className="text-xs text-slate-400">FTP: {ftpWatts}W</span>
+                  <span className="text-xs text-slate-400 tabular-nums">FTP: {ftpWatts}W</span>
                 </div>
 
                 <div className="h-56">
@@ -1316,15 +1316,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                 <div className="space-y-2">
                   {analysis.timeInPowerZones.map((z) => (
-                    <div key={z.zone} className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
+                    <div key={z.zone} className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
                         <strong className="text-slate-800 dark:text-white">{z.zone} {z.label}</strong>
-                        <span className="text-slate-400 text-[10px]">({z.range})</span>
+                        <span className="text-slate-400 text-[10px] tabular-nums">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
-                        <span className="text-slate-500">{formatDuration(z.seconds)}</span>
-                        <span className="font-bold text-slate-900 dark:text-white min-w-[40px] text-right">{z.percent}%</span>
+                        <span className="text-slate-500 tabular-nums">{formatDuration(z.seconds)}</span>
+                        <span className="font-bold text-slate-900 dark:text-white min-w-[40px] text-right tabular-nums">{z.percent}%</span>
                       </div>
                     </div>
                   ))}
@@ -1332,13 +1332,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               </div>
 
               {/* Heart Rate 5-Zone Distribution */}
-              <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+              <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                     <Heart className="w-4 h-4 text-ios-red" />
                     {'心率 5 区分布'}
                   </span>
-                  <span className="text-xs text-slate-400">{'最大心率'}: {maxHr}bpm</span>
+                  <span className="text-xs text-slate-400 tabular-nums">{'最大心率'}: {maxHr}bpm</span>
                 </div>
 
                 <div className="h-56">
@@ -1358,15 +1358,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                 <div className="space-y-2">
                   {analysis.timeInHrZones.map((z) => (
-                    <div key={z.zone} className="flex items-center justify-between text-xs py-2 px-3 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
+                    <div key={z.zone} className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
                         <strong className="text-slate-800 dark:text-white">{z.zone} {z.label}</strong>
-                        <span className="text-slate-400 text-[10px]">({z.range})</span>
+                        <span className="text-slate-400 text-[10px] tabular-nums">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
-                        <span className="text-slate-500">{formatDuration(z.seconds)}</span>
-                        <span className="font-bold text-slate-900 dark:text-white min-w-[40px] text-right">{z.percent}%</span>
+                        <span className="text-slate-500 tabular-nums">{formatDuration(z.seconds)}</span>
+                        <span className="font-bold text-slate-900 dark:text-white min-w-[40px] text-right tabular-nums">{z.percent}%</span>
                       </div>
                     </div>
                   ))}
@@ -1377,7 +1377,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB 3: MMP Power Curve & Skiba W' Balance */}
           {activeTab === 'mmp' && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-5">
               {/* Sub-view switcher */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="max-w-xs">
@@ -1436,10 +1436,10 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
               {/* VIEW 1: Continuous MMP Curve & Coggan Benchmarks */}
               {mmpSubView === 'mmp_curve' && (
-                <div className="space-y-6">
+                <div className="space-y-5">
                   {/* Rider Phenotype Card */}
                   {riderPhenotype && (
-                    <div className="ios-card p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card relative overflow-hidden">
+                    <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card relative overflow-hidden">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-2">
@@ -1468,7 +1468,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                                 }
                                 setSmartWorkoutModalOpen(true);
                               }}
-                              className="apple-touch inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold transition shadow-ios-sm active:scale-95"
+                              className="apple-touch inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold transition shadow-ios-sm active:scale-95"
                             >
                               <Sparkles className="w-3.5 h-3.5" />
                               <span>智能生成靶向补强课表</span>
@@ -1476,7 +1476,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                             <button
                               type="button"
                               onClick={() => onNavigateTool('workout-builder')}
-                              className="apple-touch p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-semibold transition"
+                              className="apple-touch p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-semibold transition"
                               title="直接打开训练工坊"
                             >
                               <Dumbbell className="w-4 h-4" />
@@ -1488,7 +1488,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   )}
 
                   {/* MMP Chart */}
-                  <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                  <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -1531,15 +1531,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                     {/* MMP Grid Table */}
                     <div className="pt-2">
-                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
                         全时域秒级阶梯最佳峰值数据表 (High-Resolution MMP Matrix)
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                         {analysis.mmp.map((m) => (
-                          <div key={m.label} className="p-2.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-0.5">
+                          <div key={m.label} className="p-2.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-0.5">
                             <div className="text-[11px] font-bold text-ios-purple uppercase">{m.label}</div>
-                            <div className="text-base font-extrabold text-slate-900 dark:text-white">{m.watts} W</div>
-                            <div className="text-[10px] text-slate-500">{m.wkg} W/kg</div>
+                            <div className="text-base font-bold text-slate-900 dark:text-white tabular-nums">{m.watts} W</div>
+                            <div className="text-[10px] text-slate-500 tabular-nums">{m.wkg} W/kg</div>
                           </div>
                         ))}
                       </div>
@@ -1550,9 +1550,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
               {/* VIEW 2: Skiba W' Balance Anaerobic Battery Exhaustion Model */}
               {mmpSubView === 'w_balance' && wPrimeResult && (
-                <div className="space-y-6">
+                <div className="space-y-5">
                   {/* Parameter Tuning Bar */}
-                  <div className="ios-card p-5 sm:p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                  <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2">
@@ -1595,9 +1595,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                     {/* Metric Tiles */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                      <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
                         <div className="text-[11px] text-slate-400 font-medium">最低剩余无氧电量</div>
-                        <div className="text-lg font-extrabold text-slate-900 dark:text-white flex items-baseline gap-1.5">
+                        <div className="text-lg font-bold text-slate-900 dark:text-white flex items-baseline gap-1.5 tabular-nums">
                           <span>{wPrimeResult.minWPrimePercent}%</span>
                           <span className="text-xs font-normal text-slate-500">({(wPrimeResult.minWPrimeJoules / 1000).toFixed(1)} kJ)</span>
                         </div>
@@ -1612,41 +1612,41 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                      <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
                         <div className="text-[11px] text-slate-400 font-medium">电量最低点时刻</div>
-                        <div className="text-lg font-extrabold text-slate-900 dark:text-white">
+                        <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                           {formatDuration(wPrimeResult.minPointSec)}
                         </div>
                         <div className="text-[10px] text-slate-400">本次骑行最艰苦攻坚点</div>
                       </div>
 
-                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                      <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
                         <div className="text-[11px] text-slate-400 font-medium">深红放电次数 (&lt;30%)</div>
-                        <div className="text-lg font-extrabold text-slate-900 dark:text-white">
+                        <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                           {wPrimeResult.matchesBurned} <span className="text-xs font-normal text-slate-500">次火柴</span>
                         </div>
                         <div className="text-[10px] text-slate-400">燃烧极限火柴次数</div>
                       </div>
 
-                      <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
+                      <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
                         <div className="text-[11px] text-slate-400 font-medium">超阈值做功 (Work &gt; CP)</div>
-                        <div className="text-lg font-extrabold text-slate-900 dark:text-white">
+                        <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                           {wPrimeResult.workAboveCpKj} <span className="text-xs font-normal text-slate-500">kJ</span>
                         </div>
                         <div className="text-[10px] text-slate-400">
-                          历时 {formatDuration(wPrimeResult.timeAboveCpSec)}
+                          历时 <span className="tabular-nums">{formatDuration(wPrimeResult.timeAboveCpSec)}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* W' Balance Dynamic Time-Series Chart */}
-                  <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                  <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                     <div className="flex items-center justify-between">
                       <div className="text-xs font-bold text-slate-850 dark:text-white">
                         {"W' Balance 电量耗竭波形 (绿色) 与实时功率 (蓝色) 对照"}
                       </div>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-slate-400 tabular-nums">
                         CP 临界基准: {cpWatts} W · W' max: {wPrimeKj} kJ
                       </span>
                     </div>
@@ -1688,7 +1688,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     </div>
 
                     {/* Scientific Explanation Banner */}
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                       <div className="flex items-start gap-2.5">
                         <Info className="w-4 h-4 text-ios-blue shrink-0 mt-0.5" />
                         <div className="space-y-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -1717,12 +1717,12 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB: PMC (Performance Management Chart) */}
           {activeTab === 'pmc' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* PMC Overview Card */}
-              <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-5">
+              <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
                 {/* Strava Live Sync Banner if Connected */}
                 {isStravaConnected && (
-                  <div className="p-3.5 rounded-2xl bg-[#FC4C02]/10 border border-[#FC4C02]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-[#FC4C02]/10 border border-[#FC4C02]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-7 h-7 rounded-xl bg-[#FC4C02] text-white flex items-center justify-center shrink-0 shadow-xs font-bold">
                         <Cloud className="w-4 h-4" />
@@ -1771,7 +1771,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                   {/* Baseline Fitness & Mesocycle Switchers */}
                   <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2.5">
-                    <div className="flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 overflow-x-auto max-w-full">
+                    <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 overflow-x-auto max-w-full">
                       <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 px-2 shrink-0">
                         体能起点:
                       </span>
@@ -1779,7 +1779,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <button
                           key={level}
                           onClick={() => setBaselineFitness(level)}
-                          className={`apple-touch px-2.5 py-1 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+                          className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
                             baselineFitness === level
                               ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1791,10 +1791,10 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       ))}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                    <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
                       <button
                         onClick={() => setPmcMesocycle('base')}
-                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
                           pmcMesocycle === 'base'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1804,7 +1804,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       </button>
                       <button
                         onClick={() => setPmcMesocycle('build')}
-                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
                           pmcMesocycle === 'build'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1814,7 +1814,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       </button>
                       <button
                         onClick={() => setPmcMesocycle('taper')}
-                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
                           pmcMesocycle === 'taper'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1824,7 +1824,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       </button>
                       <button
                         onClick={() => setPmcMesocycle('grand_tour')}
-                        className={`apple-touch px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
                           pmcMesocycle === 'grand_tour'
                             ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
@@ -1838,32 +1838,32 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                 {/* 4 Core Current Numbers */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-center">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
                     <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 block">
                       当前 CTL (长期体能)
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black font-mono text-blue-600 dark:text-blue-400 block my-1">
+                    <span className="text-2xl sm:text-3xl font-black font-mono text-blue-600 dark:text-blue-400 block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.ctl : '--'}
                     </span>
                     <span className="text-[10px] text-slate-400">42 天衰减滚动均线</span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-center">
                     <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 block">
                       当前 ATL (急性疲劳)
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black font-mono text-rose-600 dark:text-rose-400 block my-1">
+                    <span className="text-2xl sm:text-3xl font-black font-mono text-rose-600 dark:text-rose-400 block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.atl : '--'}
                     </span>
                     <span className="text-[10px] text-slate-400">7 天短期负荷均线</span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
                     <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 block">
                       当前 TSB (竞技状态)
                     </span>
                     <span
-                      className="text-2xl sm:text-3xl font-black font-mono block my-1"
+                      className="text-2xl sm:text-3xl font-black font-mono block my-1 tabular-nums"
                       style={{ color: currentTsbZone.color }}
                     >
                       {latestPmcDay ? (latestPmcDay.tsb > 0 ? `+${latestPmcDay.tsb}` : latestPmcDay.tsb) : '--'}
@@ -1871,11 +1871,11 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-[10px] text-slate-400">CTL - ATL 差值</span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
                     <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 block">
                       本次骑行载入 TSS
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900 dark:text-white block my-1">
+                    <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900 dark:text-white block my-1 tabular-nums">
                       {analysis.tss}
                     </span>
                     <span className="text-[10px] text-emerald-500 font-medium">已合并进末日时间轴</span>
@@ -1932,9 +1932,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               </div>
 
               {/* Race Day Peak Predictor & Coach Diagnostic */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Left: TSB Status Diagnostic */}
-                <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
+                <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       当前机体竞技状态判定
@@ -1947,7 +1947,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed p-3.5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
                     {language === 'zh-TW' ? currentTsbZone.adviceTw : currentTsbZone.advice}
                   </p>
 
@@ -1965,13 +1965,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 </div>
 
                 {/* Right: Target Race Peak Predictor */}
-                <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+                <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                       <Award className="w-4 h-4 text-amber-500" />
                       目标赛事巅峰状态倒计时预测
                     </span>
-                    <span className="text-xs font-mono font-bold text-amber-500">
+                    <span className="text-xs font-mono font-bold text-amber-500 tabular-nums">
                       目标 TSB: +{targetTsbForPeak}
                     </span>
                   </div>
@@ -1992,15 +1992,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center space-y-1">
+                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center space-y-1">
                     <div className="text-xs text-amber-700 dark:text-amber-300 font-semibold">
                       预计所需减量备赛周期
                     </div>
-                    <div className="text-3xl font-black font-mono text-amber-600 dark:text-amber-400">
+                    <div className="text-2xl sm:text-3xl font-black font-mono text-amber-600 dark:text-amber-400 tabular-nums">
                       {taperPrediction.daysNeeded} <span className="text-sm font-sans">天 (Days)</span>
                     </div>
                     <div className="text-[11px] text-slate-600 dark:text-slate-300">
-                      出关比赛日预测 CTL 体能保全值：<strong className="font-mono text-slate-900 dark:text-white">{taperPrediction.predictedCtl}</strong>
+                      出关比赛日预测 CTL 体能保全值：<strong className="font-mono text-slate-900 dark:text-white tabular-nums">{taperPrediction.predictedCtl}</strong>
                     </div>
                   </div>
 
@@ -2011,7 +2011,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               </div>
 
               {/* Manual TSS Workout Logging Card */}
-              <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
+              <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Zap className="w-4 h-4 text-ios-blue" />
@@ -2076,7 +2076,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         key={entry.id}
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono"
                       >
-                        <span>{entry.dayOffset === 0 ? '今日' : `${Math.abs(entry.dayOffset)}天前`}: {entry.tss} TSS ({entry.title})</span>
+                        <span>{entry.dayOffset === 0 ? '今日' : `${Math.abs(entry.dayOffset)}天前`}: <strong className="tabular-nums">{entry.tss}</strong> TSS ({entry.title})</span>
                         <button
                           onClick={() => handleRemoveManualTss(entry.id)}
                           className="apple-touch hover:text-red-500 font-bold ml-1 text-slate-400"
@@ -2094,7 +2094,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB 4: Physiological Coaching Insights */}
           {activeTab === 'coaching' && (
-            <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-ios-blue" />
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -2106,7 +2106,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 {coachingNotes.map((note, idx) => (
                   <div
                     key={idx}
-                    className={`p-4 rounded-2xl border flex items-start gap-3 text-xs ${
+                    className={`p-3.5 rounded-xl border flex items-start gap-3 text-xs ${
                       note.type === 'success'
                         ? 'bg-ios-green/10 border-ios-green/30 text-slate-900 dark:text-emerald-100'
                         : note.type === 'warning'
@@ -2131,14 +2131,14 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
               {/* Smart Targeted Workout Recommendation Card */}
               {smartWorkoutRecommendation && (
-                <div className="p-5 rounded-3xl bg-gradient-to-br from-ios-purple/10 via-ios-blue/10 to-transparent border border-ios-purple/25 space-y-3.5 shadow-ios-sm relative overflow-hidden">
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-ios-purple/10 via-ios-blue/10 to-transparent border border-ios-purple/25 space-y-3 shadow-ios-sm relative overflow-hidden">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="space-y-1">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-purple/15 text-ios-purple text-xs font-bold border border-ios-purple/25">
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>运动科学智能靶向补强推荐</span>
                       </div>
-                      <h4 className="text-sm font-extrabold text-slate-900 dark:text-white">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                         短板诊断：{smartWorkoutRecommendation.deficiencyTitle}
                       </h4>
                     </div>
@@ -2150,7 +2150,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           setSelectedSmartTemplateId(smartWorkoutRecommendation.template.id);
                           setSmartWorkoutModalOpen(true);
                         }}
-                        className="apple-touch self-start sm:self-auto shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white font-bold text-xs shadow-ios-sm transition active:scale-95"
+                        className="apple-touch self-start sm:self-auto shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white font-bold text-xs shadow-ios-sm transition active:scale-95"
                       >
                         <Dumbbell className="w-4 h-4" />
                         <span>配置补强课表</span>
@@ -2163,7 +2163,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     {smartWorkoutRecommendation.deficiencyDesc}
                   </p>
 
-                  <div className="p-3 rounded-2xl bg-white/80 dark:bg-white/5 border border-black/[0.04] dark:border-white/[0.08] flex items-center justify-between text-xs">
+                  <div className="p-3 rounded-xl bg-white/80 dark:bg-white/5 border border-black/[0.04] dark:border-white/[0.08] flex items-center justify-between text-xs">
                     <div>
                       <span className="text-[10px] text-slate-400 block">推荐专属科学课表</span>
                       <span className="font-bold text-slate-900 dark:text-white">
@@ -2178,7 +2178,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               )}
 
               {/* Recovery & Nutrition Advice */}
-              <div className="p-4 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-xs space-y-2">
+              <div className="p-3.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-xs space-y-2">
                 <div className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
                   <Flame className="w-4 h-4 text-ios-orange" />
                   {'赛后糖原与肌肉超量恢复建议'}
@@ -2194,16 +2194,19 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
       {/* Smart Workout Generator Modal */}
       {smartWorkoutModalOpen && smartWorkoutRecommendation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-5 bg-white dark:bg-[#1C1C1E]">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
+          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-t-[28px] sm:rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 sm:space-y-5 bg-white dark:bg-[#1C1C1E] pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
+            {/* iOS Bottom Sheet Drag Handle */}
+            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto -mt-1 mb-1 sm:hidden shrink-0" />
+
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-ios-purple to-ios-blue text-white flex items-center justify-center shadow-ios-sm">
-                  <Sparkles className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-ios-purple to-ios-blue text-white flex items-center justify-center shadow-ios-sm">
+                  <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                     智能靶向补强课表生成
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -2221,7 +2224,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
 
             {/* Physiological Deficit Diagnosis Alert */}
-            <div className="p-4 rounded-2xl bg-ios-purple/10 border border-ios-purple/25 space-y-1.5">
+            <div className="p-3.5 rounded-xl bg-ios-purple/10 border border-ios-purple/25 space-y-1.5">
               <div className="flex items-center gap-2 text-xs font-bold text-ios-purple">
                 <AlertTriangle className="w-4 h-4" />
                 <span>生理学短板评估：{smartWorkoutRecommendation.deficiencyTitle}</span>
@@ -2250,7 +2253,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       key={tmpl.id}
                       type="button"
                       onClick={() => setSelectedSmartTemplateId(tmpl.id)}
-                      className={`p-3 rounded-2xl border text-left transition relative apple-touch ${
+                      className={`p-3 rounded-xl border text-left transition relative apple-touch ${
                         isSelected
                           ? 'bg-ios-purple/10 dark:bg-ios-purple/20 border-ios-purple text-slate-900 dark:text-white ring-2 ring-ios-purple/30'
                           : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300'
@@ -2274,7 +2277,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             {(() => {
               const activeTmpl = WORKOUT_TEMPLATES.find(t => t.id === (selectedSmartTemplateId || smartWorkoutRecommendation.template.id)) || smartWorkoutRecommendation.template;
               return (
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2 text-xs">
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900 dark:text-white">{activeTmpl.name}</span>
                     <span className="font-mono text-slate-500">共 {activeTmpl.segments.length} 个结构化分段</span>
@@ -2294,14 +2297,14 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <button
                 type="button"
                 onClick={() => setSmartWorkoutModalOpen(false)}
-                className="apple-touch px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition"
+                className="apple-touch px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition"
               >
                 取消
               </button>
               <button
                 type="button"
                 onClick={() => handleDispatchSmartWorkout()}
-                className="apple-touch px-5 py-2.5 rounded-2xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center gap-2 transition active:scale-95"
+                className="apple-touch px-4.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center gap-2 transition active:scale-95"
               >
                 <Dumbbell className="w-4 h-4" />
                 <span>载入课表工坊并开始训练</span>
