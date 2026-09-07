@@ -152,24 +152,13 @@ export const ChainLengthCalculator: React.FC = () => {
             : '换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。'
         }
         tint="blue"
-        actions={
-          <button
-            onClick={handleGeneratePoster}
-            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 self-start md:self-auto"
-            title="生成截链节数与后拨容量规范海报"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>{language === 'zh-TW' ? '生成截鏈規範卡' : '生成截链规范卡'}</span>
-          </button>
-        }
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成截鏈規範海報' : '生成截链规范海报'}
       />
 
       {/* Preset Buttons */}
-      <IOSCard variant="default" className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3">
-        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-          {language === 'zh-TW' ? '規格預設:' : '规格预设:'}
-        </span>
-        <div className="w-full sm:max-w-xl">
+      <IOSCard variant="default" className="p-2.5 sm:p-3">
+        <div className="w-full">
           <IOSSegmentedControl
             options={[
               { value: 'compact_34', label: '公路 50/34T' },

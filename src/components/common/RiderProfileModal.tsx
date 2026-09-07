@@ -426,7 +426,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   });
                   showToast('已创建并载入新车手档案', 'success');
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-xs hover:bg-blue-600 transition shrink-0 apple-touch"
+                className="flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition shrink-0 apple-touch"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '添加車手' : '添加车手'}</span>
@@ -527,7 +527,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   });
                   showToast('已添加新战车至车库', 'success');
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-xs hover:bg-blue-600 transition shrink-0 apple-touch"
+                className="flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition shrink-0 apple-touch"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{language === 'zh-TW' ? '新增戰車' : '新增战车'}</span>
@@ -770,7 +770,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         });
                         initiateStravaAuth();
                       }}
-                      className="apple-touch w-full py-2.5 rounded-xl bg-[#FC4C02] hover:bg-[#E34402] text-white font-bold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-98"
+                      className="apple-touch w-full h-9 rounded-xl bg-[#FC4C02] hover:bg-[#E34402] text-white font-bold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-98"
                     >
                       <Cloud className="w-4 h-4" />
                       <span>保存密钥并前往 Strava 授权连接</span>
@@ -988,7 +988,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <button
                       type="button"
                       onClick={clearStravaCache}
-                      className="apple-touch flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-200/70 hover:bg-slate-300/70 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium transition shrink-0"
+                      className="apple-touch flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-slate-200/70 hover:bg-slate-300/70 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium transition shrink-0"
                     >
                       <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                       <span>{language === 'zh-TW' ? '清空本地離線資料' : '清空本地离线数据'}</span>
@@ -996,7 +996,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <button
                       type="button"
                       onClick={disconnectStrava}
-                      className="apple-touch flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-medium transition shrink-0"
+                      className="apple-touch flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-medium transition shrink-0"
                     >
                       <LogOut className="w-3.5 h-3.5 shrink-0" />
                       <span>{language === 'zh-TW' ? '解除綁定並斷開' : '解除绑定并断开'}</span>
@@ -1261,7 +1261,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
         <div className="pt-2 flex items-center justify-between gap-3 border-t border-black/[0.05] dark:border-white/[0.08]">
           <button
             onClick={handleReset}
-            className="apple-touch px-3.5 py-2 rounded-xl text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition flex items-center gap-1.5"
+            className="apple-touch h-9 px-3.5 rounded-xl text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition flex items-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '恢復標準預設' : '恢复标准默认'}</span>
@@ -1269,7 +1269,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
           <button
             onClick={onClose}
-            className="apple-touch px-5 py-2 rounded-xl text-xs font-semibold bg-ios-blue hover:opacity-90 active:scale-95 text-white transition shadow-ios-sm flex items-center gap-1.5"
+            className="apple-touch h-9 px-5 rounded-xl text-xs font-semibold bg-ios-blue hover:bg-ios-blue/90 active:scale-95 text-white transition shadow-ios-sm flex items-center gap-1.5"
           >
             <span>{language === 'zh-TW' ? '完成並儲存' : '完成并保存'}</span>
           </button>

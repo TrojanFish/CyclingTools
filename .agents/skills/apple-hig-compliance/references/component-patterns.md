@@ -186,9 +186,12 @@ import { IOSCardHeader } from '../common/IOSCard';
 </div>
 ```
 
-**Key differences:**
-- Mobile: `items-end`, `rounded-t-[28px]`, drag handle visible
+**Key differences & Detents:**
+- Mobile: `items-end`, `rounded-t-[28px]`, drag handle visible (`w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-600`)
 - Desktop: `items-center`, `rounded-2xl`, no drag handle
+- **Sheet Detents**:
+  - **Medium detent** (`max-h-[50vh]`): For quick pickers, unit selectors, or brief confirmations.
+  - **Large detent** (`max-h-[90vh]`): For full calculators, scrollable form inputs, and parameter sheets.
 
 ---
 
@@ -207,7 +210,7 @@ import { IOSToolHeader } from '../common/IOSToolHeader';
   tint="blue"
   actions={
     <>
-      <button onClick={handleShare} className="apple-touch h-8.5 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm flex items-center gap-1.5">
+      <button onClick={handleShare} className="apple-touch h-9 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm flex items-center gap-1.5">
         <Share2 className="w-3.5 h-3.5" />
         <span>生成海报</span>
       </button>
@@ -219,48 +222,87 @@ import { IOSToolHeader } from '../common/IOSToolHeader';
 
 ---
 
-## 5. Buttons
+## 5. Buttons & Control Hierarchy (Apple 3-Tier Rule)
 
-### 5.1 Primary Button
+Apple HIG enforces clear visual hierarchy. **Never place multiple Prominent buttons side-by-side.**
+
+### 5.1 Prominent Button (实色强调按钮 — 严控最多 1 个)
+
+Reserved for the single primary call-to-action in a card or modal (e.g. "计算", "导出", "确认").
 
 ```jsx
-<button className="apple-touch h-8.5 px-4 rounded-xl
-  bg-ios-blue text-white text-sm font-medium
+<button className="apple-touch h-9 px-4 rounded-xl
+  bg-ios-blue text-white text-sm font-medium shadow-ios-sm
   hover:bg-ios-blue/90 active:scale-[0.975]
-  transition-all ease-apple-spring">
-  {label}
+  transition-all ease-apple-spring flex items-center gap-2">
+  <Zap className="w-4 h-4" />
+  <span>立即计算</span>
 </button>
 ```
 
-### 5.2 Secondary Button
+### 5.2 Bordered / Tonal Button (次要操作按钮)
+
+Used for secondary actions (e.g. "重置", "加载示例", "复制").
 
 ```jsx
-<button className="apple-touch h-8.5 px-4 rounded-xl
+{/* Tonal variant */}
+<button className="apple-touch h-9 px-4 rounded-xl
   bg-ios-blue/10 text-ios-blue text-sm font-medium
   hover:bg-ios-blue/15 transition-all ease-apple-spring">
   {label}
 </button>
-```
 
-### 5.3 Ghost / Toolbar Button
-
-```jsx
-<button className="apple-touch h-8 px-3 rounded-lg
-  text-sm text-slate-400 hover:text-white hover:bg-white/5
-  transition-all ease-apple-spring">
+{/* Outline variant */}
+<button className="apple-touch h-9 px-4 rounded-xl
+  bg-white dark:bg-white/5 border border-black/10 dark:border-white/10
+  text-slate-700 dark:text-slate-300 text-sm font-medium
+  hover:bg-slate-50 dark:hover:bg-white/10 transition-all ease-apple-spring">
   {label}
 </button>
 ```
 
-### 5.4 Icon Button (Close / Action)
+### 5.3 Plain / Ghost Button (纯文字/取消操作)
+
+For low-frequency auxiliary actions or dismissals.
 
 ```jsx
-<button className="apple-touch p-1.5 rounded-full
-  bg-slate-100 dark:bg-white/10
-  hover:bg-slate-200 dark:hover:bg-white/15
+<button className="apple-touch h-9 px-3 rounded-xl
+  text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200
+  hover:bg-black/5 dark:hover:bg-white/5
   transition-all ease-apple-spring">
-  <Icon className="w-4 h-4" />
+  取消
 </button>
+```
+
+### 5.4 Icon Button (Close / Quick Action)
+
+```jsx
+{/* Compact round */}
+<button className="apple-touch p-1.5 rounded-full
+  bg-slate-100 dark:bg-white/10 text-slate-500 hover:text-slate-800 dark:hover:text-white
+  transition-all ease-apple-spring">
+  <X className="w-4 h-4" />
+</button>
+
+{/* Unified control row height */}
+<button className="apple-touch h-9 w-9 rounded-xl flex items-center justify-center
+  bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300
+  transition-all ease-apple-spring">
+  <Settings className="w-4 h-4" />
+</button>
+```
+
+### 5.5 Tactile Feedback (Haptics)
+
+Call vibration / haptics on physical taps on mobile web:
+
+```ts
+import { triggerHaptic } from '../../utils/haptics';
+
+const handleClick = () => {
+  triggerHaptic('selection'); // or 'impact', 'notification'
+  // proceed with action
+};
 ```
 
 ---

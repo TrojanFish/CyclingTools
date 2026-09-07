@@ -162,7 +162,7 @@ export const PwaInstallPrompt: React.FC = () => {
 
             <button
               onClick={() => setShowIosGuide(false)}
-              className="apple-touch w-full h-8.5 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center"
+              className="apple-touch w-full h-9 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center"
             >
               {language === 'zh-TW' ? '我知道了' : '我知道了'}
             </button>

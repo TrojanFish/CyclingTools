@@ -363,6 +363,8 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             : '基于 5s 冲刺、1min 无氧、5min VO₂ 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'
         }
         tint="red"
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成戰力畫像海報' : '生成战力画像海报'}
         actions={
           <>
             <button
@@ -377,12 +379,6 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
               <span>{isExtractingStrava ? (language === 'zh-TW' ? '提取中...' : '提取中...') : (language === 'zh-TW' ? '⚡ Strava 提取' : '⚡ Strava 提取')}</span>
             </button>
 
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
-              <Upload className="w-3.5 h-3.5 text-ios-red" />
-              <span>{language === 'zh-TW' ? '匯入 CSV/JSON' : '导入 CSV/JSON'}</span>
-              <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
-            </label>
-
             <button
               onClick={() => setIsPasteModalOpen(true)}
               className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
@@ -390,38 +386,24 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
               <FileText className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '貼上功率' : '粘贴功率'}</span>
             </button>
-
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-red hover:bg-ios-red/90 text-white rounded-xl text-xs font-semibold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成六维能力画像与极化训练海报"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '生成戰報海報' : '生成战报海报'}</span>
-            </button>
           </>
         }
       />
 
       {/* Rider Preset Bar */}
-      <div className="ios-card p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-ios-sm">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-            {language === 'zh-TW' ? '車手預設:' : '车手预设:'}
-          </span>
-          <div className="w-full sm:max-w-xl">
-            <IOSSegmentedControl
-              options={[
-                { value: 'sprinter', label: language === 'zh-TW' ? '衝刺手' : '冲刺手', icon: Zap },
-                { value: 'climber', label: language === 'zh-TW' ? '爬坡手' : '爬坡手', icon: Mountain },
-                { value: 'rouleur', label: language === 'zh-TW' ? '計時突圍' : '计时突围', icon: Timer },
-                { value: 'allrounder', label: language === 'zh-TW' ? '全能型' : '全能型', icon: Award },
-              ]}
-              value={activeRiderPreset || ''}
-              onChange={(val) => loadPreset(val as any)}
-              size="sm"
-            />
-          </div>
+      <div className="ios-card p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-sm">
+        <div className="w-full">
+          <IOSSegmentedControl
+            options={[
+              { value: 'sprinter', label: language === 'zh-TW' ? '衝刺手' : '冲刺手', icon: Zap },
+              { value: 'climber', label: language === 'zh-TW' ? '爬坡手' : '爬坡手', icon: Mountain },
+              { value: 'rouleur', label: language === 'zh-TW' ? '計時突圍' : '计时突围', icon: Timer },
+              { value: 'allrounder', label: language === 'zh-TW' ? '全能型' : '全能型', icon: Award },
+            ]}
+            value={activeRiderPreset || ''}
+            onChange={(val) => loadPreset(val as any)}
+            size="sm"
+          />
         </div>
 
         <div className="flex items-center gap-2 text-xs shrink-0 self-end sm:self-auto">
@@ -512,14 +494,14 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <div className="flex justify-end gap-2.5 pt-2">
               <button
                 onClick={() => setIsPasteModalOpen(false)}
-                className="apple-touch h-8.5 px-4 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition"
+                className="apple-touch h-9 px-4 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition"
               >
                 取消
               </button>
               <button
                 onClick={applyParsedText}
                 disabled={!liveParsed}
-                className="apple-touch h-8.5 px-4 sm:px-5 rounded-xl text-xs font-bold bg-ios-blue hover:bg-ios-blue/90 text-white transition shadow-ios-sm disabled:opacity-50"
+                className="apple-touch h-9 px-4 sm:px-5 rounded-xl text-xs font-bold bg-ios-blue hover:bg-ios-blue/90 text-white transition shadow-ios-sm disabled:opacity-50"
               >
                 {language === 'zh-TW' ? '載入並生成雷達' : '载入并生成雷达'}
               </button>

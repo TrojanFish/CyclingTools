@@ -25,8 +25,7 @@ import {
   Sliders,
   ArrowRight,
   Dumbbell,
-  X,
-  Share2
+  X
 } from 'lucide-react';
 import { PoweredByStravaBadge } from '../common/PoweredByStravaBadge';
 import { WORKOUT_TEMPLATES, WorkoutTemplate, WorkoutSegment } from './WorkoutBuilder';
@@ -951,24 +950,16 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         title="码表活动与 FIT 航迹深度解析器"
         description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
         tint="red"
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成碼表活動深度復盤長圖海報' : '生成码表活动深度复盘长图海报'}
         actions={
-          <>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成码表活动深度复盘长图海报"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '生成復盤海報' : '生成复盘海报'}</span>
-            </button>
-            <button
-              onClick={handleLoadDemo}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-ios-red" />
-              <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
-            </button>
-          </>
+          <button
+            onClick={handleLoadDemo}
+            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-ios-red" />
+            <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
+          </button>
         }
       />
 
@@ -1834,7 +1825,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 block">
                       当前 CTL (长期体能)
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black font-mono text-blue-600 dark:text-blue-400 block my-1 tabular-nums">
+                    <span className="text-2xl sm:text-3xl font-bold font-mono text-blue-600 dark:text-blue-400 block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.ctl : '--'}
                     </span>
                     <span className="text-[10px] text-slate-400">42 天衰减滚动均线</span>
@@ -1844,7 +1835,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 block">
                       当前 ATL (急性疲劳)
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black font-mono text-rose-600 dark:text-rose-400 block my-1 tabular-nums">
+                    <span className="text-2xl sm:text-3xl font-bold font-mono text-rose-600 dark:text-rose-400 block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.atl : '--'}
                     </span>
                     <span className="text-[10px] text-slate-400">7 天短期负荷均线</span>
@@ -1855,7 +1846,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       当前 TSB (竞技状态)
                     </span>
                     <span
-                      className="text-2xl sm:text-3xl font-black font-mono block my-1 tabular-nums"
+                      className="text-2xl sm:text-3xl font-bold font-mono block my-1 tabular-nums"
                       style={{ color: currentTsbZone.color }}
                     >
                       {latestPmcDay ? (latestPmcDay.tsb > 0 ? `+${latestPmcDay.tsb}` : latestPmcDay.tsb) : '--'}
@@ -1867,7 +1858,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 block">
                       本次骑行载入 TSS
                     </span>
-                    <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900 dark:text-white block my-1 tabular-nums">
+                    <span className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-white block my-1 tabular-nums">
                       {analysis.tss}
                     </span>
                     <span className="text-[10px] text-emerald-500 font-medium">已合并进末日时间轴</span>
@@ -1988,7 +1979,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <div className="text-xs text-amber-700 dark:text-amber-300 font-semibold">
                       预计所需减量备赛周期
                     </div>
-                    <div className="text-2xl sm:text-3xl font-black font-mono text-amber-600 dark:text-amber-400 tabular-nums">
+                    <div className="text-2xl sm:text-3xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
                       {taperPrediction.daysNeeded} <span className="text-sm font-sans">天 (Days)</span>
                     </div>
                     <div className="text-[11px] text-slate-600 dark:text-slate-300">
@@ -2054,7 +2045,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                   <button
                     onClick={handleAddManualTss}
-                    className="apple-touch self-end px-4 py-2 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl text-xs font-semibold shadow-ios-sm active:scale-95 transition"
+                    className="apple-touch self-end h-9 px-4 bg-ios-blue/10 hover:bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark border border-ios-blue/25 rounded-xl text-xs font-semibold active:scale-95 transition shrink-0"
                   >
                     录入 PMC
                   </button>

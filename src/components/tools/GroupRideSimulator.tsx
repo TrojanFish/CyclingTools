@@ -467,11 +467,7 @@ export const GroupRideSimulator: React.FC = () => {
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
-              <Sparkles className="w-3.5 h-3.5 text-ios-mint" />
-              {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
-            </span>
+          <div className="w-full sm:w-auto">
             {mode === 'ttt' ? (
               <div className="w-full sm:w-auto">
                 <IOSSegmentedControl

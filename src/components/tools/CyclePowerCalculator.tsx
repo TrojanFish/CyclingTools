@@ -327,29 +327,19 @@ export const CyclePowerCalculator: React.FC = () => {
             : '高精度空气阻力、滚阻、重力分量与海拔密度推算，支持功速互推、Coggan 7 区间划分与 VAM 爬坡耗时求解。'
         }
         tint="blue"
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成動力海報' : '生成动力海报'}
         actions={
-          <>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成单车功率与速度动力学海报卡片"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '生成動力海報' : '生成动力海报'}</span>
-            </button>
-
-            {/* Apple Mode Segmented Control */}
-            <IOSSegmentedControl
-              options={[
-                { id: 'speed', label: language === 'zh-TW' ? '功率求速度' : '功率求速度' },
-                { id: 'power', label: language === 'zh-TW' ? '速度求功率' : '速度求功率' },
-                { id: 'wkg', label: language === 'zh-TW' ? '推重比求功率' : '推重比求功率' },
-              ]}
-              value={calcMode}
-              onChange={(val) => setCalcMode(val as any)}
-              size="md"
-            />
-          </>
+          <IOSSegmentedControl
+            options={[
+              { id: 'speed', label: language === 'zh-TW' ? '功率求速度' : '功率求速度' },
+              { id: 'power', label: language === 'zh-TW' ? '速度求功率' : '速度求功率' },
+              { id: 'wkg', label: language === 'zh-TW' ? '推重比求功率' : '推重比求功率' },
+            ]}
+            value={calcMode}
+            onChange={(val) => setCalcMode(val as any)}
+            size="md"
+          />
         }
       />
 

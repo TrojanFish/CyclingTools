@@ -15,7 +15,7 @@ import {
   Clock,
   Layers
 } from 'lucide-react';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSMetricTile, IOSCardHeader } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -247,10 +247,12 @@ export const TubelessSealantCalculator: React.FC = () => {
         <div className="lg:col-span-7 space-y-5">
           {/* Section 1: Wheel & Tire Geometry */}
           <IOSCard variant="default" className="space-y-4">
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Gauge className="w-4 h-4 text-ios-blue" />
-              <span>{language === 'zh-TW' ? '輪組規格與幾何參數' : '轮组规格与几何参数'}</span>
-            </div>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '輪組規格與幾何參數' : '轮组规格与几何参数'}
+              subtitle={language === 'zh-TW' ? '輪徑、胎寬與框寬設定' : '轮径、胎宽与框宽设定'}
+              icon={Gauge}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+            />
 
             {/* Wheel Standard & Category */}
             <div className="space-y-3">
@@ -349,10 +351,12 @@ export const TubelessSealantCalculator: React.FC = () => {
 
           {/* Section 2: Casing Type & Climate */}
           <IOSCard variant="default" className="space-y-4">
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Thermometer className="w-4 h-4 text-ios-red" />
-              <span>{language === 'zh-TW' ? '胎體孔隙率與環境揮發工況' : '胎体孔隙率与环境挥发工况'}</span>
-            </div>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '胎體孔隙率與環境揮發工況' : '胎体孔隙率与环境挥发工况'}
+              subtitle={language === 'zh-TW' ? '外胎構造、當地氣候與騎乘頻率' : '外胎构造、当地气候与骑行频率'}
+              icon={Thermometer}
+              iconColor="text-ios-red bg-ios-red/10 dark:bg-ios-red/20"
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Casing Construction */}

@@ -17,7 +17,6 @@ import {
   ChevronUp,
   ChevronDown,
   FileCode,
-  Share2,
   RotateCcw,
   Sliders,
   Award
@@ -514,27 +513,17 @@ export const WorkoutBuilder: React.FC = () => {
         title={language === 'zh-TW' ? '科學間歇訓練課表工坊 (Workout Builder)' : '科学间歇训练课表工坊 (Workout Builder)'}
         description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，一键无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
         tint="red"
+        onShare={handleGeneratePoster}
+        shareTitle="生成社交分享课表海报"
         actions={
-          <>
-            <button
-              type="button"
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
-              title="生成社交分享课表海报"
-            >
-              <Share2 className="w-3.5 h-3.5 text-ios-red" />
-              <span>生成课表海报</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setExportModalOpen(true)}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>导出课表 (ZWO / MRC)</span>
-            </button>
-          </>
+          <button
+            type="button"
+            onClick={() => setExportModalOpen(true)}
+            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>导出课表 (ZWO / MRC)</span>
+          </button>
         }
       />
 
@@ -996,7 +985,7 @@ export const WorkoutBuilder: React.FC = () => {
               <button
                 type="button"
                 onClick={handleDownloadFile}
-                className="apple-touch px-4.5 py-2 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
+                className="apple-touch h-9 px-4.5 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center gap-2 transition"
               >
                 <Download className="w-4 h-4" />
                 <span>下载 .{exportFormat} 文件</span>

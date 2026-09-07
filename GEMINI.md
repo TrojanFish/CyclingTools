@@ -21,10 +21,18 @@ This project targets **two platforms** with a single React + Tailwind codebase:
 10. **Icons**: Lucide React, default `w-4 h-4`.
 11. **Segmented Controls**: Segmented controls MUST expand full-width (`w-full flex-1 min-w-0`) on mobile (<640px) matching iOS 18 `UISegmentedControl`, and stay compact (`sm:w-auto`) on desktop.
 12. **Unified Architecture**: All tool pages must adhere to standard component anatomy: `IOSToolHeader` for page headers, `IOSCardHeader` for card/section headers, `IOSMetricTile` for KPI/metric tiles, and `IOSCard` for containers. Avoid ad-hoc hand-rolled layouts.
+13. **Button Hierarchy**: At most **1** Prominent (accent fill) button per card or view. Secondary actions must be Bordered (outline/tonal) or Plain (ghost).
+14. **Automated Audit**: Run `python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src` to verify 0 HIG errors.
 
-### Skill Reference
+### Skill & Audit Reference
 
-For comprehensive tokens, patterns, and audit checklist, activate the `apple-hig-compliance` skill.
+- Skill specification: `.agents/skills/apple-hig-compliance/SKILL.md`
+- Automated HIG checker:
+  ```bash
+  python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src
+  python .agents/skills/apple-hig-compliance/scripts/hig_checker.py contrast "#007AFF" "#FFFFFF"
+  python .agents/skills/apple-hig-compliance/scripts/hig_checker.py target 44 44
+  ```
 
 ### Build
 

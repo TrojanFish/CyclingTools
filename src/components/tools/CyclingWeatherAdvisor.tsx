@@ -486,7 +486,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
         {/* Right Segment Weather Details */}
         <div className="lg:col-span-7 space-y-4">
           {weatherSegments.length === 0 ? (
-            <div className="ios-card p-10 rounded-2xl border border-slate-200/80 dark:border-white/10 text-center flex flex-col items-center justify-center space-y-2.5 shadow-ios-card">
+            <div className="ios-card p-4 sm:p-5 py-10 sm:py-12 rounded-2xl border border-slate-200/80 dark:border-white/10 text-center flex flex-col items-center justify-center space-y-2.5 shadow-ios-card">
               <div className="w-12 h-12 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-center text-ios-blue shadow-ios-sm">
                 <CloudSun className="w-6 h-6" />
               </div>

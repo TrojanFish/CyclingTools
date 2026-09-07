@@ -191,7 +191,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Tools Grid */}
       {filteredTools.length === 0 ? (
-        <div className="p-8 sm:p-10 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl text-center space-y-3 shadow-ios-sm">
+        <div className="p-4 sm:p-5 py-8 sm:py-10 rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl text-center space-y-3 shadow-ios-sm">
           <div className="w-11 h-11 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center mx-auto text-slate-400">
             <Search className="w-5 h-5" />
           </div>
@@ -206,7 +206,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               setSearchTerm('');
               setSelectedCategory('all');
             }}
-            className="h-8.5 px-4 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:opacity-90 active:scale-95 transition apple-touch"
+            className="h-9 px-4 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:opacity-90 active:scale-95 transition apple-touch"
           >
             {language === 'zh-TW' ? '重設篩選條件' : '重置筛选条件'}
           </button>

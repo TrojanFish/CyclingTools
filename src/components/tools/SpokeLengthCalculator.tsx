@@ -19,7 +19,7 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSMetricTile, IOSCardHeader } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 
 export const SpokeLengthCalculator: React.FC = () => {
@@ -294,10 +294,12 @@ export const SpokeLengthCalculator: React.FC = () => {
         <div className="lg:col-span-7 space-y-5">
           {/* Wheel Position & Brake System */}
           <IOSCard variant="default" className="space-y-4">
-            <div className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-ios-blue" />
-              <span>轮组架构与制动形式</span>
-            </div>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '輪組架構與制動形式' : '轮组架构与制动形式'}
+              subtitle={language === 'zh-TW' ? '前後輪位置與煞車形式' : '前后轮位置与刹车形式'}
+              icon={Sliders}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+            />
 
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -340,13 +342,12 @@ export const SpokeLengthCalculator: React.FC = () => {
 
           {/* Rim Specification */}
           <IOSCard variant="default" className="space-y-4">
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Disc className="w-4 h-4 text-cyan-500" />
-                <span>车圈有效内径与偏心距 (Rim Specifications)</span>
-              </span>
-              <span className="text-[10px] text-slate-400 font-mono">ERD 必须包含条帽沉头接触面</span>
-            </div>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '車圈有效內徑與偏心距' : '车圈有效内径与偏心距'}
+              subtitle="ERD 必须包含条帽沉头接触面"
+              icon={Disc}
+              iconColor="text-cyan-500 bg-cyan-500/10 dark:bg-cyan-500/20"
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* ERD */}
@@ -459,12 +460,12 @@ export const SpokeLengthCalculator: React.FC = () => {
 
           {/* Hub Flange Geometry (Left vs Right) */}
           <IOSCard variant="default" className="space-y-4">
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Wrench className="w-4 h-4 text-purple-500" />
-                <span>花鼓法兰参数与交叉编法 (Hub Flange & Cross Patterns)</span>
-              </span>
-            </div>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '花鼓法蘭參數與交叉編法' : '花鼓法兰参数与交叉编法'}
+              subtitle="PCD、中心距与交叉数几何解算"
+              icon={Wrench}
+              iconColor="text-purple-500 bg-purple-500/10 dark:bg-purple-500/20"
+            />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {/* Left Side (NDS rear or Disc front) */}

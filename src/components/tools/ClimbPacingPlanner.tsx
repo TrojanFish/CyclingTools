@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, Share2, CheckCircle2, TrendingUp, Upload, Search, ExternalLink, X, ChevronRight, Star } from 'lucide-react';
+import { Mountain, Activity, Zap, Play, Plus, Trash2, Clock, ArrowUpRight, Flame, ShieldAlert, Award, CheckCircle2, TrendingUp, Upload, Search, ExternalLink, X, ChevronRight, Star } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -619,6 +619,8 @@ export const ClimbPacingPlanner: React.FC = () => {
             : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'
         }
         tint="blue"
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成名山爬坡攻堅海報' : '生成名山爬坡攻坚海报'}
         actions={
           <>
             <button
@@ -638,15 +640,6 @@ export const ClimbPacingPlanner: React.FC = () => {
               <span className="sm:hidden">{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxClimbUpload} className="hidden" />
             </label>
-
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成名山爬坡攻坚与分段配速海报卡片"
-            >
-              <Share2 className="w-3.5 h-3.5 shrink-0" />
-              <span>{language === 'zh-TW' ? '生成配速海報' : '生成配速海报'}</span>
-            </button>
           </>
         }
       />
@@ -1135,7 +1128,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                     return (
                       <div
                         key={seg.id}
-                        className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C20] border border-slate-200/80 dark:border-white/10 hover:border-[#FC4C02]/40 transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                        className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 hover:border-[#FC4C02]/40 transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
                       >
                         <div className="space-y-1 min-w-0 flex-1">
                           <div className="flex items-center gap-2">

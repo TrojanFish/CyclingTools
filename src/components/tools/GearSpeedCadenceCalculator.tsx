@@ -209,31 +209,19 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         title="齿比-速度-踏频多功能计算器"
         description="全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。"
         tint="blue"
+        onShare={handleGeneratePoster}
+        shareTitle="生成齿比与踏频速度海报"
         actions={
-          <>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成齿比与踏频速度海报卡片"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>生成齿比海报</span>
-            </button>
-
-            {/* Apple View Tab Switchers */}
-            <div className="overflow-x-auto no-scrollbar py-0.5">
-              <IOSSegmentedControl
-                options={[
-                  { id: 'matrix', label: '档位矩阵' },
-                  { id: 'cadence_table', label: '踏频对照' },
-                  { id: 'chart', label: '速度曲线' },
-                ]}
-                value={activeTab}
-                onChange={(val) => setActiveTab(val as any)}
-                size="md"
-              />
-            </div>
-          </>
+          <IOSSegmentedControl
+            options={[
+              { id: 'matrix', label: '档位矩阵' },
+              { id: 'cadence_table', label: '踏频对照' },
+              { id: 'chart', label: '速度曲线' },
+            ]}
+            value={activeTab}
+            onChange={(val) => setActiveTab(val as any)}
+            size="md"
+          />
         }
       />
 
@@ -241,8 +229,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       <IOSCard variant="default" className="space-y-5">
         {/* Gruppo Presets */}
         <div>
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-2">套件预设:</span>
-          <div className="w-full sm:max-w-2xl overflow-x-auto no-scrollbar pb-1">
+          <div className="w-full">
             <IOSSegmentedControl
               options={[
                 { value: 'compact', label: '公路 50/34T' },

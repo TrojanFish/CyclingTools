@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Share2, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check, Star, Lightbulb } from 'lucide-react';
+import { Scale, Zap, Flame, Award, CheckSquare, Square, DollarSign, TrendingDown, Clock, ShieldCheck, Plus, Trash2, RotateCcw, Sparkles, HelpCircle, ChevronDown, Check, Star, Lightbulb } from 'lucide-react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -357,6 +357,8 @@ export const UpgradeRoiCalculator: React.FC = () => {
         title="单车改装边际效益与克瓦比 ROI 计算器"
         description="科学量化每一分改装预算！精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，计算“每瓦投入金钱”，杜绝玄学智商税升级。"
         tint="blue"
+        onShare={handleGeneratePoster}
+        shareTitle="生成改装升级省瓦战报海报"
         actions={
           <>
             <IOSSegmentedControl
@@ -370,15 +372,6 @@ export const UpgradeRoiCalculator: React.FC = () => {
               onChange={(val) => setCurrency(val as any)}
               size="md"
             />
-
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成改装升级省瓦战报海报"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>生成省瓦海报</span>
-            </button>
 
             <button
               onClick={resetToDefaults}

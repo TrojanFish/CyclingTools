@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             <div className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none shrink-0 group apple-touch" onClick={onNavigateHome}>
-              <div className="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-ios-blue to-blue-600 flex items-center justify-center text-white shadow-sm shadow-ios-blue/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-ios-blue to-blue-600 flex items-center justify-center text-white shadow-sm shadow-ios-blue/30 group-hover:scale-105 transition-transform duration-200 shrink-0">
                 <Bike className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
               </div>
               <div>

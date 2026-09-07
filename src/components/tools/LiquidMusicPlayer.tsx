@@ -317,7 +317,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                 <button
                   onClick={addCustomTrack}
                   disabled={!newSongUrl}
-                  className="w-full h-8.5 bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold disabled:opacity-40 rounded-xl text-xs transition shadow-ios-sm apple-touch flex items-center justify-center"
+                  className="w-full h-9 bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold disabled:opacity-40 rounded-xl text-xs transition shadow-ios-sm apple-touch flex items-center justify-center"
                 >
                   添加到当前歌单
                 </button>
@@ -384,7 +384,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
               </button>
               <button
                 onClick={togglePlay}
-                className="w-8.5 h-8.5 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center shadow-ios-sm font-bold transition apple-touch"
+                className="w-9 h-9 rounded-full bg-ios-blue hover:bg-ios-blue/90 text-white flex items-center justify-center shadow-ios-sm font-bold transition apple-touch"
               >
                 {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
               </button>

@@ -1,5 +1,7 @@
 import React from 'react';
+import { Share2 } from 'lucide-react';
 import { IOSCard } from './IOSCard';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 export type ToolHeaderTint = 'blue' | 'purple' | 'mint' | 'red' | 'orange' | 'green' | 'indigo';
 
@@ -12,6 +14,8 @@ interface IOSToolHeaderProps {
   actions?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
+  onShare?: () => void;
+  shareTitle?: string;
 }
 
 const TINT_MAP: Record<ToolHeaderTint, {
@@ -57,8 +61,12 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
   actions,
   children,
   className = '',
+  onShare,
+  shareTitle,
 }) => {
+  const { language } = useLanguageAndUnit();
   const currentTint = TINT_MAP[tint] || TINT_MAP.blue;
+  const defaultShareTooltip = language === 'zh-TW' ? '生成分享海報' : '生成分享海报';
 
   return (
     <IOSCard variant="glass" className={`relative overflow-hidden isolate p-4 sm:p-5 ${className}`}>
@@ -67,8 +75,23 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
         className={`pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 ${currentTint.glow}`}
       />
 
+      {/* Mobile Top-Right Share Icon Button */}
+      {onShare && (
+        <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 md:hidden z-20">
+          <button
+            type="button"
+            onClick={onShare}
+            className="apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition flex items-center justify-center shadow-2xs"
+            title={shareTitle || defaultShareTooltip}
+            aria-label={shareTitle || defaultShareTooltip}
+          >
+            <Share2 className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-        <div className="space-y-1">
+        <div className={`space-y-1 ${onShare ? 'pr-11 md:pr-0' : ''}`}>
           {category && (
             <div
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-semibold mb-1 ${currentTint.badge}`}
@@ -87,9 +110,25 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
           )}
         </div>
 
-        {actions && (
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0 self-start md:self-auto w-full md:w-auto">
-            {actions}
+        {(actions || onShare) && (
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-start md:self-auto w-full md:w-auto">
+            {actions && (
+              <div className="flex-1 md:flex-initial min-w-0 w-full md:w-auto">
+                {actions}
+              </div>
+            )}
+            {/* Desktop Share Icon Button */}
+            {onShare && (
+              <button
+                type="button"
+                onClick={onShare}
+                className="hidden md:flex apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition items-center justify-center shadow-2xs shrink-0"
+                title={shareTitle || defaultShareTooltip}
+                aria-label={shareTitle || defaultShareTooltip}
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
         )}
       </div>

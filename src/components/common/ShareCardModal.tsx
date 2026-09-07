@@ -119,7 +119,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
           <button
             type="button"
             onClick={handleCopyImage}
-            className="apple-touch flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition active:scale-95"
+            className="apple-touch flex-1 sm:flex-initial h-9 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition active:scale-95 flex items-center justify-center gap-1.5"
           >
             {hasCopied ? (
               <>
@@ -137,7 +137,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
           <button
             type="button"
             onClick={handleDownload}
-            className="apple-touch flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs shadow-ios-md transition active:scale-95"
+            className="apple-touch flex-1 sm:flex-initial h-9 px-5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold text-xs shadow-ios-sm transition active:scale-95 flex items-center justify-center gap-2"
           >
             <Download className="w-4 h-4" />
             <span>保存到相册 / 下载</span>

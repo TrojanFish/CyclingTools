@@ -24,7 +24,7 @@ a shared component, or a minor layout tweak—**must** follow the rules below.
 | Section gap       | `space-y-4` / `gap-4`                           | `sm:space-y-5` / `sm:gap-5`                      |
 | Card radius       | `rounded-2xl`                                   | `sm:rounded-2xl`                                 |
 | Card padding      | `p-4`                                           | `sm:p-5`                                         |
-| Button height     | `h-8.5`                                         | `h-8.5`                                          |
+| Button & Control  | `h-9` (36px)                                    | `h-9` (36px)                                     |
 | Button radius     | `rounded-xl`                                    | `rounded-xl`                                     |
 | Title             | `text-lg font-bold font-display`                | `sm:text-xl`                                     |
 | Body text         | `text-sm`                                       | `text-sm`                                        |
@@ -35,27 +35,36 @@ a shared component, or a minor layout tweak—**must** follow the rules below.
 | Shadow (popover)  | `shadow-ios-popover`                            | same                                             |
 | Transition easing | `ease-apple-spring` / `cubic-bezier(0.16,1,0.3,1)` | same                                         |
 
+## Core Apple Design Pillars in Action
+
+1. **Clarity (清晰优先)**:
+   - Unambiguous visual hierarchy: Strict type scale with high contrast (WCAG 2.1 AA ≥4.5:1 for body text, ≥3.0:1 for graphical elements).
+   - Dynamic & Tabular: All numeric values and timers must use `tabular-nums` and SF Mono/display fonts to eliminate jitter.
+   - Text legibility: Never use `font-extrabold` or `font-black`. Maximum font weight is `font-bold`.
+2. **Deference (顺应内容)**:
+   - The UI is a quiet, elegant frame for user data. Minimize heavy borders and avoid garish solid background blocks on cards.
+   - Frosted glass (`glass-panel`, `backdrop-blur-2xl`) blurs background context gently without competing with foreground data.
+3. **Depth (景深层次)**:
+   - Physical layering: Base view (z-0) → Cards & Inset Groups (z-0) → Sticky Header / Sidebar (z-30/40) → Popovers & Sheets (z-50).
+   - Physics-based motion: Use Apple spring cubic-bezier (`ease-apple-spring`: `cubic-bezier(0.16,1,0.3,1)`).
+   - Sheet Detents: iOS bottom sheets feature `.medium` (`max-h-[50vh]`) or `.large` (`max-h-[90vh]`) detents with a grabber capsule.
+
 ## Mandatory Rules (always-on)
 
-1. **Font stack**: SF Pro → system-ui → Inter → sans-serif. Use `font-display`
-   for headings + numeric readouts.
-2. **tabular-nums**: Every element that displays numeric data (metrics, stats,
-   timers, inputs) **must** carry `tabular-nums` to prevent layout jitter.
-3. **iOS color tokens only**: Use `text-ios-blue`, `bg-ios-red/10`, etc.
-   Never use raw hex in JSX classes; tokens live in `tailwind.config.js`.
-4. **Dark/Light modes**: All cards must support both. Use CSS variables from
-   `index.css` (`--card-bg`, `--glass-bg`, etc.) or the Tailwind `dark:` variant.
-5. **Safe Area**: Body already applies `env(safe-area-inset-*)`. Never override
-   this.
-6. **Touch targets**: All interactive elements ≥ 44 × 44 pt logical on mobile
-   (use `min-h-[44px] min-w-[44px]` when needed).
-7. **apple-touch class**: Every tappable element should include the `apple-touch`
-   class for the scale-down press feedback.
-8. **Segmented Controls**: Segmented controls MUST expand full-width (`w-full flex-1 min-w-0`)
-   on mobile (<640px) to match iOS 18 `UISegmentedControl`, and remain compact (`sm:w-auto`) on desktop.
-9. **Unified Component Architecture**: All tool pages MUST adhere to the standardized
-   component anatomy: `IOSToolHeader` for top banners, `IOSCardHeader` for section/card headers,
-   `IOSMetricTile` for KPI metrics, and `IOSCard` for containers. Ad-hoc hand-rolled layouts are prohibited.
+1. **Font stack**: SF Pro → system-ui → Inter → sans-serif. Use `font-display` for headings + numeric readouts.
+2. **tabular-nums**: Every element that displays numeric data (metrics, stats, timers, inputs) **must** carry `tabular-nums` to prevent layout jitter.
+3. **iOS color tokens only**: Use `text-ios-blue`, `bg-ios-red/10`, etc. Never use raw hex in JSX classes; tokens live in `tailwind.config.js`.
+4. **Dark/Light modes**: All cards must support both. Use CSS variables from `index.css` (`--card-bg`, `--glass-bg`, etc.) or the Tailwind `dark:` variant.
+5. **Safe Area**: Body already applies `env(safe-area-inset-*)`. Never override this.
+6. **Touch targets**: All interactive elements ≥ 44 × 44 pt logical on mobile (use `min-h-[44px] min-w-[44px]` or adequate padding).
+7. **apple-touch class**: Every tappable element should include the `apple-touch` class for iOS-native scale-down press feedback.
+8. **3-Tier Button Hierarchy**:
+   - **Prominent (Filled Accent)**: Primary call-to-action (CTA). **Strict limit: At most 1 Prominent button per card/view** (e.g. `bg-ios-blue text-white`).
+   - **Bordered (Tonal/Outline)**: Secondary actions (e.g. `bg-ios-blue/10 text-ios-blue` or `border border-black/10 dark:border-white/10`).
+   - **Plain (Ghost/Text)**: Tertiary or cancel actions (e.g. `text-slate-400 hover:text-slate-200`).
+9. **Unified Control Height (36px / h-9)**: Action buttons, segmented controls (`IOSSegmentedControl`), header action buttons, and `<select>` dropdowns share identical `h-9 rounded-xl` for harmonious visual alignment across all tool pages.
+10. **Segmented Controls**: Segmented controls MUST expand full-width (`w-full flex-1 min-w-0`) on mobile (<640px) matching iOS 18 `UISegmentedControl`, and remain compact (`sm:w-auto`) on desktop.
+11. **Unified Component Architecture**: All tool pages MUST adhere to standard component anatomy: `IOSToolHeader` for top banners, `IOSCardHeader` for section/card headers, `IOSMetricTile` for KPI metrics, and `IOSCard` for containers. Ad-hoc hand-rolled layouts are prohibited.
 
 ## Desktop (macOS) — Key Patterns
 
@@ -92,8 +101,23 @@ For the exhaustive specification, see:
 
 After modifying any UI component:
 
-1. Run `npm run build` — must exit 0 with no TypeScript errors.
-2. Visually confirm desktop layout at 1440 × 900 and mobile at 390 × 844
-   (iPhone 15 Pro viewport).
-3. Toggle light/dark mode; verify all tokens respond correctly.
-4. Check `tabular-nums` on any numeric display by toggling values.
+1. **Automated HIG Audit**:
+   ```bash
+   python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src
+   ```
+   Ensures zero non-HIG generic shadows, zero `font-black/extrabold`, zero non-tokenized raw hex, and verified touch/control dimensions.
+2. **Contrast & Target Quick Check**:
+   ```bash
+   # Check text/background contrast (WCAG 2.1 AA/AAA)
+   python .agents/skills/apple-hig-compliance/scripts/hig_checker.py contrast "#007AFF" "#FFFFFF"
+
+   # Check touch target size (minimum 44x44pt)
+   python .agents/skills/apple-hig-compliance/scripts/hig_checker.py target 44 44
+   ```
+3. **Build & Type Check**:
+   ```bash
+   npm run build    # tsc && vite build — must exit 0
+   ```
+4. Visually confirm desktop layout at 1440 × 900 and mobile at 390 × 844 (iPhone 15 Pro viewport).
+5. Toggle light/dark mode; verify all tokens respond correctly.
+6. Check `tabular-nums` on any numeric display by toggling values.

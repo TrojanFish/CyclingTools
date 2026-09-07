@@ -160,7 +160,7 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-8.5 px-2 sm:px-3 rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between gap-1.5 sm:gap-2 flex-1 min-w-0 max-w-[195px] sm:max-w-[270px] truncate apple-touch hover:border-ios-blue focus:outline-none focus:ring-2 focus:ring-ios-blue/20 transition shadow-2xs"
+        className="h-9 px-2 sm:px-3 rounded-xl bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center justify-between gap-1.5 sm:gap-2 flex-1 min-w-0 max-w-[195px] sm:max-w-[270px] truncate apple-touch hover:border-ios-blue focus:outline-none focus:ring-2 focus:ring-ios-blue/20 transition shadow-2xs"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Share2 } from 'lucide-react';
+import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles } from 'lucide-react';
 import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -174,24 +174,16 @@ export const RoadBikeFitter: React.FC = () => {
         title="专业公路车 Fitting 尺寸拟合器"
         description="根据人体解剖学多维测量，科学推导有效上管 ETT、坐高、座舱落差、Stack/Reach、把立及锁片安装方案。"
         tint="purple"
+        onShare={handleGeneratePoster}
+        shareTitle="生成个人 Fitting 档案长图"
         actions={
-          <>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成个人 Fitting 档案长图"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>生成档案卡</span>
-            </button>
-            <button
-              onClick={handlePrint}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-            >
-              <Printer className="w-3.5 h-3.5 text-ios-purple" />
-              {language === 'zh-TW' ? '列印工單' : '打印工单'}
-            </button>
-          </>
+          <button
+            onClick={handlePrint}
+            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+          >
+            <Printer className="w-3.5 h-3.5 text-ios-purple" />
+            {language === 'zh-TW' ? '列印工單' : '打印工单'}
+          </button>
         }
       />
 

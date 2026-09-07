@@ -10,7 +10,6 @@ import {
   Star,
   Clock,
   TrendingUp,
-  Share2,
   Bookmark,
   BookmarkCheck,
   Eye,
@@ -664,6 +663,8 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             : '汇聚浙江与全国高热度实测骑行路书及欧洲环法环意传奇天路，支持交互式地图漫游、高程起伏剖面、一键导出 GPX 及与天气/爬坡工具联动。'
         }
         tint="mint"
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成社交打卡路書海報' : '生成社交打卡路书海报'}
         actions={
           <>
             <button
@@ -687,16 +688,6 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
             </label>
-
-            <button
-              type="button"
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成社交打卡路书海报"
-            >
-              <Share2 className="w-3.5 h-3.5 text-ios-mint" />
-              <span>{language === 'zh-TW' ? '生成路書海報' : '生成路书海报'}</span>
-            </button>
 
             <button
               onClick={handleExportGpx}
@@ -806,7 +797,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         {/* Left Column: Route Cards Matrix */}
         <div className="lg:col-span-5 space-y-3 max-h-[820px] overflow-y-auto pr-1">
           {filteredRoutes.length === 0 ? (
-            <div className="p-6 sm:p-8 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl text-center space-y-3 shadow-ios-sm">
+            <div className="p-4 sm:p-5 py-8 sm:py-10 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl text-center space-y-3 shadow-ios-sm">
               <Compass className="w-10 h-10 text-slate-400 mx-auto opacity-50" />
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 {'未找到符合筛选条件的路书'}
@@ -1082,7 +1073,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleExportGpx}
-                  className="apple-touch h-8.5 flex items-center gap-1.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm shadow-cyan-500/20"
+                  className="apple-touch h-9 flex items-center gap-1.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm shadow-cyan-500/20"
                 >
                   <Download className="w-3.5 h-3.5" />
                   {language === 'zh-TW' ? '下載 GPX 檔' : '下载 GPX 文件'}

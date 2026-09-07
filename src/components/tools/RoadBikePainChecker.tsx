@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, CheckSquare, Square, Search, RotateCcw, Share2, Sparkles, PersonStanding, Shield, Hand, Disc, Footprints } from 'lucide-react';
+import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, CheckSquare, Square, Search, RotateCcw, Sparkles, PersonStanding, Shield, Hand, Disc, Footprints } from 'lucide-react';
 import { PAIN_AREAS, GENERAL_RECOVERY_TIPS } from '../../data/painCheckerData';
 import { BodyPainDiagram } from '../common/BodyPainDiagram';
 import { IOSCard, IOSCardHeader } from '../common/IOSCard';
@@ -101,16 +101,8 @@ export const RoadBikePainChecker: React.FC = () => {
         title="公路车骑行疼痛排查与自诊指南"
         description="覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。"
         tint="purple"
-        actions={
-          <button
-            onClick={handleGeneratePoster}
-            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-            title="生成针对性调车自纠处方海报卡片"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>生成自诊处方卡</span>
-          </button>
-        }
+        onShare={handleGeneratePoster}
+        shareTitle="生成针对性调车自纠处方海报卡片"
       />
 
       {/* Search & Area Selection Card */}
@@ -244,9 +236,9 @@ export const RoadBikePainChecker: React.FC = () => {
                         : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-800 dark:text-slate-200 hover:border-black/10 dark:hover:border-white/15'
                     }`}
                   >
-                    <button className="mt-0.5 text-emerald-500 dark:text-emerald-400 shrink-0">
+                    <span className="mt-0.5 text-emerald-500 dark:text-emerald-400 shrink-0">
                       {isChecked ? <CheckSquare className="w-4.5 h-4.5" /> : <Square className="w-4.5 h-4.5 text-slate-400 dark:text-slate-600" />}
-                    </button>
+                    </span>
                     <p className={`text-xs leading-relaxed ${isChecked ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
                       {item}
                     </p>

@@ -182,29 +182,19 @@ export const TirePressureCalculator: React.FC = () => {
             : '综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮差异化最佳气压。'
         }
         tint="blue"
+        onShare={handleGeneratePoster}
+        shareTitle={language === 'zh-TW' ? '生成胎壓調校卡片' : '生成胎压调校卡片'}
         actions={
-          <>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成科学胎压调校海报卡片"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '生成胎壓卡片' : '生成胎压卡片'}</span>
-            </button>
-
-            {/* Apple Unit Segmented Control */}
-            <IOSSegmentedControl
-              options={[
-                { id: 'psi', label: 'PSI' },
-                { id: 'bar', label: 'BAR' },
-                { id: 'kpa', label: 'KPA' },
-              ]}
-              value={pressureUnit}
-              onChange={(val) => setPressureUnit(val as any)}
-              size="md"
-            />
-          </>
+          <IOSSegmentedControl
+            options={[
+              { id: 'psi', label: 'PSI' },
+              { id: 'bar', label: 'BAR' },
+              { id: 'kpa', label: 'KPA' },
+            ]}
+            value={pressureUnit}
+            onChange={(val) => setPressureUnit(val as any)}
+            size="md"
+          />
         }
       />
 

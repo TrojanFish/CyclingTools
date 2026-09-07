@@ -121,16 +121,19 @@ Both CSS and font-feature-settings are applied globally via `index.css`:
 | Grid gap         | `gap-4`     | `sm:gap-5`      |
 | Card padding     | `p-4`       | `sm:p-5`        |
 
-### 3.2 Component-Level Spacing
+### 3.2 Component-Level Spacing & Dimensions
 
-| Context               | Value                                   |
-| :-------------------- | :-------------------------------------- |
-| Card internal gap     | `space-y-3` or `space-y-4`              |
-| Input ↔ label gap     | `space-y-1.5`                           |
-| Button group gap      | `gap-2`                                 |
-| Inset group row pad   | `py-3 px-4` (12px × 16px)              |
-| Metric tile padding   | `p-3 sm:p-4`                            |
-| Tag / badge padding   | `px-2.5 py-0.5`                         |
+| Context               | Value                                   | Note |
+| :-------------------- | :-------------------------------------- | :--- |
+| Button & Control height | `h-9` (36px)                          | Standard Apple control height (`IOSSegmentedControl`, Buttons, Selects) |
+| Input field height    | `h-10` (40px)                           | Text & number input fields |
+| Minimum touch target  | `min-h-[44px] min-w-[44px]` (44pt)      | Apple HIG minimum physical/logical hit area |
+| Card internal gap     | `space-y-3` or `space-y-4`              | |
+| Input ↔ label gap     | `space-y-1.5`                           | |
+| Button group gap      | `gap-2`                                 | |
+| Inset group row pad   | `py-3 px-4` (12px × 16px)              | |
+| Metric tile padding   | `p-3 sm:p-4`                            | |
+| Tag / badge padding   | `px-2.5 py-0.5`                         | |
 
 ---
 

@@ -75,14 +75,17 @@
 
 ---
 
-## 7. Buttons
+## 7. Buttons & Control Hierarchy
 
-- [ ] Primary: `h-8.5 rounded-xl bg-ios-blue text-white`
-- [ ] Secondary: `h-8.5 rounded-xl bg-ios-blue/10 text-ios-blue`
-- [ ] All buttons have `apple-touch` class
-- [ ] Icon buttons: `p-1.5 rounded-full`
-- [ ] **No `h-9` or `h-10` buttons** (h-8.5 = 34 px, Apple HIG standard)
+- [ ] **3-Tier Hierarchy**: At most **1** Prominent button (accent fill) per card or tool header.
+- [ ] Prominent: `h-9 rounded-xl bg-ios-blue text-white font-medium`
+- [ ] Bordered: `h-9 rounded-xl bg-ios-blue/10 text-ios-blue font-medium` or `border border-black/10 dark:border-white/10`
+- [ ] Plain / Ghost: `h-9 px-3 rounded-xl text-slate-400 hover:text-white`
+- [ ] All action buttons have `apple-touch` class
+- [ ] Icon buttons: `p-1.5 rounded-full` (or `h-9 w-9 rounded-xl` when in control rows)
+- [ ] Standard button & control height: `h-9` (36px, Apple HIG standard control height matching `IOSSegmentedControl`)
 - [ ] **No `rounded-2xl` on buttons** — use `rounded-xl`
+- [ ] Mobile touch boundary: all interactive targets satisfy ≥ 44 × 44 pt logical hit area
 
 ---
 
@@ -192,10 +195,56 @@
 
 ---
 
+## 18. Accessibility & Color Contrast (无障碍与对比度)
+
+- [ ] Body text contrast satisfies WCAG 2.1 AA (≥ 4.5:1 against background)
+- [ ] Large text (≥ 18pt/24px) and essential UI controls satisfy ≥ 3.0:1
+- [ ] Accent color buttons (e.g. `bg-ios-blue`) use crisp white text (`text-white`)
+- [ ] All interactive icons maintain visible contrast against surface
+- [ ] Verified via `python .agents/skills/apple-hig-compliance/scripts/hig_checker.py contrast <fg> <bg>`
+
+---
+
+## 19. Sheet Detents & Tactile Feedback (抽屉高度与触觉)
+
+- [ ] Mobile bottom sheets define explicit detents:
+  - `.medium`: `max-h-[50vh]` for quick confirmations or selectors
+  - `.large`: `max-h-[90vh]` for full-featured modals / calculators
+- [ ] Drag handle pill centered at top: `w-10 h-1 rounded-full bg-slate-300 dark:bg-slate-600`
+- [ ] Interactive controls trigger tactile vibration on mobile where applicable (`triggerHaptic`)
+
+---
+
+## 20. 100-Point Apple HIG Audit Scorecard
+
+Components can be evaluated using this 100-point rubric:
+
+| Category | Weight | Key Checks |
+| :--- | :--- | :--- |
+| **Component Architecture** | 25 pts | Uses `IOSToolHeader`, `IOSCardHeader`, `IOSMetricTile`, `IOSCard`. No hand-rolled raw headers. |
+| **Typography & Numbers** | 25 pts | SF Pro font stack, max weight `font-bold` (no `font-extrabold/black`), `tabular-nums` on all metrics. |
+| **Controls & Buttons** | 25 pts | Unified `h-9 rounded-xl` (36px) height, max 1 Prominent button, `apple-touch` on all buttons, ≥44pt touch target. |
+| **Responsive & Materials** | 25 pts | Clean `sm:` (640px) split, full-width segmented controls on mobile, proper iOS shadows (`shadow-ios-card`), WCAG contrast. |
+
+### Automated Script Audit Command
+
+```bash
+# Full static codebase audit
+python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src
+
+# Quick WCAG contrast ratio calculation
+python .agents/skills/apple-hig-compliance/scripts/hig_checker.py contrast "#007AFF" "#FFFFFF"
+
+# Touch target 44pt validator
+python .agents/skills/apple-hig-compliance/scripts/hig_checker.py target 44 44
+```
+
+---
+
 ## Severity Levels
 
 | Level      | Action Required                                         |
 | :--------- | :------------------------------------------------------ |
-| 🔴 Critical | Blocks deployment — spacing, radius, or button height violations |
-| 🟡 Warning  | Should fix before next release — color token, shadow issues |
-| 🟢 Minor    | Nice to fix — hover state, transition timing tweaks     |
+| 🔴 Critical | Blocks deployment — spacing, radius, button height or font-black/extrabold violations |
+| 🟡 Warning  | Should fix before release — color token, non-HIG shadow issues |
+| 🟢 Minor    | Polish items — tactile feedback, transition timing tweaks |

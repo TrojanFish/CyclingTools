@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { MapPin, Mountain, Download, Upload, RefreshCw, Navigation, Play, Plus, Trash2, Search, ArrowRightLeft, ArrowUp, ArrowDown, FileCode, CheckCircle2, Share2 } from 'lucide-react';
+import { MapPin, Mountain, Download, Upload, RefreshCw, Navigation, Play, Plus, Trash2, Search, ArrowRightLeft, ArrowUp, ArrowDown, FileCode, CheckCircle2, X } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { useToast } from '../../context/ToastContext';
@@ -405,16 +405,10 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         title="GPX 路线规划与路书工坊"
         description="地名智能搜索、已有 GPX 导入解析、海拔剖面图联动定位与专业标准 GPX 文件导出。"
         tint="mint"
+        onShare={handleGeneratePoster}
+        shareTitle="生成航迹长图海报"
         actions={
           <>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成航迹长图海报"
-            >
-              <Share2 className="w-3.5 h-3.5 text-ios-mint shrink-0" />
-              <span>生成航迹海报</span>
-            </button>
             <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>导入 GPX</span>
@@ -509,26 +503,45 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Map Area */}
         <div className="lg:col-span-7 space-y-3.5">
-          {/* Search Bar */}
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="搜索定位地名/山峰 (如: 杭州西湖, 莫干山, 雁荡山)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearchLocation()}
-                className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue shadow-xs"
-              />
+          {/* Search Bar - Native iOS 18 Unified Search Pattern */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="搜索定位地名/山峰 (如: 杭州西湖, 莫干山, 雁荡山)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearchLocation()}
+              className="w-full h-9 bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-20 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue transition shadow-xs"
+            />
+            <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              {isSearching ? (
+                <div className="p-1 text-ios-blue pointer-events-none">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                </div>
+              ) : (
+                <>
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="w-5 h-5 rounded-full bg-slate-200/70 dark:bg-white/15 text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center transition"
+                      title="清除输入"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleSearchLocation}
+                    className="apple-touch h-7 px-2.5 rounded-lg bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-[11px] font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-2xs"
+                    title="定位所输地名"
+                  >
+                    <span>定位</span>
+                  </button>
+                </>
+              )}
             </div>
-            <button
-              onClick={handleSearchLocation}
-              disabled={isSearching}
-              className="px-3.5 py-2 bg-ios-blue hover:bg-ios-blue/90 text-white rounded-xl text-xs font-semibold shadow-ios-sm shrink-0 transition apple-touch"
-            >
-              {isSearching ? '搜索中...' : '定位'}
-            </button>
           </div>
 
           {/* Leaflet Map Canvas */}
