@@ -19,7 +19,6 @@ import {
   Gauge,
   Layers,
   BarChart3,
-  Printer,
   Cloud,
   RefreshCw,
   Battery,
@@ -971,13 +970,6 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <span>{language === 'zh-TW' ? '生成復盤海報' : '生成复盘海报'}</span>
             </button>
             <button
-              onClick={() => window.print()}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-            >
-              <Printer className="w-3.5 h-3.5 text-ios-red" />
-              <span>{language === 'zh-TW' ? '列印報告' : '打印报告'}</span>
-            </button>
-            <button
               onClick={handleLoadDemo}
               className="apple-touch h-9 px-3.5 sm:px-4 rounded-2xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
@@ -1209,7 +1201,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
           </div>
 
-          {/* Interactive Tabbed Navigation & Poster Action */}
+          {/* Interactive Tabbed Navigation */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="w-full sm:max-w-md">
               <IOSSegmentedControl
@@ -1224,14 +1216,6 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 onChange={(v) => setActiveTab(v as any)}
               />
             </div>
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch px-4 py-2.5 rounded-2xl bg-gradient-to-r from-ios-red to-orange-500 hover:opacity-95 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition shrink-0"
-              title="生成码表活动深度复盘长图海报"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>📸 {language === 'zh-TW' ? '生成深度復盤長圖' : '生成深度复盘长图'}</span>
-            </button>
           </div>
 
           {/* TAB 1: Time-Series Trends */}

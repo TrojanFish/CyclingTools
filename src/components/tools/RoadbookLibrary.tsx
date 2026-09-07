@@ -1086,15 +1086,6 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
               <div className="flex items-center gap-2">
                 <button
-                  type="button"
-                  onClick={handleGeneratePoster}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-ios-mint to-emerald-500 hover:opacity-90 text-slate-950 rounded-xl text-xs font-bold transition shadow-md shadow-emerald-500/20 apple-touch"
-                  title="生成社交打卡路书海报"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>{language === 'zh-TW' ? '生成路書長圖海報' : '生成路书长图海报'}</span>
-                </button>
-                <button
                   onClick={handleExportGpx}
                   className="flex items-center gap-1.5 px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-md shadow-cyan-500/20"
                 >

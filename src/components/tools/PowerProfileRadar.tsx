@@ -731,17 +731,6 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             </div>
           </div>
 
-          {/* Action Button: Generate Radar Share Card */}
-          <button
-            type="button"
-            onClick={handleGeneratePoster}
-            className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-red/10 via-rose-500/10 to-ios-red/10 hover:from-ios-red/20 hover:via-rose-500/20 hover:to-ios-red/20 border border-ios-red/30 text-ios-red font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition apple-touch"
-            title="生成六维能力画像与极化训练海报"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>📸 {language === 'zh-TW' ? '生成車手能力雷達戰報長圖 (高清分享)' : '生成车手能力雷达战报长图 (高清分享)'}</span>
-          </button>
-
           {/* Seiler Polarized 80/20 Table & Sweet Spot */}
           <div className="ios-card p-5 rounded-3xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <div className="flex justify-between items-center">

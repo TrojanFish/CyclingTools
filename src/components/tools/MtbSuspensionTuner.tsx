@@ -967,18 +967,6 @@ export const MtbSuspensionTuner: React.FC = () => {
         </div>
       </div>
 
-      {/* Action Button: Generate Suspension Poster */}
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={handleGeneratePoster}
-          className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-blue/10 via-indigo-500/10 to-ios-blue/10 hover:from-ios-blue/20 hover:via-indigo-500/20 hover:to-ios-blue/20 border border-ios-blue/30 text-ios-blue font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition apple-touch"
-        >
-          <Share2 className="w-4 h-4" />
-          <span>📸 {language === 'zh-TW' ? '生成山地避震調校處方卡 (長圖海報分享)' : '生成山地避震调校处方卡 (长图海报分享)'}</span>
-        </button>
-      </div>
-
       {/* Pro Dynamic SAG Graphic Ruler (SVG) */}
       <IOSCard>
         <IOSCardHeader title={language === 'zh-TW' ? '動態視覺化避震行程標尺與 O 圈狀態' : '动态可视化避震行程标尺与 O 圈状态'} />

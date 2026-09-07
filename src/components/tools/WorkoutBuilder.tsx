@@ -1000,16 +1000,6 @@ export const WorkoutBuilder: React.FC = () => {
             <div className="flex flex-wrap items-center justify-end gap-2.5 pt-2">
               <button
                 type="button"
-                onClick={handleGeneratePoster}
-                className="apple-touch px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition"
-                title="生成间歇结构课表海报卡片"
-              >
-                <Share2 className="w-3.5 h-3.5 text-ios-red" />
-                <span>生成课表海报</span>
-              </button>
-
-              <button
-                type="button"
                 onClick={handleDownloadFile}
                 className="apple-touch px-5 py-2 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm flex items-center gap-2 transition"
               >

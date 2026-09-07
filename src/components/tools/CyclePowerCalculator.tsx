@@ -757,16 +757,6 @@ export const CyclePowerCalculator: React.FC = () => {
             </span>
           </div>
 
-          {/* Direct Share Card Action Button */}
-          <button
-            type="button"
-            onClick={handleGeneratePoster}
-            className="w-full apple-touch py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-blue to-blue-600 hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-[0.98]"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>{language === 'zh-TW' ? '📸 生成騎行動力學戰報卡片 (長圖海報分享)' : '📸 生成骑行动力学战报卡片 (长图海报分享)'}</span>
-          </button>
-
           {/* VAM Climbing Estimator Card */}
           <div className="p-5 rounded-3xl border border-ios-blue/20 bg-ios-blue/[0.04] dark:bg-ios-blue/[0.08] backdrop-blur-xl space-y-4 shadow-ios-sm">
             <div className="flex items-center justify-between">

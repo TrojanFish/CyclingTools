@@ -486,17 +486,6 @@ export const RoadBikeFitter: React.FC = () => {
               </div>
             </div>
           </IOSCard>
-
-          {/* Action Button: Generate Fitter Share Card */}
-          <button
-            type="button"
-            onClick={handleGeneratePoster}
-            className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-purple/10 via-pink-500/10 to-ios-purple/10 hover:from-ios-purple/20 hover:via-pink-500/20 hover:to-ios-purple/20 border border-ios-purple/30 text-ios-purple font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-2 transition apple-touch"
-            title="生成公路车几何与设定处方笺海报"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>📸 {language === 'zh-TW' ? '生成專業 Fitting 幾何處方箋 (長圖分享)' : '生成专业 Fitting 几何处方笺 (长图分享)'}</span>
-          </button>
         </div>
       </div>
 

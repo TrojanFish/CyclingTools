@@ -575,16 +575,6 @@ export const TirePressureCalculator: React.FC = () => {
             </IOSCard>
           </div>
 
-          {/* Direct Share Card Action Button */}
-          <button
-            type="button"
-            onClick={handleGeneratePoster}
-            className="w-full apple-touch py-3 px-4 rounded-2xl bg-gradient-to-r from-ios-blue to-blue-600 hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center justify-center gap-2 transition active:scale-[0.98]"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>📸 生成科学胎压高清卡片 (长图海报分享)</span>
-          </button>
-
           {/* Tips and Explanation Box */}
           <IOSCard variant="default" className="p-6 space-y-4">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
