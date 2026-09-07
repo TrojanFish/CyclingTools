@@ -1073,13 +1073,16 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         <div className="ios-card p-6 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Gauge className="w-4 h-4 text-ios-blue" />
+              <Gauge className="w-4 h-4 text-ios-red" />
               {'车手基准生理参数'}
             </span>
-            <span className="text-[10px] text-slate-400">{'用于推算 IF/TSS'}</span>
+            <span className="text-[10px] text-slate-400 flex items-center gap-1">
+              <span>{language === 'zh-TW' ? '檔案體重' : '档案体重'}</span>
+              <span className="font-mono font-semibold text-slate-700 dark:text-slate-200">{weightKg} kg</span>
+            </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] text-slate-500 block mb-1">FTP (W)</label>
               <NumberStepper
@@ -1094,22 +1097,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
             <div>
               <label className="text-[10px] text-slate-500 block mb-1">
-                {'体重 (kg)'}
-              </label>
-              <NumberStepper
-                value={weightKg}
-                onChange={setWeightKg}
-                min={30}
-                max={160}
-                step={0.5}
-                unit="kg"
-                decimals={1}
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] text-slate-500 block mb-1">
-                {'最大心率'}
+                {language === 'zh-TW' ? '最大心率 (bpm)' : '最大心率 (bpm)'}
               </label>
               <NumberStepper
                 value={maxHr}
@@ -1124,7 +1112,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           <button
             onClick={handleProfileRecompute}
-            className="w-full py-2 rounded-2xl bg-slate-100/80 dark:bg-white/10 hover:bg-ios-blue/10 hover:text-ios-blue text-slate-700 dark:text-slate-300 text-xs font-semibold transition apple-touch flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-2xl bg-slate-100/80 dark:bg-white/10 hover:bg-ios-red/10 hover:text-ios-red text-slate-700 dark:text-slate-300 text-xs font-semibold transition apple-touch flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '更新分析' : '更新分析'}</span>

@@ -390,7 +390,7 @@ export const TirePressureCalculator: React.FC = () => {
             </div>
 
             {/* Dimensions & Hookless toggle */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">标称胎宽 (mm)</label>
                 <select
