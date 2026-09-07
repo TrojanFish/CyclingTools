@@ -113,7 +113,7 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
         {(actions || onShare) && (
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-start md:self-auto w-full md:w-auto">
             {actions && (
-              <div className="flex-1 md:flex-initial min-w-0 w-full md:w-auto">
+              <div className="flex-1 md:flex-initial min-w-0 w-full md:w-auto flex flex-wrap items-center gap-2.5 sm:gap-3">
                 {actions}
               </div>
             )}

@@ -154,11 +154,7 @@ export const ChainLengthCalculator: React.FC = () => {
         tint="blue"
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成截鏈規範海報' : '生成截链规范海报'}
-      />
-
-      {/* Preset Buttons */}
-      <IOSCard variant="default" className="p-2.5 sm:p-3">
-        <div className="w-full">
+        actions={
           <IOSSegmentedControl
             options={[
               { value: 'compact_34', label: '公路 50/34T' },
@@ -168,10 +164,10 @@ export const ChainLengthCalculator: React.FC = () => {
             ]}
             value={activePreset || ''}
             onChange={(val) => loadPreset(val)}
-            size="sm"
+            size="md"
           />
-        </div>
-      </IOSCard>
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs (macOS Inspector) */}

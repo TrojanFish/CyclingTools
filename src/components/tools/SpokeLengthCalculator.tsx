@@ -29,6 +29,7 @@ export const SpokeLengthCalculator: React.FC = () => {
   // Wheel Architecture Type
   const [wheelPosition, setWheelPosition] = useState<'rear' | 'front'>('rear');
   const [brakeType, setBrakeType] = useState<'disc' | 'rim'>('disc');
+  const [activePreset, setActivePreset] = useState<string>('dt350_rear_50');
 
   // Rim Parameters
   const [erdMm, setErdMm] = useState<number>(540); // 50mm carbon rim standard
@@ -253,22 +254,20 @@ export const SpokeLengthCalculator: React.FC = () => {
         }
         tint="blue"
         actions={
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 self-start sm:self-center shrink-0">
-            {[
-              { id: 'dt350_rear_50', label: 'DT350 后轮' },
-              { id: 'dt350_front_50', label: 'DT350 前轮' },
-              { id: 'gravel_asym_45', label: '偏心圈' },
-              { id: 'mtb_29_xc', label: '山地 3X' },
-            ].map((p) => (
-              <button
-                key={p.id}
-                onClick={() => applyPreset(p.id as any)}
-                className="apple-touch h-9 px-3 sm:px-3.5 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-ios-blue/10 dark:hover:bg-ios-blue/20 hover:text-ios-blue hover:border-ios-blue/30 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center whitespace-nowrap shrink-0"
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
+          <IOSSegmentedControl
+            options={[
+              { value: 'dt350_rear_50', label: language === 'zh-TW' ? 'DT350 後輪' : 'DT350 后轮' },
+              { value: 'dt350_front_50', label: language === 'zh-TW' ? 'DT350 前輪' : 'DT350 前轮' },
+              { value: 'gravel_asym_45', label: '偏心圈' },
+              { value: 'mtb_29_xc', label: language === 'zh-TW' ? '山地 3X' : '山地 3X' },
+            ]}
+            value={activePreset}
+            onChange={(val) => {
+              setActivePreset(val);
+              applyPreset(val as any);
+            }}
+            size="md"
+          />
         }
       />
 

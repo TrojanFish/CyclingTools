@@ -375,7 +375,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
             <button
               onClick={resetToDefaults}
-              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 w-full sm:w-auto"
             >
               <RotateCcw className="w-3.5 h-3.5 text-ios-blue" />
               <span>重置预设</span>
