@@ -36,7 +36,7 @@ import { ArrowLeft, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('dynamics');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -128,7 +128,7 @@ const MainAppContent: React.FC = () => {
         tool.tags.some(tag => tag.toLowerCase().includes(q)) ||
         (tool.tagsTw && tool.tagsTw.some(tag => tag.toLowerCase().includes(q)));
 
-      return matchCat && matchSearch;
+      return matchSearch;
     });
   }, [selectedCategory, searchTerm]);
 

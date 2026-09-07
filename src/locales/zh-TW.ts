@@ -58,7 +58,7 @@ export const zhTW = {
 
   // Dashboard
   heroTitle: '現代專業數據驅動單車科學工具站',
-  heroSubtitle: '基於經典物理力學、生物力學與運動生理學模型，涵蓋動力學模擬、科學 Fitting、戰術氣象、無內胎與碼表復盤 17 大核心工具。',
+  heroSubtitle: '基於經典物理力學、生物力學與運動生理學模型，涵蓋動力學模擬、科學 Fitting、戰術氣象、無內胎與碼表復盤 19 大核心工具。',
   featuredTools: '核心精選工具矩陣',
   searchResultCount: '共找到 {count} 個相關工具'
 };

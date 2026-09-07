@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Download, Copy, Check, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
@@ -23,6 +23,34 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
 }) => {
   const { showToast } = useToast();
   const [hasCopied, setHasCopied] = useState(false);
+
+  // iOS Pull-Down to Dismiss Gesture State
+  const [dragY, setDragY] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const touchStartY = useRef<number>(0);
+  const currentDragY = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const deltaY = e.touches[0].clientY - touchStartY.current;
+    if (deltaY > 0) {
+      currentDragY.current = deltaY;
+      setDragY(deltaY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    if (currentDragY.current > 75) {
+      onClose();
+    }
+    setDragY(0);
+    currentDragY.current = 0;
+  };
 
   const finalImageUrl = imageUrl || posterUrl;
   const finalFileName = downloadFileName || fileName || 'SoloRider_ShareCard.png';
@@ -68,17 +96,35 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] flex flex-col bg-white dark:bg-[#1C1C1E] border-t sm:border border-slate-200/80 dark:border-white/10 rounded-t-[28px] sm:rounded-2xl shadow-ios-popover overflow-hidden text-slate-900 dark:text-white isolate animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0">
+      <div
+        style={{
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.32, 0.72, 0, 1)'
+        }}
+        className="relative w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] flex flex-col bg-white dark:bg-[#1C1C1E] border-t sm:border border-slate-200/80 dark:border-white/10 rounded-t-[28px] sm:rounded-2xl shadow-ios-popover overflow-hidden text-slate-900 dark:text-white isolate animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0"
+      >
         {/* iOS Presentation Detent Drag Indicator (Mobile only) */}
-        <div className="sm:hidden w-10 h-1.5 rounded-full bg-black/15 dark:bg-white/20 mx-auto mt-2 mb-1 shrink-0" />
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="sm:hidden w-full pt-2.5 pb-2 flex items-center justify-center touch-none cursor-grab active:cursor-grabbing select-none"
+        >
+          <div className="w-10 h-1.5 rounded-full bg-black/20 dark:bg-white/30" />
+        </div>
 
         {/* Ambient Top Glow */}
         <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-40 bg-ios-blue/10 dark:bg-ios-blue/25 blur-3xl rounded-full" />
 
         {/* Modal Header */}
-        <div className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/90 backdrop-blur-md">
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/90 backdrop-blur-md select-none touch-none sm:touch-auto"
+        >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/15 border border-ios-blue/20 dark:border-ios-blue/30 text-ios-blue flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-ios-blue" />

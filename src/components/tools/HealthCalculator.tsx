@@ -209,7 +209,7 @@ export const HealthCalculator: React.FC = () => {
   }, [weightKg, heightCm, age, gender]);
 
   return (
-    <div className="space-y-5 max-w-6xl mx-auto pb-12">
+    <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '運動生理學與能量代謝' : '运动生理学与能量代谢'}

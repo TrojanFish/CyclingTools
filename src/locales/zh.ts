@@ -58,7 +58,7 @@ export const zh = {
 
   // Dashboard
   heroTitle: '现代专业数据驱动骑行工具站',
-  heroSubtitle: '基于经典物理力学、生物力学与运动生理学模型，涵盖动力学仿真、科学 Fitting、战术气象、真空胎与码表复盘 17 大硬核工具。',
+  heroSubtitle: '基于经典物理力学、生物力学与运动生理学模型，涵盖动力学仿真、科学 Fitting、战术气象、真空胎与码表复盘 19 大硬核工具。',
   featuredTools: '核心精选工具矩阵',
   searchResultCount: '共找到 {count} 个相关工具'
 };

@@ -99,7 +99,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { language, t } = useLanguageAndUnit();
 
   const categoryOptions = [
-    { id: 'all', label: language === 'zh-TW' ? `全部 (${TOOLS_LIST.length})` : `全部 (${TOOLS_LIST.length})` },
     { id: 'dynamics', icon: Zap, label: language === 'zh-TW' ? '動力傳動' : '动力传动' },
     { id: 'fitting', icon: Ruler, label: 'Fitting' },
     { id: 'route', icon: MapPin, label: language === 'zh-TW' ? '路線氣象' : '路线气象' },
@@ -204,7 +203,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <button
             onClick={() => {
               setSearchTerm('');
-              setSelectedCategory('all');
+              setSelectedCategory('dynamics');
             }}
             className="h-9 px-4 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:opacity-90 active:scale-95 transition apple-touch"
           >
