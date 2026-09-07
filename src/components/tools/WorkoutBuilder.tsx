@@ -26,6 +26,7 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { Tooltip } from '../common/Tooltip';
@@ -506,28 +507,19 @@ export const WorkoutBuilder: React.FC = () => {
 
   return (
     <div className="space-y-5">
-      {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold mb-1.5">
-              <Dumbbell className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '結構化間歇課表工坊' : '结构化间歇课表工坊'}</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight font-display">
-              {language === 'zh-TW' ? '科學間歇訓練課表工坊 (Workout Builder)' : '科学间歇训练课表工坊 (Workout Builder)'}
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-2xl">
-              内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，一键无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '結構化間歇課表工坊' : '结构化间歇课表工坊'}
+        categoryIcon={Dumbbell}
+        title={language === 'zh-TW' ? '科學間歇訓練課表工坊 (Workout Builder)' : '科学间歇训练课表工坊 (Workout Builder)'}
+        description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，一键无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
+        tint="red"
+        actions={
+          <>
             <button
               type="button"
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
               title="生成社交分享课表海报"
             >
               <Share2 className="w-3.5 h-3.5 text-ios-red" />
@@ -537,14 +529,14 @@ export const WorkoutBuilder: React.FC = () => {
             <button
               type="button"
               onClick={() => setExportModalOpen(true)}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span>导出课表 (ZWO / MRC)</span>
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Physiological Anchors Bar */}
       <div className="ios-card p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card flex flex-wrap items-center justify-between gap-3.5">
@@ -967,7 +959,7 @@ export const WorkoutBuilder: React.FC = () => {
             </div>
 
             {/* Format Selector */}
-            <div className="max-w-xs">
+            <div className="w-full sm:max-w-xs">
               <IOSSegmentedControl
                 options={[
                   { value: 'zwo', label: 'Zwift (.ZWO XML)' },

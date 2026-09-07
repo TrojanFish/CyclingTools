@@ -51,6 +51,11 @@ a shared component, or a minor layout tweak—**must** follow the rules below.
    (use `min-h-[44px] min-w-[44px]` when needed).
 7. **apple-touch class**: Every tappable element should include the `apple-touch`
    class for the scale-down press feedback.
+8. **Segmented Controls**: Segmented controls MUST expand full-width (`w-full flex-1 min-w-0`)
+   on mobile (<640px) to match iOS 18 `UISegmentedControl`, and remain compact (`sm:w-auto`) on desktop.
+9. **Unified Component Architecture**: All tool pages MUST adhere to the standardized
+   component anatomy: `IOSToolHeader` for top banners, `IOSCardHeader` for section/card headers,
+   `IOSMetricTile` for KPI metrics, and `IOSCard` for containers. Ad-hoc hand-rolled layouts are prohibited.
 
 ## Desktop (macOS) — Key Patterns
 

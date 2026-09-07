@@ -14,7 +14,8 @@ import {
   Filler,
 } from 'chart.js';
 import { NumberStepper } from '../common/NumberStepper';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateClimbPacingPoster } from '../../utils/shareCardGenerators';
@@ -607,29 +608,22 @@ export const ClimbPacingPlanner: React.FC = () => {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
-              <Mountain className="w-3 h-3" />
-              {language === 'zh-TW' ? '爬坡體能分配與動力學模擬' : '爬坡体能分配与动力学仿真'}
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              {language === 'zh-TW' ? '爬坡路段分段配速與功率規劃器' : '爬坡路段分段配速与功率规划器'}
-            </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
-              {language === 'zh-TW'
-                ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗时與體能負荷。'
-                : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '爬坡體能分配與動力學模擬' : '爬坡体能分配与动力学仿真'}
+        categoryIcon={Mountain}
+        title={language === 'zh-TW' ? '爬坡路段分段配速與功率規劃器' : '爬坡路段分段配速与功率规划器'}
+        description={
+          language === 'zh-TW'
+            ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗时與體能負荷。'
+            : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'
+        }
+        tint="blue"
+        actions={
+          <>
             <button
               onClick={handleOpenStravaSegments}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="从 Strava 检索赛段 (KOM / Starred) 并导入"
             >
               <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
@@ -638,7 +632,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               <span>{language === 'zh-TW' ? 'Strava 賽段' : 'Strava 赛段'}</span>
             </button>
 
-            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-blue shrink-0" />
               <span className="hidden sm:inline">{language === 'zh-TW' ? '匯入 GPX 爬坡路線' : '导入 GPX 爬坡路线'}</span>
               <span className="sm:hidden">{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
@@ -647,15 +641,15 @@ export const ClimbPacingPlanner: React.FC = () => {
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成名山爬坡攻坚与分段配速海报卡片"
             >
               <Share2 className="w-3.5 h-3.5 shrink-0" />
               <span>{language === 'zh-TW' ? '生成配速海報' : '生成配速海报'}</span>
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Preset Mountains & Route Upload Bar */}
       <div className="ios-card p-3 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-2.5 shadow-ios-card">
@@ -751,11 +745,12 @@ export const ClimbPacingPlanner: React.FC = () => {
         {/* Left Inputs & Segments */}
         <div className="lg:col-span-5 space-y-4">
           {/* Rider Parameters */}
-          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Zap className="w-4 h-4 text-ios-blue" />
-              {language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
-            </h2>
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '車手功率與爬坡攻堅策略' : '车手功率与爬坡攻坚策略'}
+              icon={Zap}
+              iconColor="blue"
+            />
 
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -795,23 +790,24 @@ export const ClimbPacingPlanner: React.FC = () => {
                 onChange={(v) => setPacingStrategy(v as any)}
               />
             </div>
-          </div>
+          </IOSCard>
 
           {/* Segments Editor */}
-          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Mountain className="w-4 h-4 text-ios-blue" />
-                {language === 'zh-TW' ? `爬坡路段分段拆解 (${segments.length} 個分段)` : `爬坡路段分段拆解 (${segments.length} 个分段)`}
-              </h2>
-              <button
-                onClick={addSegment}
-                className="apple-touch flex items-center gap-1 text-xs text-ios-blue hover:opacity-80 font-semibold"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                {language === 'zh-TW' ? '添加分段' : '添加分段'}
-              </button>
-            </div>
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? `爬坡路段分段拆解 (${segments.length} 個分段)` : `爬坡路段分段拆解 (${segments.length} 个分段)`}
+              icon={Mountain}
+              iconColor="blue"
+              action={
+                <button
+                  onClick={addSegment}
+                  className="apple-touch flex items-center gap-1 text-xs text-ios-blue hover:opacity-80 font-semibold"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  {language === 'zh-TW' ? '添加分段' : '添加分段'}
+                </button>
+              }
+            />
 
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
               {segments.map((seg, idx) => (
@@ -878,22 +874,19 @@ export const ClimbPacingPlanner: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Output & Pacing Blueprint */}
         <div className="lg:col-span-7 space-y-4">
           {/* Visual Chart: Elevation Profile & Target Watts */}
-          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-ios-blue" />
-                {language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
-              </span>
-              <span className="text-slate-400 dark:text-slate-500 text-[10px]">
-                {'*双坐标轴动态拟合'}
-              </span>
-            </div>
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
+              icon={TrendingUp}
+              iconColor="blue"
+              action={<span className="text-slate-400 dark:text-slate-500 text-[10px]">*双坐标轴动态拟合</span>}
+            />
 
             <div className="h-52">
               <Line
@@ -921,7 +914,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                 }}
               />
             </div>
-          </div>
+          </IOSCard>
 
           {/* Steep Slope Low-Cadence Torque Alert */}
           {planResults.hasSteepTorqueHazard && (
@@ -944,10 +937,12 @@ export const ClimbPacingPlanner: React.FC = () => {
           )}
 
           {/* Segment Details Table */}
-          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
-            <h3 className="text-xs font-bold text-slate-900 dark:text-white">
-              {language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
-            </h3>
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
+              icon={Activity}
+              iconColor="blue"
+            />
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
                 <thead>
@@ -989,7 +984,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </IOSCard>
         </div>
       </div>
 

@@ -16,6 +16,7 @@ import {
   Layers
 } from 'lucide-react';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -182,41 +183,31 @@ export const TubelessSealantCalculator: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold">
-              <Droplets className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '無內胎系統工程與養護' : '真空胎系统工程与养护'}</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
-              {language === 'zh-TW' ? '無內胎自補液加注量與週期計算器' : '真空胎自补液加注量与补液周期计算器'}
-            </h1>
-            <p className="text-xs text-slate-600 dark:text-slate-300 max-w-2xl mt-0.5">
-              {language === 'zh-TW'
-                ? '基於外胎環面 (Torus) 幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'
-                : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量。'}
-            </p>
-          </div>
-
-          {/* Quick Presets Capsule */}
-          <div className="w-full sm:w-auto self-start sm:self-center shrink-0">
-            <IOSSegmentedControl
-              options={[
-                { value: 'road28', label: language === 'zh-TW' ? '公路 28c' : '公路 28c' },
-                { value: 'road32', label: language === 'zh-TW' ? '全路況 32c' : '全路况 32c' },
-                { value: 'gravel40', label: 'Gravel 40c' },
-                { value: 'mtb225', label: language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"' },
-              ]}
-              value={activePreset || ''}
-              onChange={(val) => handlePreset(val as any)}
-              size="sm"
-            />
-          </div>
-        </div>
-      </IOSCard>
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '無內胎系統工程與養護' : '真空胎系统工程与养护'}
+        categoryIcon={Droplets}
+        title={language === 'zh-TW' ? '無內胎自補液加注量與週期計算器' : '真空胎自补液加注量与补液周期计算器'}
+        description={
+          language === 'zh-TW'
+            ? '基於外胎環面 (Torus) 幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'
+            : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量。'
+        }
+        tint="blue"
+        actions={
+          <IOSSegmentedControl
+            options={[
+              { value: 'road28', label: language === 'zh-TW' ? '公路 28c' : '公路 28c' },
+              { value: 'road32', label: language === 'zh-TW' ? '全路況 32c' : '全路况 32c' },
+              { value: 'gravel40', label: 'Gravel 40c' },
+              { value: 'mtb225', label: language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"' },
+            ]}
+            value={activePreset || ''}
+            onChange={(val) => handlePreset(val as any)}
+            size="md"
+          />
+        }
+      />
 
       {/* Hero Metric Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -428,7 +419,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <select
                   value={sealantType}
                   onChange={(e) => setSealantType(e.target.value as any)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
+                  className="w-full h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
                 >
                   <option value="latex">{language === 'zh-TW' ? "天然水基乳膠 (Stan's / Orange Regular / 經典款)" : "天然水基乳胶 (Stan's / Orange Regular / 经典款)"}</option>
                   <option value="endurance">{language === 'zh-TW' ? '微粒纖維強化長效版 (Orange Seal Endurance / Muc-Off)' : '微粒纤维强化长效版 (Orange Seal Endurance / Muc-Off)'}</option>
@@ -443,7 +434,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                 <select
                   value={rideFrequency}
                   onChange={(e) => setRideFrequency(e.target.value as any)}
-                  className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-2xl px-3 py-2 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
+                  className="w-full h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
                 >
                   <option value="frequent">{language === 'zh-TW' ? '高頻騎行 (每週 2-4 次，液體均勻附著流動)' : '高频骑行 (每周 2-4 次，液体均匀附着流动)'}</option>
                   <option value="occasional">{language === 'zh-TW' ? '中頻騎行 (雙週 1 次，偶爾停放)' : '中频骑行 (双周 1 次，偶尔停放)'}</option>

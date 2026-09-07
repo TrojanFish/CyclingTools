@@ -3,6 +3,7 @@ import { Activity, ShieldAlert, CheckCircle2, Wrench, Heart, CheckSquare, Square
 import { PAIN_AREAS, GENERAL_RECOVERY_TIPS } from '../../data/painCheckerData';
 import { BodyPainDiagram } from '../common/BodyPainDiagram';
 import { IOSCard, IOSCardHeader } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generatePainCheckPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
@@ -92,42 +93,37 @@ export const RoadBikePainChecker: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
-      {/* Top Header */}
-      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-purple/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-purple/10 border border-ios-purple/20 text-ios-purple text-[11px] font-semibold mb-1.5">
-              <Activity className="w-3 h-3" />
-              骑行运动医学与 Fitting 诊断
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">公路车骑行疼痛排查与自诊指南</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
-              覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。
-            </p>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="生成针对性调车自纠处方海报卡片"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>生成自诊处方卡</span>
-            </button>
-          </div>
-        </div>
+    <div className="space-y-4 sm:space-y-5">
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category="骑行运动医学与 Fitting 诊断"
+        categoryIcon={Activity}
+        title="公路车骑行疼痛排查与自诊指南"
+        description="覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。"
+        tint="purple"
+        actions={
+          <button
+            onClick={handleGeneratePoster}
+            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-purple hover:bg-ios-purple/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+            title="生成针对性调车自纠处方海报卡片"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            <span>生成自诊处方卡</span>
+          </button>
+        }
+      />
 
+      {/* Search & Area Selection Card */}
+      <IOSCard variant="default" className="space-y-3.5">
         {/* Apple Spotlight Search Input */}
-        <div className="relative mt-4">
+        <div className="relative">
           <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="搜索不适关键词快速定位 (如: 髌骨, 膝前痛, 手麻, 会阴, 锁片, 塌腰)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-8.5 pr-4 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"
+            className="w-full h-9 bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-8.5 pr-4 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"
           />
           {searchQuery && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-ios-purple font-mono">
@@ -137,7 +133,7 @@ export const RoadBikePainChecker: React.FC = () => {
         </div>
 
         {/* Body Area Navigation Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mt-3.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 pt-0.5">
           {Object.entries(PAIN_AREAS).map(([key, item]) => {
             const isMatch = matchingAreaIds.includes(key);
             const isSelected = selectedAreaId === key;

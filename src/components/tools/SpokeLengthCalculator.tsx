@@ -20,6 +20,7 @@ import { useToast } from '../../context/ToastContext';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 
 export const SpokeLengthCalculator: React.FC = () => {
   const { language, unitSystem } = useLanguageAndUnit();
@@ -240,26 +241,18 @@ export const SpokeLengthCalculator: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold">
-              <Disc className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '技師級編輪幾何學' : '技师级编轮几何学'}</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
-              {language === 'zh-TW' ? '單車編輪與輻條長度計算器' : '自行车编轮与辐条长度计算器'}
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl mt-0.5">
-              {language === 'zh-TW'
-                ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
-                : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧 (DS) 与非驱动侧 (NDS) 毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'}
-            </p>
-          </div>
-
-          {/* Preset Buttons */}
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '技師級編輪幾何學' : '技师级编轮几何学'}
+        categoryIcon={Disc}
+        title={language === 'zh-TW' ? '單車編輪與輻條長度計算器' : '自行车编轮与辐条长度计算器'}
+        description={
+          language === 'zh-TW'
+            ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
+            : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧 (DS) 与非驱动侧 (NDS) 毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'
+        }
+        tint="blue"
+        actions={
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 self-start sm:self-center shrink-0">
             {[
               { id: 'dt350_rear_50', label: 'DT350 后轮' },
@@ -270,14 +263,14 @@ export const SpokeLengthCalculator: React.FC = () => {
               <button
                 key={p.id}
                 onClick={() => applyPreset(p.id as any)}
-                className="apple-touch h-8.5 px-2.5 sm:px-3 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-ios-blue/10 dark:hover:bg-ios-blue/20 hover:text-ios-blue hover:border-ios-blue/30 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center whitespace-nowrap shrink-0"
+                className="apple-touch h-9 px-3 sm:px-3.5 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-ios-blue/10 dark:hover:bg-ios-blue/20 hover:text-ios-blue hover:border-ios-blue/30 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center whitespace-nowrap shrink-0"
               >
                 {p.label}
               </button>
             ))}
           </div>
-        </div>
-      </IOSCard>
+        }
+      />
 
       {/* Safety Warnings Banner (If any) */}
       {result.warnings.length > 0 && (
@@ -391,7 +384,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                 <select
                   value={spokeCount}
                   onChange={(e) => setSpokeCount(Number(e.target.value))}
-                  className="w-full bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-xl px-3 py-2 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:border-ios-blue"
+                  className="w-full h-9 bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-xl px-3 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:border-ios-blue"
                 >
                   <option value={16}>16 孔 (TT/前轮超轻)</option>
                   <option value={20}>20 孔 (圈刹标准前轮)</option>
@@ -518,7 +511,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   <select
                     value={leftCross}
                     onChange={(e) => setLeftCross(Number(e.target.value))}
-                    className="w-full bg-white dark:bg-[#1C1C1E] border border-black/[0.08] dark:border-white/[0.12] rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
+                    className="w-full h-9 bg-white dark:bg-[#1C1C1E] border border-black/[0.08] dark:border-white/[0.12] rounded-xl px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                   >
                     <option value={0}>0X (直拉/放射状 Radial)</option>
                     <option value={1}>1X (1交叉)</option>
@@ -573,7 +566,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   <select
                     value={rightCross}
                     onChange={(e) => setRightCross(Number(e.target.value))}
-                    className="w-full bg-white dark:bg-[#1C1C1E] border border-black/[0.08] dark:border-white/[0.12] rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
+                    className="w-full h-9 bg-white dark:bg-[#1C1C1E] border border-black/[0.08] dark:border-white/[0.12] rounded-xl px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                   >
                     <option value={0}>0X (直拉/放射状 Radial)</option>
                     <option value={1}>1X (1交叉)</option>

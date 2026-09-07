@@ -5,6 +5,7 @@ import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateGearSpeedPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
@@ -201,27 +202,18 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
-              <Cog className="w-3.5 h-3.5" />
-              <span>传动比与踏频动力学</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
-              齿比-速度-踏频多功能计算器
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
-              全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category="传动比与踏频动力学"
+        categoryIcon={Cog}
+        title="齿比-速度-踏频多功能计算器"
+        description="全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。"
+        tint="blue"
+        actions={
+          <>
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成齿比与踏频速度海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -238,12 +230,12 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                 ]}
                 value={activeTab}
                 onChange={(val) => setActiveTab(val as any)}
-                size="sm"
+                size="md"
               />
             </div>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Inputs & Presets */}
       <IOSCard variant="default" className="space-y-5">

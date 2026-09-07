@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CloudSun, Wind, Navigation, AlertTriangle, Droplets, Sun, Compass, Play, ArrowRight, ShieldCheck, Thermometer, MapPin, Download, Upload, AlertCircle, Clock, CheckCircle2 } from 'lucide-react';
 import L from 'leaflet';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { NumberStepper } from '../common/NumberStepper';
 import { ZHEJIANG_XINGZHE_ROUTES } from '../../data/zhejiangRoutes';
 import { useToast } from '../../context/ToastContext';
@@ -336,22 +337,16 @@ export const CyclingWeatherAdvisor: React.FC = () => {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold mb-1.5">
-              <CloudSun className="w-3 h-3" />
-              高精度气象与风向研判
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">骑行天气与路线气象顾问</h1>
-            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
-              结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category="高精度气象与风向研判"
+        categoryIcon={CloudSun}
+        title="骑行天气与路线气象顾问"
+        description="结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。"
+        tint="mint"
+        actions={
+          <>
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint" />
               <span>导入 GPX / TCX 路线</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleGpxUpload} className="hidden" />
@@ -360,14 +355,14 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             <button
               onClick={fetchWeatherAdvice}
               disabled={isLoading}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-xl font-bold text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               {isLoading ? '正在获取沿途气象...' : '生成全路段天气顾问'}
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Hero Weather Metric Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -404,16 +399,17 @@ export const CyclingWeatherAdvisor: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Inputs & Map */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
-            <div className="flex justify-between items-center">
-              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Compass className="w-4 h-4 text-ios-blue" />
-                路线与出发参数
-              </h2>
-              <span className="text-xs text-ios-blue font-mono font-medium truncate max-w-[180px]" title={customRouteName}>
-                {customRouteName}
-              </span>
-            </div>
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+            <IOSCardHeader
+              title="路线与出发参数"
+              icon={Compass}
+              iconColor="blue"
+              action={
+                <span className="text-xs text-ios-blue font-mono font-medium truncate max-w-[140px] sm:max-w-[180px]" title={customRouteName}>
+                  {customRouteName}
+                </span>
+              }
+            />
 
             {/* Departure Time & Speed */}
             <div className="grid grid-cols-2 gap-3">
@@ -484,7 +480,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
               </div>
               <div ref={mapContainerRef} className="w-full h-72 rounded-xl border border-slate-200/80 dark:border-white/10 shadow-inner overflow-hidden"></div>
             </div>
-          </div>
+          </IOSCard>
         </div>
 
         {/* Right Segment Weather Details */}

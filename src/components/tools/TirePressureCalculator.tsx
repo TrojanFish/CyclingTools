@@ -3,7 +3,8 @@ import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User } from 'lucide-
 import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/tirePressureConfig';
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
-import { IOSCard } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { ShareCardModal } from '../common/ShareCardModal';
@@ -170,28 +171,22 @@ export const TirePressureCalculator: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
-              <Gauge className="w-3.5 h-3.5" />
-              <span>滚阻与形变算法</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
-              {language === 'zh-TW' ? '公路/全地形智能胎壓計算器' : '公路/全地形智能胎压计算器'}
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
-              {language === 'zh-TW'
-                ? '綜合車手體重、無內胎結構、實測胎寬與路面狀況，精準計算前後輪差異化最佳胎壓。'
-                : '综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮差异化最佳气压。'}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '滾阻與形變算法' : '滚阻与形变算法'}
+        categoryIcon={Gauge}
+        title={language === 'zh-TW' ? '公路/全地形智能胎壓計算器' : '公路/全地形智能胎压计算器'}
+        description={
+          language === 'zh-TW'
+            ? '綜合車手體重、無內胎結構、實測胎寬與路面狀況，精準計算前後輪差異化最佳胎壓。'
+            : '综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮差异化最佳气压。'
+        }
+        tint="blue"
+        actions={
+          <>
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成科学胎压调校海报卡片"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -207,20 +202,22 @@ export const TirePressureCalculator: React.FC = () => {
               ]}
               value={pressureUnit}
               onChange={(val) => setPressureUnit(val as any)}
-              size="sm"
+              size="md"
             />
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs */}
         <div className="lg:col-span-6 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="space-y-5">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-ios-blue" />
-              车辆与骑行参数
-            </h2>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '車輛與騎行參數' : '车辆与骑行参数'}
+              subtitle={language === 'zh-TW' ? '車型、重量與輪胎結構' : '车型、重量与轮胎结构'}
+              icon={Layers}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+            />
 
             {/* Bike Type Selector */}
             <div>
@@ -404,7 +401,7 @@ export const TirePressureCalculator: React.FC = () => {
                     setNominalWidth(w);
                     setActualWidth(w + 1);
                   }}
-                  className="w-full bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
+                  className="w-full h-9 bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                 >
                   {[23, 25, 28, 30, 32, 35, 38, 40, 42, 45, 50, 54].map((w) => (
                     <option key={w} value={w}>{w}c / {w}mm</option>
@@ -558,41 +555,29 @@ export const TirePressureCalculator: React.FC = () => {
 
           {/* Numerical Display Cards */}
           <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
-            <IOSCard variant="default" className="p-4 sm:p-5 space-y-1">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-ios-blue uppercase tracking-wide">
-                  {language === 'zh-TW' ? '前輪建議區間' : '前轮建议区间'}
-                </span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1 tabular-nums tracking-tight">
-                {result.front.min} - {result.front.max} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{pressureUnit.toUpperCase()}</span>
-              </div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                {language === 'zh-TW' ? '前軸抓地與舒適濾震' : '前轴抓地与舒适滤震'}
-              </span>
-            </IOSCard>
-
-            <IOSCard variant="default" className="p-4 sm:p-5 space-y-1">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold text-ios-blue uppercase tracking-wide">
-                  {language === 'zh-TW' ? '後輪建議區間' : '后轮建议区间'}
-                </span>
-              </div>
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-slate-100 my-1 tabular-nums tracking-tight">
-                {result.rear.min} - {result.rear.max} <span className="text-xs text-slate-500 dark:text-slate-400 font-sans font-normal">{pressureUnit.toUpperCase()}</span>
-              </div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                {language === 'zh-TW' ? '驅動承重與低滾阻' : '驱动承重与低滚阻'}
-              </span>
-            </IOSCard>
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '前輪建議區間' : '前轮建议区间'}
+              value={`${result.front.min} - ${result.front.max}`}
+              unit={pressureUnit.toUpperCase()}
+              subtext={language === 'zh-TW' ? '前轴抓地与舒适滤震' : '前轴抓地与舒适滤震'}
+              accent="blue"
+            />
+            <IOSMetricTile
+              label={language === 'zh-TW' ? '後輪建議區間' : '后轮建议区间'}
+              value={`${result.rear.min} - ${result.rear.max}`}
+              unit={pressureUnit.toUpperCase()}
+              subtext={language === 'zh-TW' ? '驱动承重与低滚阻' : '驱动承重与低滚阻'}
+              accent="blue"
+            />
           </div>
 
           {/* Tips and Explanation Box */}
           <IOSCard variant="default" className="space-y-4">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-              <Info className="w-4 h-4 text-ios-blue" />
-              气压微调与防扎防护建议
-            </h3>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '氣壓微調與防扎防護建議' : '气压微调与防扎防护建议'}
+              icon={Info}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+            />
             <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
               {result.notes.map((note, idx) => (
                 <li key={idx} className="flex items-start gap-2">

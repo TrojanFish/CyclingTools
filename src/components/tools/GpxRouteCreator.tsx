@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { useToast } from '../../context/ToastContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateRoadbookPoster } from '../../utils/shareCardGenerators';
 
@@ -397,38 +398,31 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold mb-1.5">
-              <Navigation className="w-3 h-3" />
-              GIS 地理拓扑与路书工坊
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">GPX 路线规划与路书工坊</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
-              地名智能搜索、已有 GPX 导入解析、海拔剖面图联动定位与专业标准 GPX 文件导出。
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category="GIS 地理拓扑与路书工坊"
+        categoryIcon={Navigation}
+        title="GPX 路线规划与路书工坊"
+        description="地名智能搜索、已有 GPX 导入解析、海拔剖面图联动定位与专业标准 GPX 文件导出。"
+        tint="mint"
+        actions={
+          <>
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成航迹长图海报"
             >
               <Share2 className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>生成航迹海报</span>
             </button>
-            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>导入 GPX</span>
               <input type="file" accept=".gpx,.xml" onChange={handleGpxFileUpload} className="hidden" />
             </label>
             <button
               onClick={handleReverseRoute}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="一键反转起点与终点"
             >
               <ArrowRightLeft className="w-3.5 h-3.5 text-ios-mint shrink-0" />
@@ -436,14 +430,14 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
             </button>
             <button
               onClick={handleExportGpx}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5 shrink-0" />
               <span>导出 .GPX</span>
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Xingzhe Verified Zhejiang Routes Showcase Bar */}
       <IOSCard variant="default" padding="none" className="p-3.5 sm:p-4 space-y-2.5">

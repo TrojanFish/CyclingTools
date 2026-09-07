@@ -3,7 +3,8 @@ import { Link, CheckCircle2, AlertTriangle, Info, Share2, Settings, ArrowRight, 
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateChainLengthPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
@@ -140,35 +141,28 @@ export const ChainLengthCalculator: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
-              <Link className="w-3.5 h-3.5" />
-              <span>{language === 'zh-TW' ? '傳動幾何與鏈條物理' : '传动几何与链条物理'}</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
-              {language === 'zh-TW' ? '鏈條長度與齒容量計算器' : '链条长度与齿容量计算器'}
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
-              {language === 'zh-TW'
-                ? '換大飛輪或大盤必備！根據後下叉 RC 長度、齒數與大導輪補償，精準計算最佳截鏈節數，並校驗後撥總齒容量。'
-                : '换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。'}
-            </p>
-          </div>
-
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '傳動幾何與鏈條物理' : '传动几何与链条物理'}
+        categoryIcon={Link}
+        title={language === 'zh-TW' ? '鏈條長度與齒容量計算器' : '链条长度与齿容量计算器'}
+        description={
+          language === 'zh-TW'
+            ? '換大飛輪或大盤必備！根據後下叉 RC 長度、齒數與大導輪補償，精準計算最佳截鏈節數，並校驗後撥總齒容量。'
+            : '换大飞轮或大盘必备！根据后下叉 RC 长度、齿数与大导轮补偿，精准计算最佳截链节数，并校验后拨总齿容量。'
+        }
+        tint="blue"
+        actions={
           <button
             onClick={handleGeneratePoster}
-            className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 self-start md:self-auto"
+            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 self-start md:self-auto"
             title="生成截链节数与后拨容量规范海报"
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '生成截鏈規範卡' : '生成截链规范卡'}</span>
           </button>
-        </div>
-      </IOSCard>
+        }
+      />
 
       {/* Preset Buttons */}
       <IOSCard variant="default" className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3">
@@ -194,10 +188,12 @@ export const ChainLengthCalculator: React.FC = () => {
         {/* Left Inputs (macOS Inspector) */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="space-y-5">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <Settings className="w-4 h-4 text-ios-blue" />
-              车架几何与齿盘参数
-            </h2>
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '車架幾何與齒盤參數' : '车架几何与齿盘参数'}
+              subtitle={language === 'zh-TW' ? '後下叉長度與大中小盤組合' : '后下叉长度与大中小盘组合'}
+              icon={Settings}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+            />
 
             {/* Chainstay Length */}
             <div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Music, Play, Pause, SkipForward, SkipBack, Volume2, ListMusic, Plus, Trash2, X, Move, ChevronUp, ChevronDown } from 'lucide-react';
 import { IOSCard } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 
 interface Track {
   id: string;
@@ -168,19 +169,14 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
   if (isStandalonePage) {
     return (
       <div className="space-y-4 sm:space-y-5">
-        <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
-          <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-          <div className="relative z-10 space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold">
-              <Music className="w-3.5 h-3.5" />
-              <span>骑行踏频节奏电台</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold font-display text-slate-900 dark:text-white">骑行节奏与动感音乐播放器</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs">
-              匹配 85~105 BPM 黄金踏频节奏曲目，支持在训练与巡航中保持专注力。
-            </p>
-          </div>
-        </IOSCard>
+        {/* Standard Apple HIG Tool Header */}
+        <IOSToolHeader
+          category="骑行踏频节奏电台"
+          categoryIcon={Music}
+          title="骑行节奏与动感音乐播放器"
+          description="匹配 85~105 BPM 黄金踏频节奏曲目，支持在训练与巡航中保持专注力。"
+          tint="red"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           {/* Main Big Player Card */}

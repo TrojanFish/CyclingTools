@@ -14,6 +14,7 @@ import { NumberStepper } from '../common/NumberStepper';
 import { Tooltip } from '../common/Tooltip';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateUpgradeRoiPoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
@@ -349,24 +350,15 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" className="relative overflow-hidden isolate p-4 sm:p-5">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
-              <Scale className="w-3.5 h-3.5" />
-              <span>风洞实测基准与改装边际效益测算</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">
-              单车改装边际效益与克瓦比 ROI 计算器
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
-              科学量化每一分改装预算！精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，计算“每瓦投入金钱”，杜绝玄学智商税升级。
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category="风洞实测基准与改装边际效益测算"
+        categoryIcon={Scale}
+        title="单车改装边际效益与克瓦比 ROI 计算器"
+        description="科学量化每一分改装预算！精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，计算“每瓦投入金钱”，杜绝玄学智商税升级。"
+        tint="blue"
+        actions={
+          <>
             <IOSSegmentedControl
               options={[
                 { id: 'CNY', label: '¥ CNY' },
@@ -376,12 +368,12 @@ export const UpgradeRoiCalculator: React.FC = () => {
               ]}
               value={currency}
               onChange={(val) => setCurrency(val as any)}
-              size="sm"
+              size="md"
             />
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3 sm:px-3.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成改装升级省瓦战报海报"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -390,14 +382,14 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
             <button
               onClick={resetToDefaults}
-              className="apple-touch h-8.5 px-3 sm:px-3 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold border border-black/[0.04] dark:border-white/[0.06] transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <RotateCcw className="w-3.5 h-3.5 text-ios-blue" />
               <span>重置预设</span>
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Cruise speed and baseline controls */}
       <IOSCard variant="inset" className="p-4 flex flex-wrap items-center justify-between gap-4">
@@ -501,7 +493,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                       <select
                         value={item.selectedSpecIndex ?? 0}
                         onChange={(e) => handleSelectSpec(item.id, parseInt(e.target.value, 10))}
-                        className="w-full bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-ios-blue font-medium focus:outline-none focus:ring-1 focus:ring-ios-blue truncate"
+                        className="w-full h-9 bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 text-xs text-ios-blue font-medium focus:outline-none focus:ring-1 focus:ring-ios-blue truncate"
                       >
                         {item.specs.map((sp, sIdx) => (
                           <option key={sIdx} value={sIdx}>

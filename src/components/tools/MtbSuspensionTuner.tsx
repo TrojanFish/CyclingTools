@@ -19,6 +19,7 @@ import {
   Share2
 } from 'lucide-react';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
@@ -324,32 +325,26 @@ export const MtbSuspensionTuner: React.FC = () => {
 
   return (
     <div className="space-y-5">
-      {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-blue/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-semibold mb-1.5">
-              <Sliders className="w-3 h-3" />
-              <span>{language === 'zh-TW' ? '山地全避震工程' : '山地全避震工程'}</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-bold bg-ios-blue/15 text-ios-blue border border-ios-blue/30">PRO TUNER</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight [text-wrap:balance]">
-              {language === 'zh-TW'
-                ? '山地車避震與 SAG 智能調校顧問'
-                : '山地车避震与 SAG 智能调校顾问'}
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 max-w-xl">
-              {language === 'zh-TW'
-                ? '前叉氣壓/後膽彈簧磅數 · 下沉量 (SAG) 標尺推導 · 阻尼點位 · 槓桿比與氣室容積'
-                : '前叉气压/后胆弹簧磅数 · 下沉量 (SAG) 标尺推导 · 阻尼点位 · 杠杆比与气室容积'}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '山地全避震工程' : '山地全避震工程'}
+        categoryIcon={Sliders}
+        title={
+          language === 'zh-TW'
+            ? '山地車避震與 SAG 智能調校顧問'
+            : '山地车避震与 SAG 智能调校顾问'
+        }
+        description={
+          language === 'zh-TW'
+            ? '前叉氣壓/後膽彈簧磅數 · 下沉量 (SAG) 標尺推導 · 阻尼點位 · 槓桿比與氣室容積'
+            : '前叉气压/后胆弹簧磅数 · 下沉量 (SAG) 标尺推导 · 阻尼点位 · 杠杆比与气室容积'
+        }
+        tint="blue"
+        actions={
+          <>
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成避震设定卡"
             >
               <Share2 className="w-3.5 h-3.5 shrink-0" />
@@ -357,21 +352,21 @@ export const MtbSuspensionTuner: React.FC = () => {
             </button>
 
             {/* Connected Active Rider Indicator */}
-            <div className="h-8.5 px-3.5 rounded-xl bg-slate-100/90 dark:bg-white/10 border border-black/[0.05] dark:border-white/10 text-xs font-mono shadow-2xs flex items-center gap-2">
+            <div className="h-9 px-3.5 rounded-xl bg-slate-100/90 dark:bg-white/10 border border-black/[0.05] dark:border-white/10 text-xs font-mono shadow-2xs flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-slate-600 dark:text-slate-300">
                 {activeRider ? activeRider.name : 'Rider'}:
               </span>
-              <span className="font-bold text-slate-900 dark:text-white">
+              <span className="font-bold text-slate-900 dark:text-white tabular-nums">
                 {baseWeightKg} kg
               </span>
-              <span className="text-slate-400">+ 装具 {gearWeightKg}kg</span>
+              <span className="text-slate-400 tabular-nums">+ 装具 {gearWeightKg}kg</span>
             </div>
-          </div>
-        </div>
-
+          </>
+        }
+      >
         {/* Quick Discipline Presets */}
-        <div className="mt-5 pt-4 border-t border-slate-200/60 dark:border-white/10 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
             <Sparkles className="w-3.5 h-3.5 text-ios-blue" />
             {language === 'zh-TW' ? '場景預設:' : '场景预设:'}
@@ -394,7 +389,7 @@ export const MtbSuspensionTuner: React.FC = () => {
             />
           </div>
         </div>
-      </IOSCard>
+      </IOSToolHeader>
 
       {/* Top Tuning Parameters & Rider Loading */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -573,7 +568,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   <select
                     value={forkBrand}
                     onChange={(e) => setForkBrand(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-800 dark:text-white"
+                    className="w-full h-9 px-3 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-800 dark:text-white"
                   >
                     <option value="fox">FOX Racing Shox</option>
                     <option value="rockshox">RockShox (SRAM)</option>
@@ -587,7 +582,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   <select
                     value={forkStanchionMm}
                     onChange={(e) => setForkStanchionMm(parseInt(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-800 dark:text-white"
+                    className="w-full h-9 px-3 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-800 dark:text-white"
                   >
                     <option value={32}>32mm (XC Step-Cast)</option>
                     <option value={34}>34mm / 35mm (Trail / SID)</option>

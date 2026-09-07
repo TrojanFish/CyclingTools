@@ -47,6 +47,7 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { ShareCardModal } from '../common/ShareCardModal';
@@ -943,27 +944,18 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
   return (
     <div className="space-y-5">
-      {/* Header Banner */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 relative z-10">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold">
-              <LineChartIcon className="w-3.5 h-3.5" />
-              <span>{'数据复盘与运动生理学'}</span>
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
-              {'码表活动与 FIT 航迹深度解析器'}
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-normal mt-0.5">
-              {'纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。'}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center shrink-0">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category="数据复盘与运动生理学"
+        categoryIcon={LineChartIcon}
+        title="码表活动与 FIT 航迹深度解析器"
+        description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
+        tint="red"
+        actions={
+          <>
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成码表活动深度复盘长图海报"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -971,14 +963,14 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </button>
             <button
               onClick={handleLoadDemo}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* File Upload Zone & Rider Anchor Bar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -1037,7 +1029,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 <select
                   value={selectedStravaActivityId}
                   onChange={(e) => handleLoadStravaActivity(e.target.value)}
-                  className="flex-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1.5 focus:ring-[#FC4C02]"
+                  className="flex-1 h-9 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1.5 focus:ring-[#FC4C02]"
                 >
                   <option value="">-- 选择近期 Strava 骑行 (共 {stravaActivities.length} 条) --</option>
                   {stravaActivities.slice(0, 30).map((act) => (
@@ -1051,10 +1043,10 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   type="button"
                   onClick={() => syncStravaActivities(false)}
                   disabled={isStravaSyncing}
-                  className="apple-touch px-2.5 py-1.5 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] text-slate-600 dark:text-slate-300 text-xs shrink-0 flex items-center gap-1 transition"
+                  className="apple-touch w-9 h-9 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] text-slate-600 dark:text-slate-300 text-xs shrink-0 flex items-center justify-center transition"
                   title="刷新 Strava 活动"
                 >
-                  <RefreshCw className={`w-3 h-3 ${isStravaSyncing ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-3.5 h-3.5 ${isStravaSyncing ? 'animate-spin' : ''}`} />
                 </button>
               </div>
             </div>
@@ -1380,7 +1372,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             <div className="space-y-4 sm:space-y-5">
               {/* Sub-view switcher */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="max-w-xs">
+                <div className="w-full sm:max-w-xs">
                   <IOSSegmentedControl
                     options={[
                       { value: 'mmp_curve', label: language === 'zh-TW' ? 'MMP 峰值與天梯' : 'MMP 峰值与天梯' },
@@ -1419,7 +1411,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <select
                       value={selectedCogganTier}
                       onChange={(e) => setSelectedCogganTier(e.target.value)}
-                      className="bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-purple"
+                      className="h-9 bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-purple"
                     >
                       <option value="all">Coggan 全等级天梯标尺</option>
                       <option value="world_tour">WorldTour (世巡职业)</option>
@@ -2028,7 +2020,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <select
                       value={newManualDayOffset}
                       onChange={(e) => setNewManualDayOffset(Number(e.target.value))}
-                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none"
+                      className="w-full h-9 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-900 dark:text-white focus:outline-none"
                     >
                       <option value={0}>今天 (Day 0)</option>
                       <option value={-1}>昨天 (Day -1)</option>

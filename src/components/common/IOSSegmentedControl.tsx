@@ -21,6 +21,7 @@ interface IOSSegmentedControlProps<T extends string = string> {
   size?: 'sm' | 'md' | 'lg';
   tint?: SegmentTint;
   fullWidth?: boolean;
+  mobileFullWidth?: boolean;
   hideIconOnMobile?: boolean;
   className?: string;
 }
@@ -76,29 +77,40 @@ export function IOSSegmentedControl<T extends string = string>({
   size = 'md',
   tint = 'blue',
   fullWidth = false,
+  mobileFullWidth = true,
   hideIconOnMobile = false,
   className = '',
 }: IOSSegmentedControlProps<T>) {
   const sizeClasses = {
-    sm: 'p-0.5 text-xs',
-    md: 'p-1 text-xs',
-    lg: 'p-1.5 text-sm',
+    sm: 'h-8 p-0.5 text-xs',
+    md: 'h-9 p-0.5 sm:p-1 text-xs',
+    lg: 'h-10 p-1 text-sm',
   }[size];
 
   const itemPadding = {
-    sm: 'px-1.5 sm:px-2.5 py-1',
-    md: 'px-2.5 sm:px-3.5 py-1.5',
-    lg: 'px-3 sm:px-4 py-2',
+    sm: 'px-1.5 sm:px-2.5 h-full',
+    md: 'px-2.5 sm:px-3.5 h-full',
+    lg: 'px-3 sm:px-4 h-full',
   }[size];
 
   const currentTint = TINT_STYLES[tint] || TINT_STYLES.blue;
 
+  const widthClasses = fullWidth
+    ? 'w-full flex'
+    : mobileFullWidth
+    ? 'w-full sm:w-auto flex sm:inline-flex'
+    : 'inline-flex';
+
+  const itemFlex = fullWidth
+    ? 'flex-1 min-w-0'
+    : mobileFullWidth
+    ? 'flex-1 sm:flex-initial min-w-0'
+    : '';
+
   return (
     <div
       role="tablist"
-      className={`inline-flex items-center rounded-xl bg-slate-200/80 dark:bg-white/[0.08] backdrop-blur-md p-0.5 transition-colors duration-200 border border-black/[0.06] dark:border-white/[0.08] select-none overflow-hidden ${
-        fullWidth ? 'w-full' : ''
-      } ${sizeClasses} ${className}`}
+      className={`items-center rounded-xl bg-slate-200/80 dark:bg-white/[0.08] backdrop-blur-md p-0.5 transition-colors duration-200 border border-black/[0.06] dark:border-white/[0.08] select-none overflow-hidden ${widthClasses} ${sizeClasses} ${className}`}
     >
       {options.map((opt) => {
         const optVal = (opt.value ?? opt.id) as T;
@@ -114,9 +126,7 @@ export function IOSSegmentedControl<T extends string = string>({
               triggerHaptic('selection');
               onChange(optVal);
             }}
-            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 rounded-[10px] transition-all duration-200 ease-out apple-touch ${itemPadding} ${
-              fullWidth ? 'flex-1 min-w-0' : ''
-            } ${
+            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 rounded-[10px] transition-all duration-200 ease-out apple-touch whitespace-nowrap ${itemPadding} ${itemFlex} ${
               isSelected
                 ? `${currentTint.activeLight} ${currentTint.activeDark} font-bold z-10 scale-[1.01]`
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 font-medium'

@@ -32,6 +32,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateRoadbookPoster } from '../../utils/shareCardGenerators';
 import { useStrava } from '../../context/StravaContext';
@@ -652,29 +653,22 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <IOSCard variant="glass" padding="none" className="p-4 sm:p-5 relative overflow-hidden shadow-ios-sm isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-mint/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-mint/10 border border-ios-mint/20 text-ios-mint text-[11px] font-semibold mb-1.5">
-              <Compass className="w-3 h-3" />
-              {language === 'zh-TW' ? '精選世界與全國經典單車路書工坊' : '行者实测·全国及世界经典骑行路书精选工坊'}
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              {language === 'zh-TW' ? '經典單車路書與航跡精選庫' : '经典骑行路书与航迹精选库'}
-            </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
-              {language === 'zh-TW'
-                ? '匯聚歐洲環法環義傳奇天路與經典實測單車路書，支援互動式地圖漫遊、高程起伏剖面、一鍵匯出 GPX 及與天氣/爬坡工具連動。'
-                : '汇聚浙江与全国高热度实测骑行路书及欧洲环法环意传奇天路，支持交互式地图漫游、高程起伏剖面、一键导出 GPX 及与天气/爬坡工具联动。'}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+      {/* Standard Apple HIG Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '精選世界與全國經典單車路書工坊' : '行者实测·全国及世界经典骑行路书精选工坊'}
+        categoryIcon={Compass}
+        title={language === 'zh-TW' ? '經典單車路書與航跡精選庫' : '经典骑行路书与航迹精选库'}
+        description={
+          language === 'zh-TW'
+            ? '匯聚歐洲環法環義傳奇天路與經典實測單車路書，支援互動式地圖漫遊、高程起伏剖面、一鍵匯出 GPX 及與天氣/爬坡工具連動。'
+            : '汇聚浙江与全国高热度实测骑行路书及欧洲环法环意传奇天路，支持交互式地图漫游、高程起伏剖面、一键导出 GPX 及与天气/爬坡工具联动。'
+        }
+        tint="mint"
+        actions={
+          <>
             <button
               onClick={handleOpenStravaModal}
-              className={`apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
+              className={`apple-touch h-9 px-3.5 sm:px-4 rounded-xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
                 isStravaConnected
                   ? 'bg-orange-500/10 hover:bg-orange-500/20 text-[#FC4C02] border-orange-500/30'
                   : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
@@ -688,7 +682,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               )}
             </button>
 
-            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-mint" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
@@ -697,7 +691,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <button
               type="button"
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 rounded-xl font-semibold text-xs transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成社交打卡路书海报"
             >
               <Share2 className="w-3.5 h-3.5 text-ios-mint" />
@@ -706,16 +700,16 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
             <button
               onClick={handleExportGpx}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Download className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}</span>
             </button>
-          </div>
-        </div>
-
+          </>
+        }
+      >
         {/* Tabs & Search Filter Bar */}
-        <div className="mt-4 pt-3.5 border-t border-slate-200/80 dark:border-white/10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           {/* IOSSegmentedControl Tabs */}
           <div className="w-full sm:w-auto">
             <IOSSegmentedControl
@@ -725,7 +719,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               ]}
               value={activeTab}
               onChange={(v) => setActiveTab(v as any)}
-              size="sm"
+              size="md"
             />
           </div>
 
@@ -739,7 +733,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 placeholder={language === 'zh-TW' ? '搜尋路書名稱、城市、景點、行者編號...' : '搜索路书名、城市、景点、行者编号...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
+                className="w-full h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
               />
             </div>
 
@@ -747,7 +741,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <select
               value={selectedProvince}
               onChange={(e) => setSelectedProvince(e.target.value)}
-              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
+              className="h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
             >
               <option value="all">{language === 'zh-TW' ? '全部地區' : '全部地区'}</option>
               <option value="Europe">{language === 'zh-TW' ? '歐洲經典 (阿爾卑斯/馬略卡)' : '欧洲经典 (阿尔卑斯/马略卡)'}</option>
@@ -761,7 +755,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <select
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
+              className="h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
             >
               <option value="all">{language === 'zh-TW' ? '全部難度' : '全部难度'}</option>
               <option value="入门休闲">{language === 'zh-TW' ? '入門休閒' : '入门休闲'}</option>
@@ -771,7 +765,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             </select>
           </div>
         </div>
-      </IOSCard>
+      </IOSToolHeader>
 
       {/* Hero Metric Summary for Active Route */}
       {activeRoute && (

@@ -51,7 +51,7 @@ export const BackgroundMusicControl: React.FC = () => {
       <div className="flex items-center">
         <button
           onClick={() => setIsOpenPopover(!isOpenPopover)}
-          className={`w-8.5 h-8.5 flex items-center justify-center rounded-xl border transition select-none active:scale-95 relative shrink-0 apple-touch ${
+          className={`w-9 h-9 flex items-center justify-center rounded-xl border transition select-none active:scale-95 relative shrink-0 apple-touch ${
             isPlaying
               ? 'bg-ios-blue text-white border-ios-blue shadow-ios-sm'
               : 'bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20'

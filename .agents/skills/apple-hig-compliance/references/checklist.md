@@ -182,6 +182,16 @@
 
 ---
 
+## 17. Unified Component Architecture (整体组件一致性)
+
+- [ ] Top tool page header uses `IOSToolHeader` (category badge, title, subtitle, glow, and action slots)
+- [ ] Section and card headers use `IOSCardHeader` (standard icon container, title, subtitle, right action)
+- [ ] Metric and KPI displays use `IOSMetricTile` (standard value, unit, label, accent tint)
+- [ ] Segmented controls on mobile (<640px) expand full-width (`w-full flex-1 min-w-0`), desktop stays compact (`sm:w-auto`)
+- [ ] Containers wrapping segmented controls do not artificially constrain width on mobile (use `w-full sm:max-w-xs`)
+
+---
+
 ## Severity Levels
 
 | Level      | Action Required                                         |

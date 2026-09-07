@@ -11,7 +11,8 @@ import {
   Legend
 } from 'chart.js';
 import { NumberStepper } from '../common/NumberStepper';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generatePowerProfilePoster } from '../../utils/shareCardGenerators';
@@ -350,31 +351,24 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   };
 
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold mb-1.5">
-              <Target className="w-3 h-3" />
-              {language === 'zh-TW' ? '生理動力學畫像與現代極化訓練' : '生理动力学画像与现代极化训练'}
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              {language === 'zh-TW' ? '功率能力雷達與極化訓練區間' : '功率能力雷达与极化训练区间'}
-            </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">
-              {language === 'zh-TW'
-                ? '基於 5s 衝刺、1min 無氧、5min VO₂ 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'
-                : '基于 5s 冲刺、1min 无氧、5min VO₂ 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
+    <div className="space-y-4 sm:space-y-5">
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '生理動力學畫像與現代極化訓練' : '生理动力学画像与现代极化训练'}
+        categoryIcon={Target}
+        title={language === 'zh-TW' ? '功率能力雷達與極化訓練區間' : '功率能力雷达与极化训练区间'}
+        description={
+          language === 'zh-TW'
+            ? '基於 5s 衝刺、1min 無氧、5min VO₂ 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'
+            : '基于 5s 冲刺、1min 无氧、5min VO₂ 与 20min 阈值构建六维能力雷达，智能判定车手类型并生成 Seiler 80/20 极化与甜点训练靶心。'
+        }
+        tint="red"
+        actions={
+          <>
             <button
               onClick={handleExtractFromStrava}
               disabled={isExtractingStrava}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] rounded-xl text-xs font-semibold border border-[#FC4C02]/25 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] rounded-xl text-xs font-semibold border border-[#FC4C02]/25 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50"
               title={isStravaConnected ? '从 Strava 历史活动中一键提取最佳 5s、1min、5min、20min 峰值功率' : '连接 Strava 账号以一键提取最佳峰值功率'}
             >
               <svg className={`w-3.5 h-3.5 fill-current ${isExtractingStrava ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
@@ -383,7 +377,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
               <span>{isExtractingStrava ? (language === 'zh-TW' ? '提取中...' : '提取中...') : (language === 'zh-TW' ? '⚡ Strava 提取' : '⚡ Strava 提取')}</span>
             </button>
 
-            <label className="apple-touch h-8.5 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
+            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
               <Upload className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '匯入 CSV/JSON' : '导入 CSV/JSON'}</span>
               <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
@@ -391,7 +385,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
             <button
               onClick={() => setIsPasteModalOpen(true)}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <FileText className="w-3.5 h-3.5 text-ios-red" />
               <span>{language === 'zh-TW' ? '貼上功率' : '粘贴功率'}</span>
@@ -399,15 +393,15 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
             <button
               onClick={handleGeneratePoster}
-              className="apple-touch h-8.5 px-3.5 sm:px-4 bg-ios-red hover:bg-ios-red/90 text-white rounded-xl text-xs font-semibold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-red hover:bg-ios-red/90 text-white rounded-xl text-xs font-semibold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
               title="生成六维能力画像与极化训练海报"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>{language === 'zh-TW' ? '生成戰報海報' : '生成战报海报'}</span>
             </button>
-          </div>
-        </div>
-      </IOSCard>
+          </>
+        }
+      />
 
       {/* Rider Preset Bar */}
       <div className="ios-card p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-ios-sm">

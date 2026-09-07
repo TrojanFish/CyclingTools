@@ -7,6 +7,10 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      spacing: {
+        '8.5': '2.125rem',
+        '9.5': '2.375rem',
+      },
       colors: {
         ios: {
           blue: '#007AFF',

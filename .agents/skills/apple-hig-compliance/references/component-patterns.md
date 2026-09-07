@@ -72,21 +72,25 @@ Or using the `IOSCard` component:
 - `glass` — translucent with `backdrop-blur-2xl saturate-180`
 - `elevated` — higher shadow for floating cards
 
-### 2.2 Metric Tile (数值卡片)
+### 2.2 Metric Tile (数值/KPI卡片 — `IOSMetricTile`)
 
-For displaying numeric KPIs. Always use `tabular-nums`.
+For displaying numeric KPIs and analysis metrics. Always use `IOSMetricTile` from `src/components/common/IOSCard.tsx`.
+It strictly enforces `tabular-nums`, SF Mono font, accent color tinting, and subtitle alignment.
 
 ```jsx
-<div className="ios-card rounded-xl p-3 sm:p-4">
-  <p className="text-xs text-slate-400">{label}</p>
-  <p className="text-lg sm:text-xl font-bold tabular-nums font-display">
-    {value}
-  </p>
-  <p className="text-[11px] text-slate-500">{unit}</p>
-</div>
+import { IOSMetricTile } from '../common/IOSCard';
+
+<IOSMetricTile
+  label="估算功率"
+  value={resultPower}
+  unit="W"
+  subtext="推重比 3.42 W/kg"
+  icon={Zap}
+  accent="blue"
+/>
 ```
 
-Grid layout: `grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4`
+Grid layout standard: `grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4`
 
 ### 2.3 Inset Grouped Table (iOS Settings style)
 
@@ -98,6 +102,22 @@ Grid layout: `grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4`
   </div>
   {/* more rows */}
 </div>
+```
+
+### 2.4 Section Header (卡片与区块标头 — `IOSCardHeader`)
+
+Do NOT hand-roll raw `<h2>` tags with ad-hoc icons. Always use `IOSCardHeader` from `src/components/common/IOSCard.tsx` to maintain unified visual hierarchy:
+
+```jsx
+import { IOSCardHeader } from '../common/IOSCard';
+
+<IOSCardHeader
+  title="动力学与环境变量输入"
+  subtitle="精密计算参数与气象设定"
+  icon={Activity}
+  iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+  action={<button ...>操作</button>}
+/>
 ```
 
 ---
@@ -172,30 +192,29 @@ Grid layout: `grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4`
 
 ---
 
-## 4. Header Banner (Tool Page Hero)
+## 4. Header Banner (Tool Page Hero — `IOSToolHeader`)
 
-The top hero section of each tool page:
+All tool pages MUST use the unified `IOSToolHeader` from `src/components/common/IOSToolHeader.tsx` to ensure uniform layout rhythm, frosted glass treatment, background glow sphere, and standard action placement:
 
 ```jsx
-<div className="ios-card rounded-2xl p-4 sm:p-5">
-  {/* Category tag */}
-  <div className="flex items-center gap-2 mb-2">
-    <span className="px-2.5 py-0.5 text-[11px] font-medium rounded-full
-      bg-ios-blue/10 text-ios-blue">
-      {categoryName}
-    </span>
-  </div>
-  
-  {/* Title */}
-  <h1 className="text-lg sm:text-xl font-bold font-display mb-1">
-    {toolName}
-  </h1>
-  
-  {/* Subtitle */}
-  <p className="text-xs text-slate-400">
-    {description}
-  </p>
-</div>
+import { IOSToolHeader } from '../common/IOSToolHeader';
+
+<IOSToolHeader
+  category="滚阻与形变算法"
+  categoryIcon={Gauge}
+  title="公路/全地形智能胎压计算器"
+  description="综合车手体重、真空胎结构、实测胎宽与路面状况，精准计算前后轮最佳气压。"
+  tint="blue"
+  actions={
+    <>
+      <button onClick={handleShare} className="apple-touch h-8.5 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm flex items-center gap-1.5">
+        <Share2 className="w-3.5 h-3.5" />
+        <span>生成海报</span>
+      </button>
+      <IOSSegmentedControl ... />
+    </>
+  }
+/>
 ```
 
 ---
@@ -280,24 +299,26 @@ Located at `src/components/common/NumberStepper.tsx`.
 </select>
 ```
 
-### 6.4 Segmented Control (Tab Switcher)
+### 6.4 Segmented Control (分段选择胶囊 — `IOSSegmentedControl`)
 
-Use the `IOSSegmentedControl` component:
+Always use the `IOSSegmentedControl` component (`src/components/common/IOSSegmentedControl.tsx`).
+- **Mobile (<640px)**: Automatically expands full-width (`w-full`), each segment takes equal width (`flex-1 min-w-0`), maximizing touch targets and filling cards horizontally matching iOS 18 `UISegmentedControl`.
+- **Desktop (≥640px)**: Retains compact inline width (`sm:w-auto`), or can be full-width via `fullWidth={true}`.
+- If wrapping in a container, avoid fixed width like `max-w-xs`; use `w-full sm:max-w-xs`.
+
 ```jsx
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+
 <IOSSegmentedControl
-  options={['Tab 1', 'Tab 2', 'Tab 3']}
-  value={activeTab}
-  onChange={setActiveTab}
+  options={[
+    { id: 'psi', label: 'PSI' },
+    { id: 'bar', label: 'BAR' },
+    { id: 'kpa', label: 'KPA' },
+  ]}
+  value={unit}
+  onChange={setUnit}
+  size="sm"
 />
-```
-
-Or with CSS classes:
-```jsx
-<div className="ios-segmented-control">
-  <button className={`ios-segment-item ${active ? 'active' : ''}`}>
-    {label}
-  </button>
-</div>
 ```
 
 ---

@@ -5,6 +5,7 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSToolHeader } from '../common/IOSToolHeader';
 
 export const HealthCalculator: React.FC = () => {
   const { profile } = useRiderProfile();
@@ -209,22 +210,18 @@ export const HealthCalculator: React.FC = () => {
 
   return (
     <div className="space-y-5 max-w-6xl mx-auto pb-12">
-      {/* Top Banner */}
-      <IOSCard variant="default" className="p-4 sm:p-5 relative overflow-hidden isolate">
-        <div className="pointer-events-none absolute -right-12 -top-12 w-80 h-80 rounded-full blur-3xl opacity-60 bg-ios-red/15" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red text-[11px] font-semibold mb-1.5">
-              <HeartPulse className="w-3.5 h-3.5" />
-              运动生理学与能量代谢
-            </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display tracking-tight">骑行与运动健康综合计算器</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
-              一站式计算骑行能量补给、Karvonen 靶心率区间、BMR 基础代谢、TDEE 每日总能耗及体脂率(BFP)。
-            </p>
-          </div>
-
-          {/* Apple HIG Tab buttons */}
+      {/* Unified Tool Header */}
+      <IOSToolHeader
+        category={language === 'zh-TW' ? '運動生理學與能量代謝' : '运动生理学与能量代谢'}
+        categoryIcon={HeartPulse}
+        title={language === 'zh-TW' ? '騎行與運動健康綜合計算器' : '骑行与运动健康综合计算器'}
+        description={
+          language === 'zh-TW'
+            ? '一站式計算騎行能量補給、Karvonen 靶心率區間、BMR 基礎代謝、TDEE 每日總能耗及體脂率(BFP)。'
+            : '一站式计算骑行能量补给、Karvonen 靶心率区间、BMR 基础代谢、TDEE 每日总能耗及体脂率(BFP)。'
+        }
+        tint="red"
+        actions={
           <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
             <IOSSegmentedControl
               options={[
@@ -236,12 +233,11 @@ export const HealthCalculator: React.FC = () => {
               ]}
               value={activeTab}
               onChange={(val) => setActiveTab(val as any)}
-              fullWidth={false}
-              size="sm"
+              size="md"
             />
           </div>
-        </div>
-      </IOSCard>
+        }
+      />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -334,7 +330,7 @@ export const HealthCalculator: React.FC = () => {
               <select
                 value={activityFactor}
                 onChange={(e) => setActivityFactor(parseFloat(e.target.value))}
-                className="w-full bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-ios-blue"
+                className="w-full h-9 bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-ios-blue"
               >
                 <option value={1.2}>久坐不动 (办公室办公，极少运动) × 1.2</option>
                 <option value={1.375}>轻度活跃 (每周轻度骑行 1-3 天) × 1.375</option>
@@ -380,7 +376,7 @@ export const HealthCalculator: React.FC = () => {
                     <select
                       value={rideIntensity}
                       onChange={(e) => setRideIntensity(e.target.value as any)}
-                      className="w-full bg-white dark:bg-[#2C2C2E] border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200"
+                      className="w-full h-9 bg-white dark:bg-[#2C2C2E] border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 text-xs text-slate-900 dark:text-slate-200"
                     >
                       <option value="z2">Z2 轻松长距离耐力 (有氧消耗脂肪为主)</option>
                       <option value="z3">Z3 节奏与爬坡团骑 (中高糖原消耗)</option>
