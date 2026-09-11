@@ -494,7 +494,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   {/* Spec Dropdown (Autofills wind tunnel baseline!) */}
                   {item.specs && item.specs.length > 0 && (
                     <div className="space-y-1">
-                      <label className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
+                      <label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
                         <span>规格选型 (选择后自动填入风洞与重量基准):</span>
                       </label>
                       <select
@@ -509,7 +509,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                         ))}
                       </select>
                       {item.specs[item.selectedSpecIndex ?? 0]?.note && (
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400/90 pl-1 leading-relaxed flex items-start gap-1">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400/90 pl-1 leading-relaxed flex items-start gap-1">
                           <Lightbulb className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
                           <span>{item.specs[item.selectedSpecIndex ?? 0].note}</span>
                         </p>
@@ -520,7 +520,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   {/* Editable 3 Inputs: Price, Weight Save, Watt Save */}
                   <div className="grid grid-cols-3 gap-2 text-xs pt-1.5 border-t border-black/[0.05] dark:border-white/[0.08] font-mono">
                     <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">实际价格 ({currency})</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">实际价格 ({currency})</span>
                       <div className="flex items-center text-amber-500 dark:text-amber-400 font-bold">
                         <span className="text-[11px] mr-1">{currencySymbol}</span>
                         <input
@@ -537,7 +537,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                     </div>
 
                     <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">减重幅度 (克)</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">减重幅度 (克)</span>
                       <div className="flex items-center text-emerald-600 dark:text-emerald-400 font-bold">
                         <input
                           type="number"
@@ -549,12 +549,12 @@ export const UpgradeRoiCalculator: React.FC = () => {
                           }}
                           className="bg-transparent w-full focus:outline-none text-emerald-600 dark:text-emerald-400 text-xs font-mono tabular-nums"
                         />
-                        <span className="text-[10px] text-slate-500 font-normal ml-0.5">g</span>
+                        <span className="text-[11px] text-slate-500 font-normal ml-0.5">g</span>
                       </div>
                     </div>
 
                     <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">
                         省瓦收益 ({flatCruiseSpeedKmh}km/h)
                       </span>
                       <div className="flex items-center text-ios-blue font-bold">
@@ -569,7 +569,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                           }}
                           className="bg-transparent w-full focus:outline-none text-ios-blue text-xs font-mono tabular-nums"
                         />
-                        <span className="text-[10px] text-slate-500 font-normal ml-0.5">W</span>
+                        <span className="text-[11px] text-slate-500 font-normal ml-0.5">W</span>
                       </div>
                     </div>
                   </div>
@@ -618,7 +618,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
               <div className="text-xl font-bold font-mono text-ios-blue">
                 节省 {analysis.flatTimeSavedSec} 秒
               </div>
-              <span className="text-[10px] text-slate-500">约 {(analysis.flatTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
+              <span className="text-[11px] text-slate-500">约 {(analysis.flatTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
             </IOSCard>
 
             <IOSCard variant="inset" className="p-4 space-y-1">
@@ -629,7 +629,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
               <div className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
                 节省 {analysis.climbTimeSavedSec} 秒
               </div>
-              <span className="text-[10px] text-slate-500">约 {(analysis.climbTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
+              <span className="text-[11px] text-slate-500">约 {(analysis.climbTimeSavedSec / 60).toFixed(1)} 分钟优势</span>
             </IOSCard>
           </div>
 

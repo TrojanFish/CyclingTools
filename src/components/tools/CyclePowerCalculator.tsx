@@ -470,7 +470,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   />
                   <button
                     onClick={() => setWindDirection(windDirection === 'headwind' ? 'tailwind' : 'headwind')}
-                    className="px-2.5 py-1 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 border border-black/[0.05] dark:border-white/[0.08] rounded-xl text-[10px] text-ios-blue shrink-0 font-semibold transition apple-touch"
+                    className="px-2.5 py-1 bg-slate-100/80 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 border border-black/[0.05] dark:border-white/[0.08] rounded-xl text-[11px] text-ios-blue shrink-0 font-semibold transition apple-touch"
                   >
                     {windDirection === 'headwind' ? (language === 'zh-TW' ? '頂風' : '顶风') : (language === 'zh-TW' ? '順風' : '顺风')}
                   </button>
@@ -503,8 +503,8 @@ export const CyclePowerCalculator: React.FC = () => {
                           : 'bg-black/[0.02] dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:border-black/10 dark:hover:border-white/15'
                       }`}
                     >
-                      <div className={`text-[10px] leading-tight truncate ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
-                      <div className={`text-[9px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>{p.cda} m²</div>
+                      <div className={`text-[11px] leading-tight truncate ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>{p.label}</div>
+                      <div className={`text-[11px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>{p.cda} m²</div>
                     </button>
                   );
                 })}
@@ -521,13 +521,13 @@ export const CyclePowerCalculator: React.FC = () => {
                     </span>
                     <Tooltip content="世界巡回赛 TT 计时赛核心控风技巧：头部下沉嵌于双肩之间，压平后背高速气流湍流。风洞实测平均降低 CdA 约 0.015 m²（40km/h 下省约 12~18W）。" />
                   </div>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
                     下沉下颌嵌入双肩，抹平后颈气流剥离
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   {hasHeadShrug && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       -0.015 m² (~15W)
                     </span>
                   )}
@@ -564,7 +564,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-1 text-[10px]">
+              <div className="flex flex-wrap items-center gap-1 text-[11px]">
                 {[
                   { val: 0, label: '0° 正迎风' },
                   { val: 5, label: '5° 微侧风' },
@@ -598,7 +598,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 <div className="flex items-center gap-1.5 font-mono">
                   <span className="text-ios-blue font-bold text-xs">ρ = {airDensityRho} kg/m³</span>
                   {altitudeM > 100 && (
-                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="text-[11px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
                       气阻 -{Math.round((1 - airDensityRho / 1.225) * 100)}%
                     </span>
                   )}
@@ -606,7 +606,7 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
 
               {/* Quick Altitude Presets */}
-              <div className="flex flex-wrap items-center gap-1 text-[10px]">
+              <div className="flex flex-wrap items-center gap-1 text-[11px]">
                 {[
                   { val: 0, label: '海平面 0m' },
                   { val: 500, label: '丘陵 500m' },
@@ -755,7 +755,7 @@ export const CyclePowerCalculator: React.FC = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
                   {language === 'zh-TW' ? '爬坡路程' : '爬坡路程'}
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-mono font-bold tabular-nums">
@@ -763,7 +763,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
                   {language === 'zh-TW' ? '累計爬升' : '累计爬升'}
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-mono font-bold tabular-nums">
@@ -771,13 +771,13 @@ export const CyclePowerCalculator: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
                   {language === 'zh-TW' ? '平均坡度' : '平均坡度'}
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-mono font-bold tabular-nums">{result.avgClimbGrade}%</span>
               </div>
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
                   {language === 'zh-TW' ? '預計登頂耗時' : '预计登顶耗时'}
                 </span>
                 <span className="text-ios-green font-mono font-bold tabular-nums">

@@ -260,7 +260,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {latestStats?.dateStr}
               </span>
               {!latestStats?.isRealData && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium">
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium">
                   {language === 'zh-TW' ? '演示樣本' : '演示样本'}
                 </span>
               )}
@@ -285,61 +285,61 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {/* 6-Grid Tactical Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 pt-0.5">
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
               <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums font-mono mt-0.5">
-                {latestStats?.distKm} <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">km</span>
+                {latestStats?.distKm} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">km</span>
               </div>
-              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {language === 'zh-TW' ? '均速' : '均速'} {latestStats?.avgSpeed}km/h
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-green tabular-nums font-mono mt-0.5">
-                +{latestStats?.eleM} <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">m</span>
+                +{latestStats?.eleM} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">m</span>
               </div>
-              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {language === 'zh-TW' ? '時長' : '时长'} {latestStats?.timeStr}
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-blue tabular-nums font-mono mt-0.5">
-                {latestStats?.np} <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">W</span>
+                {latestStats?.np} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">W</span>
               </div>
-              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 AvgP {latestStats?.avgP}W{latestStats?.wKg ? ` · ${latestStats.wKg}W/kg` : ''}
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-purple tabular-nums font-mono mt-0.5">
                 {latestStats?.ifVal}
               </div>
-              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 VI {latestStats?.vi} · FTP比率
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-orange tabular-nums font-mono mt-0.5">
                 {latestStats?.tss}
               </div>
-              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {language === 'zh-TW' ? '做功' : '做功'} {latestStats?.calories} kcal
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-mint tabular-nums font-mono mt-0.5">
                 {latestStats?.ef ? latestStats.ef : '--'}
               </div>
-              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` (極${latestStats.maxHr})` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
               </div>
             </div>
@@ -351,7 +351,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onClick={() => onSelectTool('activity-analyzer')}
               className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:bg-ios-blue/90 active:scale-95 transition apple-touch"
             >
-              <Activity className="w-3.5 h-3.5" />
+              <Activity className="w-4 h-4" />
               <span>{language === 'zh-TW' ? '逐秒回放' : '逐秒回放'}</span>
             </button>
 
@@ -359,7 +359,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onClick={() => onSelectTool('strava-cockpit')}
               className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/10 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 transition apple-touch text-xs font-semibold shadow-ios-sm"
             >
-              <LayoutDashboard className="w-3.5 h-3.5 text-ios-blue" />
+              <LayoutDashboard className="w-4 h-4 text-ios-blue" />
               <span>{language === 'zh-TW' ? '數據羅盤' : '数据罗盘'}</span>
             </button>
 
@@ -461,11 +461,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           <svg className="w-3 h-3 fill-[#FC4C02] shrink-0" viewBox="0 0 24 24" role="img">
                             <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.925 15.632h4.17" />
                           </svg>
-                          <span className="text-[10px] font-bold">Strava</span>
+                          <span className="text-[11px] font-bold">Strava</span>
                         </span>
                       )}
                       {toolBadge && (
-                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-slate-600 dark:text-slate-300 font-medium border border-black/[0.04] dark:border-white/[0.06]">
+                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-slate-600 dark:text-slate-300 font-medium border border-black/[0.04] dark:border-white/[0.06]">
                           {toolBadge}
                         </span>
                       )}

@@ -409,7 +409,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 onChange={(e) => setGearWeightKg(parseFloat(e.target.value))}
                 className="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-ios-blue"
               />
-              <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+              <div className="flex justify-between text-[11px] text-slate-400 mt-1">
                 <span>轻装 2kg</span>
                 <span>重装全盔护甲 6kg</span>
                 <span>重载 10kg</span>
@@ -623,7 +623,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     {calc.finalForkPsi}
                     <span className="text-sm ml-1 font-sans">PSI</span>
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">
                     微调偏移: {forkPsiOffset > 0 ? `+${forkPsiOffset}` : forkPsiOffset} PSI
                   </div>
                 </div>
@@ -636,7 +636,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     {calc.targetForkSagMm}
                     <span className="text-sm ml-1 font-sans">mm</span>
                   </div>
-                  <div className="text-[10px] font-bold text-ios-blue">
+                  <div className="text-[11px] font-bold text-ios-blue">
                     目标下沉率: {calc.targetForkSagPct}%
                   </div>
                 </div>
@@ -666,7 +666,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-2.5">
                 <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
                   <span>阻尼旋钮点击建议（由全闭 / Fully Closed 逆时针开退）</span>
-                  <span className="text-[10px] font-mono text-ios-blue">CLICKS OUT</span>
+                  <span className="text-[11px] font-mono text-ios-blue">CLICKS OUT</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
@@ -674,28 +674,28 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.reboundClicksOut}
                     </div>
-                    <div className="text-[9px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-blue-500 font-semibold text-[11px]">低速压缩 LSC</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.lscClicksOut}
                     </div>
-                    <div className="text-[9px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-purple-500 font-semibold text-[11px]">高速压缩 HSC</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.hscClicksOut}
                     </div>
-                    <div className="text-[9px] text-slate-400">格 (GRIP2/Charger)</div>
+                    <div className="text-[11px] text-slate-400">格 (GRIP2/Charger)</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-ios-blue font-semibold text-[11px]">气室垫块 Token</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.recommendedForkTokens}
                     </div>
-                    <div className="text-[9px] text-slate-400">枚 (Spacers)</div>
+                    <div className="text-[11px] text-slate-400">枚 (Spacers)</div>
                   </div>
                 </div>
               </div>
@@ -800,7 +800,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         {calc.finalShockPsi}
                         <span className="text-sm ml-1 font-sans">PSI</span>
                       </div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
                         杠杆比 {calc.leverageRatio}:1 补偿修正
                       </div>
                     </div>
@@ -813,7 +813,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         {calc.targetShockSagMm}
                         <span className="text-sm ml-1 font-sans">mm</span>
                       </div>
-                      <div className="text-[10px] font-bold text-ios-blue">
+                      <div className="text-[11px] font-bold text-ios-blue">
                         目标下沉率: {calc.targetShockSagPct}%
                       </div>
                     </div>
@@ -851,7 +851,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         {calc.closestSpringRate}
                         <span className="text-sm ml-1 font-sans">lbs/in</span>
                       </div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                         精确理论计算: {calc.exactSpringRate} lbs/in
                       </div>
                     </div>
@@ -864,7 +864,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         1 ~ 2
                         <span className="text-sm ml-1 font-sans">圈 (Turns)</span>
                       </div>
-                      <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                      <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400">
                         注意：预紧切勿超过 2.5 圈！
                       </div>
                     </div>
@@ -886,7 +886,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-2.5">
                 <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
                   <span>后避震阻尼点击点位（由全闭逆时针旋转）</span>
-                  <span className="text-[10px] font-mono text-ios-blue">CLICKS OUT</span>
+                  <span className="text-[11px] font-mono text-ios-blue">CLICKS OUT</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-center text-xs">
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
@@ -894,14 +894,14 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.shockReboundClicks}
                     </div>
-                    <div className="text-[9px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-blue-500 font-semibold text-[11px]">后胆低速压缩 LSC</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.shockLscClicks}
                     </div>
-                    <div className="text-[9px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
                   </div>
                 </div>
               </div>
@@ -998,7 +998,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   title="前叉密封 O 圈"
                 />
               </div>
-              <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono tabular-nums">
+              <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono tabular-nums">
                 <span>0mm (Top Out)</span>
                 <span className="text-emerald-500 font-bold">Target: {calc.targetForkSagMm}mm</span>
                 <span>{forkTravelMm}mm (Bottom Out)</span>
@@ -1035,7 +1035,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   title="后避震 O 圈"
                 />
               </div>
-              <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
+              <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono">
                 <span>0mm (完全展开)</span>
                 <span className="text-ios-blue font-bold">Target: {calc.targetShockSagMm}mm</span>
                 <span>{shockStrokeMm}mm (彻底触底)</span>

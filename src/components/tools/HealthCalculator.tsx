@@ -283,7 +283,7 @@ export const HealthCalculator: React.FC = () => {
                     {language === 'zh-TW' ? '身高' : '身高'} (cm)
                   </label>
                   {isImperial && (
-                    <span className="text-[10px] text-ios-blue font-mono font-medium">
+                    <span className="text-[11px] text-ios-blue font-mono font-medium">
                       {Math.floor(heightCm / 30.48)}'{Math.round((heightCm % 30.48) / 2.54)}"
                     </span>
                   )}
@@ -492,7 +492,7 @@ export const HealthCalculator: React.FC = () => {
                       <span>{language === 'zh-TW' ? '減脂減重目標' : '减脂减重目标'}</span>
                     </div>
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">{bmrResult.loseWeightCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">热量缺口 20%，稳步减脂保持肌肉</p>
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500">热量缺口 20%，稳步减脂保持肌肉</p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
@@ -501,7 +501,7 @@ export const HealthCalculator: React.FC = () => {
                       <span>{language === 'zh-TW' ? '體重維持平衡' : '体重维持平衡'}</span>
                     </div>
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">{bmrResult.maintainCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">收支平衡，维持当前竞技体重</p>
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500">收支平衡，维持当前竞技体重</p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
@@ -510,7 +510,7 @@ export const HealthCalculator: React.FC = () => {
                       <span>{language === 'zh-TW' ? '增肌增力目標' : '增肌增力目标'}</span>
                     </div>
                     <div className="text-xl font-bold font-mono text-slate-900 dark:text-slate-100 tabular-nums">{bmrResult.gainMuscleCal} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">kcal</span></div>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">轻微盈余 15%，配合力量训练</p>
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500">轻微盈余 15%，配合力量训练</p>
                   </div>
                 </div>
               </IOSCard>

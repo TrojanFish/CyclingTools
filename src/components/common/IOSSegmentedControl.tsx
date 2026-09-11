@@ -151,7 +151,7 @@ export function IOSSegmentedControl<T extends string = string>({
             )}
             {opt.badge !== undefined && (
               <span
-                className={`text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-full font-mono font-bold shrink-0 ${
+                className={`text-[11px] px-1.5 py-0.5 rounded-full font-mono font-bold shrink-0 ${
                   isSelected
                     ? currentTint.badgeActive
                     : 'bg-slate-300/60 dark:bg-white/10 text-slate-500 dark:text-slate-400'

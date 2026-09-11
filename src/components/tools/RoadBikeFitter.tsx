@@ -211,7 +211,7 @@ export const RoadBikeFitter: React.FC = () => {
                     {language === 'zh-TW' ? '身高' : '身高'} (cm)
                   </label>
                   {isImperial && (
-                    <span className="text-[10px] text-ios-purple font-mono font-medium">
+                    <span className="text-[11px] text-ios-purple font-mono font-medium">
                       {Math.floor(height / 30.48)}'{Math.round((height % 30.48) / 2.54)}"
                     </span>
                   )}
@@ -225,7 +225,7 @@ export const RoadBikeFitter: React.FC = () => {
                     <Tooltip content="赤脚靠墙站立，双脚间距15cm，用硬皮书夹紧会阴部测量地面到书顶垂直距离。" />
                   </label>
                   {isImperial && (
-                    <span className="text-[10px] text-ios-purple font-mono font-medium">
+                    <span className="text-[11px] text-ios-purple font-mono font-medium">
                       {(inseam / 2.54).toFixed(1)}"
                     </span>
                   )}
@@ -403,7 +403,7 @@ export const RoadBikeFitter: React.FC = () => {
             />
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
                   {'建议车架 Stack (堆高)'}
                 </span>
                 <span className="text-base font-bold font-mono text-ios-blue tabular-nums">
@@ -411,7 +411,7 @@ export const RoadBikeFitter: React.FC = () => {
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
                   {'建议车架 Reach (前伸)'}
                 </span>
                 <span className="text-base font-bold font-mono text-ios-blue tabular-nums">

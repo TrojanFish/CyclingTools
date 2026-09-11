@@ -831,13 +831,13 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   <div className="flex justify-between items-start gap-2">
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-ios-blue/15 text-ios-blue font-semibold">
+                        <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-ios-blue/15 text-ios-blue font-semibold">
                           {route.sourceCode}
                         </span>
-                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300 font-medium">
+                        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300 font-medium">
                           {rRegion}
                         </span>
-                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-semibold ${
+                        <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold ${
                           route.difficulty === '终极硬核' ? 'bg-ios-red/15 text-ios-red' :
                           route.difficulty === '长途挑战' ? 'bg-ios-orange/15 text-ios-orange' :
                           route.difficulty === '进阶爬坡' ? 'bg-ios-purple/15 text-ios-purple' :
@@ -879,19 +879,19 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   {/* Route Key Metric Grid */}
                   <div className="grid grid-cols-4 gap-2 mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/10 text-center font-mono">
                     <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
-                      <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '總里程' : '总里程'}</span>
+                      <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '總里程' : '总里程'}</span>
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{convertDistance(route.distanceKm).formatted}</span>
                     </div>
                     <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
-                      <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</span>
+                      <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</span>
                       <span className="text-xs font-bold text-ios-blue">+{convertElevation(route.elevationGainM).formatted}</span>
                     </div>
                     <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
-                      <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '最高海拔' : '最高海拔'}</span>
+                      <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '最高海拔' : '最高海拔'}</span>
                       <span className="text-xs font-bold text-ios-orange">{convertElevation(route.maxAltitudeM).formatted}</span>
                     </div>
                     <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
-                      <span className="text-[10px] text-slate-400 block">{language === 'zh-TW' ? '平均坡度' : '平均坡度'}</span>
+                      <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '平均坡度' : '平均坡度'}</span>
                       <span className="text-xs font-bold text-ios-green">{route.avgGradePct}%</span>
                     </div>
                   </div>
@@ -899,7 +899,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   {/* Highlights Pill Tags */}
                   <div className="flex flex-wrap gap-1.5 mt-2.5">
                     {route.highlights.slice(0, 4).map((h, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-white/70 dark:bg-white/5 text-slate-600 dark:text-slate-300">
+                      <span key={i} className="text-[11px] px-2 py-0.5 rounded-full bg-white/70 dark:bg-white/5 text-slate-600 dark:text-slate-300">
                         #{h}
                       </span>
                     ))}
@@ -1193,7 +1193,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                                 {route.name}
                               </span>
                               {isImported && (
-                                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold shrink-0">
+                                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold shrink-0">
                                   已导入
                                 </span>
                               )}

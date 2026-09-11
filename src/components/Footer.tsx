@@ -27,7 +27,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
               <div className="flex items-center gap-1 font-mono">
                 <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
                 <span className="text-ios-blue dark:text-ios-blue font-bold text-sm">{t('brandSuffix')}</span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-mono font-semibold">{t('brandPro')}</span>
+                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-mono font-semibold">{t('brandPro')}</span>
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400">· {t('slogan')}</span>
             </div>
@@ -37,15 +37,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
           <div className="hidden lg:flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerSearch')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">/</kbd>
+              <kbd className="px-1.5 py-0.5 text-[11px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">/</kbd>
             </div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerClose')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">ESC</kbd>
+              <kbd className="px-1.5 py-0.5 text-[11px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">ESC</kbd>
             </div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px]">
               <span>{t('footerPrint')}</span>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">Ctrl+P</kbd>
+              <kbd className="px-1.5 py-0.5 text-[11px] font-mono font-semibold text-ios-blue bg-white dark:bg-[#2C2C2E] rounded border border-black/[0.08] dark:border-white/10 shadow-2xs">Ctrl+P</kbd>
             </div>
           </div>
 

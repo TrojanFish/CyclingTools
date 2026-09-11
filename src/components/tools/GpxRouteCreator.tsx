@@ -470,14 +470,14 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               >
                 <div>
                   <div className="flex items-center justify-between gap-1 mb-1">
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono font-bold ${
+                    <span className={`text-[11px] px-1.5 py-0.5 rounded-md font-mono font-bold ${
                       isSelected
                         ? 'bg-white/20 text-white'
                         : 'bg-slate-200/70 dark:bg-white/10 text-slate-700 dark:text-slate-300'
                     }`}>
                       {route.city}
                     </span>
-                    <span className={`text-[9px] font-mono ${isSelected ? 'text-white/90' : 'text-ios-blue'}`}>
+                    <span className={`text-[11px] font-mono ${isSelected ? 'text-white/90' : 'text-ios-blue'}`}>
                       {route.xingzheRoadbookId}
                     </span>
                   </div>
@@ -486,7 +486,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                   </div>
                 </div>
 
-                <div className={`flex items-center justify-between text-[10px] font-mono mt-1.5 pt-1.5 border-t ${
+                <div className={`flex items-center justify-between text-[11px] font-mono mt-1.5 pt-1.5 border-t ${
                   isSelected
                     ? 'border-white/20 text-white/80'
                     : 'border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400'
@@ -584,7 +584,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                 <Mountain className="w-3.5 h-3.5 text-ios-blue" />
                 全路段海拔剖面与地图悬浮联动
               </span>
-              <span className="text-[10px] text-slate-400 dark:text-slate-500">*悬浮联动地图坐标</span>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">*悬浮联动地图坐标</span>
             </div>
 
             <div className="h-44">
@@ -624,7 +624,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               {waypoints.map((w, idx) => (
                 <div key={w.id} className="p-2 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex items-center justify-between text-xs gap-2">
                   <div className="flex items-center gap-2 truncate flex-1">
-                    <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[10px] font-bold font-mono shrink-0">
+                    <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[11px] font-bold font-mono shrink-0">
                       {idx + 1}
                     </span>
                     <input

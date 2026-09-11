@@ -73,7 +73,7 @@ export const BackgroundMusicControl: React.FC = () => {
       {isOpenPopover && (
         <div className="absolute right-0 top-11 w-76 p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-ios-popover bg-white/85 dark:bg-[#252528]/85 backdrop-blur-3xl saturate-180 z-50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
           {/* Header indicator */}
-          <div className="flex items-center justify-between text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-0.5">
+          <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-0.5">
             <span>Now Playing · 骑行电台</span>
             {currentTrack?.bpm && <span className="font-mono text-ios-blue">{currentTrack.bpm} RPM</span>}
           </div>
@@ -82,7 +82,7 @@ export const BackgroundMusicControl: React.FC = () => {
           <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.05] border border-black/[0.04] dark:border-white/[0.06]">
             <div className="truncate max-w-[170px]">
               <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">{currentTrack?.name || '骑行踏频电台'}</span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate block">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate block">
                 {currentTrack?.artist || 'SoloRider Studio'}
               </span>
             </div>
@@ -108,7 +108,7 @@ export const BackgroundMusicControl: React.FC = () => {
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
             <div className="flex items-center gap-2">
               {volume === 0 ? <VolumeX className="w-3.5 h-3.5 text-slate-400" /> : <Volume2 className="w-3.5 h-3.5" />}
-              <span className="text-[10px]">音量</span>
+              <span className="text-[11px]">音量</span>
             </div>
             <input
               type="range"
@@ -124,10 +124,10 @@ export const BackgroundMusicControl: React.FC = () => {
           {/* Track Selection List */}
           <div className="pt-2 border-t border-black/[0.05] dark:border-white/[0.08] space-y-1">
             <div className="flex justify-between items-center mb-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 block">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 block">
                 曲目切换:
               </span>
-              <label className="flex items-center gap-1 text-[10px] text-ios-blue hover:opacity-80 cursor-pointer font-medium">
+              <label className="flex items-center gap-1 text-[11px] text-ios-blue hover:opacity-80 cursor-pointer font-medium">
                 <Upload className="w-3 h-3" />
                 本地音乐
                 <input type="file" accept="audio/*" onChange={handleFileUpload} className="hidden" />
@@ -146,7 +146,7 @@ export const BackgroundMusicControl: React.FC = () => {
                   }`}
                 >
                   <span className="truncate max-w-[170px]">{t.name}</span>
-                  {t.bpm && <span className={`text-[9px] font-mono ${currentTrackIndex === idx ? 'text-white/80' : 'text-slate-400'}`}>{t.bpm} BPM</span>}
+                  {t.bpm && <span className={`text-[11px] font-mono ${currentTrackIndex === idx ? 'text-white/80' : 'text-slate-400'}`}>{t.bpm} BPM</span>}
                 </div>
               ))}
             </div>

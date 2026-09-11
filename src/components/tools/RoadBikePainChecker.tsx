@@ -118,7 +118,7 @@ export const RoadBikePainChecker: React.FC = () => {
             className="w-full h-9 bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-8.5 pr-4 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"
           />
           {searchQuery && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-ios-purple font-mono">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-ios-purple font-mono">
               匹配到 {matchingAreaIds.length} 个部位
             </span>
           )}

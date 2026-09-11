@@ -599,11 +599,11 @@ export const WorkoutBuilder: React.FC = () => {
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
                       {tmpl.categoryLabel}
                     </span>
                     {isSelected && (
-                      <span className="text-[10px] font-bold text-ios-red flex items-center gap-1">
+                      <span className="text-[11px] font-bold text-ios-red flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         当前编辑
                       </span>
@@ -617,7 +617,7 @@ export const WorkoutBuilder: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="text-[10px] text-slate-400 font-medium pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                <div className="text-[11px] text-slate-400 font-medium pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                   <span>{tmpl.targetAdaptation}</span>
                   <span className="text-ios-red font-semibold">加载模板</span>
                 </div>
@@ -680,10 +680,10 @@ export const WorkoutBuilder: React.FC = () => {
                 className="rounded-t-md relative group transition-all hover:opacity-90 flex flex-col justify-between p-1 overflow-hidden"
                 title={`${seg.name}: ${Math.round(seg.durationSec / 60)}分 @ ${Math.round(avgPct * 100)}% (${Math.round(avgPct * ftpWatts)}W)`}
               >
-                <span className="text-[9px] text-white font-mono font-bold truncate drop-shadow-xs tabular-nums">
+                <span className="text-[11px] text-white font-mono font-bold truncate drop-shadow-xs tabular-nums">
                   {Math.round(avgPct * 100)}%
                 </span>
-                <span className="text-[8px] text-white/90 font-mono truncate hidden sm:block drop-shadow-xs tabular-nums">
+                <span className="text-[11px] text-white/90 font-mono truncate hidden sm:block drop-shadow-xs tabular-nums">
                   {Math.round(seg.durationSec / 60)}m
                 </span>
               </div>
@@ -692,7 +692,7 @@ export const WorkoutBuilder: React.FC = () => {
         </div>
 
         {/* Coggan Zones Legend Bar */}
-        <div className="flex flex-wrap items-center gap-2 pt-1 text-[10px]">
+        <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#94a3b8' }}></span> Z1 恢复 &lt;55%</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#3b82f6' }}></span> Z2 有氧 55-75%</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#10b981' }}></span> Z3 节奏 76-90%</span>
@@ -757,7 +757,7 @@ export const WorkoutBuilder: React.FC = () => {
                   {!isInterval ? (
                     <div className="flex items-center gap-2">
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">功率区间</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-0.5">功率区间</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
@@ -780,7 +780,7 @@ export const WorkoutBuilder: React.FC = () => {
                       </div>
 
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">目标踏频</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-0.5">目标踏频</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
@@ -803,7 +803,7 @@ export const WorkoutBuilder: React.FC = () => {
                       </div>
 
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">分段时长</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-0.5">分段时长</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
@@ -828,7 +828,7 @@ export const WorkoutBuilder: React.FC = () => {
                   ) : (
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">循环次数</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-0.5">循环次数</span>
                         <input
                           type="number"
                           inputMode="numeric"
@@ -847,7 +847,7 @@ export const WorkoutBuilder: React.FC = () => {
                       </div>
 
                       <div className="text-center">
-                        <span className="text-[10px] text-red-500 font-bold block mb-0.5">ON 时长/功率</span>
+                        <span className="text-xs text-red-500 font-bold block mb-0.5">ON 时长/功率</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
@@ -865,7 +865,7 @@ export const WorkoutBuilder: React.FC = () => {
                             }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400">s@</span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">s@</span>
                           <input
                             type="number"
                             inputMode="numeric"
@@ -882,12 +882,12 @@ export const WorkoutBuilder: React.FC = () => {
                             }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400">%</span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">%</span>
                         </div>
                       </div>
 
                       <div className="text-center">
-                        <span className="text-[10px] text-emerald-500 font-bold block mb-0.5">OFF 间歇/功率</span>
+                        <span className="text-xs text-emerald-500 font-bold block mb-0.5">OFF 间歇/功率</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
@@ -905,7 +905,7 @@ export const WorkoutBuilder: React.FC = () => {
                             }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400">s@</span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">s@</span>
                           <input
                             type="number"
                             inputMode="numeric"
@@ -922,7 +922,7 @@ export const WorkoutBuilder: React.FC = () => {
                             }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400">%</span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400">%</span>
                         </div>
                       </div>
                     </div>

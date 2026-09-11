@@ -828,7 +828,7 @@ export const ClimbPacingPlanner: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">
                         {language === 'zh-TW' ? '分段長度' : '分段长度'} (km) {isImperial ? `(${(seg.distanceKm * 0.621371).toFixed(1)} mi)` : ''}
                       </span>
                       <NumberStepper
@@ -846,7 +846,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">
                         {language === 'zh-TW' ? '平均坡度' : '平均坡度'} (%)
                       </span>
                       <NumberStepper
@@ -878,7 +878,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               title={language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
               icon={TrendingUp}
               iconColor="blue"
-              action={<span className="text-slate-400 dark:text-slate-500 text-[10px]">*双坐标轴动态拟合</span>}
+              action={<span className="text-slate-400 dark:text-slate-500 text-[11px]">*双坐标轴动态拟合</span>}
             />
 
             <div className="h-52">
@@ -916,7 +916,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               <div className="space-y-1 text-xs">
                 <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <span>{language === 'zh-TW' ? '陡坡極低踏頻與肌力負荷預警' : '陡坡极低踏频与肌力负荷预警'}</span>
-                  <span className="font-mono px-2 py-0.5 bg-ios-red/20 text-ios-red rounded-full text-[10px] font-bold">
+                  <span className="font-mono px-2 py-0.5 bg-ios-red/20 text-ios-red rounded-full text-[11px] font-bold">
                     {'踏频 < 65 RPM'}
                   </span>
                 </div>
@@ -998,7 +998,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <span>{language === 'zh-TW' ? 'Strava 賽段與經典 KOM 智慧匯入' : 'Strava 赛段与经典 KOM 智能导入'}</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] font-bold">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#FC4C02]/10 text-[#FC4C02] font-bold">
                       Segments
                     </span>
                   </h3>
@@ -1135,11 +1135,11 @@ export const ClimbPacingPlanner: React.FC = () => {
                             <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                               {seg.name}
                             </span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-ios-orange/15 text-ios-orange font-bold whitespace-nowrap shrink-0">
+                            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-ios-orange/15 text-ios-orange font-bold whitespace-nowrap shrink-0">
                               {catLabel}
                             </span>
                             {seg.starred && (
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 flex items-center gap-0.5">
+                              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 flex items-center gap-0.5">
                                 <Star className="w-2.5 h-2.5 fill-current" />
                                 <span>已星标</span>
                               </span>
@@ -1154,7 +1154,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                               <span>极陡: <strong className="text-ios-red">{seg.maximum_grade}%</strong></span>
                             ) : null}
                             {seg.country && (
-                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/5 dark:bg-white/5 font-sans">
+                              <span className="text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5 font-sans">
                                 {seg.country} {seg.city ? `· ${seg.city}` : ''}
                               </span>
                             )}

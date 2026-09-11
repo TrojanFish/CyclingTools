@@ -203,7 +203,7 @@ export const ChainLengthCalculator: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-slate-900 dark:text-white block">全避震软尾补偿 (Full Suspension)</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
                 </div>
                 <input
                   type="checkbox"
@@ -228,7 +228,7 @@ export const ChainLengthCalculator: React.FC = () => {
                     onChange={(e) => setChainstayGrowthMm(Number(e.target.value))}
                     className="w-full accent-ios-blue cursor-pointer h-1.5 bg-black/[0.06] dark:bg-white/[0.1] rounded"
                   />
-                  <span className="text-[10px] text-ios-orange flex items-start gap-1 pt-0.5">
+                  <span className="text-[11px] text-ios-orange flex items-start gap-1 pt-0.5">
                     <Lightbulb className="w-3.5 h-3.5 text-ios-orange shrink-0 mt-0.5" />
                     <span>{language === 'zh-TW' ? `已自動在有效後下叉中計入 ${chainstayGrowthMm}mm 拉伸並增加安全鏈節，杜絕大飛大盤衝擊觸底拉爆後撥！` : `已自动在有效后下叉中计入 ${chainstayGrowthMm}mm 拉伸并增加安全链节，杜绝大飞大盘冲击触底拉爆后拨！`}</span>
                   </span>

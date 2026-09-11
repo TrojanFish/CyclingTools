@@ -362,7 +362,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   step={1}
                   unit="mm"
                 />
-                <span className="text-[10px] text-slate-400 block mt-1">如 50mm高~540, 38mm高~564</span>
+                <span className="text-[11px] text-slate-400 block mt-1">如 50mm高~540, 38mm高~564</span>
               </div>
 
               {/* Asymmetric Rim Offset */}
@@ -377,7 +377,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   unit="mm"
                   decimals={1}
                 />
-                <span className="text-[10px] text-slate-400 block mt-1">对称圈填 0，偏心圈一般 2.0-3.5</span>
+                <span className="text-[11px] text-slate-400 block mt-1">对称圈填 0，偏心圈一般 2.0-3.5</span>
               </div>
 
               {/* Spoke Count */}
@@ -395,7 +395,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   <option value={32}>32 孔 (长途重载 / Enduro)</option>
                   <option value={36}>36 孔 (旅行车 / 经典重负荷)</option>
                 </select>
-                <span className="text-[10px] text-slate-400 block mt-1">碟刹后轮通常 24H 或 28H</span>
+                <span className="text-[11px] text-slate-400 block mt-1">碟刹后轮通常 24H 或 28H</span>
               </div>
             </div>
 
@@ -426,7 +426,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                     );
                   })}
                 </div>
-                <span className="text-[10px] text-slate-400 block mt-1">14/16mm 条帽咬合点更深，系统已自动补偿微调避底</span>
+                <span className="text-[11px] text-slate-400 block mt-1">14/16mm 条帽咬合点更深，系统已自动补偿微调避底</span>
               </div>
 
               <div>
@@ -454,7 +454,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                     );
                   })}
                 </div>
-                <span className="text-[10px] text-slate-400 block mt-1">修正后有效 ERD: <strong className="font-mono text-ios-blue dark:text-ios-blue-dark">{result.effectiveErd} mm</strong></span>
+                <span className="text-[11px] text-slate-400 block mt-1">修正后有效 ERD: <strong className="font-mono text-ios-blue dark:text-ios-blue-dark">{result.effectiveErd} mm</strong></span>
               </div>
             </div>
           </IOSCard>
@@ -475,14 +475,14 @@ export const SpokeLengthCalculator: React.FC = () => {
                   <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
                     {wheelPosition === 'rear' ? '左侧：非驱动侧 (NDS)' : '左侧：碟刹盘侧 (Disc)'}
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">
+                  <span className="text-[11px] text-slate-400 font-mono">
                     有效中心距: {result.effLeftCenter}mm
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] text-slate-500 block mb-1">法兰中心距 W_L (mm)</label>
+                    <label className="text-xs text-slate-500 block mb-1">法兰中心距 W_L (mm)</label>
                     <NumberStepper
                       value={leftCenterDistMm}
                       onChange={setLeftCenterDistMm}
@@ -495,7 +495,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-500 block mb-1">法兰 PCD 孔径 (mm)</label>
+                    <label className="text-xs text-slate-500 block mb-1">法兰 PCD 孔径 (mm)</label>
                     <NumberStepper
                       value={leftPcdMm}
                       onChange={setLeftPcdMm}
@@ -509,7 +509,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">左侧交叉数 (Cross Pattern)</label>
+                  <label className="text-xs text-slate-500 block mb-1">左侧交叉数 (Cross Pattern)</label>
                   <select
                     value={leftCross}
                     onChange={(e) => setLeftCross(Number(e.target.value))}
@@ -530,14 +530,14 @@ export const SpokeLengthCalculator: React.FC = () => {
                   <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
                     {wheelPosition === 'rear' ? '右侧：驱动塔基侧 (DS)' : '右侧：无盘侧 (Non-Disc)'}
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">
+                  <span className="text-[11px] text-slate-400 font-mono">
                     有效中心距: {result.effRightCenter}mm
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] text-slate-500 block mb-1">法兰中心距 W_R (mm)</label>
+                    <label className="text-xs text-slate-500 block mb-1">法兰中心距 W_R (mm)</label>
                     <NumberStepper
                       value={rightCenterDistMm}
                       onChange={setRightCenterDistMm}
@@ -550,7 +550,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-slate-500 block mb-1">法兰 PCD 孔径 (mm)</label>
+                    <label className="text-xs text-slate-500 block mb-1">法兰 PCD 孔径 (mm)</label>
                     <NumberStepper
                       value={rightPcdMm}
                       onChange={setRightPcdMm}
@@ -564,7 +564,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">右侧交叉数 (Cross Pattern)</label>
+                  <label className="text-xs text-slate-500 block mb-1">右侧交叉数 (Cross Pattern)</label>
                   <select
                     value={rightCross}
                     onChange={(e) => setRightCross(Number(e.target.value))}
@@ -591,7 +591,7 @@ export const SpokeLengthCalculator: React.FC = () => {
                 <Disc className="w-4 h-4" />
                 <span>精确辐条下料尺寸</span>
               </span>
-              <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-mono font-semibold">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-mono font-semibold">
                 {spokeCount} 根 / 轮
               </span>
             </div>
@@ -602,15 +602,15 @@ export const SpokeLengthCalculator: React.FC = () => {
               <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400 flex items-center justify-between">
                   <span>左侧 ({wheelPosition === 'rear' ? 'NDS' : 'Disc'})</span>
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-500/10 font-mono">{leftCross}X</span>
+                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-blue-500/10 font-mono">{leftCross}X</span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-display tabular-nums">
                   {result.roundedLeft} <span className="text-sm font-bold text-blue-500 font-sans">mm</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono tabular-nums">
+                <div className="text-[11px] text-slate-500 font-mono tabular-nums">
                   精算值: {result.netLeft} mm
                 </div>
-                <div className="text-[10px] text-slate-400 tabular-nums">
+                <div className="text-[11px] text-slate-400 tabular-nums">
                   张力角: {result.angleLeftDeg}° · 需 {spokeCount / 2} 根
                 </div>
               </div>
@@ -619,15 +619,15 @@ export const SpokeLengthCalculator: React.FC = () => {
               <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
                 <div className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center justify-between">
                   <span>右侧 ({wheelPosition === 'rear' ? 'DS' : 'Non-Disc'})</span>
-                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-rose-500/10 font-mono">{rightCross}X</span>
+                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-rose-500/10 font-mono">{rightCross}X</span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-display tabular-nums">
                   {result.roundedRight} <span className="text-sm font-bold text-rose-500 font-sans">mm</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono tabular-nums">
+                <div className="text-[11px] text-slate-500 font-mono tabular-nums">
                   精算值: {result.netRight} mm
                 </div>
-                <div className="text-[10px] text-slate-400 tabular-nums">
+                <div className="text-[11px] text-slate-400 tabular-nums">
                   张力角: {result.angleRightDeg}° · 需 {spokeCount / 2} 根
                 </div>
               </div>
@@ -676,7 +676,7 @@ export const SpokeLengthCalculator: React.FC = () => {
           <IOSCard variant="default" className="space-y-3">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
               <span>编轮几何投影与交叉角度仿真</span>
-              <span className="text-[10px] text-slate-400 font-mono">Jobst Brandt 2D Chord</span>
+              <span className="text-[11px] text-slate-400 font-mono">Jobst Brandt 2D Chord</span>
             </div>
 
             <div className="h-52 w-full flex items-center justify-center bg-black/[0.02] dark:bg-black/40 rounded-2xl p-2 border border-black/[0.05] dark:border-white/[0.08] relative overflow-hidden">

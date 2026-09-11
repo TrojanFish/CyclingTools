@@ -197,7 +197,7 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
         >
           {toolGroups.map((group) => (
             <div key={group.category} className="space-y-0.5">
-              <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              <div className="px-2.5 py-1 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 {group.label}
               </div>
               {group.tools.map((tItem) => {

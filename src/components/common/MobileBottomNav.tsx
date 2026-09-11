@@ -74,7 +74,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               <div className={`p-1 rounded-xl transition-all duration-200 ${active ? 'bg-ios-blue/12 dark:bg-ios-blue/20 scale-105' : ''}`}>
                 <Icon className={`w-4 h-4 transition-all ${active ? 'stroke-[2.4]' : 'stroke-[1.8]'}`} />
               </div>
-              <span className="text-[10px] mt-0.5 tracking-tight font-sans select-none">{item.label}</span>
+              <span className="text-[11px] mt-0.5 tracking-tight font-sans select-none">{item.label}</span>
             </button>
           );
         })}

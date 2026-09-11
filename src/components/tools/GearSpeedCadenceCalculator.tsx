@@ -384,7 +384,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                         <div className="text-sm font-bold tabular-nums tracking-tight">
                           {isImperial ? (cell.speedKmh * 0.621371).toFixed(1) : cell.speedKmh}
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400/80 tabular-nums">
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400/80 tabular-nums">
                           {cell.ratio} / {isImperial ? `${cell.gearInches}"` : `${cell.devMeters}m`}
                         </div>
                       </td>

@@ -109,7 +109,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
             <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E] border border-[#DEA123]/50 shadow-2xs inline-block" />
             <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F] border border-[#1AAB29]/50 shadow-2xs inline-block" />
           </div>
-          <span className="text-[10px] font-mono tracking-wider font-semibold text-slate-400 dark:text-slate-500 uppercase">
+          <span className="text-[11px] font-mono tracking-wider font-semibold text-slate-400 dark:text-slate-500 uppercase">
             macOS Studio
           </span>
         </div>
@@ -142,7 +142,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
             <LayoutDashboard className={`w-4 h-4 ${currentToolId === null ? 'text-white' : 'text-ios-blue'}`} />
             <span className="truncate">{language === 'zh-TW' ? '工具總覽看板' : '工具总览看板'}</span>
           </div>
-          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+          <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-mono ${
             currentToolId === null ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-500 dark:text-slate-400'
           }`}>
             {TOOLS_LIST.length}
@@ -164,7 +164,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
                     <CategoryIcon className={`w-3.5 h-3.5 ${category.color}`} />
                     <span>{category.label}</span>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">{catTools.length}</span>
+                  <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">{catTools.length}</span>
                 </div>
 
                 {/* Tool Items in this Category */}
@@ -193,7 +193,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
                           <span className="truncate">{toolTitle}</span>
                         </div>
                         {tool.badge && (
-                          <span className={`text-[9px] px-1 py-0.2 rounded font-mono shrink-0 ml-1 ${
+                          <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-mono shrink-0 ml-1 ${
                             isActive ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-slate-400 dark:text-slate-500'
                           }`}>
                             {language === 'zh-TW' && tool.badgeTw ? tool.badgeTw : tool.badge}
@@ -223,7 +223,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
               <div className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                 {activeRider.name}
               </div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5 truncate">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5 truncate">
                 <span className="text-ios-blue font-bold">{wkg} W/kg</span>
                 <span>•</span>
                 <span className="truncate">{activeBike.name.split('/')[0]}</span>

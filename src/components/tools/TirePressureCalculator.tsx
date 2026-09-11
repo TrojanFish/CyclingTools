@@ -243,7 +243,7 @@ export const TirePressureCalculator: React.FC = () => {
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
                     {language === 'zh-TW' ? '車手淨體重' : '车手净体重'}
                     {profile.weightKg ? (
-                      <span className="text-[10px] text-ios-blue font-normal">
+                      <span className="text-[11px] text-ios-blue font-normal">
                         {language === 'zh-TW' ? '已同步檔案' : '已同步档案'}
                       </span>
                     ) : null}
@@ -312,7 +312,7 @@ export const TirePressureCalculator: React.FC = () => {
                     <span className="text-xs font-bold text-slate-900 dark:text-white block">
                       长途重装 / Bikepacking 驮包模式
                     </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
                       附加行囊载荷、重心重构与防砸圈胎压补偿
                     </span>
                   </div>
@@ -438,7 +438,7 @@ export const TirePressureCalculator: React.FC = () => {
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
                 <div>
                   <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">无钩车圈 (Hookless Rim)</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
                 </div>
                 <input
                   type="checkbox"
@@ -452,7 +452,7 @@ export const TirePressureCalculator: React.FC = () => {
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
                 <div>
                   <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">防爆胎垫 / 内衬 (Tire Insert)</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">如 CushCore/Vittoria，防磕圈自适应降压 2.5 PSI</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">如 CushCore/Vittoria，防磕圈自适应降压 2.5 PSI</span>
                 </div>
                 <input
                   type="checkbox"
@@ -480,7 +480,7 @@ export const TirePressureCalculator: React.FC = () => {
                       }`}
                     >
                       <div className={`text-xs ${isSelected ? 'font-bold text-white' : 'font-medium'}`}>{s.label}</div>
-                      <div className={`text-[10px] mt-0.5 ${isSelected ? 'text-white/85' : 'text-slate-500 dark:text-slate-400'}`}>{s.desc}</div>
+                      <div className={`text-[11px] mt-0.5 ${isSelected ? 'text-white/85' : 'text-slate-500 dark:text-slate-400'}`}>{s.desc}</div>
                     </button>
                   );
                 })}

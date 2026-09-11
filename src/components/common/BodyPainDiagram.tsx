@@ -22,7 +22,7 @@ export const BodyPainDiagram: React.FC<BodyPainDiagramProps> = ({
     <div className="w-full bg-black/[0.02] dark:bg-white/[0.03] rounded-2xl border border-black/[0.05] dark:border-white/[0.08] p-4 text-center space-y-2 transition-colors">
       <div className="flex justify-between items-center text-xs">
         <span className="text-slate-800 dark:text-slate-300 font-semibold">交互式人体疼痛定位图</span>
-        <span className="text-slate-500 dark:text-slate-400 text-[10px]">点击身体高亮部位切换</span>
+        <span className="text-slate-500 dark:text-slate-400 text-[11px]">点击身体高亮部位切换</span>
       </div>
 
       <div className="flex justify-center">

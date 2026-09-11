@@ -471,27 +471,27 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">实时识别结果预览:</span>
                 <div className="grid grid-cols-3 gap-2 text-xs font-mono">
                   <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5秒 冲刺</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block">5秒 冲刺</span>
                     <span className="text-ios-blue font-bold">{liveParsed.p5s ? `${liveParsed.p5s} W` : '未识别'}</span>
                   </div>
                   <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">1分钟 无氧</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block">1分钟 无氧</span>
                     <span className="text-ios-blue font-bold">{liveParsed.p1m ? `${liveParsed.p1m} W` : '未识别'}</span>
                   </div>
                   <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">5分钟 VO₂</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block">5分钟 VO₂</span>
                     <span className="text-ios-blue font-bold">{liveParsed.p5m ? `${liveParsed.p5m} W` : '未识别'}</span>
                   </div>
                   <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">20分钟 阈值</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block">20分钟 阈值</span>
                     <span className="text-ios-blue font-bold">{liveParsed.p20m ? `${liveParsed.p20m} W` : '未识别'}</span>
                   </div>
                   <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">FTP 阈值功率</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block">FTP 阈值功率</span>
                     <span className="text-emerald-600 dark:text-emerald-400 font-bold">{liveParsed.ftp ? `${liveParsed.ftp} W` : '保持现值'}</span>
                   </div>
                   <div className="bg-white dark:bg-[#2C2C2E] p-2.5 rounded-xl border border-black/[0.05] dark:border-white/[0.08] shadow-xs">
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">车手体重</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block">车手体重</span>
                     <span className="text-amber-600 dark:text-amber-400 font-bold">{liveParsed.weight ? `${liveParsed.weight} kg` : '保持现值'}</span>
                   </div>
                 </div>
@@ -689,7 +689,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <Sparkles className="w-3.5 h-3.5 text-ios-blue" />
                 {language === 'zh-TW' ? '六維綜合競技能力雷達圖' : '六维综合竞技能力雷达图'}
               </span>
-              <span className="text-slate-400 dark:text-slate-500 text-[10px]">*Coggan 竞技数据库标定</span>
+              <span className="text-slate-400 dark:text-slate-500 text-[11px]">*Coggan 竞技数据库标定</span>
             </div>
 
             <div className="h-60 flex justify-center">

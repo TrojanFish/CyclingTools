@@ -590,7 +590,7 @@ export const GroupRideSimulator: React.FC = () => {
                     <Timer className="w-3.5 h-3.5" />
                     UCI 官方计分冲线规则
                   </span>
-                  <span className="text-[10px] text-slate-500">世巡赛标准</span>
+                  <span className="text-[11px] text-slate-500">世巡赛标准</span>
                 </div>
                 <IOSSegmentedControl
                   options={[
@@ -601,7 +601,7 @@ export const GroupRideSimulator: React.FC = () => {
                   value={tttFinishRule}
                   onChange={(v) => setTttFinishRule(v as any)}
                 />
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                   车队总成绩以第 {tttFinishRule === '4th' ? '4' : tttFinishRule === '5th' ? '5' : '最后'} 位过线车手的车头触线时间为准。允许前序破风手牺牲自爆。
                 </p>
               </div>
@@ -727,7 +727,7 @@ export const GroupRideSimulator: React.FC = () => {
 
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">
                         体重 ({isImperial ? 'lbs' : 'kg'})
                       </span>
                       <input
@@ -758,7 +758,7 @@ export const GroupRideSimulator: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">FTP (W)</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">FTP (W)</span>
                       <input
                         type="number"
                         inputMode="numeric"
@@ -780,7 +780,7 @@ export const GroupRideSimulator: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">W' 储备 (kJ)</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">W' 储备 (kJ)</span>
                       <input
                         type="number"
                         inputMode="decimal"
@@ -803,7 +803,7 @@ export const GroupRideSimulator: React.FC = () => {
                     </div>
                     {mode === 'ttt' && (
                       <div>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">领骑时长 (s)</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">领骑时长 (s)</span>
                         <input
                           type="number"
                           inputMode="numeric"
@@ -906,7 +906,7 @@ export const GroupRideSimulator: React.FC = () => {
                     <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                       {dr.name}
                       {dr.isSacrificial && (
-                        <span className="px-1.5 py-0.2 rounded-sm text-[9px] bg-red-500/15 text-red-500 font-normal">
+                        <span className="px-1.5 py-0.5 rounded-sm text-[11px] bg-red-500/15 text-red-500 font-normal">
                           自杀式副将
                         </span>
                       )}

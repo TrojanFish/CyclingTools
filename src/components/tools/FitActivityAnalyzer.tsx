@@ -1069,7 +1069,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-xs font-mono">
                 <CheckCircle2 className="w-3.5 h-3.5 text-ios-green" />
                 <span className="font-semibold">{analysis.fileName}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-blue text-white uppercase font-bold">{analysis.fileType}</span>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-ios-blue text-white uppercase font-bold">{analysis.fileType}</span>
               </div>
             )}
           </div>
@@ -1122,7 +1122,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <Gauge className="w-4 h-4 text-ios-red" />
               {'车手基准生理参数'}
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
               <span>{language === 'zh-TW' ? '檔案體重' : '档案体重'}</span>
               <span className="font-mono font-semibold text-slate-700 dark:text-slate-200 tabular-nums">{weightKg} kg</span>
             </span>
@@ -1130,7 +1130,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] text-slate-500 block mb-1">FTP (W)</label>
+              <label className="text-xs text-slate-500 block mb-1">FTP (W)</label>
               <NumberStepper
                 value={ftpWatts}
                 onChange={setFtpWatts}
@@ -1142,7 +1142,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
 
             <div>
-              <label className="text-[10px] text-slate-500 block mb-1">
+              <label className="text-xs text-slate-500 block mb-1">
                 {language === 'zh-TW' ? '最大心率 (bpm)' : '最大心率 (bpm)'}
               </label>
               <NumberStepper
@@ -1181,7 +1181,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <span>{language === 'zh-TW' ? '碼表傳感器接入與數據流診斷' : '码表传感器接入与数据流诊断'}</span>
                       {analysis.isEstimatedPower && (
-                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-ios-amber/15 text-ios-amber border border-ios-amber/30">
+                        <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-ios-amber/15 text-ios-amber border border-ios-amber/30">
                           {language === 'zh-TW' ? '⚡ 物理動力學仿真估算中' : '⚡ 物理动力学仿真估算中'}
                         </span>
                       )}
@@ -1227,7 +1227,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <Heart className="w-3.5 h-3.5 text-ios-red" />
                       {language === 'zh-TW' ? '心率通道' : '心率通道'}
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                    <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-md ${
                       analysis.sensorDiagnostics.hasHeartRate
                         ? 'bg-ios-green/15 text-ios-green'
                         : 'bg-slate-200 dark:bg-white/10 text-slate-500'
@@ -1251,7 +1251,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <Layers className="w-3.5 h-3.5 text-ios-purple" />
                       {language === 'zh-TW' ? '電子變速' : '电子变速'}
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                    <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-md ${
                       analysis.sensorDiagnostics.hasShifting
                         ? 'bg-ios-purple/15 text-ios-purple'
                         : 'bg-slate-200 dark:bg-white/10 text-slate-500'
@@ -1277,7 +1277,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <Zap className="w-3.5 h-3.5 text-ios-blue" />
                       {language === 'zh-TW' ? '功率計通道' : '功率计通道'}
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                    <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-md ${
                       analysis.sensorDiagnostics.hasHardwarePower
                         ? 'bg-ios-green/15 text-ios-green'
                         : analysis.isEstimatedPower
@@ -1311,7 +1311,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <RotateCcw className="w-3.5 h-3.5 text-ios-orange" />
                       {language === 'zh-TW' ? '踏頻傳感器' : '踏频传感器'}
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                    <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-md ${
                       analysis.sensorDiagnostics.hasHardwareCadence
                         ? 'bg-ios-green/15 text-ios-green'
                         : 'bg-ios-orange/15 text-ios-orange'
@@ -1406,13 +1406,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <span className="flex items-center gap-1.5">
                 <Heart className="w-4 h-4 text-ios-red" />
                 <span>{'平均心率'}: <strong className="text-slate-900 dark:text-white tabular-nums">{analysis.avgHeartRate ?? '--'} bpm</strong></span>
-                <span className="text-slate-400 text-[10px]">({'最高'} <span className="tabular-nums">{analysis.maxHeartRate ?? '--'}</span>)</span>
+                <span className="text-slate-400 text-[11px]">({'最高'} <span className="tabular-nums">{analysis.maxHeartRate ?? '--'}</span>)</span>
               </span>
 
               <span className="flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-ios-orange" />
                 <span>{'平均踏频'}: <strong className="text-slate-900 dark:text-white tabular-nums">{analysis.avgCadence ?? '--'} rpm</strong></span>
-                <span className="text-slate-400 text-[10px]">
+                <span className="text-slate-400 text-[11px]">
                   ({'踩踏'} <span className="tabular-nums">{analysis.pedalingPercent ?? 100}%</span> · {'滑行'} <span className="tabular-nums">{100 - (analysis.pedalingPercent ?? 100)}%</span>)
                 </span>
               </span>
@@ -1557,7 +1557,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
                         <strong className="text-slate-800 dark:text-white">{z.zone} {z.label}</strong>
-                        <span className="text-slate-400 text-[10px] tabular-nums">({z.range})</span>
+                        <span className="text-slate-400 text-[11px] tabular-nums">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
                         <span className="text-slate-500 tabular-nums">{formatDuration(z.seconds)}</span>
@@ -1599,7 +1599,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: z.color }}></span>
                         <strong className="text-slate-800 dark:text-white">{z.zone} {z.label}</strong>
-                        <span className="text-slate-400 text-[10px] tabular-nums">({z.range})</span>
+                        <span className="text-slate-400 text-[11px] tabular-nums">({z.range})</span>
                       </div>
                       <div className="font-mono flex items-center gap-3">
                         <span className="text-slate-500 tabular-nums">{formatDuration(z.seconds)}</span>
@@ -1776,7 +1776,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           <div key={m.label} className="p-2.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-0.5">
                             <div className="text-[11px] font-bold text-ios-purple uppercase">{m.label}</div>
                             <div className="text-base font-bold text-slate-900 dark:text-white tabular-nums">{m.watts} W</div>
-                            <div className="text-[10px] text-slate-500 tabular-nums">{m.wkg} W/kg</div>
+                            <div className="text-[11px] text-slate-500 tabular-nums">{m.wkg} W/kg</div>
                           </div>
                         ))}
                       </div>
@@ -1838,7 +1838,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           <span>{wPrimeResult.minWPrimePercent}%</span>
                           <span className="text-xs font-normal text-slate-500">({(wPrimeResult.minWPrimeJoules / 1000).toFixed(1)} kJ)</span>
                         </div>
-                        <div className="text-[10px]">
+                        <div className="text-[11px]">
                           {wPrimeResult.minWPrimePercent <= 10 ? (
                             <span className="text-ios-red font-bold">⚠️ 濒临爆缸临界</span>
                           ) : wPrimeResult.minWPrimePercent <= 30 ? (
@@ -1854,7 +1854,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                           {formatDuration(wPrimeResult.minPointSec)}
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">本次骑行最艰苦攻坚点</div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400">本次骑行最艰苦攻坚点</div>
                       </div>
 
                       <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
@@ -1862,7 +1862,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                           {wPrimeResult.matchesBurned} <span className="text-xs font-normal text-slate-500">次火柴</span>
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">燃烧极限火柴次数</div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400">燃烧极限火柴次数</div>
                       </div>
 
                       <div className="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 space-y-1">
@@ -1870,7 +1870,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                           {wPrimeResult.workAboveCpKj} <span className="text-xs font-normal text-slate-500">kJ</span>
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400">
                           历时 <span className="tabular-nums">{formatDuration(wPrimeResult.timeAboveCpSec)}</span>
                         </div>
                       </div>
@@ -1970,7 +1970,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
                   <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '總換擋次數' : '总换挡次数'}</div>
                   <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">{analysis.shiftingEvents.length} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span></div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     {analysis.totalDistanceKm > 0 ? `${(analysis.shiftingEvents.length / (analysis.totalDistanceKm / 10)).toFixed(1)} 次 / 10km` : '--'}
                   </div>
                 </div>
@@ -1980,7 +1980,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
                     {analysis.shiftingEvents.filter(e => e.frontGearNum !== undefined).length} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span>
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     {language === 'zh-TW' ? '牙盤切換' : '牙盘切换'}
                   </div>
                 </div>
@@ -1990,7 +1990,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
                     {analysis.shiftingEvents.filter(e => e.rearGearNum !== undefined).length} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span>
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     {language === 'zh-TW' ? '飛輪微調' : '飞轮微调'}
                   </div>
                 </div>
@@ -2000,7 +2000,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
                     {analysis.movingTimeSec > 0 ? (analysis.shiftingEvents.length / (analysis.movingTimeSec / 3600)).toFixed(1) : '0'} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '次/小時' : '次/小时'}</span>
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     {language === 'zh-TW' ? '平均節奏調頻' : '平均节奏调频'}
                   </div>
                 </div>
@@ -2018,7 +2018,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     const pct = Math.round((count / maxCount) * 100);
                     return (
                       <div key={gNum} className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10 text-center flex flex-col justify-between">
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">{gNum}档</span>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">{gNum}档</span>
                         <div className="h-10 w-full bg-slate-100 dark:bg-white/5 rounded-md flex items-end justify-center my-1 overflow-hidden">
                           <div
                             style={{ height: `${pct}%` }}
@@ -2077,7 +2077,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           ? 'PMC 運動表現管理模型 (CTL / ATL / TSB)'
                           : 'PMC 运动表现管理模型 (CTL / ATL / TSB)'}
                       </h3>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
+                      <span className="px-2 py-0.5 rounded-full text-[11px] font-mono bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
                         Bannister EWMA
                       </span>
                     </div>
@@ -2164,7 +2164,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-2xl sm:text-3xl font-bold font-mono text-blue-600 dark:text-blue-400 block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.ctl : '--'}
                     </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">42 天衰减滚动均线</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">42 天衰减滚动均线</span>
                   </div>
 
                   <div className="p-3 sm:p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-center">
@@ -2174,7 +2174,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-2xl sm:text-3xl font-bold font-mono text-rose-600 dark:text-rose-400 block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.atl : '--'}
                     </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">7 天短期负荷均线</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">7 天短期负荷均线</span>
                   </div>
 
                   <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
@@ -2187,7 +2187,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     >
                       {latestPmcDay ? (latestPmcDay.tsb > 0 ? `+${latestPmcDay.tsb}` : latestPmcDay.tsb) : '--'}
                     </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">CTL - ATL 差值</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">CTL - ATL 差值</span>
                   </div>
 
                   <div className="p-3 sm:p-3.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
@@ -2197,7 +2197,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <span className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-white block my-1 tabular-nums">
                       {analysis.tss}
                     </span>
-                    <span className="text-[10px] text-emerald-500 font-medium">已合并进末日时间轴</span>
+                    <span className="text-[11px] text-emerald-500 font-medium">已合并进末日时间轴</span>
                   </div>
                 </div>
 
@@ -2273,7 +2273,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   {/* 5 TSB Reference Zones */}
                   <div className="space-y-1.5 pt-2">
                     <div className="text-[11px] font-bold text-slate-500">TSB 黄金区间速查：</div>
-                    <div className="grid grid-cols-5 gap-1 text-[9px] text-center font-mono font-bold">
+                    <div className="grid grid-cols-5 gap-1 text-[11px] text-center font-mono font-bold">
                       <div className="p-1 rounded-lg bg-red-500/10 text-red-500" title="过度透支">&lt; -30 透支</div>
                       <div className="p-1 rounded-lg bg-blue-500/10 text-blue-500" title="强化提升">-30~-10 增能</div>
                       <div className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500" title="维持">-10~+5 维持</div>
@@ -2304,7 +2304,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       onChange={(e) => setTargetTsbForPeak(parseInt(e.target.value))}
                       className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-amber-500"
                     />
-                    <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-mono">
+                    <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-mono">
                       <span>+5 (稳健参赛)</span>
                       <span>+15 (爆发力巅峰)</span>
                       <span>+25 (极限减量)</span>
@@ -2343,7 +2343,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                 <div className="flex flex-wrap items-center gap-3 pt-1">
                   <div className="w-28 sm:w-32">
-                    <label className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">训练日期</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">训练日期</label>
                     <select
                       value={newManualDayOffset}
                       onChange={(e) => setNewManualDayOffset(Number(e.target.value))}
@@ -2357,7 +2357,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   </div>
 
                   <div className="w-28 sm:w-32">
-                    <label className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">负荷点数 (TSS)</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">负荷点数 (TSS)</label>
                     <NumberStepper
                       value={newManualTss}
                       onChange={setNewManualTss}
@@ -2369,7 +2369,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   </div>
 
                   <div className="flex-1 min-w-[140px]">
-                    <label className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">训练备注 (可选)</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">训练备注 (可选)</label>
                     <input
                       type="text"
                       value={newManualTitle}
@@ -2484,7 +2484,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                   <div className="p-3 rounded-xl bg-white/80 dark:bg-white/5 border border-black/[0.04] dark:border-white/[0.08] flex items-center justify-between text-xs">
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">推荐专属科学课表</span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block">推荐专属科学课表</span>
                       <span className="font-bold text-slate-900 dark:text-white">
                         {smartWorkoutRecommendation.template.name}
                       </span>
@@ -2560,7 +2560,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             <div className="space-y-3">
               <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
                 <span>选择训练课表方案：</span>
-                <span className="text-[10px] text-ios-red font-normal">已预选最匹配短板方案</span>
+                <span className="text-[11px] text-ios-red font-normal">已预选最匹配短板方案</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -2579,13 +2579,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       }`}
                     >
                       {isRecommended && (
-                        <span className="absolute top-2 right-2 px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-ios-red text-white shadow-2xs">
+                        <span className="absolute top-2 right-2 px-1.5 py-0.5 text-[11px] font-bold rounded-full bg-ios-red text-white shadow-2xs">
                           推荐
                         </span>
                       )}
                       <div className="font-bold text-xs pr-8">{tmpl.name}</div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{tmpl.subtitle}</div>
-                      <div className="text-[10px] text-ios-red font-medium mt-1">{tmpl.categoryLabel}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{tmpl.subtitle}</div>
+                      <div className="text-[11px] text-ios-red font-medium mt-1">{tmpl.categoryLabel}</div>
                     </button>
                   );
                 })}

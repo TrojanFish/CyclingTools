@@ -235,7 +235,7 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
                   {language === 'zh-TW' ? '3:4 騎行社交戰報' : '3:4 骑行社交战报'}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-mono font-bold text-[10px]">
+                <span className="px-2 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-mono font-bold text-[11px]">
                   3:4 HD
                 </span>
               </div>
@@ -350,7 +350,7 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
                     <FileText className="w-3.5 h-3.5 text-ios-blue" />
                     <span>{language === 'zh-TW' ? '社交分享文案' : '社交分享文案'}</span>
                   </div>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-semibold">
+                  <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 text-ios-blue font-semibold">
                     {language === 'zh-TW' ? '智能聯動' : '智能联动'}
                   </span>
                 </div>

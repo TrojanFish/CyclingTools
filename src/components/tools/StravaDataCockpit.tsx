@@ -639,19 +639,19 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             <div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">CTL 长期体能</div>
               <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{latestPmc.ctl}</div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">42天 EWMA 积淀</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">42天 EWMA 积淀</div>
             </div>
             <div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">ATL 急性疲劳</div>
               <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">{latestPmc.atl}</div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">7天负荷累加</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">7天负荷累加</div>
             </div>
             <div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">TSB 竞技状态</div>
               <div className={`text-xl sm:text-2xl font-bold tabular-nums ${latestPmc.tsb >= 0 ? 'text-ios-green' : 'text-ios-red'}`}>
                 {latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb}
               </div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">CTL - ATL</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">CTL - ATL</div>
             </div>
           </div>
 
@@ -1042,7 +1042,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       <span>{comp.name}</span>
                     </span>
                     <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                      className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
                         comp.status === 'critical'
                           ? 'bg-ios-red/10 text-ios-red'
                           : comp.status === 'warn'
@@ -1129,7 +1129,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold text-slate-900 dark:text-white">{act.name}</span>
                     {act.gear_id && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
+                      <span className="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
                         {act.sport_type || 'Ride'}
                       </span>
                     )}

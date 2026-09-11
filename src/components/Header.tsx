@@ -86,9 +86,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center gap-1 sm:gap-1.5 font-sans">
                   <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">{t('brandName')}</span>
                   <span className="text-ios-blue dark:text-ios-blue-dark font-semibold text-sm sm:text-base">{t('brandSuffix')}</span>
-                  <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark font-mono font-bold tracking-tight">{t('brandPro')}</span>
+                  <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark font-mono font-bold tracking-tight">{t('brandPro')}</span>
                 </div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 tracking-normal hidden xl:block">
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 tracking-normal hidden xl:block">
                   {t('slogan')}
                 </div>
               </div>
@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Center Search Input (Desktop) - iOS Spotlight style */}
           <div className="hidden md:flex items-center flex-1 max-w-md mx-4 lg:mx-6">
             <div className="relative w-full">
-              <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 ref={searchInputRef}
                 type="text"
@@ -107,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
                 placeholder={t('searchPlaceholder')}
                 className="w-full h-9 bg-slate-200/50 dark:bg-[#2C2C2E]/80 border border-black/[0.04] dark:border-white/[0.08] rounded-xl pl-9 pr-12 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ios-blue/40 focus:bg-white dark:focus:bg-[#2C2C2E] transition-all"
               />
-              <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-400 dark:text-slate-400 bg-white dark:bg-[#3A3A3C] border border-black/[0.06] dark:border-white/[0.08] rounded-md shadow-xs select-none">
+              <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[11px] font-mono font-medium text-slate-400 dark:text-slate-400 bg-white dark:bg-[#3A3A3C] border border-black/[0.06] dark:border-white/[0.08] rounded-md shadow-xs select-none">
                 /
               </kbd>
             </div>

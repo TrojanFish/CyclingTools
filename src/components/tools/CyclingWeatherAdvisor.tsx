@@ -463,7 +463,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                       <span className={`truncate block ${isSelected ? 'font-bold text-white' : 'font-semibold'}`}>
                         {r.name.split('-')[0].replace('宁波', '').replace('德清', '').replace('舟山', '').replace('安吉', '')}
                       </span>
-                      <span className={`text-[10px] block font-mono ${isSelected ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
+                      <span className={`text-[11px] block font-mono ${isSelected ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
                         {isImperial ? `${Math.round(r.distanceKm * 0.621371)}mi` : `${r.distanceKm}km`} | {r.city}
                       </span>
                     </button>
@@ -517,7 +517,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                   <div className="space-y-1 text-xs">
                     <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <span>强侧风预警 (Crosswind Hazard Alert)</span>
-                      <span className="font-mono px-2 py-0.5 bg-ios-orange/20 text-ios-orange rounded-full text-[10px] font-bold">
+                      <span className="font-mono px-2 py-0.5 bg-ios-orange/20 text-ios-orange rounded-full text-[11px] font-bold">
                         侧风峰值 {isImperial ? `${Math.round(maxCrosswindKmh * 0.621371)} mph` : `${maxCrosswindKmh} km/h`}
                       </span>
                     </div>
@@ -533,7 +533,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                   <div key={seg.pointIndex} className="ios-card p-3.5 rounded-xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[10px] font-bold font-mono">
+                        <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[11px] font-bold font-mono">
                           {seg.pointIndex}
                         </span>
                         <span className="text-xs font-semibold text-slate-900 dark:text-white">
@@ -555,7 +555,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Thermometer className="w-4 h-4 text-ios-orange" />
                         <div>
-                          <span className="text-slate-500 dark:text-slate-400 block text-[10px]">气温 / 体感</span>
+                          <span className="text-slate-500 dark:text-slate-400 block text-[11px]">气温 / 体感</span>
                           <span className="text-slate-900 dark:text-white font-mono font-semibold">
                             {isImperial
                               ? `${Math.round(seg.temp * 9/5 + 32)}°F / ${Math.round(seg.feelsLike * 9/5 + 32)}°F`
@@ -567,7 +567,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Wind className="w-4 h-4 text-ios-blue" />
                         <div>
-                          <span className="text-slate-500 dark:text-slate-400 block text-[10px]">风速风向</span>
+                          <span className="text-slate-500 dark:text-slate-400 block text-[11px]">风速风向</span>
                           <span className="text-slate-900 dark:text-white font-mono font-semibold">
                             {isImperial
                               ? `${Math.round(seg.windSpeedKmh * 0.621371)} mph`
@@ -579,7 +579,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Droplets className="w-4 h-4 text-ios-blue" />
                         <div>
-                          <span className="text-slate-500 dark:text-slate-400 block text-[10px]">湿度 / 降水率</span>
+                          <span className="text-slate-500 dark:text-slate-400 block text-[11px]">湿度 / 降水率</span>
                           <span className="text-slate-900 dark:text-white font-mono font-semibold">{seg.humidity}% / {seg.precipProb}%</span>
                         </div>
                       </div>
@@ -587,7 +587,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Sun className="w-4 h-4 text-ios-orange" />
                         <div>
-                          <span className="text-slate-500 dark:text-slate-400 block text-[10px]">紫外线指数</span>
+                          <span className="text-slate-500 dark:text-slate-400 block text-[11px]">紫外线指数</span>
                           <span className="text-slate-900 dark:text-white font-mono font-semibold">UV {seg.uvIndex} ({seg.uvIndex >= 6 ? '强' : '中等'})</span>
                         </div>
                       </div>

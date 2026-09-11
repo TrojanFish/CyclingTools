@@ -315,7 +315,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                   }}
                   className="w-full accent-ios-blue cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-slate-400">
+                <div className="flex justify-between text-[11px] text-slate-400">
                   <span>23c (公路细胎)</span>
                   <span>40c (Gravel)</span>
                   <span>2.6" (山地重胎)</span>
@@ -340,7 +340,7 @@ export const TubelessSealantCalculator: React.FC = () => {
                   }}
                   className="w-full accent-ios-blue cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-slate-400">
+                <div className="flex justify-between text-[11px] text-slate-400">
                   <span>19mm (公路标配)</span>
                   <span>25mm (全地形)</span>
                   <span>30mm+ (宽圈)</span>
@@ -538,7 +538,7 @@ export const TubelessSealantCalculator: React.FC = () => {
           <IOSCard variant="default" className="space-y-3">
             <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
               <span>{language === 'zh-TW' ? '無內胎截面與注膠池物理示意' : '真空轮胎截面与注胶池物理示意'}</span>
-              <span className="text-[10px] text-slate-400">容积 ~{calculation.volumeLiters} L</span>
+              <span className="text-[11px] text-slate-400">容积 ~{calculation.volumeLiters} L</span>
             </div>
 
             <div className="h-44 w-full flex items-center justify-center bg-black/5 dark:bg-white/5 rounded-2xl p-2 border border-slate-200/60 dark:border-white/10 relative">

@@ -185,7 +185,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
               <div className="w-36 h-36 sm:w-40 sm:h-40 mx-auto rounded-2xl bg-gradient-to-br from-ios-blue/15 to-ios-purple/15 border border-slate-200/80 dark:border-white/10 flex items-center justify-center relative shadow-ios-sm group">
                 <Music className={`w-12 h-12 text-ios-blue ${isPlaying ? 'animate-pulse' : ''}`} />
                 {currentTrack?.bpm && (
-                  <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] font-mono text-white font-bold tabular-nums">
+                  <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[11px] font-mono text-white font-bold tabular-nums">
                     {currentTrack.bpm} BPM
                   </span>
                 )}
@@ -276,12 +276,12 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                       <span className="text-xs font-mono text-slate-400 dark:text-slate-500 w-4 tabular-nums">{idx + 1}</span>
                       <div>
                         <div className="text-xs font-semibold text-slate-900 dark:text-white">{t.name}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">{t.artist}</div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400">{t.artist}</div>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {t.bpm && <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200/70 dark:bg-white/10 text-ios-blue font-mono tabular-nums">{t.bpm} BPM</span>}
+                      {t.bpm && <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-200/70 dark:bg-white/10 text-ios-blue font-mono tabular-nums">{t.bpm} BPM</span>}
                       {playlist.length > 1 && (
                         <button
                           onClick={(e) => removeTrack(t.id, e)}
@@ -371,7 +371,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                 onChange={handleSeek}
                 className="w-full h-1 bg-slate-200 dark:bg-white/10 rounded appearance-none cursor-pointer accent-ios-blue"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400 tabular-nums">
+              <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400 tabular-nums">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -411,7 +411,7 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                   >
                     <span className="truncate">{t.name}</span>
                     {t.bpm && (
-                      <span className={`text-[9px] font-mono ${currentTrackIndex === idx ? 'text-white/80' : 'text-slate-500'}`}>
+                      <span className={`text-[11px] font-mono ${currentTrackIndex === idx ? 'text-white/80' : 'text-slate-500'}`}>
                         {t.bpm} BPM
                       </span>
                     )}
