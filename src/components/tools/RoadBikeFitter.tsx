@@ -48,12 +48,7 @@ export const RoadBikeFitter: React.FC = () => {
     const saddleHeightLeMond = inseam * 0.883;
     const saddleHeightHamley = (inseam * 1.09) - 17.0; // from pedal axle
 
-    // 2. Effective Top Tube (ETT)
-    let ett = ((torso + armLength) * 0.53) - (ridingStyle === 'racing' ? 0.5 : 1.5);
-    if (flexibility === 'high') ett += 0.5;
-    if (flexibility === 'low') ett -= 0.8;
-
-    // 3. Stem length
+    // 2. Stem length
     let stem = 100;
     if (height < 165) stem = 80;
     else if (height < 172) stem = 90;
@@ -63,6 +58,16 @@ export const RoadBikeFitter: React.FC = () => {
 
     if (flexibility === 'low') stem -= 10;
     if (ridingStyle === 'racing') stem += 10;
+
+    // 3. Effective Top Tube (ETT) = Overall Cockpit Reach - Stem Length
+    // Greg LeMond & Competitive Cyclist anthropometric model:
+    // Total Cockpit Span = (Torso + Arm) * 0.535
+    const cockpitReach = (torso + armLength) * 0.535;
+    let ett = cockpitReach - (stem / 10);
+    if (ridingStyle === 'racing') ett += 0.5;
+    else if (ridingStyle === 'recreational') ett -= 1.0;
+    if (flexibility === 'high') ett += 0.5;
+    if (flexibility === 'low') ett -= 0.8;
 
     // 4. Handlebar width
     const hbWidth = shoulderWidth;

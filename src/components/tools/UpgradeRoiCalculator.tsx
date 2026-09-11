@@ -269,7 +269,8 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
     // 1. Flat 40km time saved (at baseline cruise speed)
     const flatDistM = 40000;
-    const vBaseMs = flatCruiseSpeedKmh / 3.6;
+    const safeCruiseSpeedKmh = Math.max(10, flatCruiseSpeedKmh || 35);
+    const vBaseMs = safeCruiseSpeedKmh / 3.6;
     const pBaseAero = 0.5 * 1.20 * 0.32 * Math.pow(vBaseMs, 3);
     const pNewAero = Math.max(10, pBaseAero - totalPowerSaveWatts);
     const vNewMs = Math.pow(pBaseAero / pNewAero, 1 / 3) * vBaseMs;
@@ -279,11 +280,16 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
     // 2. Climb 10km @ 7.5% time saved
     const climbDistM = 10000;
-    const massBase = totalSystemWeightKg;
-    const massNew = Math.max(40, totalSystemWeightKg - totalWeightSaveG / 1000);
+    const safeTotalWeightKg = Math.max(30, totalSystemWeightKg || 76.5);
+    const safeClimbPowerWatts = Math.max(50, climbPowerWatts || 200);
+    const safeClimbGradePct = Math.max(0.5, climbGradePct || 7.5);
+    const massBase = safeTotalWeightKg;
+    const massNew = Math.max(30, safeTotalWeightKg - totalWeightSaveG / 1000);
 
-    const vClimbBaseMs = (climbPowerWatts / (massBase * 9.81 * (climbGradePct / 100) + massBase * 9.81 * 0.004));
-    const vClimbNewMs = ((climbPowerWatts + totalPowerSaveWatts * 0.3) / (massNew * 9.81 * (climbGradePct / 100) + massNew * 9.81 * 0.004));
+    const denomBase = massBase * 9.81 * (safeClimbGradePct / 100) + massBase * 9.81 * 0.004;
+    const denomNew = massNew * 9.81 * (safeClimbGradePct / 100) + massNew * 9.81 * 0.004;
+    const vClimbBaseMs = Math.max(0.5, safeClimbPowerWatts / Math.max(1, denomBase));
+    const vClimbNewMs = Math.max(0.5, (safeClimbPowerWatts + totalPowerSaveWatts * 0.3) / Math.max(1, denomNew));
 
     const climbTimeBaseSec = climbDistM / vClimbBaseMs;
     const climbTimeNewSec = climbDistM / vClimbNewMs;
@@ -355,7 +361,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
         category="风洞实测基准与改装边际效益测算"
         categoryIcon={Scale}
         title="单车改装边际效益与克瓦比 ROI 计算器"
-        description="科学量化每一分改装预算！精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，计算“每瓦投入金钱”，杜绝玄学智商税升级。"
+        description="精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，科学量化改装边际效益与每瓦克重投入产出比。"
         tint="blue"
         onShare={handleGeneratePoster}
         shareTitle="生成改装升级省瓦战报海报"

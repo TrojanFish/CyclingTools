@@ -19,6 +19,7 @@ import {
   Disc,
   Sliders,
   Dumbbell,
+  LayoutDashboard,
   LucideIcon
 } from 'lucide-react';
 
@@ -270,6 +271,18 @@ export const ALL_NAV_TOOLS: NavToolItem[] = [
     categoryLabelTw: '生理與代謝',
     categoryColor: 'ios-red',
     icon: Dumbbell
+  },
+  {
+    id: 'strava-cockpit',
+    title: 'Strava 骑行数据罗盘',
+    titleTw: 'Strava 單車數據羅盤',
+    shortTitle: '数据罗盘',
+    shortTitleTw: '數據羅盤',
+    category: 'health',
+    categoryLabel: '生理与代谢',
+    categoryLabelTw: '生理與代謝',
+    categoryColor: 'ios-red',
+    icon: LayoutDashboard
   }
 ];
 
@@ -293,32 +306,41 @@ export const NAV_PRESETS: NavPreset[] = [
     id: 'default',
     name: '标准综合',
     nameTw: '標準綜合',
-    icon: '🌟',
+    icon: 'Sparkles',
     tools: ['power-calc', 'tire-pressure', 'roadbook-library', 'bike-fitter']
   },
   {
     id: 'racing',
     name: '竞训破风',
     nameTw: '競訓破風',
-    icon: '⚡',
+    icon: 'Zap',
     tools: ['power-calc', 'power-radar', 'activity-analyzer', 'group-ride']
   },
   {
     id: 'touring',
     name: '长途探索',
     nameTw: '長途探索',
-    icon: '🗺️',
+    icon: 'MapPin',
     tools: ['weather-advisor', 'roadbook-library', 'gpx-creator', 'health-calculator']
   },
   {
     id: 'mechanic',
     name: '车店技师',
     nameTw: '車店技師',
-    icon: '🔧',
+    icon: 'Wrench',
     tools: ['gear-calculator', 'chain-calculator', 'tubeless-sealant', 'spoke-calculator']
   }
 ];
 
 export const getNavToolById = (id: string): NavToolItem | undefined => {
   return ALL_NAV_TOOLS.find(t => t.id === id);
+};
+
+export const smoothScrollToTop = () => {
+  if (typeof window === 'undefined') return;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const mainEl = document.getElementById('main-content-scroll');
+  if (mainEl) {
+    mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 };

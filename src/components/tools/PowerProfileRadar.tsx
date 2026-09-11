@@ -436,7 +436,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-ios-blue" />
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">智能功率文本一键识别与导入</h3>
+                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">智能功率文本识别与导入</h3>
               </div>
               <button
                 onClick={() => setIsPasteModalOpen(false)}
@@ -747,7 +747,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             {onNavigateTool && (
               <div className="pt-3 border-t border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                 <div className="text-slate-500 dark:text-slate-400">
-                  💡 想要针对极化三区或弱项开展针对性课表训练？
+                  想要针对极化三区或弱项开展针对性课表训练？
                 </div>
                 <button
                   type="button"

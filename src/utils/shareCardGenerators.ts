@@ -214,7 +214,7 @@ export function generatePowerProfilePoster(data: PowerProfilePosterData): string
 
   ctx.fillStyle = '#FF453A';
   ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🏆 车手类型判定', 60, 228);
+  ctx.fillText('车手类型判定', 60, 228);
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -323,7 +323,7 @@ export function generatePowerProfilePoster(data: PowerProfilePosterData): string
 
   ctx.fillStyle = '#FF9F0A';
   ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🎯 黄金训练区间推荐', 60, zoneY + 32);
+  ctx.fillText('黄金训练区间推荐', 60, zoneY + 32);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
   ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -355,7 +355,7 @@ export function generateClimbPacingPoster(data: ClimbPacingPosterData): string {
   const accent = '#007AFF'; // ios-blue
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🏔️ 爬坡动力学 · 攻坚配速战报', data.climbName || '名山爬坡攻坚规划', `基准 FTP ${data.ftpWatts}W · 智能重力/滚阻/空气阻力分段解算`, accent);
+  drawHeader(ctx, w, '爬坡动力学 · 攻坚配速战报', data.climbName || '名山爬坡攻坚规划', `基准 FTP ${data.ftpWatts}W · 智能重力/滚阻/空气阻力分段解算`, accent);
 
   // Core Climb Stat Box (4 Tiles)
   const tileW = (w - 80 - 15) / 2;
@@ -368,7 +368,7 @@ export function generateClimbPacingPoster(data: ClimbPacingPosterData): string {
   const segStartY = 405;
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🚩 分段路况与目标配速功率表', 40, segStartY);
+  ctx.fillText('分段路况与目标配速功率表', 40, segStartY);
 
   // Segments List Table Box
   const segments = data.segments || [];
@@ -464,7 +464,7 @@ export function generateGearSpeedPoster(data: GearSpeedPosterData): string {
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📊 传动系统核心技术规格', 65, specY + 35);
+  ctx.fillText('传动系统核心技术规格', 65, specY + 35);
 
   const specs = [
     { label: '牙盘大盘配置', val: data.chainringStr },
@@ -495,7 +495,7 @@ export function generateGearSpeedPoster(data: GearSpeedPosterData): string {
 
   ctx.fillStyle = '#FFD60A';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('💡 技师换档与踏频建议', 65, tipY + 35);
+  ctx.fillText('技师换档与踏频建议', 65, tipY + 35);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -593,7 +593,7 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📋 调校技术参数摘要', 65, detailY + 35);
+  ctx.fillText('调校技术参数摘要', 65, detailY + 35);
 
   const params = [
     { label: '车种类型 / 设定', val: data.bikeType },
@@ -624,7 +624,7 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
 
   ctx.fillStyle = '#64D2FF';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('💡 科学胎压为何快人一步？', 65, noticeY + 35);
+  ctx.fillText('科学胎压为何快人一步？', 65, noticeY + 35);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -695,7 +695,7 @@ export function generateUpgradeRoiPoster(data: UpgradeRoiPosterData): string {
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('💡 顶级风洞与职业车队边际效益铁律', 65, tipY + 40);
+  ctx.fillText('顶级风洞与职业车队边际效益铁律', 65, tipY + 40);
 
   const tips = [
     '1. 贴身气动连体骑行服与气动破风头盔是每瓦成本最低的提速利器 (ROI 极高)。',
@@ -754,7 +754,7 @@ export function generateCyclePowerPoster(data: CyclePowerPosterData): string {
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📊 骑行阻力三要素构成占比', 65, splitY + 35);
+  ctx.fillText('骑行阻力三要素构成占比', 65, splitY + 35);
 
   // Multi-color progress bar
   const barX = 65;
@@ -797,7 +797,7 @@ export function generateCyclePowerPoster(data: CyclePowerPosterData): string {
 
   ctx.fillStyle = '#64D2FF';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('💡 空气阻力立方定律', 65, aeroInsightY + 35);
+  ctx.fillText('空气阻力立方定律', 65, aeroInsightY + 35);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -829,7 +829,7 @@ export function generateChainLengthPoster(data: ChainLengthPosterData): string {
   const accent = '#007AFF';
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🔗 传动几何 · 链条物理', '技师级截链规范与后拨容量核算卡', `后下叉 RC: ${data.chainstayMm} mm · 搭配 ${data.frontRings} + ${data.rearCogs}`, accent);
+  drawHeader(ctx, w, '传动几何 · 链条物理', '技师级截链规范与后拨容量核算卡', `后下叉 RC: ${data.chainstayMm} mm · 搭配 ${data.frontRings} + ${data.rearCogs}`, accent);
 
   // Big Recommended Links Pod
   roundRect(ctx, 40, 204, w - 80, 150, 24);
@@ -900,7 +900,7 @@ export function generateChainLengthPoster(data: ChainLengthPosterData): string {
 
   ctx.fillStyle = '#FFD60A';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🔧 技师截链防坑指南', 65, ruleY + 32);
+  ctx.fillText('技师截链防坑指南', 65, ruleY + 32);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -939,7 +939,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
   const causes = data.causes || [];
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🩺 运动医学 · 疼痛自诊处方', `${areaTitle}自纠处方卡`, `已完成排查 ${checkedCount}/${totalChecks} 项 (${progressPct}%) · 科学调车指南`, accent);
+  drawHeader(ctx, w, '运动医学 · 疼痛自诊处方', `${areaTitle}自纠处方卡`, `已完成排查 ${checkedCount}/${totalChecks} 项 (${progressPct}%) · 科学调车指南`, accent);
 
   // Progress banner
   roundRect(ctx, 40, 204, w - 80, 80, 20);
@@ -951,7 +951,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
   ctx.fillStyle = '#BF5AF2';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🎯 排查进度状态', 65, 234);
+  ctx.fillText('排查进度状态', 65, 234);
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -967,7 +967,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
   ctx.fillStyle = '#30D158';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📋 针对性调车自纠处方清单 (Bike Fitting)', 65, rxY + 36);
+  ctx.fillText('针对性调车自纠处方清单 (Bike Fitting)', 65, rxY + 36);
 
   checklist.slice(0, 6).forEach((item, idx) => {
     const iy = rxY + 75 + idx * 46;
@@ -991,7 +991,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
   ctx.fillStyle = '#FF9F0A';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🔍 根本成因与生物力学机理分析', 65, causeY + 36);
+  ctx.fillText('根本成因与生物力学机理分析', 65, causeY + 36);
 
   if (causes.length > 0) {
     causes.slice(0, 3).forEach((c, idx) => {
@@ -1041,7 +1041,7 @@ export function generateWorkoutPoster(data: WorkoutPosterData): string {
   const segments = data.segments || [];
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🏋️ 科学训练 · 结构化间歇课表', title, `基准 FTP ${data.ftpWatts || 200}W · 智能靶向踏频与功率阶梯`, accent);
+  drawHeader(ctx, w, '科学训练 · 结构化间歇课表', title, `基准 FTP ${data.ftpWatts || 200}W · 智能靶向踏频与功率阶梯`, accent);
 
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 204, tileW, 85, '课表总执行时长', durationStr, undefined, '#0A84FF');
@@ -1130,7 +1130,7 @@ export function generateRoadbookPoster(data: RoadbookPosterData): string {
   const accent = '#00C7BE'; // ios-mint
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🧭 经典路书 · 骑行漫游', data.routeName, `${data.sourceCode ? `[${data.sourceCode}] ` : ''}${data.roadCondition}`, accent);
+  drawHeader(ctx, w, '经典路书 · 骑行漫游', data.routeName, `${data.sourceCode ? `[${data.sourceCode}] ` : ''}${data.roadCondition}`, accent);
 
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 204, tileW, 85, '路线总里程', data.distanceKm, 'km', '#0A84FF');
@@ -1173,7 +1173,7 @@ export function generateRoadbookPoster(data: RoadbookPosterData): string {
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📖 路线简介与骑行体验', 65, descY + 40);
+  ctx.fillText('路线简介与骑行体验', 65, descY + 40);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1251,7 +1251,7 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
   const shockRebound = data.shockRebound ?? data.shockReboundClicks ?? 5;
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '🚵 山地避震 · 悬挂调校设定', `${disciplineStr} 战车避震调校档案`, `车手全备重 ${weight} kg · 前后悬挂气压与阻尼基准`, accent);
+  drawHeader(ctx, w, '山地避震 · 悬挂调校设定', `${disciplineStr} 战车避震调校档案`, `车手全备重 ${weight} kg · 前后悬挂气压与阻尼基准`, accent);
 
   // Dual Suspension Pods
   const podW = (w - 80 - 20) / 2;
@@ -1333,7 +1333,7 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
 
   ctx.fillStyle = '#FFD60A';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('💡 山地车下坡姿态与悬挂平衡原则', 65, insY + 40);
+  ctx.fillText('山地车下坡姿态与悬挂平衡原则', 65, insY + 40);
 
   const insights = [
     '• 阻尼调整基准：所有阻尼点击数均从“全关 (Fully Closed / Firmest)”反向顺时针数出。',
@@ -1376,7 +1376,7 @@ export function generateFittingPoster(data: FittingPosterData): string {
   const accent = '#007AFF';
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '📐 人体工效学 · 车架 Fitting', '公路车个人几何调校档案卡', `身高 ${data.height}cm · 跨高 ${data.inseam}cm · 风格: ${data.ridingStyle === 'racing' ? '激进竞技' : '耐力舒适'}`, accent);
+  drawHeader(ctx, w, '人体工效学 · 车架 Fitting', '公路车个人几何调校档案卡', `身高 ${data.height}cm · 跨高 ${data.inseam}cm · 风格: ${data.ridingStyle === 'racing' ? '激进竞技' : '耐力舒适'}`, accent);
 
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 204, tileW, 85, '推荐黄金座高 (BB-坐垫顶)', data.saddleHeight, 'cm', '#0A84FF');
@@ -1394,7 +1394,7 @@ export function generateFittingPoster(data: FittingPosterData): string {
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🚲 核心几何设定与装车配件规格', 65, geomY + 36);
+  ctx.fillText('核心几何设定与装车配件规格', 65, geomY + 36);
 
   const geoms = [
     { label: '车架尺寸参考区间', val: data.frameSize },
@@ -1425,7 +1425,7 @@ export function generateFittingPoster(data: FittingPosterData): string {
 
   ctx.fillStyle = '#64D2FF';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('💡 专业 Fitting 设定验证要点', 65, guideY + 35);
+  ctx.fillText('专业 Fitting 设定验证要点', 65, guideY + 35);
 
   const guides = [
     '• 膝关节微屈角：脚踏踩到 6 点钟死点时，膝关节内夹角应保持在 145°~155° 之间。',
@@ -1493,7 +1493,7 @@ export function generateFitActivityPoster(data: FitActivityPosterData): string {
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📊 Coggan 7 功率区间时间驻留分布', 65, zoneY + 36);
+  ctx.fillText('Coggan 7 功率区间时间驻留分布', 65, zoneY + 36);
 
   if (data.powerZones && data.powerZones.length > 0) {
     // Multi-color stacked zone bar
@@ -1537,7 +1537,7 @@ export function generateFitActivityPoster(data: FitActivityPosterData): string {
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🏆 本次活动生理画像与骑行战评', 65, reviewY + 36);
+  ctx.fillText('本次活动生理画像与骑行战评', 65, reviewY + 36);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
   ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1551,3 +1551,1132 @@ export function generateFitActivityPoster(data: FitActivityPosterData): string {
   drawFooter(ctx, w, h);
   return canvas.toDataURL('image/png');
 }
+
+export interface StravaCockpitPosterData {
+  periodLabel: string;
+  athleteName: string;
+  totalDistanceKm: number;
+  totalElevationM: number;
+  totalMovingTimeMin: number;
+  totalCaloriesKcal: number;
+  totalRides: number;
+  avgNpWatts: number;
+  avgSpeedKmh: number;
+  eddingtonE: number;
+  ctl: number;
+  atl: number;
+  tsb: number;
+  tsbLabel: string;
+  streakDays: number;
+  riderPattern: string;
+  everestCount: number;
+}
+
+/**
+ * Generate Apple-aesthetic Strava Cockpit Share Poster
+ */
+export async function generateStravaCockpitPoster(data: StravaCockpitPosterData): Promise<string> {
+  const w = 800;
+  const h = 1080;
+  const { canvas, ctx } = createPosterCanvas(w, h);
+
+  drawBackground(ctx, w, h, '#007AFF');
+  drawHeader(ctx, w, 'STRAVA 骑行数据罗盘战报', data.periodLabel || '年度全景总览');
+
+  // Athlete Card
+  roundRect(ctx, 40, 100, w - 80, 70, 16);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(data.athleteName || 'SoloRider 车手', 60, 142);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`画像判定: ${data.riderPattern}`, 460, 142);
+
+  // 6 Metric Tiles in 2 rows x 3 cols
+  const metrics = [
+    { label: '总骑行里程', value: `${data.totalDistanceKm.toLocaleString()}`, unit: 'km', color: '#007AFF' },
+    { label: '累计总爬升', value: `+${data.totalElevationM.toLocaleString()}`, unit: 'm', color: '#34C759' },
+    { label: '鞍上总时长', value: `${Math.floor(data.totalMovingTimeMin / 60)}h ${data.totalMovingTimeMin % 60}m`, unit: '', color: '#FF9500' },
+    { label: '活跃卡路里', value: `${data.totalCaloriesKcal.toLocaleString()}`, unit: 'kcal', color: '#FF3B30' },
+    { label: '出勤场次', value: `${data.totalRides}`, unit: '次', color: '#AF52DE' },
+    { label: '加权平均功率', value: `${data.avgNpWatts}`, unit: 'W NP', color: '#00C7BE' },
+  ];
+
+  const gridY = 190;
+  const cardW = 226;
+  const cardH = 95;
+  const gap = 20;
+
+  metrics.forEach((m, idx) => {
+    const col = idx % 3;
+    const row = Math.floor(idx / 3);
+    const x = 40 + col * (cardW + gap);
+    const y = gridY + row * (cardH + gap);
+
+    roundRect(ctx, x, y, cardW, cardH, 16);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(m.label, x + 16, y + 28);
+
+    ctx.fillStyle = m.color;
+    ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(m.value, x + 16, y + 62);
+
+    if (m.unit) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(m.unit, x + 16 + ctx.measureText(m.value).width + 6, y + 62);
+    }
+  });
+
+  // Sports Science & Achievement Section
+  const sciY = 440;
+  roundRect(ctx, 40, sciY, w - 80, 260, 20);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#007AFF';
+  ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('运动生理科学 (Intervals.icu 模型) & 状态评估', 65, sciY + 38);
+
+  // PMC Tri-state pills
+  const pmcItems = [
+    { label: 'CTL (体能底子)', val: `${data.ctl}`, color: '#007AFF' },
+    { label: 'ATL (急性疲劳)', val: `${data.atl}`, color: '#FF9500' },
+    { label: 'TSB (竞技状态)', val: `${data.tsb > 0 ? '+' : ''}${data.tsb}`, color: data.tsb >= 0 ? '#34C759' : '#FF3B30' },
+  ];
+
+  pmcItems.forEach((p, idx) => {
+    const px = 65 + idx * 230;
+    const py = sciY + 60;
+    roundRect(ctx, px, py, 210, 60, 12);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(p.label, px + 14, py + 24);
+
+    ctx.fillStyle = p.color;
+    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(p.val, px + 14, py + 50);
+  });
+
+  // TSB Diagnosis text
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`• 当前身心竞技状态判定: ${data.tsbLabel}`, 65, sciY + 160);
+  ctx.fillText(`• 连续出勤记录: 已连续打卡 ${data.streakDays} 天`, 65, sciY + 195);
+  ctx.fillText(`• 垂直空间征服: 累计爬升相当于征服了 ${data.everestCount} 座珠穆朗玛峰 (Everest)`, 65, sciY + 230);
+
+  // Eddington Hero Block
+  const eddY = 720;
+  roundRect(ctx, 40, eddY, w - 80, 220, 20);
+  ctx.fillStyle = 'rgba(0, 122, 255, 0.06)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(0, 122, 255, 0.2)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#007AFF';
+  ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('车手爱丁顿数 (EDDINGTON NUMBER)', 65, eddY + 36);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 64px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`E = ${data.eddingtonE}`, 65, eddY + 115);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`代表车手一生中至少有 ${data.eddingtonE} 天，单日骑行里程超过了 ${data.eddingtonE} 公里。`, 65, eddY + 155);
+  ctx.fillText(`这是全球严肃骑行者用汗水与车轮丈量大地的终极耐力勋章！`, 65, eddY + 185);
+
+  drawFooter(ctx, w, h);
+  return canvas.toDataURL('image/png');
+}
+
+export interface LatestRidePosterData {
+  title: string;
+  dateStr: string;
+  distKm: number;
+  eleM: number;
+  timeStr: string;
+  avgSpeed: number;
+  np: number;
+  avgP: number;
+  wKg?: number;
+  vi: number;
+  ifVal: number;
+  tss: number;
+  avgHr?: number | null;
+  maxHr?: number | null;
+  ef?: number | null;
+  caloriesKcal?: number;
+  tacticalPace: string;
+  tacticalColor?: string;
+  sportType?: string;
+  bikeName?: string;
+  isRealData?: boolean;
+}
+
+export type LatestRidePosterTheme = 'conqueror' | 'neon-dawn' | 'racing';
+
+/**
+ * STYLE 1: "征服者手稿" (Conqueror's Log)
+ * Deep military olive & gold topographic expedition aesthetic for climbers and elevation seekers.
+ */
+async function generateConquerorPoster(data: LatestRidePosterData): Promise<string> {
+  const w = 1080;
+  const h = 1440; // 3:4 Aspect Ratio
+  const { canvas, ctx } = createPosterCanvas(w, h);
+
+  // 1. Dark Expedition Olive Gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+  bgGrad.addColorStop(0, '#0a120d');
+  bgGrad.addColorStop(0.4, '#101c14');
+  bgGrad.addColorStop(0.8, '#0d1610');
+  bgGrad.addColorStop(1, '#060b08');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Ambient Forest/Gold Radial Glow
+  const topGlow = ctx.createRadialGradient(w * 0.2, 200, 10, w * 0.2, 200, 600);
+  topGlow.addColorStop(0, 'rgba(212, 175, 55, 0.16)');
+  topGlow.addColorStop(0.6, 'rgba(52, 199, 89, 0.06)');
+  topGlow.addColorStop(1, 'transparent');
+  ctx.fillStyle = topGlow;
+  ctx.fillRect(0, 0, w, 800);
+
+  // 2. Procedural Topographic Contour Lines (等高线纹理)
+  ctx.lineWidth = 1.2;
+  const contourSteps = [180, 320, 480, 640, 800, 960, 1120, 1280];
+  contourSteps.forEach((cy, idx) => {
+    ctx.strokeStyle = idx % 2 === 0 ? 'rgba(212, 175, 55, 0.07)' : 'rgba(52, 199, 89, 0.05)';
+    ctx.beginPath();
+    ctx.moveTo(0, cy);
+    const amp = 35 + (idx % 3) * 18;
+    ctx.bezierCurveTo(w * 0.25, cy - amp, w * 0.55, cy + amp * 1.2, w * 0.78, cy - amp * 0.6);
+    ctx.bezierCurveTo(w * 0.88, cy + amp * 0.5, w * 0.95, cy - amp * 0.3, w, cy + 10);
+    ctx.stroke();
+
+    // Elevation contour label
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.3)';
+    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${250 + idx * 85}m`, 45 + (idx * 90) % (w - 180), cy - 6);
+  });
+
+  // Military crosshairs & framing grid
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
+  ctx.lineWidth = 1;
+  roundRect(ctx, 40, 40, w - 80, h - 80, 0);
+  ctx.stroke();
+
+  // Corner crosshairs
+  const crossSize = 14;
+  const corners = [
+    [40, 40],
+    [w - 40, 40],
+    [40, h - 40],
+    [w - 40, h - 40],
+  ];
+  corners.forEach(([cx, cy]) => {
+    ctx.beginPath();
+    ctx.moveTo(cx - crossSize, cy);
+    ctx.lineTo(cx + crossSize, cy);
+    ctx.moveTo(cx, cy - crossSize);
+    ctx.lineTo(cx, cy + crossSize);
+    ctx.stroke();
+  });
+
+  // 3. Header: Field Expedition Header
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '2.5px';
+  ctx.fillText('SOLORIDER EXPEDITION · 地形征服与高度日志', 65, 78);
+
+  // Expedition Spec Badge (Right)
+  const specText = 'ELEVATION SPEC · GRADE A';
+  ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  const specW = ctx.measureText(specText).width + 20;
+  roundRect(ctx, w - 65 - specW, 62, specW, 24, 4);
+  ctx.fillStyle = 'rgba(212, 175, 55, 0.12)';
+  ctx.fill();
+  ctx.strokeStyle = '#D4AF37';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = '#F5E6BE';
+  ctx.fillText(specText, w - 65 - specW + 10, 78);
+
+  // Date & Vehicle metadata
+  ctx.fillStyle = 'rgba(245, 230, 190, 0.6)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`${data.dateStr} · 战车: ${data.bikeName || '公路战车'} · ${data.sportType || 'ROAD'}`, 65, 122);
+
+  // Activity Title
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  let displayTitle = data.title;
+  if (ctx.measureText(displayTitle).width > w - 130) {
+    while (ctx.measureText(displayTitle + '...').width > w - 130 && displayTitle.length > 5) {
+      displayTitle = displayTitle.slice(0, -1);
+    }
+    displayTitle += '...';
+  }
+  ctx.fillText(displayTitle, 65, 172);
+
+  // 4. Hero Section: The Gigantic Mountain Climb Split
+  const heroY = 215;
+  const heroH = 190;
+
+  // Left Huge Elevation Box
+  roundRect(ctx, 65, heroY, 560, heroH, 16);
+  ctx.fillStyle = 'rgba(212, 175, 55, 0.06)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.25)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '1.5px';
+  ctx.fillText('累计垂直拔升 / VERTICAL SUMMIT GAIN', 90, heroY + 36);
+
+  ctx.fillStyle = '#F3E5AB';
+  ctx.font = 'bold 84px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  const eleText = `+${data.eleM}`;
+  ctx.fillText(eleText, 90, heroY + 120);
+  const eleW = ctx.measureText(eleText).width;
+
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('M', 90 + eleW + 10, heroY + 120);
+
+  const eiffel = (data.eleM / 300).toFixed(1);
+  ctx.fillStyle = 'rgba(245, 230, 190, 0.8)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`直拔 ${eiffel} 座埃菲尔铁塔 · 战胜重力做功`, 90, heroY + 160);
+
+  // Right Distance & Pace Box
+  roundRect(ctx, 645, heroY, w - 65 - 645, heroH, 16);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '1px';
+  ctx.fillText('单场里程 / DISTANCE', 670, heroY + 36);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 50px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(String(data.distKm), 670, heroY + 98);
+  const distW = ctx.measureText(String(data.distKm)).width;
+  ctx.fillStyle = '#34C759';
+  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('KM', 670 + distW + 8, heroY + 98);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`均速 ${data.avgSpeed} km/h · 耗时 ${data.timeStr}`, 670, heroY + 142);
+  ctx.fillText(`战术判定: ${data.tacticalPace}`, 670, heroY + 166);
+
+  // 5. Alpine Ridge Profile (山脊剖面线与蚀刻排线)
+  const ridgeY = 430;
+  const ridgeH = 250;
+  const ridgeW = w - 130;
+
+  roundRect(ctx, 65, ridgeY, ridgeW, ridgeH, 16);
+  ctx.fillStyle = 'rgba(10, 18, 13, 0.75)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.18)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('山脊高程剖面与爬坡地形蚀刻 (TOPO RIDGE PROFILE)', 88, ridgeY + 32);
+
+  const baseLine = ridgeY + ridgeH - 35;
+  const rPoints = [
+    { x: 88, y: baseLine - 25 },
+    { x: 88 + ridgeW * 0.18, y: baseLine - 60 },
+    { x: 88 + ridgeW * 0.32, y: baseLine - 95 },
+    { x: 88 + ridgeW * 0.5, y: baseLine - 165 }, // Peak
+    { x: 88 + ridgeW * 0.68, y: baseLine - 75 },
+    { x: 88 + ridgeW * 0.82, y: baseLine - 110 },
+    { x: 88 + ridgeW - 46, y: baseLine - 30 }
+  ];
+
+  // Vertical Etching Hatching (复古地形图蚀刻排线)
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
+  ctx.lineWidth = 1.5;
+  for (let hx = 88; hx <= 88 + ridgeW - 46; hx += 12) {
+    // Interpolate curve height at hx
+    const t = (hx - 88) / (ridgeW - 46);
+    const estY = baseLine - (Math.sin(t * Math.PI) * 135 + Math.sin(t * Math.PI * 3) * 20);
+    ctx.beginPath();
+    ctx.moveTo(hx, baseLine);
+    ctx.lineTo(hx, estY);
+    ctx.stroke();
+  }
+
+  // Draw Ridge Curve
+  ctx.beginPath();
+  ctx.moveTo(rPoints[0].x, rPoints[0].y);
+  for (let i = 0; i < rPoints.length - 1; i++) {
+    const xc = (rPoints[i].x + rPoints[i + 1].x) / 2;
+    const yc = (rPoints[i].y + rPoints[i + 1].y) / 2;
+    ctx.quadraticCurveTo(rPoints[i].x, rPoints[i].y, xc, yc);
+  }
+  ctx.quadraticCurveTo(rPoints[rPoints.length - 1].x, rPoints[rPoints.length - 1].y, rPoints[rPoints.length - 1].x, rPoints[rPoints.length - 1].y);
+  ctx.strokeStyle = '#D4AF37';
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+
+  // Peak Pin
+  const peakPt = rPoints[3];
+  ctx.beginPath();
+  ctx.arc(peakPt.x, peakPt.y, 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#F3E5AB';
+  ctx.fill();
+  ctx.strokeStyle = '#D4AF37';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#F3E5AB';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`SUMMIT 极点 +${data.eleM}m`, peakPt.x - 55, peakPt.y - 14);
+
+  // Axis labels
+  ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
+  ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('0.0 KM 大本营', 88, baseLine + 22);
+  ctx.fillText(`${data.distKm} KM 收官`, 88 + ridgeW - 120, baseLine + 22);
+
+  // 6. 6-Tile Expedition Telemetry Grid
+  const gridY = 705;
+  const tileW = 295;
+  const tileH = 115;
+  const gapX = 27;
+  const gapY = 16;
+
+  const expMetrics = [
+    { label: '标准化功率 NP', val: `${data.np} W`, sub: data.wKg ? `${data.wKg} W/kg · 推重比` : '克服重力加权做功', color: '#E5C07B' },
+    { label: '平均有效功率', val: `${data.avgP} W`, sub: `做功积分 ${data.caloriesKcal || 800} kcal`, color: '#FFFFFF' },
+    { label: '变异指数 VI', val: `${data.vi}`, sub: data.vi <= 1.05 ? '平稳踩踏 · 控瓦得当' : '陡坡拉扯 · 峰值波动', color: '#34C759' },
+    { label: '强度系数 IF', val: `${data.ifVal}`, sub: data.ifVal >= 0.85 ? '阈值以上 · 攻坚拉练' : '有氧区间 · 持续巡航', color: '#D4AF37' },
+    { label: '训练负荷 TSS', val: `${data.tss}`, sub: '单场体能与生理刺激', color: '#FF9500' },
+    { label: '效率因子 EF', val: data.ef ? `${data.ef}` : '--', sub: data.avgHr ? `心率 ${data.avgHr} bpm · 做功产出` : 'NP / 心率生理比', color: '#00C7BE' },
+  ];
+
+  expMetrics.forEach((m, idx) => {
+    const col = idx % 3;
+    const row = Math.floor(idx / 3);
+    const tx = 65 + col * (tileW + gapX);
+    const ty = gridY + row * (tileH + gapY);
+
+    roundRect(ctx, tx, ty, tileW, tileH, 12);
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.04)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(245, 230, 190, 0.6)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(m.label, tx + 16, ty + 28);
+
+    ctx.fillStyle = m.color;
+    ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(m.val, tx + 16, ty + 68);
+
+    ctx.fillStyle = 'rgba(245, 230, 190, 0.65)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(m.sub, tx + 16, ty + 95);
+  });
+
+  // 7. Military Seal & Field Note Block
+  const noteY = 970;
+  const noteH = 345;
+  roundRect(ctx, 65, noteY, ridgeW, noteH, 16);
+  ctx.fillStyle = 'rgba(10, 18, 13, 0.7)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.2)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Seal badge (Right)
+  const sealCx = w - 170;
+  const sealCy = noteY + 110;
+  ctx.beginPath();
+  ctx.arc(sealCx, sealCy, 60, 0, Math.PI * 2);
+  ctx.strokeStyle = '#D4AF37';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(sealCx, sealCy, 52, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SOLORIDER', sealCx, sealCy - 20);
+  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('CONQUERED', sealCx, sealCy);
+  ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('VERIFIED 3:4', sealCx, sealCy + 20);
+  ctx.textAlign = 'left';
+
+  // Field Notes (Left)
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('FIELD NOTES · 征服者实测战报剖析', 90, noteY + 40);
+
+  const bullets = [
+    `高程征服核算: 本场克服重力直拔累计 +${data.eleM}m，垂直落差与功耗折合直拔 ${eiffel} 座埃菲尔铁塔。`,
+    `功率踏频自律: 标准化功率达 ${data.np}W (变异指数 VI ${data.vi})，爬坡起伏段踏频自律，无氧储备调配合理。`,
+    `机体能量消耗: 克服坡度做功总计约 ${data.caloriesKcal || 800} kcal，相当于消耗 ${Math.max(1, Math.round((data.caloriesKcal || 800) / 105))} 根香蕉的生物能量。`,
+    `征服格言: 双腿是丈量大地的唯一标尺，山顶的清风只为攀登至巅峰的征服者吹拂。`
+  ];
+
+  bullets.forEach((b, bi) => {
+    const by = noteY + 80 + bi * 62;
+    ctx.beginPath();
+    ctx.arc(96, by + 4, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#D4AF37';
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(245, 230, 190, 0.85)';
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+    // wrap line if needed
+    const maxW = ridgeW - 220;
+    let l1 = '';
+    let l2 = '';
+    for (let c = 0; c < b.length; c++) {
+      const test = l1 + b[c];
+      if (ctx.measureText(test).width > maxW) {
+        l2 = b.slice(c);
+        break;
+      } else {
+        l1 = test;
+      }
+    }
+    ctx.fillText(l1, 112, by + 9);
+    if (l2) {
+      ctx.fillText(l2, 112, by + 30);
+    }
+  });
+
+  // 8. Footer Watermark
+  const footerY = 1360;
+  ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(65, footerY);
+  ctx.lineTo(w - 65, footerY);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(212, 175, 55, 0.5)';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('SOLORIDER PRO · 征服者手稿 · 1080×1440 HD (3:4)', 65, footerY + 32);
+
+  const rightTag = 'SUMMIT CERTIFIED';
+  ctx.fillStyle = '#D4AF37';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(rightTag, w - 65 - ctx.measureText(rightTag).width, footerY + 32);
+
+  return canvas.toDataURL('image/png');
+}
+
+/**
+ * STYLE 2: "城市霓虹破晓" (Neon Dawn)
+ * Vibrant cyber-sunrise gradient with prominent average speed, neon borders, and lifestyle motto.
+ */
+async function generateNeonDawnPoster(data: LatestRidePosterData): Promise<string> {
+  const w = 1080;
+  const h = 1440; // 3:4 Aspect Ratio
+  const { canvas, ctx } = createPosterCanvas(w, h);
+
+  // 1. Cyber Sunrise Vibrant Gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+  bgGrad.addColorStop(0, '#2b0a3d');
+  bgGrad.addColorStop(0.25, '#190628');
+  bgGrad.addColorStop(0.65, '#0d0217');
+  bgGrad.addColorStop(1, '#05010a');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Sunrise Ray Flare Orb at Top
+  const sunOrb = ctx.createRadialGradient(w / 2, 0, 10, w / 2, 0, 680);
+  sunOrb.addColorStop(0, 'rgba(255, 94, 58, 0.45)');
+  sunOrb.addColorStop(0.4, 'rgba(255, 45, 85, 0.22)');
+  sunOrb.addColorStop(0.7, 'rgba(0, 242, 254, 0.08)');
+  sunOrb.addColorStop(1, 'transparent');
+  ctx.fillStyle = sunOrb;
+  ctx.fillRect(0, 0, w, 750);
+
+  // Flowing GPS Neon Light Waves in background
+  ctx.lineWidth = 3;
+  for (let li = 0; li < 4; li++) {
+    ctx.strokeStyle = li % 2 === 0 ? 'rgba(0, 242, 254, 0.15)' : 'rgba(255, 45, 85, 0.12)';
+    ctx.beginPath();
+    const sy = 320 + li * 90;
+    ctx.moveTo(0, sy);
+    ctx.bezierCurveTo(w * 0.3, sy - 80, w * 0.65, sy + 100, w, sy - 40);
+    ctx.stroke();
+  }
+
+  // 2. Dual Glowing Neon Borders
+  // Outer Cyan Neon
+  ctx.strokeStyle = 'rgba(0, 242, 254, 0.6)';
+  ctx.lineWidth = 2.5;
+  roundRect(ctx, 35, 35, w - 70, h - 70, 24);
+  ctx.stroke();
+
+  // Inner Magenta Neon
+  ctx.strokeStyle = 'rgba(255, 45, 85, 0.35)';
+  ctx.lineWidth = 1;
+  roundRect(ctx, 42, 42, w - 84, h - 84, 20);
+  ctx.stroke();
+
+  // 3. Header
+  ctx.fillStyle = '#00F2FE';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('SOLORIDER CITY RIDE · 破晓晨刷档案', 65, 80);
+
+  // Top Right Badge Capsule
+  const pillText = 'DAWN CHASER · 晨光追风者';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  const pillW = ctx.measureText(pillText).width + 24;
+  roundRect(ctx, w - 65 - pillW, 64, pillW, 28, 14);
+  const pillGrad = ctx.createLinearGradient(w - 65 - pillW, 0, w - 65, 0);
+  pillGrad.addColorStop(0, 'rgba(255, 45, 85, 0.3)');
+  pillGrad.addColorStop(1, 'rgba(255, 149, 0, 0.3)');
+  ctx.fillStyle = pillGrad;
+  ctx.fill();
+  ctx.strokeStyle = '#FF2D55';
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(pillText, w - 65 - pillW + 12, 83);
+
+  // Title & Date
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`${data.dateStr} · 战车: ${data.bikeName || '公路战车'}`, 65, 126);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(data.title, 65, 176);
+
+  // 4. Hero Visual: Colossal Average Speed
+  const speedBoxY = 215;
+  const speedBoxH = 260;
+  const speedBoxW = w - 130;
+
+  roundRect(ctx, 65, speedBoxY, speedBoxW, speedBoxH, 24);
+  const speedGrad = ctx.createLinearGradient(65, speedBoxY, 65 + speedBoxW, speedBoxY + speedBoxH);
+  speedGrad.addColorStop(0, 'rgba(255, 45, 85, 0.12)');
+  speedGrad.addColorStop(0.5, 'rgba(0, 242, 254, 0.08)');
+  speedGrad.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+  ctx.fillStyle = speedGrad;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(0, 242, 254, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#00F2FE';
+  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '1px';
+  ctx.fillText('巡航均速 / AVERAGE CRUISE SPEED', 95, speedBoxY + 45);
+
+  // Giant Speed Display
+  const speedStr = `${data.avgSpeed}`;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 125px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(speedStr, 95, speedBoxY + 165);
+  const sw = ctx.measureText(speedStr).width;
+
+  ctx.fillStyle = '#00F2FE';
+  ctx.font = 'bold 34px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('KM/H', 95 + sw + 16, speedBoxY + 130);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`耗时 ${data.timeStr} · 战术属性: ${data.tacticalPace}`, 95, speedBoxY + 215);
+
+  // 5. 4-Pill Glowing Data Capsules
+  const capY = 500;
+  const capW = 460;
+  const capH = 120;
+  const capGapX = 30;
+  const capGapY = 20;
+
+  const caps = [
+    { label: '单场骑行里程', val: `${data.distKm}`, unit: 'km', color: '#00F2FE', sub: '破风晨跑刷街' },
+    { label: '累计垂直爬升', val: `+${data.eleM}`, unit: 'm', color: '#34C759', sub: `等效 ${(data.eleM / 300).toFixed(1)} 座埃菲尔铁塔` },
+    { label: '标准化功率 NP', val: `${data.np}`, unit: 'W', color: '#FF2D55', sub: data.wKg ? `${data.wKg} W/kg · 推重比` : '稳态有效加权' },
+    { label: '能量消耗做功', val: `${data.caloriesKcal || 800}`, unit: 'kcal', color: '#FF9500', sub: `等效 ${Math.max(1, Math.round((data.caloriesKcal || 800) / 105))} 根香蕉` },
+  ];
+
+  caps.forEach((cp, idx) => {
+    const col = idx % 2;
+    const row = Math.floor(idx / 2);
+    const cx = 65 + col * (capW + capGapX);
+    const cy = capY + row * (capH + capGapY);
+
+    roundRect(ctx, cx, cy, capW, capH, 18);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.fill();
+    ctx.strokeStyle = cp.color + '40';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(cp.label, cx + 22, cy + 32);
+
+    ctx.fillStyle = cp.color;
+    ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(cp.val, cx + 22, cy + 78);
+    const cw = ctx.measureText(cp.val).width;
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(cp.unit, cx + 22 + cw + 8, cy + 78);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(cp.sub, cx + 22, cy + 104);
+  });
+
+  // 6. 3-Tile Telemetry Line (VI / IF / TSS)
+  const trioY = 780;
+  const trioW = 295;
+  const trioH = 95;
+  const trioGap = 27;
+
+  const trios = [
+    { label: '变异指数 VI', val: `${data.vi}`, sub: '输出平稳自律度', color: '#00F2FE' },
+    { label: '强度系数 IF', val: `${data.ifVal}`, sub: 'FTP负荷负荷比', color: '#AF52DE' },
+    { label: '训练负荷 TSS', val: `${data.tss}`, sub: '生理压力刺激', color: '#FF2D55' },
+  ];
+
+  trios.forEach((tr, idx) => {
+    const tx = 65 + idx * (trioW + trioGap);
+    roundRect(ctx, tx, trioY, trioW, trioH, 16);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(tr.label, tx + 18, trioY + 28);
+
+    ctx.fillStyle = tr.color;
+    ctx.font = 'bold 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(tr.val, tx + 18, trioY + 62);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+    ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(tr.sub, tx + 18, trioY + 84);
+  });
+
+  // 7. Xiaohongshu Emotional Golden Motto Card
+  const mottoY = 905;
+  const mottoH = 425;
+  roundRect(ctx, 65, mottoY, speedBoxW, mottoH, 24);
+  const mottoGrad = ctx.createLinearGradient(65, mottoY, 65, mottoY + mottoH);
+  mottoGrad.addColorStop(0, 'rgba(255, 45, 85, 0.15)');
+  mottoGrad.addColorStop(1, 'rgba(0, 242, 254, 0.08)');
+  ctx.fillStyle = mottoGrad;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 45, 85, 0.35)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Quote symbol
+  ctx.fillStyle = 'rgba(255, 45, 85, 0.4)';
+  ctx.font = 'bold 72px -apple-system, BlinkMacSystemFont, Georgia, serif';
+  ctx.fillText('“', 95, mottoY + 70);
+
+  // Big Motto Text
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('清晨 05:30 的破晓之风，', 95, mottoY + 115);
+  ctx.fillStyle = '#00F2FE';
+  ctx.fillText('是世界给自律者最好的红包。', 95, mottoY + 155);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.font = '15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`52.4 km 晨风破晓刷街收官，均速 ${data.avgSpeed} km/h 稳健巡航。`, 95, mottoY + 215);
+  ctx.fillText(`单车踩碎清晨的庸懒，用汗水与速度唤醒沉睡的城市。`, 95, mottoY + 248);
+  ctx.fillText(`满电开启一整天的高能打拼，今天也是活力拉满的自律骑友！`, 95, mottoY + 281);
+
+  // Sub Tags
+  const tags = ['#破晓晨骑', '#生活美学', '#骑行日常', '#满电出发'];
+  tags.forEach((tg, ti) => {
+    const tgX = 95 + ti * 145;
+    roundRect(ctx, tgX, mottoY + 340, 130, 32, 16);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = '#00F2FE';
+    ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(tg, tgX + 16, mottoY + 361);
+  });
+
+  // 8. Footer Watermark
+  const footerY = 1360;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(65, footerY);
+  ctx.lineTo(w - 65, footerY);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('SOLORIDER NEON DAWN · 破晓晨刷 · 1080×1440 HD (3:4)', 65, footerY + 32);
+
+  const rightTag = 'CITY RIDE VERIFIED';
+  ctx.fillStyle = '#00F2FE';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(rightTag, w - 65 - ctx.measureText(rightTag).width, footerY + 32);
+
+  return canvas.toDataURL('image/png');
+}
+
+/**
+ * STYLE 3: "极简竞速仪表盘" (Racing Dashboard)
+ * Precision Formula 1 carbon cockpit aesthetic with full-screen circular power gauge dial.
+ */
+async function generateRacingDashboardPoster(data: LatestRidePosterData): Promise<string> {
+  const w = 1080;
+  const h = 1440; // 3:4 Aspect Ratio
+  const { canvas, ctx } = createPosterCanvas(w, h);
+
+  // 1. Pure Stealth Carbon Dark
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+  bgGrad.addColorStop(0, '#060709');
+  bgGrad.addColorStop(0.5, '#0c0e13');
+  bgGrad.addColorStop(1, '#050608');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Precision Technical Grid Lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+  ctx.lineWidth = 1;
+  for (let gx = 50; gx < w; gx += 60) {
+    ctx.beginPath();
+    ctx.moveTo(gx, 0);
+    ctx.lineTo(gx, h);
+    ctx.stroke();
+  }
+  for (let gy = 50; gy < h; gy += 60) {
+    ctx.beginPath();
+    ctx.moveTo(0, gy);
+    ctx.lineTo(w, gy);
+    ctx.stroke();
+  }
+
+  // Outer Technical Frame
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, 40, 40, w - 80, h - 80, 0);
+  ctx.stroke();
+
+  // 2. Header
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('SOLORIDER RACING TELEMETRY · 赛事级功率仪表盘', 65, 78);
+
+  const specLabel = 'FORMULA COCKPIT · PRO SPEC';
+  ctx.fillStyle = '#007AFF';
+  ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  const specW = ctx.measureText(specLabel).width;
+  ctx.fillText(specLabel, w - 65 - specW, 78);
+
+  // Title & Metadata
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`${data.dateStr} · 战车: ${data.bikeName || '公路战车'} · ${data.sportType || 'RACE'}`, 65, 122);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(data.title, 65, 172);
+
+  // 3. Central Circular Racing Gauge Dial (Coggan 7-Zone Dial)
+  const dialCx = w / 2;
+  const dialCy = 460;
+  const dialR = 190;
+
+  // Background arc (270 degrees sweep from 135 deg to 405 deg)
+  const startAng = (135 * Math.PI) / 180;
+  const endAng = (405 * Math.PI) / 180;
+  const totalSweep = endAng - startAng;
+
+  // Outer Dial Track
+  ctx.beginPath();
+  ctx.arc(dialCx, dialCy, dialR, startAng, endAng);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 22;
+  ctx.stroke();
+
+  // Coggan Color Zones around the Arc
+  const zones = [
+    { name: 'Z1', pct: 0.16, color: '#8E8E93' }, // Active Recovery
+    { name: 'Z2', pct: 0.2, color: '#007AFF' },  // Endurance
+    { name: 'Z3', pct: 0.2, color: '#34C759' },  // Tempo
+    { name: 'Z4', pct: 0.2, color: '#FFD60A' },  // Threshold
+    { name: 'Z5', pct: 0.14, color: '#FF9500' }, // VO2 Max
+    { name: 'Z6', pct: 0.1, color: '#FF3B30' },  // Anaerobic
+  ];
+
+  let curAng = startAng;
+  zones.forEach((z) => {
+    const sweep = totalSweep * z.pct;
+    ctx.beginPath();
+    ctx.arc(dialCx, dialCy, dialR, curAng, curAng + sweep - 0.03);
+    ctx.strokeStyle = z.color;
+    ctx.lineWidth = 14;
+    ctx.stroke();
+    curAng += sweep;
+  });
+
+  // Dial Tick Marks
+  for (let i = 0; i <= 36; i++) {
+    const a = startAng + (totalSweep / 36) * i;
+    const isMajor = i % 6 === 0;
+    const r1 = dialR - 18;
+    const r2 = isMajor ? dialR - 34 : dialR - 26;
+    ctx.strokeStyle = isMajor ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = isMajor ? 2 : 1;
+    ctx.beginPath();
+    ctx.moveTo(dialCx + Math.cos(a) * r1, dialCy + Math.sin(a) * r1);
+    ctx.lineTo(dialCx + Math.cos(a) * r2, dialCy + Math.sin(a) * r2);
+    ctx.stroke();
+  }
+
+  // Pointer Needle according to IF (mapped 0.5 to 1.15 across the sweep)
+  const ifNorm = Math.min(1.0, Math.max(0.0, (data.ifVal - 0.5) / 0.65));
+  const pointerAng = startAng + totalSweep * ifNorm;
+
+  // Needle Line
+  ctx.beginPath();
+  ctx.moveTo(dialCx, dialCy);
+  ctx.lineTo(dialCx + Math.cos(pointerAng) * (dialR - 10), dialCy + Math.sin(pointerAng) * (dialR - 10));
+  ctx.strokeStyle = '#FF3B30';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  // Needle Pivot Hub
+  ctx.beginPath();
+  ctx.arc(dialCx, dialCy, 12, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fill();
+  ctx.strokeStyle = '#FF3B30';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Central Text in Dial
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.letterSpacing = '1px';
+  ctx.fillText('NORMALIZED POWER', dialCx, dialCy - 75);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 64px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`${data.np} W`, dialCx, dialCy - 10);
+
+  // IF status badge inside dial
+  const ifPillText = `IF: ${data.ifVal} · ${data.tacticalPace}`;
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  const ipw = ctx.measureText(ifPillText).width + 24;
+  roundRect(ctx, dialCx - ipw / 2, dialCy + 40, ipw, 28, 14);
+  ctx.fillStyle = 'rgba(0, 122, 255, 0.15)';
+  ctx.fill();
+  ctx.strokeStyle = '#007AFF';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = '#007AFF';
+  ctx.fillText(ifPillText, dialCx, dialCy + 59);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(data.wKg ? `推重比: ${data.wKg} W/kg` : 'PRO RACE TELEMETRY', dialCx, dialCy + 92);
+  ctx.textAlign = 'left';
+
+  // 4. 6-Grid Racing Telemetry Block (Below Dial)
+  const rgridY = 700;
+  const rtileW = 295;
+  const rtileH = 115;
+  const rgapX = 27;
+  const rgapY = 16;
+
+  const racingMetrics = [
+    { label: '单场骑行里程', val: `${data.distKm}`, unit: 'KM', sub: `均速 ${data.avgSpeed} km/h`, color: '#007AFF' },
+    { label: '累计垂直爬升', val: `+${data.eleM}`, unit: 'M', sub: `直拔 ${(data.eleM / 300).toFixed(1)} 座铁塔`, color: '#34C759' },
+    { label: '平均踩踏功率', val: `${data.avgP}`, unit: 'W', sub: `做功 ${data.caloriesKcal || 800} kcal`, color: '#FFFFFF' },
+    { label: '变异指数 VI', val: `${data.vi}`, unit: 'VI', sub: data.vi <= 1.05 ? '输出极度稳态平滑' : '起伏变速拉扯', color: '#FF9500' },
+    { label: '强度系数 IF', val: `${data.ifVal}`, unit: 'IF', sub: '占设定 FTP 百分比', color: '#AF52DE' },
+    { label: '训练负荷 TSS', val: `${data.tss}`, unit: 'TSS', sub: '单场机体负荷刺激', color: '#FF3B30' },
+  ];
+
+  racingMetrics.forEach((rm, idx) => {
+    const col = idx % 3;
+    const row = Math.floor(idx / 3);
+    const rx = 65 + col * (rtileW + rgapX);
+    const ry = rgridY + row * (rtileH + rgapY);
+
+    roundRect(ctx, rx, ry, rtileW, rtileH, 14);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.09)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(rm.label, rx + 16, ry + 28);
+
+    ctx.fillStyle = rm.color;
+    ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(rm.val, rx + 16, ry + 68);
+    const vw = ctx.measureText(rm.val).width;
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(rm.unit, rx + 16 + vw + 8, ry + 68);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(rm.sub, rx + 16, ry + 96);
+  });
+
+  // 5. F1 Style Telemetry Log & Debrief Card
+  const debriefY = 965;
+  const debriefH = 360;
+  roundRect(ctx, 65, debriefY, w - 130, debriefH, 18);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.025)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.fillStyle = '#007AFF';
+  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('TELEMETRY DIAGNOSTICS · 赛事级遥测解析', 90, debriefY + 36);
+
+  const diagItems = [
+    {
+      title: '变异指数 VI 稳态纪律判定',
+      desc: `变异指数为 ${data.vi}。${data.vi <= 1.05 ? '属于高纪律性平路稳态巡航，功率输出极为平滑，踏频与机械传动效率维持在最佳生理窗口。' : '起伏地形与突围进攻频繁，无氧储备调动剧烈，抗乳酸能力发挥充分。'}`
+    },
+    {
+      title: '强度系数 IF 与能量代谢',
+      desc: `强度系数 IF 为 ${data.ifVal}，单场标准化功率达 ${data.np}W${data.wKg ? ` (${data.wKg} W/kg)` : ''}。总计做功 ${data.caloriesKcal || 800} kcal，相当于燃烧 ${Math.max(1, Math.round((data.caloriesKcal || 800) / 105))} 根香蕉。`
+    },
+    {
+      title: '超量恢复与战力评估',
+      desc: `单场生理刺激 TSS 积分为 ${data.tss}，预计超量恢复窗口约为 ${data.tss >= 100 ? '36~48' : '24~36'} 小时。赛后黄金窗口请务必补充电解质与优质碳水。`
+    }
+  ];
+
+  diagItems.forEach((d, di) => {
+    const dy = debriefY + 74 + di * 90;
+    ctx.beginPath();
+    ctx.arc(96, dy + 5, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#007AFF';
+    ctx.fill();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(d.title, 112, dy + 9);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+    const maxW = w - 130 - 60;
+    let l1 = '';
+    let l2 = '';
+    for (let c = 0; c < d.desc.length; c++) {
+      const test = l1 + d.desc[c];
+      if (ctx.measureText(test).width > maxW) {
+        l2 = d.desc.slice(c);
+        break;
+      } else {
+        l1 = test;
+      }
+    }
+    ctx.fillText(l1, 112, dy + 32);
+    if (l2) {
+      ctx.fillText(l2, 112, dy + 52);
+    }
+  });
+
+  // 6. Footer Watermark
+  const footerY = 1360;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(65, footerY);
+  ctx.lineTo(w - 65, footerY);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('SOLORIDER RACING TELEMETRY · 1080×1440 HD (3:4)', 65, footerY + 32);
+
+  const rightTag = 'F1 PRO SPEC VERIFIED';
+  ctx.fillStyle = '#007AFF';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(rightTag, w - 65 - ctx.measureText(rightTag).width, footerY + 32);
+
+  return canvas.toDataURL('image/png');
+}
+
+/**
+ * Master Poster Generator with Theme Routing
+ */
+export async function generateLatestRideSocialPoster(
+  data: LatestRidePosterData,
+  theme: LatestRidePosterTheme = 'conqueror'
+): Promise<string> {
+  if (theme === 'neon-dawn') {
+    return generateNeonDawnPoster(data);
+  } else if (theme === 'racing') {
+    return generateRacingDashboardPoster(data);
+  } else {
+    return generateConquerorPoster(data);
+  }
+}
+
+
+

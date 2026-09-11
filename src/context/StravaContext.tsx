@@ -471,7 +471,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           const cleanUrl = window.location.origin + window.location.pathname;
           window.history.replaceState({}, document.title, cleanUrl);
 
-          showToast(`🎉 Strava 账号连接成功！欢迎，${tokenRes.athlete.firstname}`, 'success');
+          showToast(`Strava 账号连接成功！欢迎，${tokenRes.athlete.firstname}`, 'success');
 
           // Trigger initial sync in background
           setTimeout(() => {

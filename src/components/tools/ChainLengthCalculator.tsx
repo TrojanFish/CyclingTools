@@ -77,17 +77,19 @@ export const ChainLengthCalculator: React.FC = () => {
     // 1. Effective Chainstay (accounting for full-suspension bottom-out stretch)
     const effectiveChainstayMm = isFullSuspension ? chainstayLengthMm + chainstayGrowthMm : chainstayLengthMm;
     const cInches = effectiveChainstayMm / 25.4;
-    const rawLinksRigby = 2 * cInches + bigRing / 4 + bigCog / 4 + 1;
-    // Oversized pulley wheel compensation (if 14T+ add 1 link)
-    const pulleyExtra = pulleyTeeth > 11 ? (pulleyTeeth - 11) * 0.3 : 0;
-    const finalRawLinks = rawLinksRigby + pulleyExtra;
+    // Classic Rigby Formula calculates chain loop length IN INCHES: L_inches = 2 * C + F/4 + R/4 + 1
+    // Each bicycle chain link (inner or outer half-link) is 1/2 inch (0.5 inch pitch).
+    // Therefore, Link Count = L_inches / 0.5 = L_inches * 2 = 4 * C + F/2 + R/2 + 2!
+    const pulleyExtraInches = pulleyTeeth > 11 ? (pulleyTeeth - 11) * 0.15 : 0;
+    const rawLengthInches = 2 * cInches + bigRing / 4 + bigCog / 4 + 1 + pulleyExtraInches;
+    const finalRawLinks = rawLengthInches * 2;
 
     // Must be an even integer for standard inner-outer link pairs
     const recommendedLinksEven = Math.ceil(finalRawLinks / 2) * 2;
     const chainLengthInches = (recommendedLinksEven * 0.5).toFixed(1); // Standard 1/2" pitch
 
-    // 2. Shimano / SRAM Direct Method (Large-Large + 2 links with quick link)
-    const shimanoMethodLinks = Math.ceil((2 * cInches + (bigRing + bigCog) / 4 + (isSingleRing ? 3 : 2)) / 2) * 2;
+    // 2. Shimano / SRAM Direct Method (Large-Large without derailleur + 2 links with quick link)
+    const shimanoMethodLinks = Math.ceil((4 * cInches + (bigRing + bigCog) / 2 + (isSingleRing ? 4 : 2)) / 2) * 2;
 
     // 3. Drivetrain Capacity Check (后拨齿容量校核)
     const frontDifference = isSingleRing ? 0 : Math.max(0, bigRing - smallRing);
@@ -311,7 +313,7 @@ export const ChainLengthCalculator: React.FC = () => {
         {/* Right Outputs & Visualization (macOS Sticky Canvas) */}
         <div className="lg:col-span-7 space-y-5 lg:sticky lg:top-20 self-start">
           {(result.isRingInverted || result.isCogInverted) && (
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-amber-700 dark:text-amber-400 text-xs shadow-ios-sm animate-pulse">
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-amber-700 dark:text-amber-400 text-xs shadow-ios-sm">
               <AlertTriangle className="w-5 h-5 shrink-0 text-amber-500 mt-0.5" />
               <div>
                 <span className="font-bold block text-sm mb-0.5">齿盘参数设置异常提醒</span>

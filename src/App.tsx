@@ -27,16 +27,18 @@ import { TubelessSealantCalculator } from './components/tools/TubelessSealantCal
 import { SpokeLengthCalculator } from './components/tools/SpokeLengthCalculator';
 import { MtbSuspensionTuner } from './components/tools/MtbSuspensionTuner';
 import { WorkoutBuilder } from './components/tools/WorkoutBuilder';
+import { StravaDataCockpit } from './components/tools/StravaDataCockpit';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { MacosSidebar } from './components/common/MacosSidebar';
 import { TOOLS_LIST } from './data/toolsList';
+import { smoothScrollToTop } from './utils/toolNavHelper';
 import { ArrowLeft, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('dynamics');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -144,22 +146,21 @@ const MainAppContent: React.FC = () => {
   const handlePrevTool = () => {
     if (currentToolIndex > 0) {
       setCurrentToolId(TOOLS_LIST[currentToolIndex - 1].id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScrollToTop();
     }
   };
 
   const handleNextTool = () => {
     if (currentToolIndex < TOOLS_LIST.length - 1) {
       setCurrentToolId(TOOLS_LIST[currentToolIndex + 1].id);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      smoothScrollToTop();
     }
   };
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between ${isDark ? 'dark bg-[#000000] text-slate-100' : 'light bg-[#F2F2F7] text-slate-900'}`}>
-      <div>
-        {/* Top Header (Fixed at top: 0 with built-in height spacer) */}
-        <Header
+    <div className={`min-h-screen lg:h-screen lg:overflow-hidden flex flex-col justify-between ${isDark ? 'dark bg-[#000000] text-slate-100' : 'light bg-[#F2F2F7] text-slate-900'}`}>
+      {/* Top Header (Fixed at top: 0 with built-in height spacer) */}
+      <Header
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           isDark={isDark}
@@ -169,9 +170,13 @@ const MainAppContent: React.FC = () => {
           onNavigateHome={() => {
             setCurrentToolId(null);
             setSelectedCategory('all');
+            smoothScrollToTop();
           }}
           currentToolId={currentToolId}
-          onSelectTool={(id) => setCurrentToolId(id)}
+          onSelectTool={(id) => {
+            setCurrentToolId(id);
+            smoothScrollToTop();
+          }}
           profileModalOpen={profileModalOpen}
           setProfileModalOpen={setProfileModalOpen}
           isSidebarOpen={isSidebarOpen}
@@ -182,14 +187,14 @@ const MainAppContent: React.FC = () => {
         <PwaInstallPrompt />
 
         {/* Dual-Personality Split-View Container: macOS Sidebar on Desktop, Inset Grouped on Mobile */}
-        <div className="w-full max-w-[1920px] mx-auto flex flex-1">
+        <div className="w-full max-w-[1920px] mx-auto flex flex-1 min-h-0 lg:overflow-hidden">
           {/* macOS Studio Sidebar (Desktop only) */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex shrink-0 h-full">
             <MacosSidebar
               currentToolId={currentToolId}
               onSelectTool={(id) => {
                 setCurrentToolId(id);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                smoothScrollToTop();
               }}
               onOpenProfile={() => setProfileModalOpen(true)}
               isCollapsed={!isSidebarOpen}
@@ -197,8 +202,12 @@ const MainAppContent: React.FC = () => {
           </div>
 
           {/* Main Content Workspace */}
-          <div className="flex-1 min-w-0 p-4 sm:p-5 pb-24 md:pb-8">
-            <main className="max-w-7xl mx-auto space-y-4 sm:space-y-5">
+          <div
+            id="main-content-scroll"
+            className="flex-1 min-w-0 lg:h-full lg:overflow-y-auto lg:overscroll-contain flex flex-col justify-between"
+          >
+            <div className="p-4 sm:p-5 pb-24 md:pb-8">
+              <main className="max-w-7xl mx-auto space-y-4 sm:space-y-5">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
               <div className="relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex items-center justify-between gap-2 shadow-ios-sm no-print">
@@ -276,7 +285,7 @@ const MainAppContent: React.FC = () => {
               <Dashboard
                 onSelectTool={(id) => {
                   setCurrentToolId(id);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  smoothScrollToTop();
                 }}
                 filteredTools={filteredTools}
                 selectedCategory={selectedCategory}
@@ -305,37 +314,51 @@ const MainAppContent: React.FC = () => {
             {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
             {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
             {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
+            {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
           </main>
+        </div>
+
+        {/* Desktop Footer: Inside right scroll pane at bottom */}
+        <div className="hidden lg:block">
+          <Footer
+            onNavigateHome={() => {
+              setCurrentToolId(null);
+              setSelectedCategory('all');
+              smoothScrollToTop();
+            }}
+          />
         </div>
       </div>
     </div>
 
-      {/* Mobile Bottom Dock Navigation */}
-      <MobileBottomNav
-        currentToolId={currentToolId}
-        onNavigateHome={() => {
-          setCurrentToolId(null);
-          setSelectedCategory('all');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onSelectTool={(id) => {
-          setCurrentToolId(id);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenProfile={() => setProfileModalOpen(true)}
-      />
-
-      {/* Global Footer & Back to Top Button */}
+    {/* Mobile Footer: Below content in normal document flow */}
+    <div className="lg:hidden">
       <Footer
         onNavigateHome={() => {
           setCurrentToolId(null);
           setSelectedCategory('all');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          smoothScrollToTop();
         }}
       />
-
-      <BackToTop />
     </div>
+
+    {/* Mobile Bottom Dock Navigation */}
+    <MobileBottomNav
+      currentToolId={currentToolId}
+      onNavigateHome={() => {
+        setCurrentToolId(null);
+        setSelectedCategory('all');
+        smoothScrollToTop();
+      }}
+      onSelectTool={(id) => {
+        setCurrentToolId(id);
+        smoothScrollToTop();
+      }}
+      onOpenProfile={() => setProfileModalOpen(true)}
+    />
+
+    <BackToTop />
+  </div>
   );
 };
 

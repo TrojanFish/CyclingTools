@@ -671,7 +671,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 : 'bg-ios-blue/10 border-ios-blue/20 text-slate-800 dark:text-slate-200'
             }`}>
               <div className="flex items-start gap-3 text-xs">
-                <AlertTriangle className={`w-5 h-5 shrink-0 mt-0.5 ${result.isDownhillAlert ? 'text-rose-500 animate-bounce' : 'text-ios-blue'}`} />
+                <AlertTriangle className={`w-5 h-5 shrink-0 mt-0.5 ${result.isDownhillAlert ? 'text-rose-500' : 'text-ios-blue'}`} />
                 <div className="space-y-1 flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-bold text-sm">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Zap,
   Ruler,
@@ -22,12 +22,19 @@ import {
   Search,
   X,
   Sliders,
-  Dumbbell
+  Dumbbell,
+  LayoutDashboard,
+  Share2
 } from 'lucide-react';
 import { ToolMetadata } from '../types';
 import { TOOLS_LIST } from '../data/toolsList';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
+import { useStrava } from '../context/StravaContext';
+import { useRiderProfile } from '../context/RiderProfileContext';
+import { generateDemoStravaActivities } from '../utils/stravaCockpitAnalytics';
 import { IOSSegmentedControl } from './common/IOSSegmentedControl';
+import { generateLatestRideSocialPoster, LatestRidePosterData } from '../utils/shareCardGenerators';
+import { LatestRideShareModal } from './common/LatestRideShareModal';
 
 const ICONS_MAP: Record<string, React.ElementType> = {
   Zap,
@@ -49,6 +56,7 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   Disc,
   Sliders,
   Dumbbell,
+  LayoutDashboard,
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
@@ -97,8 +105,126 @@ export const Dashboard: React.FC<DashboardProps> = ({
   setSearchTerm
 }) => {
   const { language, t } = useLanguageAndUnit();
+  const { isConnected, activities: realActivities } = useStrava();
+  const { profile, activeBike } = useRiderProfile();
+
+  // Extract latest activity: Real Strava ride if available, or high-fidelity demo sample
+  const effectiveLatestActivity = useMemo(() => {
+    if (realActivities && realActivities.length > 0) {
+      return [...realActivities].sort(
+        (a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+      )[0];
+    }
+    const demo = generateDemoStravaActivities();
+    return demo[0] || null;
+  }, [realActivities]);
+
+  const ftpWatts = profile.ftpWatts || 240;
+
+  const latestStats = useMemo(() => {
+    if (!effectiveLatestActivity) return null;
+    const act = effectiveLatestActivity;
+    const distKm = parseFloat(((act.distance || 0) / 1000).toFixed(1));
+    const eleM = Math.round(act.total_elevation_gain || 0);
+    const movingSec = act.moving_time || 0;
+    const hrs = Math.floor(movingSec / 3600);
+    const mins = Math.round((movingSec % 3600) / 60);
+    const timeStr = hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+    const avgSpeed = movingSec > 0 ? parseFloat(((act.distance / movingSec) * 3.6).toFixed(1)) : 0;
+    const maxSpeed = act.max_speed ? parseFloat((act.max_speed * 3.6).toFixed(1)) : null;
+    const np = act.weighted_average_watts || act.average_watts || 0;
+    const avgP = act.average_watts || 0;
+    const vi = avgP > 0 && np > 0 ? parseFloat((np / avgP).toFixed(2)) : 1.0;
+    const ifVal = act.intensityFactor || (ftpWatts > 0 && np > 0 ? parseFloat((np / ftpWatts).toFixed(2)) : 0.75);
+    const tss = act.tss || Math.round((movingSec / 3600) * 50);
+    const avgHr = act.average_heartrate ? Math.round(act.average_heartrate) : null;
+    const maxHr = act.max_heartrate ? Math.round(act.max_heartrate) : null;
+    const ef = avgHr && np > 0 ? parseFloat((np / avgHr).toFixed(2)) : null;
+    const calories = act.kilojoules ? Math.round(act.kilojoules) : Math.round((np || 200) * (movingSec / 3600) * 3.6 * 0.95);
+    const wKg = profile.weightKg && profile.weightKg > 0 && np > 0 ? parseFloat((np / profile.weightKg).toFixed(1)) : null;
+
+    let tacticalPace = language === 'zh-TW' ? '穩態巡航 (Steady Pace)' : '稳态巡航 (Steady Pace)';
+    let tacticalTextColor = 'text-ios-blue';
+    if (vi > 1.15) {
+      tacticalPace = language === 'zh-TW' ? '變速突圍 / 起伏拉扯 (Variable Surge)' : '变速突围 / 起伏拉扯 (Variable Surge)';
+      tacticalTextColor = 'text-ios-orange';
+    } else if (ifVal >= 0.9) {
+      tacticalPace = language === 'zh-TW' ? '競賽極限 / 閾值突破 (Threshold Race)' : '竞赛极限 / 阈值突破 (Threshold Race)';
+      tacticalTextColor = 'text-ios-red';
+    } else if (ifVal <= 0.65) {
+      tacticalPace = language === 'zh-TW' ? '低強有氧 / 排酸刷脂 (Z2 Recovery)' : '低强有氧 / 排酸刷脂 (Z2 Recovery)';
+      tacticalTextColor = 'text-ios-green';
+    }
+
+    return {
+      name: act.name,
+      dateStr: act.start_date.split('T')[0],
+      distKm,
+      eleM,
+      timeStr,
+      avgSpeed,
+      maxSpeed,
+      np,
+      avgP,
+      wKg,
+      vi,
+      ifVal,
+      tss,
+      avgHr,
+      maxHr,
+      calories,
+      ef,
+      tacticalPace,
+      tacticalTextColor,
+      isRealData: isConnected && realActivities.length > 0,
+      sportType: act.sport_type || 'Ride'
+    };
+  }, [effectiveLatestActivity, ftpWatts, profile.weightKg, isConnected, realActivities.length, language]);
+
+  const [isPosterModalOpen, setIsPosterModalOpen] = useState(false);
+  const [posterUrl, setPosterUrl] = useState<string | null>(null);
+  const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
+  const [posterData, setPosterData] = useState<LatestRidePosterData | null>(null);
+
+  const handleOpenSocialPoster = async () => {
+    if (!latestStats) return;
+    setIsGeneratingPoster(true);
+    try {
+      const data: LatestRidePosterData = {
+        title: latestStats.name,
+        dateStr: latestStats.dateStr,
+        distKm: latestStats.distKm,
+        eleM: latestStats.eleM,
+        timeStr: latestStats.timeStr,
+        avgSpeed: latestStats.avgSpeed,
+        np: latestStats.np,
+        avgP: latestStats.avgP,
+        wKg: latestStats.wKg || undefined,
+        vi: latestStats.vi,
+        ifVal: latestStats.ifVal,
+        tss: latestStats.tss,
+        avgHr: latestStats.avgHr,
+        maxHr: latestStats.maxHr,
+        ef: latestStats.ef,
+        caloriesKcal: latestStats.calories,
+        tacticalPace: latestStats.tacticalPace,
+        sportType: latestStats.sportType,
+        bikeName: activeBike?.name || (language === 'zh-TW' ? '公路戰車' : '公路战车'),
+        isRealData: latestStats.isRealData
+      };
+      setPosterData(data);
+      const url = await generateLatestRideSocialPoster(data);
+      setPosterUrl(url);
+      setIsPosterModalOpen(true);
+    } catch (err) {
+      console.error('Failed to generate poster:', err);
+    } finally {
+      setIsGeneratingPoster(false);
+    }
+  };
 
   const categoryOptions = [
+    { id: 'all', icon: Sparkles, label: language === 'zh-TW' ? '全部工具' : '全部工具' },
     { id: 'dynamics', icon: Zap, label: language === 'zh-TW' ? '動力傳動' : '动力传动' },
     { id: 'fitting', icon: Ruler, label: 'Fitting' },
     { id: 'route', icon: MapPin, label: language === 'zh-TW' ? '路線氣象' : '路线气象' },
@@ -117,42 +243,137 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </h1>
       </div>
 
-      {/* Apple Keynote Style Hero Banner */}
+      {/* Dynamic Keynote-Style Hero Card: Latest Ride Tactical Debrief */}
       <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20 shadow-ios-sm">
         <div className="absolute -right-16 -top-16 w-80 h-80 bg-ios-blue/10 dark:bg-ios-blue/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute right-32 bottom-0 w-64 h-64 bg-ios-purple/10 dark:bg-ios-purple/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] sm:text-xs font-semibold tracking-wide">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>
-              {language === 'zh-TW'
-                ? `科學單車計算與動力學工坊 · ${TOOLS_LIST.length} 大專業工具`
-                : `科学骑行计算与动力学工坊 · ${TOOLS_LIST.length} 大专业工具`}
-            </span>
+        <div className="relative z-10 space-y-3 sm:space-y-4">
+          {/* Top Tag & Context Metadata */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-bold tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-ios-blue" />
+                <span>{language === 'zh-TW' ? '最新騎行極客深度戰報' : '最新骑行极客深度战报'}</span>
+              </span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                {latestStats?.dateStr}
+              </span>
+              {!latestStats?.isRealData && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium">
+                  {language === 'zh-TW' ? '演示樣本' : '演示样本'}
+                </span>
+              )}
+            </div>
+
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              <span>{language === 'zh-TW' ? '戰術屬性: ' : '战术属性: '}</span>
+              <strong className={latestStats?.tacticalTextColor}>{latestStats?.tacticalPace}</strong>
+            </div>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
-            {language === 'zh-TW' ? (
-              <>
-                精準計算每一瓦 <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-ios-blue via-blue-500 to-ios-purple">
-                  數據驅動的科學單車與擬合模擬
-                </span>
-              </>
-            ) : (
-              <>
-                精准计算每一瓦 <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-ios-blue via-blue-500 to-ios-purple">
-                  数据驱动的科学骑行与拟合仿真
-                </span>
-              </>
-            )}
-          </h1>
+          {/* Ride Title & Vehicle Info */}
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
+              {latestStats?.name}
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {latestStats?.sportType} · {language === 'zh-TW' ? '主力戰車: ' : '主力战车: '}{activeBike?.name || '公路战车'}
+            </p>
+          </div>
 
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-            {t('heroSubtitle')}
-          </p>
+          {/* 6-Grid Tactical Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 pt-0.5">
+            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
+              <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums font-mono mt-0.5">
+                {latestStats?.distKm} <span className="text-[10px] font-normal text-slate-400">km</span>
+              </div>
+              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                {language === 'zh-TW' ? '均速' : '均速'} {latestStats?.avgSpeed}km/h
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
+              <div className="text-base sm:text-lg font-bold text-ios-green tabular-nums font-mono mt-0.5">
+                +{latestStats?.eleM} <span className="text-[10px] font-normal text-slate-400">m</span>
+              </div>
+              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                {language === 'zh-TW' ? '時長' : '时长'} {latestStats?.timeStr}
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
+              <div className="text-base sm:text-lg font-bold text-ios-blue tabular-nums font-mono mt-0.5">
+                {latestStats?.np} <span className="text-[10px] font-normal text-slate-400">W</span>
+              </div>
+              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                AvgP {latestStats?.avgP}W{latestStats?.wKg ? ` · ${latestStats.wKg}W/kg` : ''}
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
+              <div className="text-base sm:text-lg font-bold text-ios-purple tabular-nums font-mono mt-0.5">
+                {latestStats?.ifVal}
+              </div>
+              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                VI {latestStats?.vi} · FTP比率
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
+              <div className="text-base sm:text-lg font-bold text-ios-orange tabular-nums font-mono mt-0.5">
+                {latestStats?.tss}
+              </div>
+              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                {language === 'zh-TW' ? '做功' : '做功'} {latestStats?.calories} kcal
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
+              <div className="text-base sm:text-lg font-bold text-ios-mint tabular-nums font-mono mt-0.5">
+                {latestStats?.ef ? latestStats.ef : '--'}
+              </div>
+              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+                {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` (極${latestStats.maxHr})` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Action Navigation Buttons */}
+          <div className="pt-1.5 flex items-center gap-2 sm:gap-2.5 flex-wrap">
+            <button
+              onClick={() => onSelectTool('activity-analyzer')}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:bg-ios-blue/90 active:scale-95 transition apple-touch"
+            >
+              <Activity className="w-3.5 h-3.5" />
+              <span>{language === 'zh-TW' ? '逐秒回放' : '逐秒回放'}</span>
+            </button>
+
+            <button
+              onClick={() => onSelectTool('strava-cockpit')}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/10 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 transition apple-touch text-xs font-semibold shadow-ios-sm"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5 text-ios-blue" />
+              <span>{language === 'zh-TW' ? '數據羅盤' : '数据罗盘'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleOpenSocialPoster}
+              disabled={isGeneratingPoster}
+              className="apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition flex items-center justify-center shadow-2xs shrink-0 disabled:opacity-50"
+              title={language === 'zh-TW' ? '生成分享海報' : '生成分享海报'}
+              aria-label={language === 'zh-TW' ? '生成分享海報' : '生成分享海报'}
+            >
+              <Share2 className={`w-4 h-4 ${isGeneratingPoster ? 'animate-spin text-ios-blue' : ''}`} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -277,6 +498,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
           })}
         </div>
       )}
+
+      {/* 3:4 High-Resolution Social Share Modal */}
+      <LatestRideShareModal
+        isOpen={isPosterModalOpen}
+        onClose={() => setIsPosterModalOpen(false)}
+        posterUrl={posterUrl}
+        data={posterData}
+      />
     </div>
   );
 };

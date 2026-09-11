@@ -19,10 +19,12 @@ import {
   Disc,
   Sliders,
   Dumbbell,
+  LayoutDashboard,
   ChevronDown,
   Check
 } from 'lucide-react';
 import { TOOLS_LIST } from '../../data/toolsList';
+import { smoothScrollToTop } from '../../utils/toolNavHelper';
 
 export const StravaLogo: React.FC<{ className?: string }> = ({ className = 'w-3.5 h-3.5' }) => (
   <svg className={`${className} fill-[#FC4C02] shrink-0`} viewBox="0 0 24 24" role="img" aria-label="Strava">
@@ -49,7 +51,8 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   Droplets,
   Disc,
   Sliders,
-  Dumbbell
+  Dumbbell,
+  LayoutDashboard
 };
 
 interface CustomToolSelectProps {
@@ -214,7 +217,7 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
                     onClick={() => {
                       onSelectTool(tItem.id);
                       setIsOpen(false);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      smoothScrollToTop();
                     }}
                     className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs text-left transition apple-touch ${
                       isSelected

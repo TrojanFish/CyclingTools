@@ -31,6 +31,7 @@ import {
 import { TOOLS_LIST } from '../../data/toolsList';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { smoothScrollToTop } from '../../utils/toolNavHelper';
 
 const ICONS_MAP: Record<string, React.ElementType> = {
   Zap,
@@ -52,6 +53,7 @@ const ICONS_MAP: Record<string, React.ElementType> = {
   Disc,
   Sliders,
   Dumbbell,
+  LayoutDashboard,
 };
 
 interface MacosSidebarProps {
@@ -97,9 +99,9 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
     : '--';
 
   return (
-    <aside className="w-64 h-[calc(100vh-52px)] sm:h-[calc(100vh-64px)] sticky top-[52px] sm:top-16 z-20 flex flex-col justify-between shrink-0 bg-slate-100/70 dark:bg-[#161618]/80 backdrop-blur-2xl border-r border-black/[0.06] dark:border-white/[0.08] transition-all select-none">
+    <aside className="w-64 h-full flex flex-col justify-between shrink-0 bg-slate-100/70 dark:bg-[#161618]/80 backdrop-blur-2xl border-r border-black/[0.06] dark:border-white/[0.08] transition-all select-none">
       {/* Top Search & Navigation Section */}
-      <div className="p-3 space-y-2 overflow-y-auto no-scrollbar flex-1">
+      <div className="p-3 space-y-2 overflow-y-auto overscroll-contain no-scrollbar flex-1">
         {/* macOS Window Traffic Lights Decoration (Native Mac Accent) */}
         <div className="flex items-center justify-between px-1.5 pb-2 pt-0.5 border-b border-black/[0.04] dark:border-white/[0.06]">
           <div className="flex items-center gap-1.5">
@@ -126,7 +128,10 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
 
         {/* Home / Overview Item */}
         <button
-          onClick={() => onSelectTool(null)}
+          onClick={() => {
+            onSelectTool(null);
+            smoothScrollToTop();
+          }}
           className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
             currentToolId === null
               ? 'bg-ios-blue text-white shadow-xs font-semibold'
@@ -174,7 +179,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
                         key={tool.id}
                         onClick={() => {
                           onSelectTool(tool.id);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          smoothScrollToTop();
                         }}
                         className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-all ${
                           isActive

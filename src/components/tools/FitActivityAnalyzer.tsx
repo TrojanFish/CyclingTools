@@ -25,6 +25,7 @@ import {
   Sliders,
   ArrowRight,
   Dumbbell,
+  Cpu,
   X
 } from 'lucide-react';
 import { PoweredByStravaBadge } from '../common/PoweredByStravaBadge';
@@ -59,6 +60,7 @@ import {
   parseTcxFile,
   generateRealisticDemoRide,
   analyzePoints,
+  computeEstimatedPowerPoints,
   COGGAN_BENCHMARKS,
   CogganBenchmarkLevel,
   calculateSkibaWPrimeBalance,
@@ -124,7 +126,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   // Activity State
   const [analysis, setAnalysis] = useState<ActivityAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'trends' | 'zones' | 'mmp' | 'coaching' | 'pmc'>('trends');
+  const [activeTab, setActiveTab] = useState<'trends' | 'zones' | 'mmp' | 'shifting' | 'coaching' | 'pmc'>('trends');
   const [smartWorkoutModalOpen, setSmartWorkoutModalOpen] = useState<boolean>(false);
   const [selectedSmartTemplateId, setSelectedSmartTemplateId] = useState<string>('');
   const [pmcMesocycle, setPmcMesocycle] = useState<PmcMesocycleType>('build');
@@ -307,21 +309,90 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   const handleProfileRecompute = () => {
     if (!analysis) return;
     try {
+      const raw = analysis.rawPoints || analysis.points;
+      const pointsToUse = analysis.isEstimatedPower
+        ? computeEstimatedPowerPoints(raw, weightKg, 9)
+        : raw;
       const updated = analyzePoints(
-        analysis.points,
+        pointsToUse,
         analysis.fileName,
         analysis.fileType,
         ftpWatts,
         weightKg,
-        maxHr
+        maxHr,
+        {
+          isEstimatedPower: analysis.isEstimatedPower,
+          sensorDiagnostics: analysis.sensorDiagnostics,
+          shiftingEvents: analysis.shiftingEvents,
+          recordedCalories: analysis.recordedCalories,
+          rawPoints: raw
+        }
       );
       setAnalysis(updated);
       showToast(
-        '已基于调整后的车手生理指标重新计算所有数据',
+        language === 'zh-TW'
+          ? '已基於調整後之車手生理指標重新計算所有數據'
+          : '已基于调整后的车手生理指标重新计算所有数据',
         'success'
       );
     } catch (err: any) {
       showToast(err.message || '重算失败', 'error');
+    }
+  };
+
+  // Toggle physics estimated power reconstruction
+  const handleToggleEstimatedPower = () => {
+    if (!analysis) return;
+    try {
+      const raw = analysis.rawPoints || analysis.points;
+      if (!analysis.isEstimatedPower) {
+        const estPoints = computeEstimatedPowerPoints(raw, weightKg, 9);
+        const updated = analyzePoints(
+          estPoints,
+          analysis.fileName,
+          analysis.fileType,
+          ftpWatts,
+          weightKg,
+          maxHr,
+          {
+            isEstimatedPower: true,
+            sensorDiagnostics: analysis.sensorDiagnostics,
+            shiftingEvents: analysis.shiftingEvents,
+            recordedCalories: analysis.recordedCalories,
+            rawPoints: raw
+          }
+        );
+        setAnalysis(updated);
+        showToast(
+          language === 'zh-TW'
+            ? '已基於經典物理力學模型重構仿真功率 (NP/TSS/做功/功率曲線)'
+            : '已基于经典物理力学模型重构仿真功率 (NP/TSS/做功/功率曲线)',
+          'success'
+        );
+      } else {
+        const updated = analyzePoints(
+          raw,
+          analysis.fileName,
+          analysis.fileType,
+          ftpWatts,
+          weightKg,
+          maxHr,
+          {
+            isEstimatedPower: false,
+            sensorDiagnostics: analysis.sensorDiagnostics,
+            shiftingEvents: analysis.shiftingEvents,
+            recordedCalories: analysis.recordedCalories,
+            rawPoints: raw
+          }
+        );
+        setAnalysis(updated);
+        showToast(
+          language === 'zh-TW' ? '已切換回硬件傳感器原始記錄數據' : '已切换回硬件传感器原始记录数据',
+          'info'
+        );
+      }
+    } catch (err: any) {
+      showToast(err.message || '切换失败', 'error');
     }
   };
 
@@ -742,7 +813,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     };
     try {
       localStorage.setItem('solorider_pending_workout', JSON.stringify(payload));
-      showToast('🎯 已生成专属靶向补强课表，正在跳转工坊...', 'success');
+      showToast('已生成专属靶向补强课表，正在跳转工坊...', 'success');
       setSmartWorkoutModalOpen(false);
       if (onNavigateTool) {
         onNavigateTool('workout-builder');
@@ -1098,20 +1169,202 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       {/* Main Analysis Display */}
       {analysis && (
         <div className="space-y-5">
+          {/* Sensor Diagnostics Banner */}
+          {analysis.sensorDiagnostics && (
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-ios-blue/10 text-ios-blue flex items-center justify-center shrink-0">
+                    <Cpu className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>{language === 'zh-TW' ? '碼表傳感器接入與數據流診斷' : '码表传感器接入与数据流诊断'}</span>
+                      {analysis.isEstimatedPower && (
+                        <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-ios-amber/15 text-ios-amber border border-ios-amber/30">
+                          {language === 'zh-TW' ? '⚡ 物理動力學仿真估算中' : '⚡ 物理动力学仿真估算中'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      {language === 'zh-TW'
+                        ? '深度解析 FIT 底層硬件通道配對與秒級採樣信號流'
+                        : '深度解析 FIT 底层硬件通道配对与秒级采样信号流'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Power Reconstruction Action Button when hardware power is absent */}
+                {!analysis.sensorDiagnostics.hasHardwarePower && (
+                  <button
+                    onClick={handleToggleEstimatedPower}
+                    className={`apple-touch h-9 px-3.5 rounded-xl font-semibold text-xs transition flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-ios-sm ${
+                      analysis.isEstimatedPower
+                        ? 'bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10'
+                        : 'bg-ios-blue hover:bg-ios-blue/90 text-white'
+                    }`}
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>
+                      {analysis.isEstimatedPower
+                        ? (language === 'zh-TW' ? '切換回硬件原始數據 (0W)' : '切换回硬件原始数据 (0W)')
+                        : (language === 'zh-TW' ? '開啟物理動力學仿真估算功率' : '开启物理动力学仿真估算功率')}
+                    </span>
+                  </button>
+                )}
+              </div>
+
+              {/* 4-Channel Status Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {/* Heart Rate Channel */}
+                <div className={`p-2.5 sm:p-3 rounded-xl border flex flex-col justify-between ${
+                  analysis.sensorDiagnostics.hasHeartRate
+                    ? 'bg-ios-green/5 border-ios-green/20'
+                    : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200/60 dark:border-white/10'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Heart className="w-3.5 h-3.5 text-ios-red" />
+                      {language === 'zh-TW' ? '心率通道' : '心率通道'}
+                    </span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                      analysis.sensorDiagnostics.hasHeartRate
+                        ? 'bg-ios-green/15 text-ios-green'
+                        : 'bg-slate-200 dark:bg-white/10 text-slate-500'
+                    }`}>
+                      {analysis.sensorDiagnostics.hasHeartRate ? (language === 'zh-TW' ? '已記錄' : '已记录') : (language === 'zh-TW' ? '無信號' : '无信号')}
+                    </span>
+                  </div>
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">
+                    {analysis.avgHeartRate ? `${analysis.avgHeartRate} bpm` : (language === 'zh-TW' ? '未連接心率帶' : '未连接心率带')}
+                  </div>
+                </div>
+
+                {/* Shifting Channel */}
+                <div className={`p-2.5 sm:p-3 rounded-xl border flex flex-col justify-between ${
+                  analysis.sensorDiagnostics.hasShifting
+                    ? 'bg-ios-purple/5 border-ios-purple/20'
+                    : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200/60 dark:border-white/10'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Layers className="w-3.5 h-3.5 text-ios-purple" />
+                      {language === 'zh-TW' ? '電子變速' : '电子变速'}
+                    </span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                      analysis.sensorDiagnostics.hasShifting
+                        ? 'bg-ios-purple/15 text-ios-purple'
+                        : 'bg-slate-200 dark:bg-white/10 text-slate-500'
+                    }`}>
+                      {analysis.sensorDiagnostics.hasShifting ? (language === 'zh-TW' ? '已連接' : '已连接') : (language === 'zh-TW' ? '未連接' : '未连接')}
+                    </span>
+                  </div>
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">
+                    {analysis.shiftCount ? `${analysis.shiftCount} ${language === 'zh-TW' ? '次換擋' : '次换挡'}` : (language === 'zh-TW' ? '無變速數據' : '无变速数据')}
+                  </div>
+                </div>
+
+                {/* Power Channel */}
+                <div className={`p-2.5 sm:p-3 rounded-xl border flex flex-col justify-between ${
+                  analysis.sensorDiagnostics.hasHardwarePower
+                    ? 'bg-ios-blue/5 border-ios-blue/20'
+                    : analysis.isEstimatedPower
+                    ? 'bg-ios-amber/5 border-ios-amber/20'
+                    : 'bg-ios-orange/5 border-ios-orange/20'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-ios-blue" />
+                      {language === 'zh-TW' ? '功率計通道' : '功率计通道'}
+                    </span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                      analysis.sensorDiagnostics.hasHardwarePower
+                        ? 'bg-ios-green/15 text-ios-green'
+                        : analysis.isEstimatedPower
+                        ? 'bg-ios-amber/15 text-ios-amber'
+                        : 'bg-ios-orange/15 text-ios-orange'
+                    }`}>
+                      {analysis.sensorDiagnostics.hasHardwarePower
+                        ? (language === 'zh-TW' ? '硬件採集' : '硬件采集')
+                        : analysis.isEstimatedPower
+                        ? (language === 'zh-TW' ? '物理估算' : '物理估算')
+                        : (language === 'zh-TW' ? '無硬件數據' : '无硬件数据')}
+                    </span>
+                  </div>
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">
+                    {analysis.sensorDiagnostics.hasHardwarePower
+                      ? `${analysis.avgPower}W (${analysis.normalizedPower}W NP)`
+                      : analysis.isEstimatedPower
+                      ? `${analysis.avgPower}W (估算 NP ${analysis.normalizedPower}W)`
+                      : (language === 'zh-TW' ? '硬件功率計離線' : '硬件功率计离线')}
+                  </div>
+                </div>
+
+                {/* Cadence Channel */}
+                <div className={`p-2.5 sm:p-3 rounded-xl border flex flex-col justify-between ${
+                  analysis.sensorDiagnostics.hasHardwareCadence
+                    ? 'bg-ios-green/5 border-ios-green/20'
+                    : 'bg-ios-orange/5 border-ios-orange/20'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <RotateCcw className="w-3.5 h-3.5 text-ios-orange" />
+                      {language === 'zh-TW' ? '踏頻傳感器' : '踏频传感器'}
+                    </span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                      analysis.sensorDiagnostics.hasHardwareCadence
+                        ? 'bg-ios-green/15 text-ios-green'
+                        : 'bg-ios-orange/15 text-ios-orange'
+                    }`}>
+                      {analysis.sensorDiagnostics.hasHardwareCadence
+                        ? (language === 'zh-TW' ? '已記錄' : '已记录')
+                        : (language === 'zh-TW' ? '無硬件數據' : '无硬件数据')}
+                    </span>
+                  </div>
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">
+                    {analysis.avgCadence ? `${analysis.avgCadence} rpm` : (language === 'zh-TW' ? '踏頻計離線' : '踏频计离线')}
+                  </div>
+                </div>
+              </div>
+
+              {/* Detailed Diagnostic Notes */}
+              {analysis.sensorDiagnostics.detectedNotes.length > 0 && (
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10 space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                  {analysis.sensorDiagnostics.detectedNotes.map((note, idx) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <Info className="w-3.5 h-3.5 text-ios-blue shrink-0 mt-0.5" />
+                      <span>{note}</span>
+                    </div>
+                  ))}
+                  {!analysis.sensorDiagnostics.hasHardwarePower && !analysis.isEstimatedPower && (
+                    <div className="pt-1 text-[11px] text-ios-blue font-medium flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5 text-ios-amber" />
+                      <span>
+                        {language === 'zh-TW'
+                          ? '提示：您可以點擊右上角「開啟物理動力學仿真估算功率」按鈕，基於速度、坡度與質量模型還原騎行做功、NP 與 TSS。'
+                          : '提示：您可以点击右上角「开启物理动力学仿真估算功率」按钮，基于速度、坡度与质量模型还原骑行做功、NP 与 TSS。'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-3.5">
             <IOSMetricTile
-              label="标准化功率 NP"
+              label={analysis.isEstimatedPower ? '标准化功率 NP (估算)' : '标准化功率 NP'}
               value={analysis.normalizedPower}
               unit="W"
-              subtext={`${(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · 均功率 ${analysis.avgPower}W`}
-              theme="blue"
-              icon={<Zap className="w-4 h-4 text-ios-blue" />}
+              subtext={`${(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · 均功率 ${analysis.avgPower}W${analysis.isEstimatedPower ? ' · 物理估算' : ''}`}
+              theme={analysis.isEstimatedPower ? 'amber' : 'blue'}
+              icon={<Zap className={`w-4 h-4 ${analysis.isEstimatedPower ? 'text-ios-amber' : 'text-ios-blue'}`} />}
             />
             <IOSMetricTile
               label="强度系数 IF"
               value={analysis.intensityFactor}
-              subtext={`${Math.round(analysis.intensityFactor * 100)}% FTP负荷`}
+              subtext={`${Math.round(analysis.intensityFactor * 100)}% FTP负荷${analysis.isEstimatedPower ? ' · 估算' : ''}`}
               theme="amber"
               icon={<Flame className="w-4 h-4 text-ios-orange" />}
             />
@@ -1141,7 +1394,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               label="累计爬升与做功"
               value={`+${analysis.elevationGainM}`}
               unit="m"
-              subtext={`${analysis.workKj} kJ (${analysis.caloriesKcal} kcal)`}
+              subtext={`${analysis.workKj} kJ (${analysis.caloriesKcal} kcal${analysis.workKj === 0 && analysis.recordedCalories ? ' · 码表测算' : ''})`}
               theme="mint"
               icon={<Mountain className="w-4 h-4 text-ios-mint" />}
             />
@@ -1192,6 +1445,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   { value: 'trends', label: language === 'zh-TW' ? '時序趨勢' : '时序趋势' },
                   { value: 'zones', label: language === 'zh-TW' ? '區間駐留' : '区间驻留' },
                   { value: 'mmp', label: language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线' },
+                  ...(analysis.shiftingEvents && analysis.shiftingEvents.length > 0 ? [{ value: 'shifting', label: language === 'zh-TW' ? '電子變速' : '电子变速' }] : []),
                   { value: 'pmc', label: language === 'zh-TW' ? 'PMC 負荷' : 'PMC 负荷' },
                   { value: 'coaching', label: language === 'zh-TW' ? '生理診斷' : '生理诊断' }
                 ]}
@@ -1437,7 +1691,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                             {riderPhenotype.description}
                           </p>
                           <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                            💡 训练建议：{riderPhenotype.trainingFocus}
+                            训练建议：{riderPhenotype.trainingFocus}
                           </p>
                         </div>
 
@@ -1451,7 +1705,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                                 }
                                 setSmartWorkoutModalOpen(true);
                               }}
-                              className="apple-touch inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold transition shadow-ios-sm active:scale-95"
+                              className="apple-touch h-9 inline-flex items-center justify-center gap-1.5 px-3.5 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white text-xs font-bold transition shadow-ios-sm active:scale-95"
                             >
                               <Sparkles className="w-3.5 h-3.5" />
                               <span>智能生成靶向补强课表</span>
@@ -1459,7 +1713,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                             <button
                               type="button"
                               onClick={() => onNavigateTool('workout-builder')}
-                              className="apple-touch p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-semibold transition"
+                              className="apple-touch h-9 w-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-semibold transition flex items-center justify-center"
                               title="直接打开训练工坊"
                             >
                               <Dumbbell className="w-4 h-4" />
@@ -1695,6 +1949,88 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* TAB: Electronic Shifting Analysis */}
+          {activeTab === 'shifting' && analysis.shiftingEvents && (
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2.5">
+                <div className="text-xs font-bold text-slate-850 dark:text-white flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-ios-purple" />
+                  <span>{language === 'zh-TW' ? '電子變速換擋深度解析 (Shimano Di2 / SRAM)' : '电子变速换挡深度解析 (Shimano Di2 / SRAM)'}</span>
+                </div>
+                <div className="text-xs text-slate-500">
+                  {language === 'zh-TW' ? '全程累計換擋' : '全程累计换挡'}: <strong className="text-slate-900 dark:text-white tabular-nums">{analysis.shiftingEvents.length}</strong> {language === 'zh-TW' ? '次' : '次'}
+                </div>
+              </div>
+
+              {/* Shifting Metric Tiles */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
+                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '總換擋次數' : '总换挡次数'}</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">{analysis.shiftingEvents.length} <span className="text-xs font-normal text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span></div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    {analysis.totalDistanceKm > 0 ? `${(analysis.shiftingEvents.length / (analysis.totalDistanceKm / 10)).toFixed(1)} 次 / 10km` : '--'}
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
+                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '前撥換檔 (大/小盤)' : '前拨换挡 (大/小盘)'}</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
+                    {analysis.shiftingEvents.filter(e => e.frontGearNum !== undefined).length} <span className="text-xs font-normal text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    {language === 'zh-TW' ? '牙盤切換' : '牙盘切换'}
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
+                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '後撥換擋 (飛輪)' : '后拨换挡 (飞轮)'}</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
+                    {analysis.shiftingEvents.filter(e => e.rearGearNum !== undefined).length} <span className="text-xs font-normal text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    {language === 'zh-TW' ? '飛輪微調' : '飞轮微调'}
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
+                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '換擋頻率' : '换挡频率'}</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
+                    {analysis.movingTimeSec > 0 ? (analysis.shiftingEvents.length / (analysis.movingTimeSec / 3600)).toFixed(1) : '0'} <span className="text-xs font-normal text-slate-400">{language === 'zh-TW' ? '次/小時' : '次/小时'}</span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">
+                    {language === 'zh-TW' ? '平均節奏調頻' : '平均节奏调频'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Rear Gear Distribution Bar */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {language === 'zh-TW' ? '後撥檔位切換使用次數分佈 (Gear Index 1~12)' : '后拨档位切换使用次数分布 (Gear Index 1~12)'}
+                </div>
+                <div className="grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(gNum => {
+                    const count = analysis.shiftingEvents!.filter(e => e.rearGearNum === gNum).length;
+                    const maxCount = Math.max(1, ...Array.from({ length: 12 }, (_, j) => analysis.shiftingEvents!.filter(e => e.rearGearNum === j + 1).length));
+                    const pct = Math.round((count / maxCount) * 100);
+                    return (
+                      <div key={gNum} className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10 text-center flex flex-col justify-between">
+                        <span className="text-[10px] text-slate-400">{gNum}档</span>
+                        <div className="h-10 w-full bg-slate-100 dark:bg-white/5 rounded-md flex items-end justify-center my-1 overflow-hidden">
+                          <div
+                            style={{ height: `${pct}%` }}
+                            className={`w-full transition-all duration-300 ${count > 0 ? 'bg-ios-purple' : 'bg-transparent'}`}
+                          />
+                        </div>
+                        <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 tabular-nums">{count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           )}
 
@@ -2114,10 +2450,10 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
               {/* Smart Targeted Workout Recommendation Card */}
               {smartWorkoutRecommendation && (
-                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-ios-purple/10 via-ios-blue/10 to-transparent border border-ios-purple/25 space-y-3 shadow-ios-sm relative overflow-hidden">
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-ios-red/10 via-ios-orange/10 to-transparent border border-ios-red/25 space-y-3 shadow-ios-sm relative overflow-hidden">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="space-y-1">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-purple/15 text-ios-purple text-xs font-bold border border-ios-purple/25">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-red/15 text-ios-red text-xs font-bold border border-ios-red/25">
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>运动科学智能靶向补强推荐</span>
                       </div>
@@ -2133,7 +2469,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           setSelectedSmartTemplateId(smartWorkoutRecommendation.template.id);
                           setSmartWorkoutModalOpen(true);
                         }}
-                        className="apple-touch self-start sm:self-auto shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white font-bold text-xs shadow-ios-sm transition active:scale-95"
+                        className="apple-touch self-start sm:self-auto shrink-0 h-9 inline-flex items-center gap-2 px-3.5 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-bold text-xs shadow-ios-sm transition active:scale-95"
                       >
                         <Dumbbell className="w-4 h-4" />
                         <span>配置补强课表</span>
@@ -2153,7 +2489,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         {smartWorkoutRecommendation.template.name}
                       </span>
                     </div>
-                    <span className="text-[11px] text-ios-purple font-medium">
+                    <span className="text-[11px] text-ios-red font-medium">
                       {smartWorkoutRecommendation.template.targetAdaptation}
                     </span>
                   </div>
@@ -2185,7 +2521,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-ios-purple to-ios-blue text-white flex items-center justify-center shadow-ios-sm">
+                <div className="w-9 h-9 rounded-xl bg-ios-red text-white flex items-center justify-center shadow-ios-sm">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
@@ -2207,8 +2543,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
 
             {/* Physiological Deficit Diagnosis Alert */}
-            <div className="p-3.5 rounded-xl bg-ios-purple/10 border border-ios-purple/25 space-y-1.5">
-              <div className="flex items-center gap-2 text-xs font-bold text-ios-purple">
+            <div className="p-3.5 rounded-xl bg-ios-red/10 border border-ios-red/25 space-y-1.5">
+              <div className="flex items-center gap-2 text-xs font-bold text-ios-red">
                 <AlertTriangle className="w-4 h-4" />
                 <span>生理学短板评估：{smartWorkoutRecommendation.deficiencyTitle}</span>
               </div>
@@ -2216,7 +2552,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 {smartWorkoutRecommendation.deficiencyDesc}
               </p>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
-                💡 训练建议：{smartWorkoutRecommendation.actionAdvice}
+                训练建议：{smartWorkoutRecommendation.actionAdvice}
               </p>
             </div>
 
@@ -2224,7 +2560,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             <div className="space-y-3">
               <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
                 <span>选择训练课表方案：</span>
-                <span className="text-[10px] text-ios-purple font-normal">已预选最匹配短板方案</span>
+                <span className="text-[10px] text-ios-red font-normal">已预选最匹配短板方案</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -2238,18 +2574,18 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       onClick={() => setSelectedSmartTemplateId(tmpl.id)}
                       className={`p-3 rounded-xl border text-left transition relative apple-touch ${
                         isSelected
-                          ? 'bg-ios-purple/10 dark:bg-ios-purple/20 border-ios-purple text-slate-900 dark:text-white ring-2 ring-ios-purple/30'
+                          ? 'bg-ios-red/10 dark:bg-ios-red/20 border-ios-red text-slate-900 dark:text-white ring-2 ring-ios-red/30'
                           : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                       }`}
                     >
                       {isRecommended && (
-                        <span className="absolute top-2 right-2 px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-ios-purple text-white shadow-2xs">
+                        <span className="absolute top-2 right-2 px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-ios-red text-white shadow-2xs">
                           推荐
                         </span>
                       )}
                       <div className="font-bold text-xs pr-8">{tmpl.name}</div>
                       <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">{tmpl.subtitle}</div>
-                      <div className="text-[10px] text-ios-purple font-medium mt-1">{tmpl.categoryLabel}</div>
+                      <div className="text-[10px] text-ios-red font-medium mt-1">{tmpl.categoryLabel}</div>
                     </button>
                   );
                 })}
@@ -2269,7 +2605,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     {activeTmpl.description}
                   </p>
                   <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                    🎯 靶向适应：{activeTmpl.targetAdaptation}
+                    靶向适应：{activeTmpl.targetAdaptation}
                   </div>
                 </div>
               );
@@ -2280,14 +2616,14 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <button
                 type="button"
                 onClick={() => setSmartWorkoutModalOpen(false)}
-                className="apple-touch px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition"
+                className="apple-touch h-9 px-4 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition"
               >
                 取消
               </button>
               <button
                 type="button"
                 onClick={() => handleDispatchSmartWorkout()}
-                className="apple-touch px-4.5 py-2 rounded-xl bg-gradient-to-r from-ios-purple to-ios-blue hover:opacity-95 text-white text-xs font-bold shadow-ios-sm flex items-center gap-2 transition active:scale-95"
+                className="apple-touch h-9 px-4.5 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white text-xs font-bold shadow-ios-sm flex items-center gap-2 transition active:scale-95"
               >
                 <Dumbbell className="w-4 h-4" />
                 <span>载入课表工坊并开始训练</span>

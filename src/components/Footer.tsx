@@ -123,7 +123,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
               <IOSSegmentedControl
                 options={[
                   { id: 'disclaimer', label: language === 'zh-TW' ? '免責聲明' : '免责声明', icon: Shield },
-                  { id: 'privacy', label: language === 'zh-TW' ? '隱私保護 (GDPR)' : '隐私保护 (GDPR)', icon: Lock },
+                  { id: 'privacy', label: language === 'zh-TW' ? '隱私保護' : '隐私保护', icon: Lock },
                 ]}
                 value={activeModalTab}
                 onChange={(val) => setActiveModalTab(val as any)}

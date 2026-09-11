@@ -15,20 +15,20 @@ export const TIRE_SETUP_FACTORS: Record<string, { label: string; factor: number;
 
 // Base PSI lookup for nominal tire width vs total system weight (kg)
 export function getBaseTirePsi(nominalWidthMm: number, systemWeightKg: number, bikeType: 'road' | 'gravel' | 'mtb'): number {
-  // Model: Ideal pressure formula based on tire volume and deflection load
-  // P ≈ K * (Weight / Width^1.55)
-  let k = 310;
-  if (bikeType === 'gravel') k = 280;
-  if (bikeType === 'mtb') k = 250;
+  // Model: Ideal pressure formula based on Frank Berto & Silca 15% tire deflection
+  // P ≈ K * (Weight / Width^1.45)
+  let k = 120;
+  if (bikeType === 'gravel') k = 112;
+  if (bikeType === 'mtb') k = 108;
 
   const basePressure = (systemWeightKg * k) / Math.pow(nominalWidthMm, 1.45);
   
   // Bound limits by bike type
   if (bikeType === 'road') {
-    return Math.max(45, Math.min(125, basePressure));
+    return Math.max(45, Math.min(115, basePressure));
   } else if (bikeType === 'gravel') {
-    return Math.max(25, Math.min(75, basePressure));
+    return Math.max(25, Math.min(65, basePressure));
   } else {
-    return Math.max(18, Math.min(55, basePressure));
+    return Math.max(18, Math.min(45, basePressure));
   }
 }

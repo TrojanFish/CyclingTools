@@ -226,8 +226,8 @@ export const WorkoutBuilder: React.FC = () => {
           setSelectedTemplateId(pending.templateId || 'custom_smart');
           showToast(
             pending.reason
-              ? `🎯 已为您载入针对「${pending.reason}」的靶向补强课表！`
-              : '🎯 已为您自动载入定制的靶向强化课表！',
+              ? `已为您载入针对「${pending.reason}」的靶向补强课表！`
+              : '已为您自动载入定制的靶向强化课表！',
             'success'
           );
           localStorage.removeItem('solorider_pending_workout');
@@ -510,8 +510,8 @@ export const WorkoutBuilder: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '結構化間歇課表工坊' : '结构化间歇课表工坊'}
         categoryIcon={Dumbbell}
-        title={language === 'zh-TW' ? '科學間歇訓練課表工坊 (Workout Builder)' : '科学间歇训练课表工坊 (Workout Builder)'}
-        description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，一键无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
+        title={language === 'zh-TW' ? '科學間歇訓練課表工坊' : '科学间歇训练课表工坊'}
+        description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
         tint="red"
         onShare={handleGeneratePoster}
         shareTitle="生成社交分享课表海报"
@@ -522,7 +522,7 @@ export const WorkoutBuilder: React.FC = () => {
             className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-ios-red hover:bg-ios-red/90 text-white font-semibold text-xs shadow-ios-sm flex items-center justify-center gap-1.5 transition whitespace-nowrap shrink-0"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>导出课表 (ZWO / MRC)</span>
+            <span>导出课表</span>
           </button>
         }
       />
@@ -618,8 +618,8 @@ export const WorkoutBuilder: React.FC = () => {
                 </div>
 
                 <div className="text-[10px] text-slate-400 font-medium pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
-                  <span>🎯 {tmpl.targetAdaptation}</span>
-                  <span className="text-ios-red font-semibold">加载模板 →</span>
+                  <span>{tmpl.targetAdaptation}</span>
+                  <span className="text-ios-red font-semibold">加载模板</span>
                 </div>
               </div>
             );
@@ -968,7 +968,7 @@ export const WorkoutBuilder: React.FC = () => {
 
             {/* Hardware Import Guidelines */}
             <div className="p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-              <div className="font-bold text-slate-700 dark:text-slate-300">📁 码表与软件导入指引：</div>
+              <div className="font-bold text-slate-700 dark:text-slate-300">码表与软件导入指引：</div>
               {exportFormat === 'zwo' ? (
                 <p>
                   <strong>Zwift 导入</strong>：下载 <code>.zwo</code> 文件后，将其放入电脑本地目录 <code>文档/Zwift/Workouts/&lt;你的Zwift用户ID&gt;/</code>，重启 Zwift 即可在“Custom Workouts”中找到并启动课表。

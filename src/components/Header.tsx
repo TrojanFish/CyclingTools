@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={onToggleSidebar}
                 className="hidden lg:flex items-center justify-center w-9 h-9 rounded-xl bg-black/[0.04] dark:bg-white/[0.08] border border-black/[0.04] dark:border-white/[0.06] text-slate-600 dark:text-slate-300 hover:text-ios-blue hover:bg-black/[0.08] dark:hover:bg-white/[0.12] transition-all apple-touch shrink-0"
-                title={isSidebarOpen ? '收起侧边栏 (Toggle Sidebar)' : '展开侧边栏 (Toggle Sidebar)'}
+                title={isSidebarOpen ? (language === 'zh-TW' ? '收起側邊欄' : '收起侧边栏') : (language === 'zh-TW' ? '展開側邊欄' : '展开侧边栏')}
                 aria-label="Toggle Sidebar"
               >
                 <PanelLeft className="w-4 h-4" />
@@ -184,7 +184,7 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* Header spacer to prevent content underlap when fixed at top */}
-      <div className="h-[calc(52px+env(safe-area-inset-top,0px))] sm:h-[calc(64px+env(safe-area-inset-top,0px))] w-full shrink-0" aria-hidden="true" />
+      <div className="h-[calc(52px+env(safe-area-inset-top,0px))] sm:h-[calc(56px+env(safe-area-inset-top,0px))] w-full shrink-0" aria-hidden="true" />
 
       {/* Global Rider Profile Modal */}
       <RiderProfileModal

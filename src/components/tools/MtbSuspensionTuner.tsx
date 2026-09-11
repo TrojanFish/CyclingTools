@@ -234,10 +234,11 @@ export const MtbSuspensionTuner: React.FC = () => {
     const shockLscClicks = Math.max(2, Math.min(14, Math.round(12 - (wLbs / 220) * 5)));
 
     // For Coil Shock (TFTuned / Push spring rate formula):
-    // Spring Rate (lbs/in) = (Weight_lbs * rear_distrib * Leverage_Ratio) / (Shock_Stroke_Inches * (Sag_Pct / 100))
+    // Spring Rate (lbs/in) = (Weight_lbs * rear_distrib * Leverage_Ratio) / (Shock_Stroke_Inches * (Sag_Pct / 100) * progressivity_comp)
     const strokeInches = shockStrokeMm / 25.4;
     const sagDecimal = targetShockSagPct / 100;
-    const rawSpringRate = (wLbs * rearWeightDistrib * leverageRatio) / (strokeInches * sagDecimal * leverageRatio * 0.82);
+    const coilProgComp = linkageProgressivity === 'linear' ? 1.0 : linkageProgressivity === 'progressive' ? 0.92 : 0.86;
+    const rawSpringRate = (wLbs * rearWeightDistrib * leverageRatio) / (strokeInches * sagDecimal * coilProgComp);
     // standard coil springs come in 25 or 50 lbs increments (300, 325, 350, 375, 400, 425, 450, 475, 500, 550, 600)
     const exactSpringRate = Math.round(rawSpringRate);
     const closestSpringRate = Math.round(exactSpringRate / 25) * 25;

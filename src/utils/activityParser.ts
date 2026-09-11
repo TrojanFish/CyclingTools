@@ -44,6 +44,38 @@ export interface MmpValue {
   wkg: number;
 }
 
+export interface DeviceInfo {
+  deviceIndex?: number | string;
+  deviceType?: string | number;
+  productName?: string;
+  manufacturer?: string | number;
+  serialNumber?: number;
+  batteryStatus?: string | number;
+  batteryVoltage?: number;
+  sourceType?: string | number;
+  antplusDeviceType?: string | number;
+  hasDataRecorded: boolean;
+}
+
+export interface ElectronicShiftingEvent {
+  timeSec: number;
+  frontGearNum?: number;
+  rearGearNum?: number;
+  frontGear?: number;
+  rearGear?: number;
+  gearRatio?: number;
+}
+
+export interface SensorDiagnostics {
+  hasHardwarePower: boolean;
+  hasHardwareCadence: boolean;
+  hasHeartRate: boolean;
+  hasSpeed: boolean;
+  hasShifting: boolean;
+  devices: DeviceInfo[];
+  detectedNotes: string[];
+}
+
 export interface ActivityAnalysis {
   fileName: string;
   fileType: 'fit' | 'gpx' | 'tcx' | 'demo';
@@ -74,6 +106,12 @@ export interface ActivityAnalysis {
   mmp: MmpValue[];
   points: ActivityPoint[];
   sampledPoints: ActivityPoint[]; // Downsampled for smooth chart rendering
+  isEstimatedPower?: boolean;
+  sensorDiagnostics?: SensorDiagnostics;
+  shiftingEvents?: ElectronicShiftingEvent[];
+  shiftCount?: number;
+  recordedCalories?: number;
+  rawPoints?: ActivityPoint[];
 }
 
 /**
@@ -322,6 +360,90 @@ export function downsamplePoints(points: ActivityPoint[], targetCount = 600): Ac
 }
 
 /**
+ * Physics-based dynamic cycling power simulation to reconstruct estimated power
+ * when a ride has GPS, elevation, speed, and rider weight, but lacks a hardware power meter.
+ */
+export function computeEstimatedPowerPoints(
+  rawPoints: ActivityPoint[],
+  riderWeightKg = 68,
+  bikeWeightKg = 9,
+  crr = 0.004,
+  cda = 0.32,
+  rho = 1.205
+): ActivityPoint[] {
+  if (!rawPoints || rawPoints.length === 0) return [];
+
+  const totalMass = (riderWeightKg || 68) + (bikeWeightKg || 9);
+  const g = 9.80665;
+  const eta = 0.975; // Drivetrain mechanical efficiency
+
+  // Smooth speeds using 3-point moving average to eliminate GPS micro-jitter
+  const smoothedSpeeds = rawPoints.map((pt, i) => {
+    const s = pt.speed ?? 0;
+    const p = i > 0 ? (rawPoints[i - 1].speed ?? s) : s;
+    const n = i < rawPoints.length - 1 ? (rawPoints[i + 1].speed ?? s) : s;
+    return (p + s + n) / 3;
+  });
+
+  return rawPoints.map((pt, i) => {
+    const speedKmh = smoothedSpeeds[i];
+    const speedMs = speedKmh / 3.6;
+
+    // Stationary or extremely slow (walking / waiting at light)
+    if (speedMs < 0.8) {
+      return { ...pt, power: 0 };
+    }
+
+    // Slope calculation
+    let slope = 0;
+    const window = 4;
+    const pIdx = Math.max(0, i - window);
+    const nIdx = Math.min(rawPoints.length - 1, i + window);
+    const dDist = rawPoints[nIdx].distance - rawPoints[pIdx].distance;
+    if (
+      dDist > 10 &&
+      rawPoints[nIdx].altitude !== undefined &&
+      rawPoints[pIdx].altitude !== undefined
+    ) {
+      const dAlt = rawPoints[nIdx].altitude! - rawPoints[pIdx].altitude!;
+      slope = Math.max(-0.25, Math.min(0.25, dAlt / dDist));
+    }
+
+    // Acceleration calculation
+    let accel = 0;
+    if (i > 0) {
+      const dt = Math.max(1, pt.time - rawPoints[i - 1].time);
+      const prevSpeedMs = smoothedSpeeds[i - 1] / 3.6;
+      accel = (speedMs - prevSpeedMs) / dt;
+      accel = Math.max(-1.5, Math.min(1.5, accel));
+    }
+
+    // Forces (Newtons)
+    const theta = Math.atan(slope);
+    const fGravity = totalMass * g * Math.sin(theta);
+    const fRolling = totalMass * g * crr * Math.cos(theta);
+    const fAero = 0.5 * rho * cda * Math.pow(speedMs, 2);
+    const fAccel = accel > 0 ? totalMass * accel * 0.75 : 0;
+
+    const fTotal = fGravity + fRolling + fAero + fAccel;
+    let powerWatts = (fTotal * speedMs) / eta;
+
+    // Downhill coasting detector: steep descent (slope < -1.5%) or negative total force
+    if (slope < -0.015 || powerWatts < 15) {
+      powerWatts = 0;
+    }
+
+    // Realistic upper bound cap (850W for road cycling simulation)
+    powerWatts = Math.max(0, Math.min(850, Math.round(powerWatts)));
+
+    return {
+      ...pt,
+      power: powerWatts
+    };
+  });
+}
+
+/**
  * Core analysis engine computing all Coggan physiological training metrics
  */
 export function analyzePoints(
@@ -330,7 +452,14 @@ export function analyzePoints(
   fileType: 'fit' | 'gpx' | 'tcx' | 'demo',
   ftpWatts = 240,
   weightKg = 68,
-  maxHr = 185
+  maxHr = 185,
+  options?: {
+    isEstimatedPower?: boolean;
+    sensorDiagnostics?: SensorDiagnostics;
+    shiftingEvents?: ElectronicShiftingEvent[];
+    recordedCalories?: number;
+    rawPoints?: ActivityPoint[];
+  }
 ): ActivityAnalysis {
   if (rawPoints.length === 0) {
     throw new Error('航迹点列表为空，无法解析活动指标');
@@ -449,7 +578,10 @@ export function analyzePoints(
 
   // Work in kJ and estimated Calories (assuming 24% human gross mechanical efficiency)
   const workKj = Math.round((sumPower * 1) / 1000);
-  const caloriesKcal = Math.round(workKj / 1.05); // 1 kJ ≈ 1 kcal at ~24% gross mechanical efficiency
+  let caloriesKcal = Math.round(workKj / 1.05); // 1 kJ ≈ 1 kcal at ~24% gross mechanical efficiency
+  if ((workKj === 0 || caloriesKcal === 0) && options?.recordedCalories && options.recordedCalories > 0) {
+    caloriesKcal = options.recordedCalories;
+  }
 
   // Coggan 7 Power Zones
   const pFtp = ftpWatts || 240;
@@ -554,7 +686,13 @@ export function analyzePoints(
     timeInHrZones,
     mmp,
     points,
-    sampledPoints: downsamplePoints(points, 600)
+    sampledPoints: downsamplePoints(points, 600),
+    isEstimatedPower: options?.isEstimatedPower ?? false,
+    sensorDiagnostics: options?.sensorDiagnostics,
+    shiftingEvents: options?.shiftingEvents,
+    shiftCount: options?.shiftingEvents?.length,
+    recordedCalories: options?.recordedCalories,
+    rawPoints: options?.rawPoints ?? rawPoints
   };
 }
 
@@ -572,7 +710,11 @@ export async function parseFitFile(
   const stream = Stream.fromByteArray(bytes);
   const decoder = new Decoder(stream);
 
-  const { messages, errors } = decoder.read();
+  const { messages, errors } = decoder.read({
+    includeUnknownData: true,
+    expandSubFields: true,
+    expandComponents: true
+  });
   if (errors && errors.length > 0 && (!messages || !messages.recordMesgs)) {
     throw new Error(`FIT 文件解析异常: ${errors[0].message || '格式无法识别'}`);
   }
@@ -582,8 +724,24 @@ export async function parseFitFile(
     throw new Error('该 FIT 文件中未提取到有效的骑行记录点 (recordMesgs)');
   }
 
+  // Build developer fields map to decode custom power/cadence data
+  const devFieldMap = new Map<number, { fieldName: string; nativeFieldNum?: number; nativeMesgNum?: number }>();
+  if (messages?.fieldDescriptionMesgs) {
+    for (const rawFd of messages.fieldDescriptionMesgs) {
+      const fd = rawFd as any;
+      if (fd.key !== undefined) {
+        devFieldMap.set(Number(fd.key), {
+          fieldName: String(fd.fieldName || ''),
+          nativeFieldNum: typeof fd.nativeFieldNum === 'number' ? fd.nativeFieldNum : undefined,
+          nativeMesgNum: typeof fd.nativeMesgNum === 'number' ? fd.nativeMesgNum : undefined
+        });
+      }
+    }
+  }
+
   const points: ActivityPoint[] = [];
   let baseTimestamp: number | null = null;
+  let maxRecordedCalories = 0;
 
   for (let i = 0; i < recordMesgs.length; i++) {
     const r: any = recordMesgs[i];
@@ -604,13 +762,51 @@ export async function parseFitFile(
     const dist = r.distance !== undefined && r.distance !== null ? r.distance : (i * 7);
     const speedKmh = r.speed !== undefined && r.speed !== null ? parseFloat((r.speed * 3.6).toFixed(1)) : undefined;
 
+    // Developer fields extraction
+    let devPower: number | undefined = undefined;
+    let devCadence: number | undefined = undefined;
+    if (r.developerFields && typeof r.developerFields === 'object') {
+      for (const [kStr, val] of Object.entries(r.developerFields)) {
+        const kNum = Number(kStr);
+        const desc = devFieldMap.get(kNum);
+        const numVal = typeof val === 'number' ? val : (typeof val === 'string' ? parseFloat(val) : undefined);
+        if (numVal !== undefined && !isNaN(numVal)) {
+          if (desc) {
+            const nameLower = desc.fieldName.toLowerCase();
+            if (desc.nativeFieldNum === 7 || nameLower === 'power' || nameLower === 'watts' || nameLower.includes('power')) {
+              devPower = numVal;
+            } else if (desc.nativeFieldNum === 4 || nameLower === 'cadence' || nameLower.includes('cadence') || nameLower === 'rpm') {
+              devCadence = numVal;
+            }
+          }
+        }
+      }
+    }
+
+    // Power resolution (supporting standard power, watts, motorPower, devPower)
+    const rawPower = r.power ?? r.watts ?? r.instantaneousPower ?? (r.motorPower !== undefined ? r.motorPower : undefined) ?? devPower;
+    const powerVal = rawPower !== undefined && rawPower !== null && !isNaN(rawPower) ? Math.round(rawPower) : undefined;
+
+    // Cadence resolution (supporting standard cadence, cadence256, fractionalCadence, devCadence)
+    let rawCad = r.cadence ?? r.cadence256 ?? devCadence;
+    if (rawCad !== undefined && r.fractionalCadence !== undefined) {
+      rawCad = rawCad + r.fractionalCadence;
+    } else if (rawCad === undefined && r.fractionalCadence !== undefined) {
+      rawCad = r.fractionalCadence;
+    }
+    const cadenceVal = rawCad !== undefined && rawCad !== null && !isNaN(rawCad) ? Math.round(rawCad) : undefined;
+
+    if (r.calories !== undefined && typeof r.calories === 'number' && r.calories > maxRecordedCalories) {
+      maxRecordedCalories = Math.round(r.calories);
+    }
+
     points.push({
       time: elapsed,
       timestamp: r.timestamp instanceof Date ? r.timestamp : undefined,
       distance: dist,
-      power: r.power !== undefined && r.power !== null ? Math.round(r.power) : undefined,
+      power: powerVal,
       heartRate: r.heartRate !== undefined && r.heartRate !== null ? Math.round(r.heartRate) : undefined,
-      cadence: r.cadence !== undefined && r.cadence !== null ? Math.round(r.cadence) : undefined,
+      cadence: cadenceVal,
       speed: speedKmh,
       altitude: r.altitude !== undefined && r.altitude !== null ? parseFloat(r.altitude.toFixed(1)) : undefined,
       lat,
@@ -618,7 +814,116 @@ export async function parseFitFile(
     });
   }
 
-  return analyzePoints(points, file.name, 'fit', ftpWatts, weightKg, maxHr);
+  // Extract electronic shifting events (Shimano Di2, SRAM eTap, Campagnolo EPS)
+  const shiftingEvents: ElectronicShiftingEvent[] = [];
+  if (messages?.eventMesgs) {
+    for (const ev of messages.eventMesgs) {
+      if (
+        ev.event === 'rearGearChange' ||
+        ev.event === 'frontGearChange' ||
+        ev.frontGearNum !== undefined ||
+        ev.rearGearNum !== undefined
+      ) {
+        const evTs = ev.timestamp instanceof Date ? ev.timestamp.getTime() / 1000 : (typeof ev.timestamp === 'number' ? ev.timestamp : 0);
+        const elapsed = baseTimestamp !== null ? Math.max(0, Math.round(evTs - baseTimestamp)) : 0;
+        shiftingEvents.push({
+          timeSec: elapsed,
+          frontGearNum: ev.frontGearNum,
+          rearGearNum: ev.rearGearNum,
+          frontGear: ev.frontGear,
+          rearGear: ev.rearGear,
+          gearRatio: ev.frontGear && ev.rearGear ? parseFloat((ev.frontGear / ev.rearGear).toFixed(2)) : undefined
+        });
+      }
+    }
+  }
+
+  // Device & Sensor status evaluation
+  const hasHardwarePower = points.some(p => p.power !== undefined && p.power > 0);
+  const hasHardwareCadence = points.some(p => p.cadence !== undefined && p.cadence > 0);
+  const hasHeartRate = points.some(p => p.heartRate !== undefined && p.heartRate > 30);
+  const hasSpeed = points.some(p => p.speed !== undefined && p.speed > 0);
+  const hasShifting = shiftingEvents.length > 0;
+
+  const devices: DeviceInfo[] = [];
+  const devInfoList = messages?.deviceInfoMesgs || [];
+  const seenDeviceKeys = new Set<string>();
+
+  for (const d of devInfoList) {
+    const key = `${d.deviceType}_${d.antplusDeviceType}_${d.productName}_${d.manufacturer}`;
+    if (seenDeviceKeys.has(key)) continue;
+    seenDeviceKeys.add(key);
+
+    let recorded = false;
+    if (d.antplusDeviceType === 'bikePower' || d.deviceType === 11) recorded = hasHardwarePower;
+    else if (d.antplusDeviceType === 'bikeCadence' || d.antplusDeviceType === 'bikeSpeedCadence' || d.deviceType === 122) recorded = hasHardwareCadence;
+    else if (d.antplusDeviceType === 'heartRate' || d.deviceType === 120) recorded = hasHeartRate;
+    else if (d.antplusDeviceType === 'shifting' || d.deviceType === 34) recorded = hasShifting;
+    else if (d.antplusDeviceType === 'bikeSpeed' || d.deviceType === 123) recorded = hasSpeed;
+
+    devices.push({
+      deviceIndex: d.deviceIndex as any,
+      deviceType: d.deviceType as any,
+      productName: d.productName ? String(d.productName) : undefined,
+      manufacturer: d.manufacturer as any,
+      serialNumber: d.serialNumber ?? d.antDeviceNumber,
+      batteryStatus: d.batteryStatus as any,
+      batteryVoltage: d.batteryVoltage,
+      sourceType: d.sourceType as any,
+      antplusDeviceType: d.antplusDeviceType as any,
+      hasDataRecorded: recorded
+    });
+  }
+
+  // Build intelligent diagnostic notes
+  const detectedNotes: string[] = [];
+
+  const powerDev = devices.find(d => d.antplusDeviceType === 'bikePower' || d.deviceType === 11);
+  if (hasHardwarePower) {
+    detectedNotes.push('硬件功率计数据流正常采集。');
+  } else if (powerDev) {
+    const name = `${powerDev.manufacturer ? String(powerDev.manufacturer).toUpperCase() + ' ' : ''}${powerDev.productName || '功率计'}`;
+    detectedNotes.push(`码表配对设备中存在「${name}」，但本次骑行未接收到功率数据流（可能功率计未开机、电池耗尽或 ANT+ 连接中断）。`);
+  } else {
+    detectedNotes.push('本次骑行未检测到硬件功率计数据流。');
+  }
+
+  const cadenceDev = devices.find(d => d.antplusDeviceType === 'bikeCadence' || d.antplusDeviceType === 'bikeSpeedCadence' || d.deviceType === 122);
+  if (hasHardwareCadence) {
+    detectedNotes.push('踏频传感器数据流正常采集。');
+  } else if (cadenceDev) {
+    const name = `${cadenceDev.manufacturer ? String(cadenceDev.manufacturer).toUpperCase() + ' ' : ''}${cadenceDev.productName || '踏频计'}`;
+    detectedNotes.push(`码表配对设备中存在「${name}」，但本次骑行未接收到踏频数据流。`);
+  } else {
+    detectedNotes.push('本次骑行未检测到独立踏频数据流。');
+  }
+
+  if (hasShifting) {
+    const shiftDev = devices.find(d => d.antplusDeviceType === 'shifting' || d.deviceType === 34);
+    const name = shiftDev ? `${shiftDev.manufacturer ? String(shiftDev.manufacturer).toUpperCase() + ' ' : ''}${shiftDev.productName || '电子变速'}` : '电子变速';
+    detectedNotes.push(`检测到 ${name} 系统，全程共记录 ${shiftingEvents.length} 次换挡操作。`);
+  }
+
+  const sensorDiagnostics: SensorDiagnostics = {
+    hasHardwarePower,
+    hasHardwareCadence,
+    hasHeartRate,
+    hasSpeed,
+    hasShifting,
+    devices,
+    detectedNotes
+  };
+
+  const sessionCalories = messages?.sessionMesgs?.[0]?.totalCalories;
+  const recordedCalories = sessionCalories && sessionCalories > 0 ? sessionCalories : (maxRecordedCalories > 0 ? maxRecordedCalories : undefined);
+
+  return analyzePoints(points, file.name, 'fit', ftpWatts, weightKg, maxHr, {
+    isEstimatedPower: false,
+    sensorDiagnostics,
+    shiftingEvents,
+    recordedCalories,
+    rawPoints: points
+  });
 }
 
 /**
@@ -715,7 +1020,7 @@ export async function parseGpxFile(
     }
   }
 
-  return analyzePoints(points, file.name, 'gpx', ftpWatts, weightKg, maxHr);
+  return analyzePoints(points, file.name, 'gpx', ftpWatts, weightKg, maxHr, { rawPoints: points });
 }
 
 /**
@@ -782,7 +1087,7 @@ export async function parseTcxFile(
     });
   }
 
-  return analyzePoints(points, file.name, 'tcx', ftpWatts, weightKg, maxHr);
+  return analyzePoints(points, file.name, 'tcx', ftpWatts, weightKg, maxHr, { rawPoints: points });
 }
 
 /**

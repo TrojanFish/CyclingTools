@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User } from 'lucide-react';
+import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User, Package } from 'lucide-react';
 import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/tirePressureConfig';
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
@@ -103,8 +103,14 @@ export const TirePressureCalculator: React.FC = () => {
     let rearRec = Math.round(adjustedBase * rearRatio);
 
     if (bikeType === 'road') {
-      frontRec = Math.max(45, Math.min(120, frontRec));
-      rearRec = Math.max(48, Math.min(125, rearRec));
+      frontRec = Math.max(45, Math.min(110, frontRec));
+      rearRec = Math.max(48, Math.min(115, rearRec));
+    } else if (bikeType === 'gravel') {
+      frontRec = Math.max(22, Math.min(60, frontRec));
+      rearRec = Math.max(24, Math.min(65, rearRec));
+    } else {
+      frontRec = Math.max(16, Math.min(40, frontRec));
+      rearRec = Math.max(18, Math.min(45, rearRec));
     }
 
     const frontMin = Math.round(frontRec * 0.94);
@@ -136,7 +142,7 @@ export const TirePressureCalculator: React.FC = () => {
         tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬(Pinch Flat)爆胎。',
         hasTireInsert ? '已启用真空胎防爆胎垫 (Tire Insert)：胎垫提供侧向渐进支撑并防止轮圈磕底，推荐胎压已自适应调低 2.5 PSI，兼顾极致抓地循迹与轮圈防护。' : null,
         isBikepacking && effectiveLuggage > 0
-          ? `🎒 长途重装 Bikepacking 模式 (+${effectiveLuggage}kg 行囊)：前后轮载荷动态平衡重构为 [前 ${effectiveFrontPct}% / 后 ${effectiveRearPct}%]。${
+          ? `长途重装 Bikepacking 模式 (+${effectiveLuggage}kg 行囊)：前后轮载荷动态平衡重构为 [前 ${effectiveFrontPct}% / 后 ${effectiveRearPct}%]。${
               luggageBias === 'rear'
                 ? '后轮承重显著升高，后胎压已自适应调升以防坑洼过坎砸框 (Rim Strike)'
                 : luggageBias === 'front'
@@ -301,7 +307,7 @@ export const TirePressureCalculator: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-base">🎒</span>
+                  <Package className="w-4 h-4 text-amber-500 shrink-0" />
                   <div>
                     <span className="text-xs font-bold text-slate-900 dark:text-white block">
                       长途重装 / Bikepacking 驮包模式
@@ -487,13 +493,13 @@ export const TirePressureCalculator: React.FC = () => {
         <div className="lg:col-span-6 space-y-5 lg:sticky lg:top-20 self-start">
           {/* Hookless ETRTO Width Mismatch Banner */}
           {result.isHooklessWidthMismatch && (
-            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-950 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm animate-pulse">
+            <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-950 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm">
               <div className="font-bold flex items-center gap-2 text-sm text-rose-600 dark:text-rose-400">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>ETRTO 2023/2024 禁忌组合警报：无钩圈宽胎匹配违规！</span>
+                <span>ETRTO 安全规范警报：无钩圈与外胎规格不匹配</span>
               </div>
               <p className="leading-relaxed opacity-95">
-                当前车圈内宽为 <strong>{rimInnerWidth}mm</strong>（≥23mm），而外胎规格仅为 <strong>{nominalWidth}c</strong>（&lt;28c）。根据国际自行车轮胎与轮圈组织 (ETRTO) 规范，宽内宽无钩轮圈严禁搭配小于 28c 外胎！此时胎圈无法产生足够的机械锁紧拉力，在压弯、路面坑洼或高速刹车时极易发生<strong>突发性脱圈爆胎事故</strong>。请立即更换 28c 或以上外胎！
+                当前车圈内宽为 <strong>{rimInnerWidth}mm</strong>（≥23mm），而外胎规格为 <strong>{nominalWidth}c</strong>（&lt;28c）。根据国际自行车轮胎与轮圈组织 (ETRTO) 规范，宽内宽无钩轮圈严禁搭配小于 28c 外胎，否则胎圈无法产生足够的机械锁紧拉力，存在高速脱圈风险。建议更换为 28c 或以上规格外胎。
               </p>
             </div>
           )}

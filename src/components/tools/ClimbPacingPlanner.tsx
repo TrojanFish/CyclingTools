@@ -615,8 +615,8 @@ export const ClimbPacingPlanner: React.FC = () => {
         title={language === 'zh-TW' ? '爬坡路段分段配速與功率規劃器' : '爬坡路段分段配速与功率规划器'}
         description={
           language === 'zh-TW'
-            ? '挑戰名山防爆缸神器！分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗时與體能負荷。'
-            : '挑战名山防爆缸神器！分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'
+            ? '分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗時與體能負荷。'
+            : '分段拆解爬坡路段坡度，结合 FTP 与推重比科学规划各分段目标功率，预估登顶耗时与体能负荷。'
         }
         tint="blue"
         onShare={handleGeneratePoster}
