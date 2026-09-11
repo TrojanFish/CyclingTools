@@ -410,7 +410,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           <button
             onClick={handleExtractFromStrava}
             disabled={isExtractingStrava}
-            className="apple-touch h-8 sm:h-9 px-2.5 sm:px-3 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] font-semibold flex items-center gap-1.5 border border-[#FC4C02]/20 transition disabled:opacity-50"
+            className="apple-touch h-9 px-2.5 sm:px-3 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] font-semibold flex items-center gap-1.5 border border-[#FC4C02]/20 transition disabled:opacity-50"
             title="从 Strava 历史活动提取 5s/1m/5m/20m 最佳功率"
           >
             <svg className={`w-3.5 h-3.5 fill-current ${isExtractingStrava ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
@@ -419,7 +419,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <span>{language === 'zh-TW' ? '從 Strava 提取近期峰值' : '从 Strava 提取近期峰值'}</span>
           </button>
           <span className="text-slate-300 dark:text-slate-700">|</span>
-          <label className="apple-touch h-8 sm:h-9 px-2 text-ios-blue hover:underline cursor-pointer font-semibold flex items-center gap-1">
+          <label className="apple-touch h-9 px-2 text-ios-blue hover:underline cursor-pointer font-semibold flex items-center gap-1">
             <Upload className="w-3.5 h-3.5" />
             <span>{language === 'zh-TW' ? '上傳功率表單' : '上传功率表单'}</span>
             <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />

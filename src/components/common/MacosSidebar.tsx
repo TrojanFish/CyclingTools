@@ -213,7 +213,7 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
       <div className="p-2.5 border-t border-black/[0.06] dark:border-white/[0.08] bg-white/40 dark:bg-[#1C1C1E]/40">
         <button
           onClick={onOpenProfile}
-          className="w-full flex items-center justify-between p-2 rounded-xl bg-white dark:bg-[#252528] border border-black/[0.05] dark:border-white/[0.08] hover:border-ios-blue/40 shadow-xs transition-all text-left group"
+          className="apple-touch w-full flex items-center justify-between p-2 rounded-xl bg-white dark:bg-[#252528] border border-black/[0.05] dark:border-white/[0.08] hover:border-ios-blue/40 shadow-xs transition-all text-left group"
         >
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-7 h-7 rounded-lg bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue flex items-center justify-center font-bold text-xs shrink-0">

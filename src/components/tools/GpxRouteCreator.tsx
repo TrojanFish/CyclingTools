@@ -534,7 +534,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                   <button
                     type="button"
                     onClick={handleSearchLocation}
-                    className="apple-touch h-7 px-2.5 rounded-lg bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-[11px] font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-2xs"
+                    className="apple-touch h-8 sm:h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-ios-sm"
                     title="定位所输地名"
                   >
                     <span>定位</span>

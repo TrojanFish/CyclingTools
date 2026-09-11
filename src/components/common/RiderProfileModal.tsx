@@ -169,7 +169,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                {language === 'zh-TW' ? '多車手/多戰車配置即時聯動全站 18 款計算工具' : '多车手/多战车配置即时联动全站 18 款计算工具'}
+                {language === 'zh-TW' ? '多車手/多戰車配置即時聯動全站 20 款計算工具' : '多车手/多战车配置即时联动全站 20 款计算工具'}
               </p>
             </div>
           </div>
@@ -1252,8 +1252,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
           <ShieldCheck className="w-4 h-4 text-ios-blue dark:text-ios-blue-dark shrink-0 mt-0.5" />
           <span className="leading-relaxed text-[11px]">
             {language === 'zh-TW'
-              ? '設定持久化於本地。全站 18 款工具（功率、胎壓、Fitting、爬坡分段、山地避震等）均已主動監聽並即時響應聯動。'
-              : '设置持久化于本地。全站 18 款工具（功率、胎压、Fitting、爬坡分段、山地避震等）均已主动监听并即时响应联动。'}
+              ? '設定持久化於本地。全站 20 款工具（功率、胎壓、Fitting、爬坡分段、山地避震、數據羅盤等）均已主動監聽並即時響應聯動。'
+              : '设置持久化于本地。全站 20 款工具（功率、胎压、Fitting、爬坡分段、山地避震、数据罗盘等）均已主动监听并即时响应联动。'}
           </span>
         </div>
 

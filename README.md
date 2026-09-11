@@ -17,9 +17,9 @@
 
 ## 📖 Introduction / 项目简介
 
-**SoloRiderTools Pro** is an open-source, high-precision, client-side cycling engineering and sports physiology platform. Built upon classical fluid dynamics, biomechanics, wheelbuilding trigonometry, and modern endurance exercise physiology, it equips amateur cyclists, bike fitters, mechanics, and WorldTour racers with **19 purpose-built calculation and simulation engines**.
+**SoloRiderTools Pro** is an open-source, high-precision, client-side cycling engineering and sports physiology platform. Built upon classical fluid dynamics, biomechanics, wheelbuilding trigonometry, and modern endurance exercise physiology, it equips amateur cyclists, bike fitters, mechanics, and WorldTour racers with **20 purpose-built calculation and simulation engines**.
 
-**SoloRiderTools Pro** 是一个现代化、纯前端高精度运行的专业公路车运动科学与工程数据计算站。以流体空气动力学、经典牛顿力学、轮圈几何空间三角学、人体工效学与现代耐力运动生理学为数学底层，提供 **19 款严谨的计算器与仿真模拟工坊**，助力车手科学训练、精准改装、合理备赛与技师装车。
+**SoloRiderTools Pro** 是一个现代化、纯前端高精度运行的专业公路车运动科学与工程数据计算站。以流体空气动力学、经典牛顿力学、轮圈几何空间三角学、人体工效学与现代耐力运动生理学为数学底层，提供 **20 款严谨的计算器与仿真模拟工坊**，助力车手科学训练、精准改装、合理备赛与技师装车。
 
 ---
 
@@ -42,12 +42,13 @@
 - **System Reactive Dark Mode**:
   - 自适应手机系统暗黑模式切换 (`prefers-color-scheme`)，同时支持持久化手动锁定（系统/深色/浅色）。
 
-### 2. ⚡ Strava 4D Bi-directional Cloud Ecosystem / Strava 四维云端互联体系
-全站与 Strava API v3 深度整合，实现 4 大核心工具的双向云端联动，免除用户手动输参负担：
+### 2. ⚡ Strava 5D Bi-directional Cloud Ecosystem / Strava 五维云端互联体系
+全站与 Strava API v3 深度整合，实现 5 大核心工具的双向云端联动，免除用户手动输参负担：
 - 🗺️ **经典骑行路书库 (`roadbook-library`)**: 一键同步并导入 Strava 星标路线 (Starred Routes)，自动拉取高精海拔与转弯航迹点。
 - ⛰️ **爬坡配速规划器 (`climb-pacing`)**: 实时检索并导入 Strava 赛段与 KOM 路段，自动拆解细化各坡度分段数据。
 - 🎯 **功率能力雷达 (`power-radar`)**: 基于滑动窗口 MMP 算法，一键从 Strava 历史真实骑行中提取近期的 5s、1min、5min、20min 峰值功率，精准诊断车手类型画像。
 - 📈 **FIT 活动深度解析器 (`activity-analyzer`)**: 一键流式载入 Strava 历史活动记录，免去到处导出下载文件的繁琐，直接进行离线 NP/IF/TSS 复盘与 42 天 PMC 训练负荷分析。
+- 📊 **车手全景数据罗盘 (`strava-cockpit`)**: 深度聚合全周期、年度与近30天骑行资产，解算爱丁顿骑行数 (E)、91天出勤热力墙、PMC 体能疲劳走势与战车机队零部件耗损管家。
 
 ### 3. 🚴‍♂️ Peloton Aerodynamics & TTT Simulator / 团骑风阻与车队计时赛秒级推演
 - **Bert Blocken CFD 风洞阻力模型**: 精确模拟跟骑破风气动减阻效果（前轮贴附、位置衰减与侧风偏航角）。
@@ -58,7 +59,7 @@
 - 支持浏览器系统语言自动侦测与毫秒级即时热切换，术语库经由资深公路车技师与运动生理学学者审校（如：飞轮/飛輪、牙盘/大盤、上管/上管、胎压/胎壓、真空胎/無內胎）。
 
 ### 5. ⚖️ Dual Unit Engine / 全参公英制换算引擎
-- 全站 19 款工具无死角公英制双向联动切换：
+- 全站 20 款工具无死角公英制双向联动切换：
   - 体重/车重: `kg` ↔ `lbs`
   - 距离: `km` ↔ `miles (mi)`
   - 海拔/爬升: `meters (m)` ↔ `feet (ft)`
@@ -73,9 +74,9 @@
 
 ---
 
-## 🧮 Tool Suite Matrix / 19 大核心科学工具全矩阵
+## 🧮 Tool Suite Matrix / 20 大核心科学工具全矩阵
 
-SoloRiderTools Pro 包含 19 款针对骑行不同专业领域的科学工具，划分为四大核心板块：
+SoloRiderTools Pro 包含 20 款针对骑行不同专业领域的科学工具，划分为四大核心板块：
 
 ### I. 动力学与传动工程 (Dynamics & Gearing) · 9 款工具
 > 主题色：`ios-blue` · 涵盖经典空气动力学、传动比数学、链条几何、编轮空间几何与双避震连杆工程。
@@ -116,8 +117,8 @@ SoloRiderTools Pro 包含 19 款针对骑行不同专业领域的科学工具，
 
 ---
 
-### IV. 生理、训练与代谢 (Physiology, Training & Health) · 4 款工具
-> 主题色：`ios-red` · 涵盖 Coggan 功率时长曲线、极化训练、能量补给代谢、FIT 二进制离线分析与结构化课表工坊。
+### IV. 生理、训练与代谢 (Physiology, Training & Health) · 5 款工具
+> 主题色：`ios-red` · 涵盖 Coggan 功率时长曲线、极化训练、能量补给代谢、FIT 二进制离线分析、结构化课表工坊与车手数据罗盘。
 
 | # | 工具名称 (EN / 中文) | 核心科学理论与算法底层 | 关键输出与实战应用 | Strava |
 |---|---|---|---|:---:|
@@ -125,6 +126,7 @@ SoloRiderTools Pro 包含 19 款针对骑行不同专业领域的科学工具，
 | 17 | **Cycling Nutrition, Heart Rate & Energy**<br/>骑行与运动健康综合计算器 | 外源性碳水化合物最大氧化率 (60-90g/h)、Karvonen 储备心率 (HRR) 公式、Mifflin-St Jeor 基础代谢率 (BMR) 与 TDEE 方程、美国海军体脂率 (BFP) 公式 | 每小时补水与碳水补充建议、储备靶心率 5 区划分、每日总能量消耗与减脂热量缺口计算 | ✕ |
 | 18 | **Cycling FIT & Activity File Deep Analyzer**<br/>码表活动与 FIT 航迹深度解析器 | 二进制 FIT/TCX 离线纯前端流式解码器、加权标准化功率 (NP, 4次方移动平均)、强度系数 (IF)、训练压力分 (TSS)、变异指数 (VI)、效率因子 (EF)、有氧解耦率 (Pw:HR)、42天滚动 PMC (CTL, ATL, TSB) | 离线解析 Garmin/Wahoo/迈金/行者/iGPSPORT 码表文件、Coggan 7 区与心率驻留时间分布、全活动 MMP 曲线、42天体能疲劳走势图 | **✓** |
 | 19 | **Structured Interval Workout Builder**<br/>科学间歇训练课表工坊 | Coggan 结构化负荷建模、NP/IF/TSS 实时积分预估算法、标准 Zwift ZWO XML 结构与 Garmin/Wahoo MRC 语法生成器 | 内置 6 大名将科学课表（Rønnestad 30/15s 微间歇、挪威 4x4 VO₂max、2x20min 阈值巡航、Over-Under 乳酸清除、Tabata 极限冲刺、Z2 耐力基底）、可视化段落编排、一键导出 `.zwo` 与 `.mrc` 文件直接载入骑行台与码表 | ✕ |
+| 20 | **Strava Performance Cockpit & Fleet Hub**<br/>车手全景数据罗盘与看板 | 爱丁顿骑行数 ($E$) 递推模型、91天出勤热力图、Coggan 42天滚动 PMC (CTL, ATL, TSB) 表现管理、全域 MMP 功率曲线与 eFTP 动态拟合、机队链条与刹车皮损耗折算 | Dreeve 宏观体能资产看板、爱丁顿升级预测、Apple Fitness 运动三环、战车机队零部件里程损耗预警 | **✓** |
 
 ---
 
@@ -215,10 +217,10 @@ CMD ["nginx", "-g", "daemon off;"]
 | **代码与类型** | TypeScript 严格编译 | ✅ PASS | `tsc` 编译通过，0 类型错误与警告 |
 | **构建优化** | Vite Bundle Splitting | ✅ PASS | React、Leaflet、Chart.js 独立分包，体积极致优化 |
 | **路由与刷新** | SPA 路由深度链接 | ✅ PASS | `vercel.json` rewrite 配置完成，任意刷新不 404 |
-| **多语言完整度** | i18n 三语字典一致性 | ✅ PASS | 19 款工具全量覆盖简中、繁中与英文，术语对齐 |
+| **多语言完整度** | i18n 三语字典一致性 | ✅ PASS | 20 款工具全量覆盖简中、繁中与英文，术语对齐 |
 | **双单位引擎** | Metric ↔ Imperial 换算 | ✅ PASS | 体重、距离、高度、速度、胎压、温度双向联动 |
 | **GIS与气象** | OpenStreetMap & Open-Meteo | ✅ PASS | 全站 HTTPS 协议，无跨域阻碍，免 API Key 限制 |
-| **云端互联** | Strava OAuth 与四维拉取 | ✅ PASS | 路书、赛段、峰值功率与 FIT 活动四重读取正常 |
+| **云端互联** | Strava OAuth 与五维拉取 | ✅ PASS | 路书、赛段、峰值功率、FIT活动与全景罗盘五重读取正常 |
 | **PWA 与离线** | Manifest & Service Worker | ✅ PASS | 支持桌面与手机添加到主屏幕，离线秒级启动 |
 | **设计规范** | Apple iOS HIG 色彩统一 | ✅ PASS | 4 大分类配色规范对齐，消除任何遗留杂色 |
 | **隐私合规** | GDPR / CCPA 零数据回传 | ✅ PASS | 纯本地 `localStorage` 计算，无服务器存留 |
