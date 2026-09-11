@@ -480,11 +480,19 @@ export const MtbSuspensionTuner: React.FC = () => {
                 </label>
                 <input
                   type="number"
+                  inputMode="numeric"
                   min={80}
                   max={230}
-                  value={frameRearTravelMm}
-                  onChange={(e) => setFrameRearTravelMm(Math.max(80, parseInt(e.target.value) || 150))}
-                  className="w-full px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-mono font-bold text-slate-900 dark:text-white"
+                  value={frameRearTravelMm || ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setFrameRearTravelMm(v === '' ? 0 : (parseInt(v, 10) || 0));
+                  }}
+                  onBlur={() => {
+                    if (!frameRearTravelMm || frameRearTravelMm < 80) setFrameRearTravelMm(80);
+                    else if (frameRearTravelMm > 230) setFrameRearTravelMm(230);
+                  }}
+                  className="w-full px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-mono font-bold text-slate-900 dark:text-white tabular-nums"
                 />
               </div>
               <div>
@@ -493,12 +501,20 @@ export const MtbSuspensionTuner: React.FC = () => {
                 </label>
                 <input
                   type="number"
+                  inputMode="decimal"
                   min={35}
                   max={85}
                   step={0.5}
-                  value={shockStrokeMm}
-                  onChange={(e) => setShockStrokeMm(Math.max(30, parseFloat(e.target.value) || 55))}
-                  className="w-full px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-mono font-bold text-slate-900 dark:text-white"
+                  value={shockStrokeMm || ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setShockStrokeMm(v === '' ? 0 : (parseFloat(v) || 0));
+                  }}
+                  onBlur={() => {
+                    if (!shockStrokeMm || shockStrokeMm < 30) setShockStrokeMm(30);
+                    else if (shockStrokeMm > 85) setShockStrokeMm(85);
+                  }}
+                  className="w-full px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-sm font-mono font-bold text-slate-900 dark:text-white tabular-nums"
                 />
               </div>
             </div>

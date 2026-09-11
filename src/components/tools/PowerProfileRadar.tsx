@@ -20,6 +20,7 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { useStrava } from '../../context/StravaContext';
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 
 ChartJS.register(
   RadialLinearScale,
@@ -60,6 +61,10 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   // Smart Paste Modal State
   const [isPasteModalOpen, setIsPasteModalOpen] = useState<boolean>(false);
   const [pasteText, setPasteText] = useState<string>('');
+
+  const { sheetStyle: pasteSheetStyle, handlers: pasteSwipeHandlers } = useSwipeToDismiss({
+    onClose: () => setIsPasteModalOpen(false)
+  });
 
   // Share Poster State
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
@@ -236,11 +241,12 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
   // Profile Analytics
   const analytics = useMemo(() => {
-    const w5s = parseFloat((p5s / weightKg).toFixed(2));
-    const w1m = parseFloat((p1m / weightKg).toFixed(2));
-    const w5m = parseFloat((p5m / weightKg).toFixed(2));
-    const w20m = parseFloat((p20m / weightKg).toFixed(2));
-    const wFtp = parseFloat((ftpWatts / weightKg).toFixed(2));
+    const safeWeightKg = Math.max(20, weightKg || 68);
+    const w5s = parseFloat((p5s / safeWeightKg).toFixed(2));
+    const w1m = parseFloat((p1m / safeWeightKg).toFixed(2));
+    const w5m = parseFloat((p5m / safeWeightKg).toFixed(2));
+    const w20m = parseFloat((p20m / safeWeightKg).toFixed(2));
+    const wFtp = parseFloat((ftpWatts / safeWeightKg).toFixed(2));
 
     // Normalize to 0~100 score for Radar Chart relative to competitive benchmarks
     // World Class: 5s=22W/kg, 1m=11W/kg, 5m=7.2W/kg, 20m=5.8W/kg
@@ -407,20 +413,8 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         </div>
 
         <div className="flex items-center gap-2 text-xs shrink-0 self-start sm:self-auto">
-          <button
-            onClick={handleExtractFromStrava}
-            disabled={isExtractingStrava}
-            className="apple-touch h-9 px-2.5 sm:px-3 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] font-semibold flex items-center gap-1.5 border border-[#FC4C02]/20 transition disabled:opacity-50"
-            title="从 Strava 历史活动提取 5s/1m/5m/20m 最佳功率"
-          >
-            <svg className={`w-3.5 h-3.5 fill-current ${isExtractingStrava ? 'animate-spin' : ''}`} viewBox="0 0 24 24">
-              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
-            </svg>
-            <span>{language === 'zh-TW' ? '從 Strava 提取近期峰值' : '从 Strava 提取近期峰值'}</span>
-          </button>
-          <span className="text-slate-300 dark:text-slate-700">|</span>
-          <label className="apple-touch h-9 px-2 text-ios-blue hover:underline cursor-pointer font-semibold flex items-center gap-1">
-            <Upload className="w-3.5 h-3.5" />
+          <label className="apple-touch h-9 px-3 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 cursor-pointer font-semibold flex items-center gap-1.5 transition shadow-2xs">
+            <Upload className="w-3.5 h-3.5 text-ios-blue" />
             <span>{language === 'zh-TW' ? '上傳功率表單' : '上传功率表单'}</span>
             <input type="file" accept=".csv,.json,.txt" onChange={handleFileUpload} className="hidden" />
           </label>
@@ -429,10 +423,23 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
 
       {/* Smart Text Paste Modal */}
       {isPasteModalOpen && (
-        <div className="fixed inset-0 bg-black/40 dark:bg-black/75 backdrop-blur-2xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-t-[28px] sm:rounded-2xl w-full max-w-lg p-4 sm:p-5 space-y-4 shadow-ios-popover animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
-            {/* Mobile Sheet Drag Handle */}
-            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto -mt-1 mb-1 sm:hidden shrink-0" />
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsPasteModalOpen(false);
+          }}
+          className="fixed inset-0 bg-black/40 dark:bg-black/75 backdrop-blur-2xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+        >
+          <div
+            style={pasteSheetStyle}
+            className="bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] rounded-t-[28px] sm:rounded-2xl w-full max-w-lg p-4 sm:p-5 space-y-4 shadow-ios-popover animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5"
+          >
+            {/* Mobile Sheet Drag Handle with Native Swipe to Dismiss */}
+            <div
+              {...pasteSwipeHandlers}
+              className="sm:hidden w-full py-2 -mt-2 mb-1 flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+            >
+              <div className="w-10 h-1 rounded-full bg-black/20 dark:bg-white/25" />
+            </div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-ios-blue" />

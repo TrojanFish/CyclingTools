@@ -757,71 +757,91 @@ export const WorkoutBuilder: React.FC = () => {
                   {!isInterval ? (
                     <div className="flex items-center gap-2">
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-400 block mb-0.5">功率区间</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">功率区间</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={20}
                             max={250}
                             step={5}
-                            value={Math.round(seg.powerStartPct * 100)}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'powerStartPct', (parseInt(e.target.value) || 50) / 100)
-                            }
+                            value={seg.powerStartPct ? Math.round(seg.powerStartPct * 100) : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'powerStartPct', raw === '' ? 0 : ((parseInt(raw, 10) || 0) / 100));
+                            }}
+                            onBlur={() => {
+                              if (!seg.powerStartPct || seg.powerStartPct < 0.2) handleUpdateSegment(seg.id, 'powerStartPct', 0.5);
+                            }}
                             className="w-13 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                           />
-                          <span className="text-slate-400 text-xs">%</span>
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">%</span>
                         </div>
                       </div>
 
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-400 block mb-0.5">目标踏频</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">目标踏频</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={50}
                             max={130}
                             step={5}
-                            value={seg.cadenceRpm || 90}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'cadenceRpm', parseInt(e.target.value) || 90)
-                            }
+                            value={seg.cadenceRpm || ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'cadenceRpm', raw === '' ? 0 : (parseInt(raw, 10) || 0));
+                            }}
+                            onBlur={() => {
+                              if (!seg.cadenceRpm || seg.cadenceRpm < 40) handleUpdateSegment(seg.id, 'cadenceRpm', 90);
+                            }}
                             className="w-13 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                           />
-                          <span className="text-slate-400 text-xs">rpm</span>
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">rpm</span>
                         </div>
                       </div>
 
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-400 block mb-0.5">分段时长</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">分段时长</span>
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={1}
                             max={120}
                             step={1}
-                            value={Math.round(seg.durationSec / 60)}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'durationSec', (parseInt(e.target.value) || 1) * 60)
-                            }
+                            value={seg.durationSec ? Math.round(seg.durationSec / 60) : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'durationSec', raw === '' ? 0 : ((parseInt(raw, 10) || 0) * 60));
+                            }}
+                            onBlur={() => {
+                              if (!seg.durationSec || seg.durationSec < 60) handleUpdateSegment(seg.id, 'durationSec', 60);
+                            }}
                             className="w-13 px-1.5 py-1 text-xs font-mono text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                           />
-                          <span className="text-slate-400 text-xs">分</span>
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">分</span>
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-center">
-                        <span className="text-[10px] text-slate-400 block mb-0.5">循环次数</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium block mb-0.5">循环次数</span>
                         <input
                           type="number"
+                          inputMode="numeric"
                           min={1}
                           max={30}
-                          value={seg.repeatCount || 5}
-                          onChange={(e) =>
-                            handleUpdateSegment(seg.id, 'repeatCount', parseInt(e.target.value) || 1)
-                          }
+                          value={seg.repeatCount || ''}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            handleUpdateSegment(seg.id, 'repeatCount', raw === '' ? 0 : (parseInt(raw, 10) || 0));
+                          }}
+                          onBlur={() => {
+                            if (!seg.repeatCount || seg.repeatCount < 1) handleUpdateSegment(seg.id, 'repeatCount', 1);
+                          }}
                           className="w-11 px-1.5 py-1 text-xs font-mono font-bold text-center rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white tabular-nums"
                         />
                       </div>
@@ -831,28 +851,38 @@ export const WorkoutBuilder: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={5}
                             max={600}
                             step={5}
-                            value={seg.onDurationSec || 30}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'onDurationSec', parseInt(e.target.value) || 30)
-                            }
+                            value={seg.onDurationSec || ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'onDurationSec', raw === '' ? 0 : (parseInt(raw, 10) || 0));
+                            }}
+                            onBlur={() => {
+                              if (!seg.onDurationSec || seg.onDurationSec < 5) handleUpdateSegment(seg.id, 'onDurationSec', 30);
+                            }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-400">s@</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">s@</span>
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={50}
                             max={300}
                             step={5}
-                            value={Math.round((seg.onPowerPct || 1.2) * 100)}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'onPowerPct', (parseInt(e.target.value) || 100) / 100)
-                            }
+                            value={seg.onPowerPct ? Math.round(seg.onPowerPct * 100) : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'onPowerPct', raw === '' ? 0 : ((parseInt(raw, 10) || 0) / 100));
+                            }}
+                            onBlur={() => {
+                              if (!seg.onPowerPct || seg.onPowerPct < 0.5) handleUpdateSegment(seg.id, 'onPowerPct', 1.0);
+                            }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-400">%</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">%</span>
                         </div>
                       </div>
 
@@ -861,28 +891,38 @@ export const WorkoutBuilder: React.FC = () => {
                         <div className="flex items-center gap-1">
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={5}
                             max={600}
                             step={5}
-                            value={seg.offDurationSec || 30}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'offDurationSec', parseInt(e.target.value) || 30)
-                            }
+                            value={seg.offDurationSec || ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'offDurationSec', raw === '' ? 0 : (parseInt(raw, 10) || 0));
+                            }}
+                            onBlur={() => {
+                              if (!seg.offDurationSec || seg.offDurationSec < 5) handleUpdateSegment(seg.id, 'offDurationSec', 30);
+                            }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-400">s@</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">s@</span>
                           <input
                             type="number"
+                            inputMode="numeric"
                             min={30}
                             max={100}
                             step={5}
-                            value={Math.round((seg.offPowerPct || 0.55) * 100)}
-                            onChange={(e) =>
-                              handleUpdateSegment(seg.id, 'offPowerPct', (parseInt(e.target.value) || 50) / 100)
-                            }
+                            value={seg.offPowerPct ? Math.round(seg.offPowerPct * 100) : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value;
+                              handleUpdateSegment(seg.id, 'offPowerPct', raw === '' ? 0 : ((parseInt(raw, 10) || 0) / 100));
+                            }}
+                            onBlur={() => {
+                              if (!seg.offPowerPct || seg.offPowerPct < 0.3) handleUpdateSegment(seg.id, 'offPowerPct', 0.5);
+                            }}
                             className="w-11 px-1 py-1 text-xs font-mono text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold tabular-nums"
                           />
-                          <span className="text-[10px] text-slate-400">%</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">%</span>
                         </div>
                       </div>
                     </div>

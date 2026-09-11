@@ -285,61 +285,61 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {/* 6-Grid Tactical Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 pt-0.5">
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
               <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums font-mono mt-0.5">
-                {latestStats?.distKm} <span className="text-[10px] font-normal text-slate-400">km</span>
+                {latestStats?.distKm} <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">km</span>
               </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {language === 'zh-TW' ? '均速' : '均速'} {latestStats?.avgSpeed}km/h
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-green tabular-nums font-mono mt-0.5">
-                +{latestStats?.eleM} <span className="text-[10px] font-normal text-slate-400">m</span>
+                +{latestStats?.eleM} <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">m</span>
               </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {language === 'zh-TW' ? '時長' : '时长'} {latestStats?.timeStr}
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-blue tabular-nums font-mono mt-0.5">
-                {latestStats?.np} <span className="text-[10px] font-normal text-slate-400">W</span>
+                {latestStats?.np} <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">W</span>
               </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 AvgP {latestStats?.avgP}W{latestStats?.wKg ? ` · ${latestStats.wKg}W/kg` : ''}
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-purple tabular-nums font-mono mt-0.5">
                 {latestStats?.ifVal}
               </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 VI {latestStats?.vi} · FTP比率
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-orange tabular-nums font-mono mt-0.5">
                 {latestStats?.tss}
               </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {language === 'zh-TW' ? '做功' : '做功'} {latestStats?.calories} kcal
               </div>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-[10px] text-slate-400 font-medium">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
               <div className="text-base sm:text-lg font-bold text-ios-mint tabular-nums font-mono mt-0.5">
                 {latestStats?.ef ? latestStats.ef : '--'}
               </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                 {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` (極${latestStats.maxHr})` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
               </div>
             </div>

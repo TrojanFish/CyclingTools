@@ -77,7 +77,7 @@ export const RoadBikePainChecker: React.FC = () => {
   // Check progress
   const checkedCount = activeArea.specificSelfCheck.filter((_, idx) => completedChecks[`${selectedAreaId}_${idx}`]).length;
   const totalChecks = activeArea.specificSelfCheck.length;
-  const progressPct = Math.round((checkedCount / totalChecks) * 100);
+  const progressPct = totalChecks > 0 ? Math.round((checkedCount / totalChecks) * 100) : 0;
 
   const handleGeneratePoster = () => {
     const url = generatePainCheckPoster({

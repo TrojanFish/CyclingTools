@@ -301,7 +301,15 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
     let roiLevel = '极高性价比 (神装首选)';
     let roiBadgeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
-    if (costPerWatt > 1000) {
+    if (totalPowerSaveWatts <= 0) {
+      if (totalWeightSaveG > 0) {
+        roiLevel = costPerGram < 15 ? '超轻量化优选 (轻量爬坡利器)' : '边际轻量化 (高溢价极限偷轻)';
+        roiBadgeColor = costPerGram < 15 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-amber-400 bg-amber-500/10 border-amber-500/30';
+      } else {
+        roiLevel = '无有效增益 (纯外观/非性能改装)';
+        roiBadgeColor = 'text-slate-400 bg-slate-500/10 border-slate-500/30';
+      }
+    } else if (costPerWatt > 1000) {
       roiLevel = '边际递减奢华件 (高溢价极限追瓦)';
       roiBadgeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/30';
     } else if (costPerWatt > 400) {
@@ -517,9 +525,13 @@ export const UpgradeRoiCalculator: React.FC = () => {
                         <span className="text-[11px] mr-1">{currencySymbol}</span>
                         <input
                           type="number"
-                          value={item.costYuan}
-                          onChange={(e) => updateItemField(item.id, 'costYuan', parseFloat(e.target.value) || 0)}
-                          className="bg-transparent w-full focus:outline-none text-amber-600 dark:text-amber-400 text-xs font-mono"
+                          inputMode="decimal"
+                          value={item.costYuan === 0 ? '' : item.costYuan}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            updateItemField(item.id, 'costYuan', raw === '' ? 0 : (parseFloat(raw) || 0));
+                          }}
+                          className="bg-transparent w-full focus:outline-none text-amber-600 dark:text-amber-400 text-xs font-mono tabular-nums"
                         />
                       </div>
                     </div>
@@ -529,9 +541,13 @@ export const UpgradeRoiCalculator: React.FC = () => {
                       <div className="flex items-center text-emerald-600 dark:text-emerald-400 font-bold">
                         <input
                           type="number"
-                          value={item.weightSaveG}
-                          onChange={(e) => updateItemField(item.id, 'weightSaveG', parseFloat(e.target.value) || 0)}
-                          className="bg-transparent w-full focus:outline-none text-emerald-600 dark:text-emerald-400 text-xs font-mono"
+                          inputMode="decimal"
+                          value={item.weightSaveG === 0 ? '' : item.weightSaveG}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            updateItemField(item.id, 'weightSaveG', raw === '' ? 0 : (parseFloat(raw) || 0));
+                          }}
+                          className="bg-transparent w-full focus:outline-none text-emerald-600 dark:text-emerald-400 text-xs font-mono tabular-nums"
                         />
                         <span className="text-[10px] text-slate-500 font-normal ml-0.5">g</span>
                       </div>
@@ -544,10 +560,14 @@ export const UpgradeRoiCalculator: React.FC = () => {
                       <div className="flex items-center text-ios-blue font-bold">
                         <input
                           type="number"
+                          inputMode="decimal"
                           step="0.1"
-                          value={item.powerSaveWatts}
-                          onChange={(e) => updateItemField(item.id, 'powerSaveWatts', parseFloat(e.target.value) || 0)}
-                          className="bg-transparent w-full focus:outline-none text-ios-blue text-xs font-mono"
+                          value={item.powerSaveWatts === 0 ? '' : item.powerSaveWatts}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            updateItemField(item.id, 'powerSaveWatts', raw === '' ? 0 : (parseFloat(raw) || 0));
+                          }}
+                          className="bg-transparent w-full focus:outline-none text-ios-blue text-xs font-mono tabular-nums"
                         />
                         <span className="text-[10px] text-slate-500 font-normal ml-0.5">W</span>
                       </div>

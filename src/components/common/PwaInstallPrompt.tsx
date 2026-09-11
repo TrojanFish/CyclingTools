@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Smartphone, X, CheckCircle, Share } from 'lucide-react';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 
 export const PwaInstallPrompt: React.FC = () => {
   const { language } = useLanguageAndUnit();
@@ -8,6 +9,11 @@ export const PwaInstallPrompt: React.FC = () => {
   const [isStandalone, setIsStandalone] = useState<boolean>(false);
   const [isIos, setIsIos] = useState<boolean>(false);
   const [showIosGuide, setShowIosGuide] = useState<boolean>(false);
+
+  const { sheetStyle: iosGuideStyle, handlers: iosGuideSwipeHandlers } = useSwipeToDismiss({
+    onClose: () => setShowIosGuide(false)
+  });
+
   const [dismissed, setDismissed] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem('solorider_pwa_dismissed') === 'true';
@@ -110,10 +116,23 @@ export const PwaInstallPrompt: React.FC = () => {
 
       {/* iOS Safari Add to Home Screen Instructions Modal */}
       {showIosGuide && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200">
-          <div className="bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.1] max-w-sm w-full space-y-4 text-slate-900 dark:text-white shadow-ios-popover relative animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
-            {/* iOS Presentation Detent Drag Indicator (Mobile only) */}
-            <div className="w-10 h-1 rounded-full bg-slate-300 dark:bg-neutral-600 mx-auto mt-1 mb-1 sm:hidden shrink-0" />
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowIosGuide(false);
+          }}
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
+        >
+          <div
+            style={iosGuideStyle}
+            className="bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.1] max-w-sm w-full space-y-4 text-slate-900 dark:text-white shadow-ios-popover relative animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5"
+          >
+            {/* iOS Presentation Detent Drag Indicator with Native Swipe to Dismiss */}
+            <div
+              {...iosGuideSwipeHandlers}
+              className="sm:hidden w-full py-2 -mt-2 mb-1 flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+            >
+              <div className="w-10 h-1 rounded-full bg-black/20 dark:bg-white/25" />
+            </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

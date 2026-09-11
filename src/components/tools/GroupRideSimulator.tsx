@@ -732,41 +732,73 @@ export const GroupRideSimulator: React.FC = () => {
                       </span>
                       <input
                         type="number"
-                        value={isImperial ? Math.round(r.weight * 2.20462) : r.weight}
+                        inputMode="decimal"
+                        value={r.weight === 0 ? '' : (isImperial ? Math.round(r.weight * 2.20462) : r.weight)}
                         onChange={(e) => {
-                          const val = parseFloat(e.target.value) || 0;
-                          const weightKg = isImperial ? Math.round((val / 2.20462) * 10) / 10 : val;
+                          const raw = e.target.value;
                           const updated = [...riders];
-                          updated[idx].weight = weightKg || 65;
+                          if (raw === '') {
+                            updated[idx].weight = 0;
+                          } else {
+                            const val = parseFloat(raw);
+                            if (!isNaN(val)) {
+                              updated[idx].weight = isImperial ? Math.round((val / 2.20462) * 10) / 10 : val;
+                            }
+                          }
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-slate-900 dark:text-white font-mono focus:border-ios-mint focus:outline-none"
+                        onBlur={() => {
+                          if (!r.weight || r.weight < 30) {
+                            const updated = [...riders];
+                            updated[idx].weight = 65;
+                            setRiders(updated);
+                          }
+                        }}
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-slate-900 dark:text-white font-mono focus:border-ios-mint focus:outline-none tabular-nums"
                       />
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">FTP (W)</span>
                       <input
                         type="number"
-                        value={r.ftp}
+                        inputMode="numeric"
+                        value={r.ftp === 0 ? '' : r.ftp}
                         onChange={(e) => {
+                          const raw = e.target.value;
                           const updated = [...riders];
-                          updated[idx].ftp = parseFloat(e.target.value) || 250;
+                          updated[idx].ftp = raw === '' ? 0 : (parseFloat(raw) || 0);
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-ios-mint font-mono font-bold focus:border-ios-mint focus:outline-none"
+                        onBlur={() => {
+                          if (!r.ftp || r.ftp < 50) {
+                            const updated = [...riders];
+                            updated[idx].ftp = 250;
+                            setRiders(updated);
+                          }
+                        }}
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-ios-mint font-mono font-bold focus:border-ios-mint focus:outline-none tabular-nums"
                       />
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">W' 储备 (kJ)</span>
                       <input
                         type="number"
-                        value={r.wPrime}
+                        inputMode="decimal"
+                        value={r.wPrime === 0 ? '' : r.wPrime}
                         onChange={(e) => {
+                          const raw = e.target.value;
                           const updated = [...riders];
-                          updated[idx].wPrime = parseFloat(e.target.value) || 20;
+                          updated[idx].wPrime = raw === '' ? 0 : (parseFloat(raw) || 0);
                           setRiders(updated);
                         }}
-                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:border-ios-mint focus:outline-none"
+                        onBlur={() => {
+                          if (!r.wPrime || r.wPrime < 1) {
+                            const updated = [...riders];
+                            updated[idx].wPrime = 20;
+                            setRiders(updated);
+                          }
+                        }}
+                        className="w-full bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-2 py-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold focus:border-ios-mint focus:outline-none tabular-nums"
                       />
                     </div>
                     {mode === 'ttt' && (
@@ -774,16 +806,25 @@ export const GroupRideSimulator: React.FC = () => {
                         <span className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">领骑时长 (s)</span>
                         <input
                           type="number"
+                          inputMode="numeric"
                           min={5}
                           max={90}
                           step={5}
-                          value={r.pullSeconds || 20}
+                          value={r.pullSeconds === 0 ? '' : (r.pullSeconds || 20)}
                           onChange={(e) => {
+                            const raw = e.target.value;
                             const updated = [...riders];
-                            updated[idx].pullSeconds = parseInt(e.target.value) || 20;
+                            updated[idx].pullSeconds = raw === '' ? 0 : (parseInt(raw, 10) || 0);
                             setRiders(updated);
                           }}
-                          className="w-full bg-white/90 dark:bg-black/40 border border-amber-500/50 rounded-xl px-2 py-1 text-xs text-amber-600 dark:text-amber-400 font-mono font-bold focus:border-amber-500 focus:outline-none"
+                          onBlur={() => {
+                            if (!r.pullSeconds || r.pullSeconds < 5) {
+                              const updated = [...riders];
+                              updated[idx].pullSeconds = 20;
+                              setRiders(updated);
+                            }
+                          }}
+                          className="w-full bg-white/90 dark:bg-black/40 border border-amber-500/50 rounded-xl px-2 py-1 text-xs text-amber-600 dark:text-amber-400 font-mono font-bold focus:border-amber-500 focus:outline-none tabular-nums"
                         />
                       </div>
                     )}

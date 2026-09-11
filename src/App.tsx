@@ -206,17 +206,17 @@ const MainAppContent: React.FC = () => {
             id="main-content-scroll"
             className="flex-1 min-w-0 lg:h-full lg:overflow-y-auto lg:overscroll-contain flex flex-col justify-between"
           >
-            <div className="p-4 sm:p-5 pb-24 md:pb-8">
+            <div className="p-4 sm:p-5 pb-24 lg:pb-8">
               <main className="max-w-7xl mx-auto space-y-4 sm:space-y-5">
             {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
             {currentToolId && currentToolMeta && (
               <div className="relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex items-center justify-between gap-2 shadow-ios-sm no-print">
                 {/* Left: Mobile Back Button & Desktop Breadcrumbs */}
                 <div className="flex items-center gap-2 shrink-0">
-                  {/* Mobile Only: Back Button with Icon AND Text */}
+                  {/* Below lg: Back Button with Icon AND Text */}
                   <button
                     onClick={() => setCurrentToolId(null)}
-                    className="md:hidden inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 text-xs font-bold shrink-0 apple-touch"
+                    className="lg:hidden inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 text-xs font-bold shrink-0 apple-touch"
                     title={t('backToHome')}
                     aria-label={t('backToHome')}
                   >
@@ -224,8 +224,8 @@ const MainAppContent: React.FC = () => {
                     <span>{language === 'zh-TW' ? '返回首頁' : '返回首页'}</span>
                   </button>
 
-                  {/* Desktop & Tablet: Breadcrumb Hierarchy: 首页 > 分类 > 工具名 */}
-                  <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  {/* Desktop: Breadcrumb Hierarchy: 首页 > 分类 > 工具名 */}
+                  <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
                     <button
                       onClick={() => setCurrentToolId(null)}
                       className="cursor-pointer hover:text-ios-blue transition font-medium hover:underline text-slate-600 dark:text-slate-300"

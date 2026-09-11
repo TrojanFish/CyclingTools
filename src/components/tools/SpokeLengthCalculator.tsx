@@ -176,19 +176,21 @@ export const SpokeLengthCalculator: React.FC = () => {
     // Tension Balance Ratio
     // Horizontal equilibrium: T_Left * effLeftCenter ≈ T_Right * effRightCenter
     // Ratio = smaller bracing distance / larger bracing distance
-    const leftTensionRatio = effRightCenter / effLeftCenter;
-    const rightTensionRatio = effLeftCenter / effRightCenter;
+    const safeLeftCenter = Math.max(0.1, effLeftCenter || 0.1);
+    const safeRightCenter = Math.max(0.1, effRightCenter || 0.1);
+    const leftTensionRatio = safeRightCenter / safeLeftCenter;
+    const rightTensionRatio = safeLeftCenter / safeRightCenter;
 
     let tensionDesc = '';
     let tensionRatioPercent = 100;
 
     if (wheelPosition === 'rear') {
       // Right side (DS) is 100% tension baseline
-      tensionRatioPercent = Math.min(100, Math.round(leftTensionRatio * 100));
+      tensionRatioPercent = Math.min(100, Math.max(10, Math.round(leftTensionRatio * 100) || 100));
       tensionDesc = `驱动侧 DS 100% (基准 120kgf) : 非驱动侧 NDS ${tensionRatioPercent}% (${Math.round(120 * (tensionRatioPercent / 100))}kgf)`;
     } else {
       // Disc front: Left side (disc) is 100% tension baseline
-      tensionRatioPercent = Math.min(100, Math.round(rightTensionRatio * 100));
+      tensionRatioPercent = Math.min(100, Math.max(10, Math.round(rightTensionRatio * 100) || 100));
       tensionDesc = `碟刹侧 100% (基准 120kgf) : 右侧 ${tensionRatioPercent}% (${Math.round(120 * (tensionRatioPercent / 100))}kgf)`;
     }
 

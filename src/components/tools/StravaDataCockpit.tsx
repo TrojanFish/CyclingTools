@@ -639,19 +639,19 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             <div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">CTL 长期体能</div>
               <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{latestPmc.ctl}</div>
-              <div className="text-[10px] text-slate-400 mt-0.5">42天 EWMA 积淀</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">42天 EWMA 积淀</div>
             </div>
             <div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">ATL 急性疲劳</div>
               <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">{latestPmc.atl}</div>
-              <div className="text-[10px] text-slate-400 mt-0.5">7天负荷累加</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">7天负荷累加</div>
             </div>
             <div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400">TSB 竞技状态</div>
               <div className={`text-xl sm:text-2xl font-bold tabular-nums ${latestPmc.tsb >= 0 ? 'text-ios-green' : 'text-ios-red'}`}>
                 {latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">CTL - ATL</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">CTL - ATL</div>
             </div>
           </div>
 
@@ -852,7 +852,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               </svg>
 
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-xs font-semibold text-slate-400">周综合</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">周综合</span>
                 <span className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                   {Math.round(((ringData.distance.pct + ringData.elevation.pct + ringData.tss.pct) / 3) * 100)}%
                 </span>
@@ -1025,7 +1025,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                 <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
                   {activeBike.totalDistanceKm.toLocaleString()} km
                 </div>
-                <div className="text-xs text-slate-400">占全队总里程 {activeBike.distancePct}%</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">占全队总里程 {activeBike.distancePct}%</div>
               </div>
             </div>
 

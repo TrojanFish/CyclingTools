@@ -3,6 +3,7 @@ import { useRiderProfile, TeamRider, BikeProfile } from '../../context/RiderProf
 import { useStrava } from '../../context/StravaContext';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 import {
   User,
   X,
@@ -110,6 +111,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
   const [showSecret, setShowSecret] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
 
+  const { sheetStyle, handlers: swipeHandlers } = useSwipeToDismiss({ onClose });
+
   if (!isOpen) return null;
 
   const handleReset = () => {
@@ -149,9 +152,17 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
       }}
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-xl max-h-[90vh] sm:max-h-[85vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl border-t sm:border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5">
-        {/* iOS Presentation Detent Drag Indicator Handle (Mobile only) */}
-        <div className="sm:hidden w-10 h-1.5 rounded-full bg-black/15 dark:bg-white/20 mx-auto -mt-1 mb-2 shrink-0 cursor-grab active:cursor-grabbing" />
+      <div
+        style={sheetStyle}
+        className="relative w-full max-w-xl max-h-[90vh] sm:max-h-[85vh] overflow-y-auto bg-ios-bg-grouped-light dark:bg-[#121214] p-4 sm:p-5 rounded-t-[28px] sm:rounded-2xl border-t sm:border border-black/[0.06] dark:border-white/[0.08] shadow-ios-popover space-y-4 animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-5"
+      >
+        {/* iOS Presentation Detent Drag Indicator Handle (Mobile only) with Native Pull-Down to Dismiss */}
+        <div
+          {...swipeHandlers}
+          className="sm:hidden w-full py-2 -mt-2 mb-1 flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        >
+          <div className="w-10 h-1.5 rounded-full bg-black/20 dark:bg-white/25" />
+        </div>
 
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-black/[0.05] dark:border-white/[0.08]">
@@ -404,7 +415,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate">
                 {language === 'zh-TW' ? '車隊現役車手名單' : '车队现役车手名单'}
-                <span className="hidden sm:inline font-normal text-slate-400 ml-1">(点击立即切换出赛)</span>
+                <span className="hidden sm:inline font-normal text-slate-500 dark:text-slate-400 ml-1">(点击立即切换出赛)</span>
               </span>
               <button
                 type="button"
@@ -510,7 +521,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate">
                 {language === 'zh-TW' ? '車隊戰車車庫' : '车队战车车库'}
-                <span className="hidden sm:inline font-normal text-slate-400 ml-1">(点击装配并联动计算)</span>
+                <span className="hidden sm:inline font-normal text-slate-500 dark:text-slate-400 ml-1">(点击装配并联动计算)</span>
               </span>
               <button
                 type="button"
@@ -742,7 +753,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setShowSecret(!showSecret)}
-                          className="text-[10px] text-slate-400 hover:text-slate-600 flex items-center gap-1"
+                          className="text-[10px] text-slate-500 dark:text-slate-400 hover:text-slate-600 flex items-center gap-1"
                         >
                           {showSecret ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                           {showSecret ? '隐藏' : '显示'}
@@ -806,7 +817,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                             已连接
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 font-mono truncate">
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">
                           {athlete?.city ? `${athlete.city}, ${athlete.country || ''}` : 'Strava 认证车手'}
                         </p>
                       </div>
@@ -850,25 +861,25 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   {/* Stats Tiles */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06] text-center">
                     <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
-                      <span className="text-[10px] text-slate-400 block">已同步活动</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">已同步活动</span>
                       <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
                         {stravaActivities.length}
                       </span>
                     </div>
                     <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
-                      <span className="text-[10px] text-slate-400 block">Strava FTP</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Strava FTP</span>
                       <span className="text-sm font-bold font-mono text-ios-blue">
                         {athlete?.ftp || '--'} <span className="text-[10px] font-normal">W</span>
                       </span>
                     </div>
                     <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
-                      <span className="text-[10px] text-slate-400 block">车手自重</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">车手自重</span>
                       <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
                         {athlete?.weight ? `${athlete.weight}` : '--'} <span className="text-[10px] font-normal">kg</span>
                       </span>
                     </div>
                     <div className="p-2 rounded-xl bg-slate-50 dark:bg-white/[0.03]">
-                      <span className="text-[10px] text-slate-400 block">关联战车</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">关联战车</span>
                       <span className="text-sm font-bold font-mono text-slate-900 dark:text-white">
                         {athlete?.bikes?.length || 0} <span className="text-[10px] font-normal">台</span>
                       </span>
@@ -876,7 +887,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   </div>
 
                   {stravaLastSyncTime && (
-                    <div className="text-[10px] text-slate-400 flex items-center justify-between pt-1">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between pt-1">
                       <span>上次同步时间:</span>
                       <span className="font-mono">{new Date(stravaLastSyncTime * 1000).toLocaleString()}</span>
                     </div>
@@ -894,7 +905,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <label className="flex items-center justify-between pt-1 cursor-pointer">
                       <div>
                         <span className="text-slate-800 dark:text-slate-200 block font-medium">自动同步单车行驶里程到战车库</span>
-                        <span className="text-[10px] text-slate-400">战车里程达标时联动提醒链条拉伸与外胎磨损</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400">战车里程达标时联动提醒链条拉伸与外胎磨损</span>
                       </div>
                       <input
                         type="checkbox"
@@ -907,7 +918,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
                         <span className="text-slate-800 dark:text-slate-200 block font-medium">历史骑行活动同步范围</span>
-                        <span className="text-[10px] text-slate-400">为 PMC 长期体能负荷分析拉取历史天数</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400">为 PMC 长期体能负荷分析拉取历史天数</span>
                       </div>
                       <div className="shrink-0 self-end sm:self-auto">
                         <IOSSegmentedControl
@@ -932,7 +943,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       <span className="font-semibold text-slate-800 dark:text-slate-200">
                         最近同步骑行 ({Math.min(3, stravaActivities.length)})
                       </span>
-                      <span className="text-[10px] text-slate-400 font-mono">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                         全量数据已存入本地 IndexedDB
                       </span>
                     </div>
@@ -947,7 +958,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                             <span className="font-semibold text-slate-900 dark:text-white block truncate">
                               {act.name}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-mono">
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                               {new Date(act.start_date_local || act.start_date).toLocaleDateString()} • {(act.distance / 1000).toFixed(1)} km • 爬升 {act.total_elevation_gain}m
                             </span>
                           </div>
@@ -957,7 +968,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                               {act.tss || 0} TSS
                             </span>
                             {act.weighted_average_watts ? (
-                              <span className="text-[10px] text-slate-400 block mt-0.5">
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">
                                 NP: {act.weighted_average_watts}W
                               </span>
                             ) : null}
@@ -1007,7 +1018,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                 {/* Brand Compliance Footer */}
                 <div className="pt-2 flex flex-col items-center justify-center gap-1 text-center">
                   <PoweredByStravaBadge />
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
                     本应用遵循 Strava API 开发者准则与品牌官方规范。
                   </p>
                 </div>
@@ -1031,7 +1042,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <span className="text-xs font-semibold text-slate-900 dark:text-white block">
                       {language === 'zh-TW' ? '語言' : '语言'}
                     </span>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
                       {language === 'zh-TW' ? '繁體中文' : '简体中文'}
                     </span>
                   </div>
@@ -1057,7 +1068,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     <span className="text-xs font-semibold text-slate-900 dark:text-white block">
                       {language === 'zh-TW' ? '度量衡制式' : '度量衡制式'}
                     </span>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
                       {isImperial ? 'Imperial (lbs, in, psi)' : 'Metric (kg, cm, bar)'}
                     </span>
                   </div>
@@ -1090,7 +1101,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                       <span className="text-xs font-semibold text-slate-900 dark:text-white block">
                         {language === 'zh-TW' ? '外觀主題' : '外观主题'}
                       </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">
                         {themeMode === 'system' ? '自动跟随系统' : themeMode === 'dark' ? '深色模式' : '浅色模式'}
                       </span>
                     </div>
@@ -1118,7 +1129,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     {language === 'zh-TW' ? '移動端底部導航欄自訂' : '移动端底部导航栏自选'}
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-mono">4 个快捷槽位</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">4 个快捷槽位</span>
               </div>
 
               {/* Recommended Presets */}
@@ -1181,14 +1192,14 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                 <div className="grid grid-cols-5 gap-1 sm:gap-1.5 p-2 rounded-2xl bg-slate-100/80 dark:bg-[#121214] border border-black/[0.04] dark:border-white/[0.06]">
                   {/* Home Slot (Locked) */}
                   <div className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-white/70 dark:bg-white/[0.06] border border-black/[0.04] dark:border-white/[0.06] opacity-75 select-none">
-                    <div className="p-1 rounded-lg text-slate-400 dark:text-slate-500 relative">
+                    <div className="p-1 rounded-lg text-slate-500 dark:text-slate-400 relative">
                       <Home className="w-4 h-4" />
-                      <Lock className="w-2.5 h-2.5 text-slate-400 dark:text-slate-500 absolute -bottom-0.5 -right-0.5" />
+                      <Lock className="w-2.5 h-2.5 text-slate-500 dark:text-slate-400 absolute -bottom-0.5 -right-0.5" />
                     </div>
                     <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 mt-1 select-none">
                       {language === 'zh-TW' ? '首頁' : '首页'}
                     </span>
-                    <span className="text-[8px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
+                    <span className="text-[8px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
                       {language === 'zh-TW' ? '固定' : '固定'}
                     </span>
                   </div>
@@ -1233,7 +1244,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         </span>
                         <span
                           className={`text-[8px] font-mono mt-0.5 ${
-                            isEditing ? 'text-white/80' : 'text-slate-400 dark:text-slate-500'
+                            isEditing ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'
                           }`}
                         >
                           {language === 'zh-TW' ? `位 ${slotIdx + 1}` : `槽 ${slotIdx + 1}`}
@@ -1318,7 +1329,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                   return (
                     <div key={cat} className="space-y-1.5">
-                      <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-1">
+                      <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 px-1">
                         {catLabel}
                       </div>
 
@@ -1371,7 +1382,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                                   <div className="text-xs font-semibold truncate">
                                     {language === 'zh-TW' ? tool.titleTw : tool.title}
                                   </div>
-                                  <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                                  <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                                     {language === 'zh-TW'
                                       ? `標籤: ${tool.shortTitleTw}`
                                       : `标签: ${tool.shortTitle}`}
