@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User, Package } from 'lucide-react';
+import { Gauge, Info, AlertTriangle, Layers, Share2, Check, User, Package, Bike } from 'lucide-react';
 import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/tirePressureConfig';
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
@@ -15,7 +15,7 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 export const TirePressureCalculator: React.FC = () => {
   const { showToast } = useToast();
-  const { profile } = useRiderProfile();
+  const { profile, activeBike, updateActiveBikeWheelTire } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const isImperial = unitSystem === 'imperial';
 
@@ -25,12 +25,12 @@ export const TirePressureCalculator: React.FC = () => {
 
   const [bikeType, setBikeType] = useState<'road' | 'gravel' | 'mtb'>('road');
   const [riderWeight, setRiderWeight] = useState<number>(profile.weightKg || 68);
-  const [bikeGearWeight, setBikeGearWeight] = useState<number>(profile.bikeWeightKg || 8.5);
-  const [tireSetup, setTireSetup] = useState<'tubeless' | 'tube' | 'tubular'>('tubeless');
-  const [nominalWidth, setNominalWidth] = useState<number>(28);
-  const [actualWidth, setActualWidth] = useState<number>(29.5);
-  const [rimInnerWidth, setRimInnerWidth] = useState<number>(21);
-  const [isHookless, setIsHookless] = useState<boolean>(false);
+  const [bikeGearWeight, setBikeGearWeight] = useState<number>(activeBike?.weightKg || profile.bikeWeightKg || 8.5);
+  const [tireSetup, setTireSetup] = useState<'tubeless' | 'tube' | 'tubular'>(activeBike?.wheelTire?.tireSetup || 'tubeless');
+  const [nominalWidth, setNominalWidth] = useState<number>(activeBike?.wheelTire?.nominalWidthMm || 28);
+  const [actualWidth, setActualWidth] = useState<number>(activeBike?.wheelTire?.actualWidthMm || 29.5);
+  const [rimInnerWidth, setRimInnerWidth] = useState<number>(activeBike?.wheelTire?.rimInternalWidthMm || 21);
+  const [isHookless, setIsHookless] = useState<boolean>(Boolean(activeBike?.wheelTire?.isHookless));
   const [hasTireInsert, setHasTireInsert] = useState<boolean>(false);
   const [weightDistFront, setWeightDistFront] = useState<number>(44);
   const [isBikepacking, setIsBikepacking] = useState<boolean>(false);
@@ -42,8 +42,24 @@ export const TirePressureCalculator: React.FC = () => {
   // Reactively sync with global rider profile
   useEffect(() => {
     if (profile.weightKg) setRiderWeight(profile.weightKg);
-    if (profile.bikeWeightKg) setBikeGearWeight(profile.bikeWeightKg);
-  }, [profile.weightKg, profile.bikeWeightKg]);
+  }, [profile.weightKg]);
+
+  // Reactively sync with active bike from Virtual Garage
+  useEffect(() => {
+    if (activeBike) {
+      if (activeBike.weightKg) setBikeGearWeight(activeBike.weightKg);
+      if (activeBike.wheelTire) {
+        if (activeBike.wheelTire.nominalWidthMm) setNominalWidth(activeBike.wheelTire.nominalWidthMm);
+        if (activeBike.wheelTire.actualWidthMm) setActualWidth(activeBike.wheelTire.actualWidthMm);
+        if (activeBike.wheelTire.rimInternalWidthMm) setRimInnerWidth(activeBike.wheelTire.rimInternalWidthMm);
+        if (activeBike.wheelTire.tireSetup) setTireSetup(activeBike.wheelTire.tireSetup);
+        setIsHookless(Boolean(activeBike.wheelTire.isHookless));
+      }
+      if (activeBike.type === 'gravel') setBikeType('gravel');
+      else if (activeBike.type.startsWith('mtb')) setBikeType('mtb');
+      else setBikeType('road');
+    }
+  }, [activeBike]);
 
   // Reactively sync default unit with global unit system
   useEffect(() => {
@@ -566,6 +582,40 @@ export const TirePressureCalculator: React.FC = () => {
               accent="blue"
             />
           </div>
+
+          {/* Quick Sync to Active Bike Button */}
+          {activeBike && (
+            <button
+              type="button"
+              onClick={() => {
+                const fPsi = Math.round(result.front.rawPsi);
+                const rPsi = Math.round(result.rear.rawPsi);
+                updateActiveBikeWheelTire({
+                  nominalWidthMm: nominalWidth,
+                  actualWidthMm: actualWidth,
+                  rimInternalWidthMm: rimInnerWidth,
+                  tireSetup,
+                  isHookless,
+                  frontPressurePsi: fPsi,
+                  rearPressurePsi: rPsi,
+                });
+                showToast(
+                  language === 'zh-TW'
+                    ? `已將計算胎壓 (前 ${fPsi} / 後 ${rPsi} PSI) 保存至戰車【${activeBike.name.split('/')[0]}】`
+                    : `已将计算胎压 (前 ${fPsi} / 后 ${rPsi} PSI) 保存至战车【${activeBike.name.split('/')[0]}】`,
+                  'success'
+                );
+              }}
+              className="w-full h-9 rounded-xl bg-ios-blue hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-ios-sm apple-touch"
+            >
+              <Bike className="w-4 h-4" />
+              <span>
+                {language === 'zh-TW'
+                  ? `保存氣壓至當前戰車【${activeBike.name.split('/')[0]}】`
+                  : `保存气压至当前战车【${activeBike.name.split('/')[0]}】`}
+              </span>
+            </button>
+          )}
 
           {/* Tips and Explanation Box */}
           <IOSCard variant="default" className="space-y-4">

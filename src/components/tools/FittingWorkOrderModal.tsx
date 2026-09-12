@@ -387,6 +387,14 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
   const [orderDate, setOrderDate] = useState<string>(todayStr);
   const [orderNo] = useState<string>(() => `SPEC-ROU-${Date.now().toString().slice(-6)}`);
 
+  React.useEffect(() => {
+    if (initialBikeModel) setBikeModel(initialBikeModel);
+  }, [initialBikeModel]);
+
+  React.useEffect(() => {
+    if (initialRiderName) setRiderName(initialRiderName);
+  }, [initialRiderName]);
+
   if (!isOpen) return null;
 
   // iOS Pull-Down to Dismiss Gesture State

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sun, Moon, User, X, Settings, PanelLeft, Heart } from 'lucide-react';
+import { Search, Sun, Moon, User, X, Settings, PanelLeft, Heart, Bike } from 'lucide-react';
 import { RouleurLogo } from './common/RouleurLogo';
 import { BackgroundMusicControl } from './BackgroundMusicControl';
 import { RiderProfileModal } from './common/RiderProfileModal';
@@ -38,12 +38,13 @@ export const Header: React.FC<HeaderProps> = ({
   const [internalProfileOpen, setInternalProfileOpen] = useState<boolean>(false);
   const isProfileOpen = profileModalOpen !== undefined ? profileModalOpen : internalProfileOpen;
   const setProfileOpen = setProfileModalOpen || setInternalProfileOpen;
+  const [profileModalTab, setProfileModalTab] = useState<'profile' | 'roster' | 'garage' | 'strava' | 'system'>('profile');
   const [mobileSearchOpen, setMobileSearchOpen] = useState<boolean>(false);
   const [sponsorOpen, setSponsorOpen] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const sponsorRef = useRef<HTMLDivElement | null>(null);
   const sponsorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { profile } = useRiderProfile();
+  const { profile, activeBike } = useRiderProfile();
   const { language, t, convertWeight } = useLanguageAndUnit();
 
   // iOS Pull-Down to Dismiss Gesture State for Sponsor Modal
@@ -295,9 +296,28 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
+            {/* Active Bike / Virtual Garage Pill - Apple HIG 36px control */}
+            <button
+              onClick={() => {
+                setProfileModalTab('garage');
+                setProfileOpen(true);
+              }}
+              className="h-9 px-2.5 sm:px-3 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 hover:text-ios-blue dark:hover:text-ios-blue-dark apple-touch transition gap-1.5 group shrink-0 shadow-xs"
+              title={language === 'zh-TW' ? `當前戰車：${activeBike?.name?.split('/')[0]} (點擊進入車庫)` : `当前战车：${activeBike?.name?.split('/')[0]} (点击进入车库)`}
+              aria-label="Active Bike Garage"
+            >
+              <Bike className="w-4 h-4 text-ios-blue dark:text-ios-blue-dark group-hover:scale-110 transition-transform duration-200" />
+              <span className="hidden md:inline text-xs font-semibold max-w-[110px] lg:max-w-[140px] truncate">
+                {activeBike?.name ? activeBike.name.split('/')[0].trim() : '车库'}
+              </span>
+            </button>
+
             {/* Rider Profile & Settings Button - Apple HIG 36px button */}
             <button
-              onClick={() => setProfileOpen(true)}
+              onClick={() => {
+                setProfileModalTab('profile');
+                setProfileOpen(true);
+              }}
               className="w-9 h-9 sm:w-auto sm:h-9 sm:px-3 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-[#3A3A3C] text-slate-700 dark:text-slate-200 hover:text-ios-blue dark:hover:text-ios-blue-dark apple-touch transition gap-1.5 group shrink-0 shadow-xs"
               title={language === 'zh-TW' ? '系統設定與車手檔案' : '系统设置与车手档案'}
               aria-label="Settings & Rider Profile"
@@ -362,6 +382,7 @@ export const Header: React.FC<HeaderProps> = ({
         onClose={() => setProfileOpen(false)}
         themeMode={themeMode}
         setThemeMode={setThemeMode}
+        initialTab={profileModalTab}
       />
     </>
   );

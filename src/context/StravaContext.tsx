@@ -38,6 +38,7 @@ import {
   clearStravaDb
 } from '../utils/indexedDb';
 import { useRiderProfile } from './RiderProfileContext';
+import { migrateBikeProfile } from '../types/garage';
 import { useToast } from './ToastContext';
 
 export interface StravaSyncProgress {
@@ -201,8 +202,8 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               stravaGearId: stravaBike.id
             });
           } else {
-            // Add as new bike
-            addBike({
+            // Add as new bike with enriched specs
+            addBike(migrateBikeProfile({
               id: `strava-bike-${stravaBike.id}`,
               name: stravaBike.name,
               type: 'road_aero',
@@ -211,7 +212,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               crr: 0.0035,
               mileageKm,
               stravaGearId: stravaBike.id
-            });
+            }));
           }
         }
       }

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Share2, Award, Sliders, ChevronDown, Disc, AlertTriangle } from 'lucide-react';
+import { Zap, Activity, Info, Mountain, Wind, Flame, Gauge, Share2, Award, Sliders, ChevronDown, Disc, AlertTriangle, Bike } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -35,7 +35,7 @@ ChartJS.register(
 );
 
 export const CyclePowerCalculator: React.FC = () => {
-  const { profile, updateProfile } = useRiderProfile();
+  const { profile, activeBike, updateProfile } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
 
@@ -51,25 +51,31 @@ export const CyclePowerCalculator: React.FC = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [riderWeight, setRiderWeight] = useState<number>(profile.weightKg || 68);
-  const [bikeWeight, setBikeWeight] = useState<number>(profile.bikeWeightKg || 8.5);
+  const [bikeWeight, setBikeWeight] = useState<number>(activeBike?.weightKg || profile.bikeWeightKg || 8.5);
   const [grade, setGrade] = useState<number>(0);
   const [windSpeedKmh, setWindSpeedKmh] = useState<number>(0);
   const [windDirection, setWindDirection] = useState<'headwind' | 'tailwind'>('headwind');
 
-  // Reactively synchronize whenever global rider profile updates
+  // Reactively synchronize whenever global rider profile or active bike updates
   useEffect(() => {
     if (profile.weightKg) setRiderWeight(profile.weightKg);
-    if (profile.bikeWeightKg) setBikeWeight(profile.bikeWeightKg);
     if (profile.ftpWatts) setPowerInput(profile.ftpWatts);
-  }, [profile.weightKg, profile.bikeWeightKg, profile.ftpWatts]);
+    if (activeBike) {
+      if (activeBike.weightKg) setBikeWeight(activeBike.weightKg);
+      if (activeBike.cda) setCustomCda(activeBike.cda);
+      if (activeBike.crr) setCustomCrr(activeBike.crr);
+    } else if (profile.bikeWeightKg) {
+      setBikeWeight(profile.bikeWeightKg);
+    }
+  }, [profile.weightKg, profile.bikeWeightKg, profile.ftpWatts, activeBike]);
 
   // Advanced aero & physics parameters
   const [altitudeM, setAltitudeM] = useState<number>(50);
   const [tempC, setTempC] = useState<number>(20);
   const [cdaPreset, setCdaPreset] = useState<'extreme_tt' | 'tt' | 'drops' | 'hoods' | 'tops'>('hoods');
-  const [customCda, setCustomCda] = useState<number>(0.32);
+  const [customCda, setCustomCda] = useState<number>(activeBike?.cda || 0.32);
   const [hasHeadShrug, setHasHeadShrug] = useState<boolean>(false);
-  const [customCrr, setCustomCrr] = useState<number>(0.0035);
+  const [customCrr, setCustomCrr] = useState<number>(activeBike?.crr || 0.0035);
   const [yawAngleDeg, setYawAngleDeg] = useState<number>(0); // 0°~20° yaw angle
 
   // Dedicated Climb & VAM test parameters
@@ -353,6 +359,17 @@ export const CyclePowerCalculator: React.FC = () => {
               icon={Activity}
               iconColor="blue"
             />
+
+            {/* Active Bike Indicator */}
+            {activeBike && (
+              <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/15 border border-ios-blue/20 text-xs text-ios-blue dark:text-ios-blue-dark font-medium">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Bike className="w-4 h-4 shrink-0" />
+                  <span className="truncate">已载入战车动力学设定：<strong>{activeBike.name.split('/')[0]}</strong></span>
+                </div>
+                <span className="shrink-0 text-[11px] font-mono opacity-80">CdA {activeBike.cda} · Crr {activeBike.crr}</span>
+              </div>
+            )}
 
             {/* Target Input */}
             {calcMode === 'speed' && (

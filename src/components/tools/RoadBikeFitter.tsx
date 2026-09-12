@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles } from 'lucide-react';
+import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Bike } from 'lucide-react';
 import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -14,7 +14,7 @@ import { generateFittingPoster } from '../../utils/shareCardGenerators';
 import { FittingWorkOrderModal } from './FittingWorkOrderModal';
 
 export const RoadBikeFitter: React.FC = () => {
-  const { profile } = useRiderProfile();
+  const { profile, activeBike, updateActiveBikeGeometry } = useRiderProfile();
   const { unitSystem, language } = useLanguageAndUnit();
   const { showToast } = useToast();
   const isImperial = unitSystem === 'imperial';
@@ -406,6 +406,43 @@ export const RoadBikeFitter: React.FC = () => {
             />
           </div>
 
+          {/* Quick Sync Fitting to Active Bike */}
+          {activeBike && (
+            <button
+              type="button"
+              onClick={() => {
+                const sHeight = Math.round(result.saddleHeight * 10);
+                const sDrop = Math.round(result.saddleDrop * 10);
+                const sSetback = Math.round(result.saddleSetback * 10);
+                const stem = result.stemLength;
+                const hb = result.handlebarWidth * 10;
+                updateActiveBikeGeometry({
+                  saddleHeightMm: sHeight,
+                  saddleDropMm: sDrop,
+                  saddleSetbackMm: sSetback,
+                  stemLengthMm: stem,
+                  handlebarWidthMm: hb,
+                  reachMm: result.estimatedReach,
+                  stackMm: result.estimatedStack,
+                });
+                showToast(
+                  language === 'zh-TW'
+                    ? `已將 Fitting 建議幾何 (坐高 ${sHeight}mm · 把立 ${stem}mm) 同步至戰車【${activeBike.name.split('/')[0]}】`
+                    : `已将 Fitting 建议几何 (坐高 ${sHeight}mm · 把立 ${stem}mm) 同步至战车【${activeBike.name.split('/')[0]}】`,
+                  'success'
+                );
+              }}
+              className="w-full h-9 rounded-xl bg-ios-blue hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-ios-sm apple-touch"
+            >
+              <Bike className="w-4 h-4" />
+              <span>
+                {language === 'zh-TW'
+                  ? `同步 Fitting 尺寸至戰車【${activeBike.name.split('/')[0]}】`
+                  : `同步 Fitting 尺寸至战车【${activeBike.name.split('/')[0]}】`}
+              </span>
+            </button>
+          )}
+
           {/* Stack & Reach + Body Proportion Analysis */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
@@ -508,6 +545,7 @@ export const RoadBikeFitter: React.FC = () => {
         isOpen={isWorkOrderModalOpen}
         onClose={() => setIsWorkOrderModalOpen(false)}
         initialRiderName={profile.name || (language === 'zh-TW' ? '車手客戶' : '车手客户')}
+        initialBikeModel={activeBike ? activeBike.name : undefined}
         data={{
           height,
           inseam,

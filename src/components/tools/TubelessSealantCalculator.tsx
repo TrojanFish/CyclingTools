@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Droplets,
   Gauge,
@@ -20,17 +20,35 @@ import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { useRiderProfile } from '../../context/RiderProfileContext';
 
 export const TubelessSealantCalculator: React.FC = () => {
   const { language, unitSystem } = useLanguageAndUnit();
   const { showToast } = useToast();
+  const { activeBike } = useRiderProfile();
   const isImperial = unitSystem === 'imperial';
 
   // Wheel & Tire System
-  const [wheelStandard, setWheelStandard] = useState<'700c' | '650b' | '29er' | '26er'>('700c');
-  const [tireCategory, setTireCategory] = useState<'road' | 'gravel' | 'mtb'>('road');
-  const [tireWidthMm, setTireWidthMm] = useState<number>(28);
-  const [innerRimWidthMm, setInnerRimWidthMm] = useState<number>(21);
+  const [wheelStandard, setWheelStandard] = useState<'700c' | '650b' | '29er' | '26er'>(
+    activeBike?.wheelTire?.wheelStandard || '700c'
+  );
+  const [tireCategory, setTireCategory] = useState<'road' | 'gravel' | 'mtb'>(
+    activeBike?.type === 'gravel' ? 'gravel' : activeBike?.type?.startsWith('mtb') ? 'mtb' : 'road'
+  );
+  const [tireWidthMm, setTireWidthMm] = useState<number>(activeBike?.wheelTire?.nominalWidthMm || 28);
+  const [innerRimWidthMm, setInnerRimWidthMm] = useState<number>(activeBike?.wheelTire?.rimInternalWidthMm || 21);
+
+  // Sync with active bike
+  useEffect(() => {
+    if (activeBike?.wheelTire) {
+      if (activeBike.wheelTire.wheelStandard) setWheelStandard(activeBike.wheelTire.wheelStandard);
+      if (activeBike.wheelTire.nominalWidthMm) setTireWidthMm(activeBike.wheelTire.nominalWidthMm);
+      if (activeBike.wheelTire.rimInternalWidthMm) setInnerRimWidthMm(activeBike.wheelTire.rimInternalWidthMm);
+    }
+    if (activeBike?.type === 'gravel') setTireCategory('gravel');
+    else if (activeBike?.type?.startsWith('mtb')) setTireCategory('mtb');
+    else setTireCategory('road');
+  }, [activeBike]);
 
   // Casing & Usage Environment
   const [casingType, setCasingType] = useState<'race' | 'standard' | 'heavy'>('standard');

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, CheckCircle2, AlertTriangle, Info, Share2, Settings, ArrowRight, ShieldCheck, Zap, Lightbulb } from 'lucide-react';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -9,24 +9,47 @@ import { ShareCardModal } from '../common/ShareCardModal';
 import { generateChainLengthPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useRiderProfile } from '../../context/RiderProfileContext';
 
 export const ChainLengthCalculator: React.FC = () => {
   const { showToast } = useToast();
   const { language } = useLanguageAndUnit();
+  const { activeBike } = useRiderProfile();
 
   // Share Poster State
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
-  const [chainstayLengthMm, setChainstayLengthMm] = useState<number>(410);
-  const [bigRing, setBigRing] = useState<number>(50);
-  const [smallRing, setSmallRing] = useState<number>(34);
-  const [isSingleRing, setIsSingleRing] = useState<boolean>(false);
-  const [bigCog, setBigCog] = useState<number>(34);
-  const [smallCog, setSmallCog] = useState<number>(11);
+  const [chainstayLengthMm, setChainstayLengthMm] = useState<number>(activeBike?.drivetrain?.chainstayLengthMm || 410);
+  const [bigRing, setBigRing] = useState<number>(activeBike?.drivetrain?.bigRing || 50);
+  const [smallRing, setSmallRing] = useState<number>(activeBike?.drivetrain?.smallRing || 34);
+  const [isSingleRing, setIsSingleRing] = useState<boolean>(activeBike?.drivetrain?.chainringType === 'single');
+  const [bigCog, setBigCog] = useState<number>(
+    activeBike?.drivetrain?.cassette ? activeBike.drivetrain.cassette[activeBike.drivetrain.cassette.length - 1] : 34
+  );
+  const [smallCog, setSmallCog] = useState<number>(
+    activeBike?.drivetrain?.cassette ? activeBike.drivetrain.cassette[0] : 11
+  );
   const [pulleyTeeth, setPulleyTeeth] = useState<number>(11); // 11T standard or 12/14T oversized
-  const [isFullSuspension, setIsFullSuspension] = useState<boolean>(false);
+  const [isFullSuspension, setIsFullSuspension] = useState<boolean>(activeBike?.type === 'mtb_xc');
   const [chainstayGrowthMm, setChainstayGrowthMm] = useState<number>(20);
+
+  // Sync with active bike
+  useEffect(() => {
+    if (activeBike?.drivetrain) {
+      setBigRing(activeBike.drivetrain.bigRing);
+      if (activeBike.drivetrain.smallRing) setSmallRing(activeBike.drivetrain.smallRing);
+      setIsSingleRing(activeBike.drivetrain.chainringType === 'single');
+      if (activeBike.drivetrain.chainstayLengthMm) setChainstayLengthMm(activeBike.drivetrain.chainstayLengthMm);
+      if (activeBike.drivetrain.cassette && activeBike.drivetrain.cassette.length > 0) {
+        setSmallCog(activeBike.drivetrain.cassette[0]);
+        setBigCog(activeBike.drivetrain.cassette[activeBike.drivetrain.cassette.length - 1]);
+      }
+    }
+    if (activeBike?.type === 'mtb_xc') {
+      setIsFullSuspension(true);
+    }
+  }, [activeBike]);
 
   const [activePreset, setActivePreset] = useState<string | null>('compact_34');
 

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Cog, Gauge, Info, Zap, AlertTriangle, ArrowUpDown, Layers, Share2, BarChart2 } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Cog, Gauge, Info, Zap, AlertTriangle, ArrowUpDown, Layers, Share2, BarChart2, Bike, Check } from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -10,16 +10,22 @@ import { ShareCardModal } from '../common/ShareCardModal';
 import { generateGearSpeedPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
+import { useRiderProfile } from '../../context/RiderProfileContext';
 
 export const GearSpeedCadenceCalculator: React.FC = () => {
   const { showToast } = useToast();
+  const { activeBike, updateActiveBikeDrivetrain } = useRiderProfile();
   const { unitSystem } = useLanguageAndUnit();
   const isImperial = unitSystem === 'imperial';
 
-  const [chainringType, setChainringType] = useState<'double' | 'single'>('double');
-  const [bigRing, setBigRing] = useState<number>(50);
-  const [smallRing, setSmallRing] = useState<number>(34);
-  const [cogsStr, setCogsStr] = useState<string>('11, 12, 13, 14, 15, 17, 19, 21, 24, 27, 30, 34');
+  const [chainringType, setChainringType] = useState<'double' | 'single'>(
+    activeBike?.drivetrain?.chainringType || 'double'
+  );
+  const [bigRing, setBigRing] = useState<number>(activeBike?.drivetrain?.bigRing || 50);
+  const [smallRing, setSmallRing] = useState<number>(activeBike?.drivetrain?.smallRing || 34);
+  const [cogsStr, setCogsStr] = useState<string>(
+    activeBike?.drivetrain?.cassette?.join(', ') || '11, 12, 13, 14, 15, 17, 19, 21, 24, 27, 30, 34'
+  );
   const [cadenceRpm, setCadenceRpm] = useState<number>(90);
   const [tireCircumferenceMm, setTireCircumferenceMm] = useState<number>(2136); // 700x28c
   const [activeTab, setActiveTab] = useState<'matrix' | 'cadence_table' | 'chart'>('matrix');
@@ -27,6 +33,18 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
   // Share Poster State
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+
+  // Sync with active bike from Virtual Garage
+  useEffect(() => {
+    if (activeBike?.drivetrain) {
+      setChainringType(activeBike.drivetrain.chainringType);
+      setBigRing(activeBike.drivetrain.bigRing);
+      if (activeBike.drivetrain.smallRing) setSmallRing(activeBike.drivetrain.smallRing);
+      if (activeBike.drivetrain.cassette && activeBike.drivetrain.cassette.length > 0) {
+        setCogsStr(activeBike.drivetrain.cassette.join(', '));
+      }
+    }
+  }, [activeBike]);
 
   // Tire circumference presets
   const TIRE_PRESETS = [
@@ -227,6 +245,31 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* Inputs & Presets */}
       <IOSCard variant="default" className="space-y-5">
+        {/* Active Bike Sync Banner & Save Button */}
+        {activeBike && (
+          <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/15 border border-ios-blue/20">
+            <div className="flex items-center gap-2 text-xs font-semibold text-ios-blue dark:text-ios-blue-dark">
+              <Bike className="w-4 h-4 shrink-0" />
+              <span>已同步装配战车：<strong>{activeBike.name.split('/')[0]}</strong></span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                updateActiveBikeDrivetrain({
+                  chainringType,
+                  bigRing,
+                  smallRing: chainringType === 'double' ? smallRing : bigRing,
+                  cassette: cogsList
+                });
+                showToast(`已将当前齿比 (${chainringType === 'single' ? `${bigRing}T` : `${bigRing}/${smallRing}T`} · ${cogsList[0]}-${cogsList[cogsList.length - 1]}T) 保存至战车【${activeBike.name.split('/')[0]}】`, 'success');
+              }}
+              className="h-8 px-3 rounded-lg bg-ios-blue hover:bg-blue-600 text-white text-xs font-semibold transition active:scale-95 apple-touch shrink-0"
+            >
+              保存齿比至当前战车
+            </button>
+          </div>
+        )}
+
         {/* Gruppo Presets */}
         <div>
           <div className="w-full">

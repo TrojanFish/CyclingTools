@@ -1,5 +1,23 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { DEFAULT_NAV_SHORTCUTS, ALL_NAV_TOOLS } from '../utils/toolNavHelper';
+import {
+  BikeProfile,
+  BikeCategory,
+  DrivetrainConfig,
+  WheelTireConfig,
+  FittingGeometryConfig,
+  DEFAULT_ENRICHED_BIKE_GARAGE,
+  migrateBikeProfile
+} from '../types/garage';
+
+export type {
+  BikeProfile,
+  BikeCategory,
+  DrivetrainConfig,
+  WheelTireConfig,
+  FittingGeometryConfig
+};
+export { migrateBikeProfile };
 
 export interface RiderProfile {
   id?: string;
@@ -20,18 +38,6 @@ export interface TeamRider extends RiderProfile {
   id: string;
   name: string;
   role: 'gc' | 'sprinter' | 'climber' | 'rouleur' | 'domestique' | 'custom';
-}
-
-export interface BikeProfile {
-  id: string;
-  name: string;
-  type: 'road_aero' | 'road_climb' | 'road_tt' | 'gravel' | 'mtb_xc' | 'mtb_enduro';
-  weightKg: number;
-  crr: number;
-  cda: number;
-  notes?: string;
-  mileageKm?: number;
-  stravaGearId?: string;
 }
 
 export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
@@ -93,53 +99,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
   }
 ];
 
-export const DEFAULT_BIKE_GARAGE: BikeProfile[] = [
-  {
-    id: 'bike-aero',
-    name: 'Colnago V4Rs / 顶级气动公路车',
-    type: 'road_aero',
-    weightKg: 6.9,
-    crr: 0.0038,
-    cda: 0.28,
-    notes: '平路巡航与起伏大组赛利器'
-  },
-  {
-    id: 'bike-climb',
-    name: 'Specialized Aethos / 极限轻量爬坡车',
-    type: 'road_climb',
-    weightKg: 6.1,
-    crr: 0.0036,
-    cda: 0.31,
-    notes: '高山大坡特化，UCI 6.8kg 极限减重'
-  },
-  {
-    id: 'bike-tt',
-    name: 'Canyon Speedmax TT / 计时赛战车',
-    type: 'road_tt',
-    weightKg: 8.4,
-    crr: 0.0032,
-    cda: 0.22,
-    notes: '极限破风头管与封闭轮'
-  },
-  {
-    id: 'bike-gravel',
-    name: 'Cervélo Áspero / 竞技砂石越野车',
-    type: 'gravel',
-    weightKg: 8.2,
-    crr: 0.0048,
-    cda: 0.34,
-    notes: '40c 宽胎碎石路耐力设定'
-  },
-  {
-    id: 'bike-mtb-xc',
-    name: 'Scott Spark RC / 120mm 全避震山地车',
-    type: 'mtb_xc',
-    weightKg: 10.2,
-    crr: 0.0075,
-    cda: 0.42,
-    notes: 'XC 山地越野双气室避震'
-  }
-];
+export const DEFAULT_BIKE_GARAGE: BikeProfile[] = DEFAULT_ENRICHED_BIKE_GARAGE;
 
 interface RiderProfileContextType {
   profile: RiderProfile;
@@ -155,7 +115,7 @@ interface RiderProfileContextType {
   deleteRider: (id: string) => void;
   updateRider: (id: string, partial: Partial<TeamRider>) => void;
 
-  // Bike Garage
+  // Bike Garage & Data Bus
   bikes: BikeProfile[];
   activeBikeId: string;
   activeBike: BikeProfile;
@@ -163,6 +123,10 @@ interface RiderProfileContextType {
   addBike: (bike: BikeProfile) => void;
   deleteBike: (id: string) => void;
   updateBike: (id: string, partial: Partial<BikeProfile>) => void;
+  updateActiveBike: (partial: Partial<BikeProfile>) => void;
+  updateActiveBikeDrivetrain: (partial: Partial<DrivetrainConfig>) => void;
+  updateActiveBikeWheelTire: (partial: Partial<WheelTireConfig>) => void;
+  updateActiveBikeGeometry: (partial: Partial<FittingGeometryConfig>) => void;
 
   // Nav Shortcuts
   navShortcuts: string[];
@@ -205,7 +169,9 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const saved = localStorage.getItem('yolo_cycling_bike_garage');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(b => migrateBikeProfile(b));
+        }
       }
     } catch (e) {
       console.warn('Failed to load bike garage from localStorage', e);
@@ -370,6 +336,36 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setBikes(prev => prev.map(b => b.id === id ? { ...b, ...partial } : b));
   };
 
+  const updateActiveBike = (partial: Partial<BikeProfile>) => {
+    if (activeBikeId) {
+      updateBike(activeBikeId, partial);
+    }
+  };
+
+  const updateActiveBikeDrivetrain = (partial: Partial<DrivetrainConfig>) => {
+    if (activeBike) {
+      updateBike(activeBikeId, {
+        drivetrain: { ...activeBike.drivetrain, ...partial }
+      });
+    }
+  };
+
+  const updateActiveBikeWheelTire = (partial: Partial<WheelTireConfig>) => {
+    if (activeBike) {
+      updateBike(activeBikeId, {
+        wheelTire: { ...activeBike.wheelTire, ...partial }
+      });
+    }
+  };
+
+  const updateActiveBikeGeometry = (partial: Partial<FittingGeometryConfig>) => {
+    if (activeBike) {
+      updateBike(activeBikeId, {
+        geometry: { ...(activeBike.geometry || {}), ...partial }
+      });
+    }
+  };
+
   // Slot-based shortcut updater
   const setNavShortcut = (slotIndex: number, toolId: string): boolean => {
     if (slotIndex < 0 || slotIndex >= 4) return false;
@@ -419,6 +415,10 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
         addBike,
         deleteBike,
         updateBike,
+        updateActiveBike,
+        updateActiveBikeDrivetrain,
+        updateActiveBikeWheelTire,
+        updateActiveBikeGeometry,
         navShortcuts,
         setNavShortcut,
         setAllNavShortcuts,
