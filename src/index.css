@@ -410,9 +410,13 @@ input[type="number"],
 }
 
 /* Print styling - Optimized for A4 Portrait */
+#print-work-order-portal {
+  display: none;
+}
+
 @page {
   size: A4 portrait;
-  margin: 6mm 8mm;
+  margin: 8mm 10mm;
 }
 
 @media print {
@@ -425,26 +429,16 @@ input[type="number"],
     print-color-adjust: exact !important;
   }
 
-  header, footer, nav, aside, .no-print, button {
+  /* Professional Work Order Single-Page Isolation */
+  body.is-printing-work-order > *:not(#print-work-order-portal) {
     display: none !important;
   }
 
-  /* Professional Work Order Single-Page Isolation */
-  body.is-printing-work-order * {
-    visibility: hidden;
-  }
-
-  body.is-printing-work-order #fitting-printable-sheet,
-  body.is-printing-work-order #fitting-printable-sheet * {
-    visibility: visible;
-  }
-
-  body.is-printing-work-order #fitting-printable-sheet {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
+  body.is-printing-work-order #print-work-order-portal {
+    display: block !important;
+    position: static !important;
     width: 100% !important;
-    max-width: 194mm !important;
+    max-width: 190mm !important;
     margin: 0 auto !important;
     padding: 0 !important;
     border: none !important;
@@ -452,6 +446,10 @@ input[type="number"],
     background: #ffffff !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
+  }
+
+  header, footer, nav, aside, .no-print, button {
+    display: none !important;
   }
 
   .glass-panel, .glass-card, .ios-inset-group {
