@@ -11,6 +11,7 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateFittingPoster } from '../../utils/shareCardGenerators';
+import { FittingWorkOrderModal } from './FittingWorkOrderModal';
 
 export const RoadBikeFitter: React.FC = () => {
   const { profile } = useRiderProfile();
@@ -141,6 +142,7 @@ export const RoadBikeFitter: React.FC = () => {
   // Share Poster State
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [isWorkOrderModalOpen, setIsWorkOrderModalOpen] = useState<boolean>(false);
 
   const handleGeneratePoster = async () => {
     try {
@@ -167,7 +169,7 @@ export const RoadBikeFitter: React.FC = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    setIsWorkOrderModalOpen(true);
   };
 
   return (
@@ -489,6 +491,37 @@ export const RoadBikeFitter: React.FC = () => {
         posterUrl={sharePosterUrl}
         fileName={`Fitting调校档案_${height}cm_${result.conceptualFrameSize}.png`}
         title="公路车 Fitting 档案海报"
+      />
+
+      {/* Professional A4 Fitting Work Order Modal */}
+      <FittingWorkOrderModal
+        isOpen={isWorkOrderModalOpen}
+        onClose={() => setIsWorkOrderModalOpen(false)}
+        initialRiderName={profile.name || (language === 'zh-TW' ? '車手客戶' : '车手客户')}
+        data={{
+          height,
+          inseam,
+          torso,
+          armLength,
+          shoulderWidth,
+          sittingHeight,
+          thighLength,
+          lowerLegLength,
+          ridingStyle,
+          saddleHeight: result.saddleHeight,
+          saddleHeightHamley: result.saddleHeightHamley,
+          effectiveTopTube: result.effectiveTopTube,
+          stemLength: result.stemLength,
+          saddleDrop: result.saddleDrop,
+          handlebarWidth: result.handlebarWidth * 10,
+          crankLength: result.crankLength,
+          saddleSetback: result.saddleSetback,
+          frameSize: result.conceptualFrameSize,
+          estimatedStack: result.estimatedStack,
+          estimatedReach: result.estimatedReach,
+          sittingHeightNote: result.sittingHeightNote,
+          thighLowerLegNote: result.thighLowerLegNote
+        }}
       />
     </div>
   );

@@ -21,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
             className="flex items-center gap-3 cursor-pointer group select-none"
             onClick={onNavigateHome}
           >
-            <div className="w-8 h-8 rounded-xl bg-ios-blue text-white flex items-center justify-center font-bold shadow-ios-sm group-hover:scale-105 transition">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-ios-blue to-blue-600 text-white flex items-center justify-center font-bold shadow-ios-sm group-hover:scale-105 transition shrink-0">
               <RouleurLogo className="w-4.5 h-4.5 text-white" />
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">

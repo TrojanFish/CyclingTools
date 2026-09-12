@@ -24,11 +24,11 @@
     </filter>
   </defs>
 
-  <!-- iOS 18 Continuous Squircle (Apple HIG Standard Radius rx=108 for 512x512) -->
-  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#rouleurBg)" filter="url(#iconShadow)" />
+  <!-- Full Bleed Apple Azure Background (No outer transparent margin or dark border) -->
+  <rect width="512" height="512" fill="url(#rouleurBg)" />
 
-  <!-- Apple HIG Specular Rim Light -->
-  <rect x="24" y="24" width="464" height="464" rx="108" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-opacity="0.35" />
+  <!-- Top Inner Specular Highlight -->
+  <line x1="0" y1="2" x2="512" y2="2" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.3" />
 
   <!-- Breakaway Rouleur Silhouette Group (Scaled up to 512 space) -->
   <g filter="url(#glyphShadow)" transform="translate(48, 48) scale(4.16)" fill="#FFFFFF" color="#FFFFFF">

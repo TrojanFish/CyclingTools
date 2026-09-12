@@ -47,25 +47,22 @@ export const RouleurLogo: React.FC<RouleurLogoProps> = ({
 
         {/* Continuous iOS 18 Squircle */}
         <rect
-          x="24"
-          y="24"
-          width="464"
-          height="464"
-          rx="108"
+          x="0"
+          y="0"
+          width="512"
+          height="512"
+          rx="112"
           fill="url(#rouleurBadgeBg)"
-          filter="url(#rouleurBadgeShadow)"
         />
 
-        {/* Apple HIG Specular Rim Light */}
-        <rect
-          x="24"
-          y="24"
-          width="464"
-          height="464"
-          rx="108"
-          fill="none"
+        {/* Top Specular Highlight */}
+        <line
+          x1="0"
+          y1="3"
+          x2="512"
+          y2="3"
           stroke="#FFFFFF"
-          strokeWidth="3.5"
+          strokeWidth="3"
           strokeOpacity="0.35"
         />
 

@@ -409,15 +409,51 @@ input[type="number"],
   filter: none;
 }
 
-/* Print styling */
+/* Print styling - Optimized for A4 Portrait */
+@page {
+  size: A4 portrait;
+  margin: 6mm 8mm;
+}
+
 @media print {
-  body {
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  header, .no-print, button {
+
+  header, footer, nav, aside, .no-print, button {
     display: none !important;
   }
+
+  /* Professional Work Order Single-Page Isolation */
+  body.is-printing-work-order * {
+    visibility: hidden;
+  }
+
+  body.is-printing-work-order #fitting-printable-sheet,
+  body.is-printing-work-order #fitting-printable-sheet * {
+    visibility: visible;
+  }
+
+  body.is-printing-work-order #fitting-printable-sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 194mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
   .glass-panel, .glass-card, .ios-inset-group {
     background: #ffffff !important;
     border: 1px solid #cccccc !important;

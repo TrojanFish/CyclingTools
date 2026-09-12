@@ -173,9 +173,32 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
       zoomControl: true
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    const voyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
+      maxZoom: 20,
+      detectRetina: true,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    });
+
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Earthstar Geographics'
+    });
+
+    const positronLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd',
+      maxZoom: 20,
+      detectRetina: true,
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+    });
+
+    voyagerLayer.addTo(map);
+
+    L.control.layers({
+      '高清骑行 (HD)': voyagerLayer,
+      '卫星实景 (Satellite)': satelliteLayer,
+      '极简底图 (Light)': positronLayer,
+    }, undefined, { position: 'topright' }).addTo(map);
 
     markersLayerRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;

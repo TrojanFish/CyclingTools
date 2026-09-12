@@ -24,11 +24,8 @@
     </filter>
   </defs>
 
-  <!-- iOS 18 Continuous Squircle (Apple HIG Standard Radius rx=108 for 512x512) -->
-  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#rouleurBg)" filter="url(#iconShadow)" />
-
-  <!-- Apple HIG Specular Rim Light -->
-  <rect x="24" y="24" width="464" height="464" rx="108" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-opacity="0.35" />
+  <!-- Clean Specular Squircle for Browser Tab Favicon -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#rouleurBg)" />
 
   <!-- Breakaway Rouleur Silhouette Group (Scaled up to 512 space) -->
   <g filter="url(#glyphShadow)" transform="translate(48, 48) scale(4.16)" fill="#FFFFFF" color="#FFFFFF">

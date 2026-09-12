@@ -34,7 +34,7 @@ import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { MacosSidebar } from './components/common/MacosSidebar';
 import { TOOLS_LIST } from './data/toolsList';
 import { smoothScrollToTop } from './utils/toolNavHelper';
-import { ArrowLeft, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Home, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(null);
@@ -213,15 +213,14 @@ const MainAppContent: React.FC = () => {
               <div className="relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex items-center justify-between gap-2 shadow-ios-sm no-print">
                 {/* Left: Mobile Back Button & Desktop Breadcrumbs */}
                 <div className="flex items-center gap-2 shrink-0">
-                  {/* Below lg: Back Button with Icon AND Text - Standard h-9 height */}
+                  {/* Below lg: Back to Home Button with Home SVG Icon - Standard h-9 w-9 Apple HIG control */}
                   <button
                     onClick={() => setCurrentToolId(null)}
-                    className="lg:hidden h-9 px-3 inline-flex items-center justify-center rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 text-xs font-bold shrink-0 apple-touch"
+                    className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 shrink-0 apple-touch"
                     title={t('backToHome')}
                     aria-label={t('backToHome')}
                   >
-                    <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                    <span>{language === 'zh-TW' ? '返回首頁' : '返回首页'}</span>
+                    <Home className="w-4 h-4" />
                   </button>
 
                   {/* Desktop: Breadcrumb Hierarchy: 首页 > 分类 > 工具名 */}
