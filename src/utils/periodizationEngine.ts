@@ -425,9 +425,12 @@ function projectPmcTimeline(
     const key = formatDateYMD(dObj);
     const plan = dailyPlannedTss.get(key) || { tss: 40, phaseLabel: '维持' };
 
+    // In standard exercise physiology (TrainingPeaks/Intervals.icu), TSB represents morning readiness
+    // prior to that day's stress: Form_t = CTL_{t-1} - ATL_{t-1}
+    const curTsb = curCtl - curAtl;
+
     curCtl = curCtl + (plan.tss - curCtl) / TC_CTL;
     curAtl = curAtl + (plan.tss - curAtl) / TC_ATL;
-    const curTsb = curCtl - curAtl;
 
     const isRaceDay = key === goalEvent.date;
 
