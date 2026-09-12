@@ -37,6 +37,7 @@ import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { MacosSidebar } from './components/common/MacosSidebar';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TOOLS_LIST } from './data/toolsList';
 import { smoothScrollToTop } from './utils/toolNavHelper';
 import { Home, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -311,29 +312,38 @@ const MainAppContent: React.FC = () => {
               />
             )}
 
-            <React.Suspense fallback={<IOSToolSkeleton />}>
-              {currentToolId === 'power-calc' && <CyclePowerCalculator />}
-              {currentToolId === 'tire-pressure' && <TirePressureCalculator />}
-              {currentToolId === 'gear-calculator' && <GearSpeedCadenceCalculator />}
-              {currentToolId === 'chain-calculator' && <ChainLengthCalculator />}
-              {currentToolId === 'climb-pacing' && <ClimbPacingPlanner />}
-              {currentToolId === 'upgrade-roi' && <UpgradeRoiCalculator />}
-              {currentToolId === 'bike-fitter' && <RoadBikeFitter />}
-              {currentToolId === 'pain-checker' && <RoadBikePainChecker />}
-              {currentToolId === 'roadbook-library' && <RoadbookLibrary onNavigateTool={(id) => setCurrentToolId(id)} />}
-              {currentToolId === 'gpx-creator' && <GpxRouteCreator />}
-              {currentToolId === 'group-ride' && <GroupRideSimulator />}
-              {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
-              {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => setCurrentToolId(id)} />}
-              {currentToolId === 'health-calculator' && <HealthCalculator />}
-              {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => setCurrentToolId(id)} />}
-              {currentToolId === 'workout-builder' && <WorkoutBuilder />}
-              {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
-              {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
-              {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
-              {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
-              {currentToolId === 'training-calendar' && <TrainingPlanCalendar />}
-            </React.Suspense>
+            <ErrorBoundary
+              fallbackTitle={language === 'zh-TW' ? '此工具載入或運行發生異常' : '该工具加载或运行发生异常'}
+              onReset={() => {
+                setCurrentToolId(null);
+                setSelectedCategory('all');
+                smoothScrollToTop();
+              }}
+            >
+              <React.Suspense fallback={<IOSToolSkeleton />}>
+                {currentToolId === 'power-calc' && <CyclePowerCalculator />}
+                {currentToolId === 'tire-pressure' && <TirePressureCalculator />}
+                {currentToolId === 'gear-calculator' && <GearSpeedCadenceCalculator />}
+                {currentToolId === 'chain-calculator' && <ChainLengthCalculator />}
+                {currentToolId === 'climb-pacing' && <ClimbPacingPlanner />}
+                {currentToolId === 'upgrade-roi' && <UpgradeRoiCalculator />}
+                {currentToolId === 'bike-fitter' && <RoadBikeFitter />}
+                {currentToolId === 'pain-checker' && <RoadBikePainChecker />}
+                {currentToolId === 'roadbook-library' && <RoadbookLibrary onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'gpx-creator' && <GpxRouteCreator />}
+                {currentToolId === 'group-ride' && <GroupRideSimulator />}
+                {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
+                {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'health-calculator' && <HealthCalculator />}
+                {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'workout-builder' && <WorkoutBuilder />}
+                {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
+                {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
+                {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
+                {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'training-calendar' && <TrainingPlanCalendar />}
+              </React.Suspense>
+            </ErrorBoundary>
           </main>
         </div>
 

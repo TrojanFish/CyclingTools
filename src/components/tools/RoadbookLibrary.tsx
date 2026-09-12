@@ -28,8 +28,30 @@ import {
   Check,
   X
 } from 'lucide-react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend,
+  Filler
+} from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  ChartTooltip,
+  Legend,
+  Filler
+);
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
@@ -165,60 +187,81 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
 
   // Initialize Map
   useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return;
+    if (!mapContainerRef.current) return;
+    if (mapInstanceRef.current) return;
 
-    const map = L.map(mapContainerRef.current, {
-      center: [30.22, 120.10],
-      zoom: 12,
-      zoomControl: true
-    });
+    // Clear previous _leaflet_id if container was reused
+    if ((mapContainerRef.current as any)._leaflet_id) {
+      delete (mapContainerRef.current as any)._leaflet_id;
+    }
 
-    const voyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
-      maxZoom: 20,
-      detectRetina: true,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    });
+    try {
+      const map = L.map(mapContainerRef.current, {
+        center: [30.22, 120.10],
+        zoom: 12,
+        zoomControl: true
+      });
 
-    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19,
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Earthstar Geographics'
-    });
+      const voyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 20,
+        detectRetina: true,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      });
 
-    const positronLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
-      maxZoom: 20,
-      detectRetina: true,
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-    });
+      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Earthstar Geographics'
+      });
 
-    voyagerLayer.addTo(map);
+      const positronLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 20,
+        detectRetina: true,
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+      });
 
-    L.control.layers({
-      '高清骑行 (HD)': voyagerLayer,
-      '卫星实景 (Satellite)': satelliteLayer,
-      '极简底图 (Light)': positronLayer,
-    }, undefined, { position: 'topright' }).addTo(map);
+      voyagerLayer.addTo(map);
 
-    markersLayerRef.current = L.layerGroup().addTo(map);
-    mapInstanceRef.current = map;
+      L.control.layers({
+        '高清骑行 (HD)': voyagerLayer,
+        '卫星实景 (Satellite)': satelliteLayer,
+        '极简底图 (Light)': positronLayer,
+      }, undefined, { position: 'topright' }).addTo(map);
+
+      markersLayerRef.current = L.layerGroup().addTo(map);
+      mapInstanceRef.current = map;
+    } catch (err) {
+      console.warn('Leaflet map initialization warning:', err);
+    }
 
     return () => {
-      map.remove();
-      mapInstanceRef.current = null;
+      if (mapInstanceRef.current) {
+        try {
+          mapInstanceRef.current.remove();
+        } catch {
+          // ignore cleanup errors
+        }
+        mapInstanceRef.current = null;
+      }
     };
   }, []);
 
   // Update Map Geometry when activeRoute changes
   useEffect(() => {
-    if (!mapInstanceRef.current || !activeRoute || !activeRoute.waypoints.length) return;
+    if (!mapInstanceRef.current || !activeRoute || !activeRoute.waypoints || !activeRoute.waypoints.length) return;
 
     const map = mapInstanceRef.current;
-    const latLngs = activeRoute.waypoints.map(w => [w.lat, w.lng] as [number, number]);
+    const waypoints = activeRoute.waypoints;
+    const latLngs = waypoints.map(w => [w.lat, w.lng] as [number, number]);
 
     // Clear previous polyline
     if (polylineRef.current) {
-      polylineRef.current.remove();
+      try {
+        polylineRef.current.remove();
+      } catch {
+        // ignore
+      }
     }
 
     // Draw route polyline with glowing gradient-like cyan style
@@ -235,32 +278,37 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
       markersLayerRef.current.clearLayers();
 
       // Add Start Marker (Green)
-      const startWp = activeRoute.waypoints[0];
-      const startIcon = L.divIcon({
-        className: 'custom-map-icon',
-        html: `<div style="background-color: #10b981; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);">${language === 'zh-TW' ? '起' : '起'}</div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      });
-      L.marker([startWp.lat, startWp.lng], { icon: startIcon })
-        .bindPopup(`<b>${language === 'zh-TW' ? '起點' : '起点'}: ${startWp.name}</b><br/>海拔: ${convertElevation(startWp.elevation).formatted}`)
-        .addTo(markersLayerRef.current);
+      const startWp = waypoints[0];
+      if (startWp) {
+        const startIcon = L.divIcon({
+          className: 'custom-map-icon',
+          html: `<div style="background-color: #10b981; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);">${language === 'zh-TW' ? '起' : '起'}</div>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12]
+        });
+        L.marker([startWp.lat, startWp.lng], { icon: startIcon })
+          .bindPopup(`<b>${language === 'zh-TW' ? '起點' : '起点'}: ${startWp.name || ''}</b><br/>海拔: ${convertElevation(startWp.elevation || 0).formatted}`)
+          .addTo(markersLayerRef.current);
+      }
 
       // Add End Marker (Red/Amber)
-      const endWp = activeRoute.waypoints[activeRoute.waypoints.length - 1];
-      const endIcon = L.divIcon({
-        className: 'custom-map-icon',
-        html: `<div style="background-color: #f43f5e; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);">${language === 'zh-TW' ? '終' : '终'}</div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-      });
-      L.marker([endWp.lat, endWp.lng], { icon: endIcon })
-        .bindPopup(`<b>${language === 'zh-TW' ? '終點' : '终点'}: ${endWp.name}</b><br/>海拔: ${convertElevation(endWp.elevation).formatted}`)
-        .addTo(markersLayerRef.current);
+      const endWp = waypoints[waypoints.length - 1];
+      if (endWp) {
+        const endIcon = L.divIcon({
+          className: 'custom-map-icon',
+          html: `<div style="background-color: #f43f5e; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);">${language === 'zh-TW' ? '終' : '终'}</div>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12]
+        });
+        L.marker([endWp.lat, endWp.lng], { icon: endIcon })
+          .bindPopup(`<b>${language === 'zh-TW' ? '終點' : '终点'}: ${endWp.name || ''}</b><br/>海拔: ${convertElevation(endWp.elevation || 0).formatted}`)
+          .addTo(markersLayerRef.current);
+      }
 
       // Add intermediate waypoint dots
-      for (let i = 1; i < activeRoute.waypoints.length - 1; i++) {
-        const wp = activeRoute.waypoints[i];
+      for (let i = 1; i < waypoints.length - 1; i++) {
+        const wp = waypoints[i];
+        if (!wp) continue;
         const dotIcon = L.divIcon({
           className: 'custom-map-icon',
           html: `<div style="background-color: #0284c7; color: white; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; border: 1.5px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.3);">${i + 1}</div>`,
@@ -268,18 +316,30 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
           iconAnchor: [9, 9]
         });
         L.marker([wp.lat, wp.lng], { icon: dotIcon })
-          .bindPopup(`<b>${wp.name}</b><br/>海拔: ${convertElevation(wp.elevation).formatted}`)
+          .bindPopup(`<b>${wp.name || ''}</b><br/>海拔: ${convertElevation(wp.elevation || 0).formatted}`)
           .addTo(markersLayerRef.current);
       }
     }
 
-    // Fit Bounds
-    map.fitBounds(polylineRef.current.getBounds(), { padding: [40, 40] });
+    // Fit Bounds safely
+    try {
+      if (polylineRef.current) {
+        const bounds = polylineRef.current.getBounds();
+        if (bounds && bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [40, 40] });
+        }
+      }
+    } catch (e) {
+      console.warn('Map fitBounds failed:', e);
+    }
   }, [activeRoute, language, convertElevation]);
 
   // Elevation Profile Chart Data
   const elevationChartData = useMemo(() => {
-    if (!activeRoute) return { labels: [], datasets: [] };
+    if (!activeRoute || !activeRoute.waypoints || !activeRoute.waypoints.length) {
+      return { labels: [], datasets: [] };
+    }
+    const waypoints = activeRoute.waypoints;
 
     // Calculate approximate cumulative distance per point
     const distanceHaversine = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -298,14 +358,14 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
     const eleFactor = isImperial ? 3.28084 : 1;
 
     const distLabels: string[] = ['0.0'];
-    const elevations: number[] = [Math.round((activeRoute.waypoints[0]?.elevation || 0) * eleFactor)];
+    const elevations: number[] = [Math.round((waypoints[0]?.elevation || 0) * eleFactor)];
 
-    for (let i = 1; i < activeRoute.waypoints.length; i++) {
-      const prev = activeRoute.waypoints[i - 1];
-      const curr = activeRoute.waypoints[i];
+    for (let i = 1; i < waypoints.length; i++) {
+      const prev = waypoints[i - 1];
+      const curr = waypoints[i];
       cumDist += distanceHaversine(prev.lat, prev.lng, curr.lat, curr.lng);
       distLabels.push((cumDist * distFactor).toFixed(1));
-      elevations.push(Math.round(curr.elevation * eleFactor));
+      elevations.push(Math.round((curr.elevation || 0) * eleFactor));
     }
 
     return {
@@ -921,7 +981,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
 
                   {/* Highlights Pill Tags */}
                   <div className="flex flex-wrap gap-1.5 mt-2.5">
-                    {route.highlights.slice(0, 4).map((h, i) => (
+                    {(route.highlights || []).slice(0, 4).map((h, i) => (
                       <span key={i} className="text-[11px] px-2 py-0.5 rounded-full bg-white/70 dark:bg-white/5 text-slate-600 dark:text-slate-300">
                         #{h}
                       </span>
@@ -941,12 +1001,12 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-ios-blue" />
                 <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  {activeRoute.name}
+                  {activeRoute?.name || ''}
                 </h2>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono text-ios-blue font-bold">
-                  {convertDistance(activeRoute.distanceKm).formatted} / +{convertElevation(activeRoute.elevationGainM).formatted}
+                  {activeRoute ? `${convertDistance(activeRoute.distanceKm || 0).formatted} / +${convertElevation(activeRoute.elevationGainM || 0).formatted}` : ''}
                 </span>
               </div>
             </div>
@@ -961,12 +1021,12 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
               <span className="text-slate-400 text-[11px] shrink-0 font-medium">
                 {'途经断面:'}
               </span>
-              {activeRoute.waypoints.map((wp, idx) => (
+              {(activeRoute?.waypoints || []).map((wp, idx) => (
                 <span
                   key={idx}
                   className="px-2.5 py-0.5 rounded-full bg-white/70 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 shrink-0 text-[11px]"
                 >
-                  {idx + 1}. {wp.name.split(' ')[0]} ({convertElevation(wp.elevation).formatted})
+                  {idx + 1}. {wp.name ? wp.name.split(' ')[0] : `点${idx + 1}`} ({convertElevation(wp.elevation || 0).formatted})
                 </span>
               ))}
             </div>
@@ -1022,7 +1082,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             </h3>
 
             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              {activeRoute.description}
+              {activeRoute?.description || ''}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -1032,7 +1092,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   <span>{language === 'zh-TW' ? '路況與通行情況:' : '路况与通行情况:'}</span>
                 </span>
                 <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed block">
-                  {activeRoute.roadCondition}
+                  {activeRoute?.roadCondition || ''}
                 </span>
               </div>
 
@@ -1042,7 +1102,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   <span>{language === 'zh-TW' ? '最佳騎行季節與時段:' : '最佳骑行季节与时段:'}</span>
                 </span>
                 <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed block">
-                  {activeRoute.bestSeason}
+                  {activeRoute?.bestSeason || ''}
                 </span>
               </div>
             </div>
@@ -1053,7 +1113,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                 <Lightbulb className="w-3.5 h-3.5 text-ios-orange" />
                 <span>{language === 'zh-TW' ? '老鳥車手避坑與補給經驗:' : '老鸟车手避坑与补给经验:'}</span>
               </span>
-              {activeRoute.tips.map((tip, idx) => (
+              {(activeRoute?.tips || []).map((tip, idx) => (
                 <div key={idx} className="flex items-start gap-2 p-3 rounded-2xl bg-ios-orange/10 border border-ios-orange/20 text-xs text-slate-700 dark:text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-ios-orange mt-1.5 shrink-0"></span>
                   <span className="leading-relaxed">{tip}</span>
