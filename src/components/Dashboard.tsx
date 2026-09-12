@@ -233,16 +233,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* iOS Large Title Header (Mobile Only, Apple HIG Style) */}
-      <div className="sm:hidden pt-0.5 pb-1">
-        <span className="text-[11px] font-bold text-ios-blue dark:text-ios-blue-dark uppercase tracking-wider">
-          {language === 'zh-TW' ? '科學單車動力學' : '科学骑行动力学'}
-        </span>
-        <h1 className="text-lg sm:text-xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
-          {language === 'zh-TW' ? '專業工具箱' : '专业工具箱'}
-        </h1>
-      </div>
-
       {/* Dynamic Keynote-Style Hero Card: Latest Ride Tactical Debrief */}
       <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20 shadow-ios-sm">
         <div className="absolute -right-16 -top-16 w-80 h-80 bg-ios-blue/10 dark:bg-ios-blue/15 rounded-full blur-3xl pointer-events-none" />
