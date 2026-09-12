@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Bike, Shield, Lock, X, CheckCircle2, FileText } from 'lucide-react';
+import { Shield, Lock, X, CheckCircle2, FileText } from 'lucide-react';
+import { RouleurLogo } from './common/RouleurLogo';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
 import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 
@@ -21,12 +22,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
             onClick={onNavigateHome}
           >
             <div className="w-8 h-8 rounded-xl bg-ios-blue text-white flex items-center justify-center font-bold shadow-ios-sm group-hover:scale-105 transition">
-              <Bike className="w-4 h-4 stroke-[2.5]" />
+              <RouleurLogo className="w-4.5 h-4.5 text-white" />
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
               <div className="flex items-center gap-1 font-mono">
                 <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
-                <span className="text-ios-blue dark:text-ios-blue font-bold text-sm">{t('brandSuffix')}</span>
+                {t('brandSuffix') ? (
+                  <span className="text-ios-blue dark:text-ios-blue font-bold text-sm">{t('brandSuffix')}</span>
+                ) : null}
                 <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-mono font-semibold">{t('brandPro')}</span>
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400">· {t('slogan')}</span>
@@ -71,7 +74,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
             <span className="text-slate-300 dark:text-slate-700">·</span>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-              <span>© {new Date().getFullYear()} SoloRiderTools</span>
+              <span>© {new Date().getFullYear()} Rouleur</span>
             </div>
           </div>
         </div>
@@ -105,7 +108,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
                     {language === 'zh-TW' ? '法律合規與隱私承諾' : '法律合规与隐私承诺'}
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    {language === 'zh-TW' ? 'SoloRider 運動科學規範' : 'SoloRider 运动科学规范'}
+                    {language === 'zh-TW' ? 'Rouleur 運動科學規範' : 'Rouleur 运动科学规范'}
                   </p>
                 </div>
               </div>

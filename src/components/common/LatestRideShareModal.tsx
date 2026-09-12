@@ -150,7 +150,7 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
       const a = document.createElement('a');
       a.href = currentPosterUrl;
       const cleanDate = data.dateStr.replace(/[^0-9]/g, '');
-      a.download = `SoloRider_${selectedTheme}_3x4_${cleanDate}.png`;
+      a.download = `Rouleur_${selectedTheme}_3x4_${cleanDate}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

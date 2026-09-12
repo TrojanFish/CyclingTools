@@ -1,7 +1,7 @@
 {
-  "name": "SoloRiderTools Pro - Precision Cycling Science",
-  "short_name": "SoloRider",
-  "description": "Modern precision data-driven cycling science and aerodynamics platform with 14 tools.",
+  "name": "Rouleur Pro - Precision Cycling Science",
+  "short_name": "Rouleur",
+  "description": "Modern precision data-driven cycling science and aerodynamics platform with 20 tools.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

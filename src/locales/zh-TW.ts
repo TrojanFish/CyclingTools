@@ -1,7 +1,7 @@
 export const zhTW = {
   // Brand
-  brandName: 'SOLORIDER',
-  brandSuffix: 'TOOLS',
+  brandName: 'ROULEUR',
+  brandSuffix: '',
   brandPro: 'PRO',
   slogan: '科學騎行，精準每一瓦',
   
@@ -52,7 +52,7 @@ export const zhTW = {
   footerClose: '關閉浮層',
   footerPrint: '列印工單',
   footerDisclaimerTitle: '運動科學與醫療免責聲明',
-  footerDisclaimerText: 'SoloRiderTools 所提供之力學模擬、Fitting 計算與疼痛排查僅供運動科學與單車調校參考，不可替代執業醫師診斷或專業醫療機構之治療。',
+  footerDisclaimerText: 'Rouleur 所提供之力學模擬、Fitting 計算與疼痛排查僅供運動科學與單車調校參考，不可替代執業醫師診斷或專業醫療機構之治療。',
   footerPrivacyTitle: '隱私權政策 (GDPR 合規)',
   footerPrivacyText: '本應用採用 100% 純客戶端本地運算架構，不收集、不出售任何個人隱私資料，所有設定與路書檔案均儲存於您的本地瀏覽器中。',
 

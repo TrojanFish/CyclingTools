@@ -1211,7 +1211,7 @@ export const ClimbPacingPlanner: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title={language === 'zh-TW' ? '名山爬坡攻堅戰報' : '名山爬坡攻坚战报'}
-        downloadFileName={`SoloRider_爬坡配速_${climbName}.png`}
+        downloadFileName={`Rouleur_爬坡配速_${climbName}.png`}
       />
     </div>
   );

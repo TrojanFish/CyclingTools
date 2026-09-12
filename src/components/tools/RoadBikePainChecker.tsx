@@ -295,7 +295,7 @@ export const RoadBikePainChecker: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title="骑行疼痛自诊处方卡"
-        downloadFileName={`SoloRider_疼痛自诊_${activeArea.title.split(' ')[0]}.png`}
+        downloadFileName={`Rouleur_疼痛自诊_${activeArea.title.split(' ')[0]}.png`}
       />
     </div>
   );

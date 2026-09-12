@@ -242,7 +242,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
   const handleGeneratePoster = async () => {
     showToast('正在渲染 Retina 高清车手战报海报...', 'info');
     try {
-      const athleteName = athlete ? `${athlete.firstname} ${athlete.lastname}` : profile.name || 'SoloRider 车手';
+      const athleteName = athlete ? `${athlete.firstname} ${athlete.lastname}` : profile.name || 'Rouleur 车手';
       const posterUrl = await generateStravaCockpitPoster({
         periodLabel: selectedPeriod === 'all-time' ? '全生涯历史总览' : selectedPeriod === 'ytd' ? '本年度骑行战报' : selectedPeriod === '30d' ? '近30天体能速报' : '近7天周报',
         athleteName,

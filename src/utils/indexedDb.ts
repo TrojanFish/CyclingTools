@@ -1,5 +1,5 @@
 /**
- * SoloRiderTools Native IndexedDB Cache
+ * Rouleur Native IndexedDB Cache
  * Provides zero-dependency, large-capacity persistent storage for Strava activities, streams, and routes.
  * Avoids LocalStorage 5MB QuotaExceeded limitations.
  */

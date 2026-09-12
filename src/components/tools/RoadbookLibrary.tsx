@@ -338,7 +338,7 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
     if (!activeRoute) return;
 
     const gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="SoloRiderTools - ${activeRoute.name}" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx version="1.1" creator="Rouleur - ${activeRoute.name}" xmlns="http://www.topografix.com/GPX/1/1">
   <metadata>
     <name>${activeRoute.name}</name>
     <desc>${activeRoute.description} [来源: ${activeRoute.sourceCode}]</desc>
@@ -1265,7 +1265,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title={language === 'zh-TW' ? '經典路書打卡海報' : '经典路书打卡海报'}
-        downloadFileName={`SoloRider_经典路书_${activeRoute?.name?.replace(/\s+/g, '_') || 'route'}.png`}
+        downloadFileName={`Rouleur_经典路书_${activeRoute?.name?.replace(/\s+/g, '_') || 'route'}.png`}
       />
     </div>
   );

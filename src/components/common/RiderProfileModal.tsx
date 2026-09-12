@@ -725,7 +725,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     {showGuide && (
                       <div className="pt-2 border-t border-black/[0.04] dark:border-white/[0.06] text-[11px] text-slate-600 dark:text-slate-400 space-y-1.5 leading-relaxed">
                         <p>1. 电脑或手机浏览器打开 <a href="https://www.strava.com/settings/api" target="_blank" rel="noreferrer" className="text-[#FC4C02] underline font-medium">strava.com/settings/api</a> 登录您的账号；</p>
-                        <p>2. 创建应用：<strong>Application Name</strong> 填 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">SoloRiderTools</code>，<strong>Category</strong> 选 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">Other</code>；</p>
+                        <p>2. 创建应用：<strong>Application Name</strong> 填 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">Rouleur</code>，<strong>Category</strong> 选 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">Other</code>；</p>
                         <p>3. <strong>Authorization Callback Domain</strong> 填入 <code className="bg-black/5 dark:bg-white/10 px-1 rounded">localhost</code>（或您访问本系统的域名）；</p>
                         <p>4. 创建成功后，复制页面上的 <strong>Client ID</strong> 与 <strong>Client Secret</strong> 粘贴在下方。</p>
                       </div>

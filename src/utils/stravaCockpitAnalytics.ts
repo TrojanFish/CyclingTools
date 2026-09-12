@@ -1,5 +1,5 @@
 /**
- * SoloRider Strava Cockpit Analytics Engine
+ * Rouleur Strava Cockpit Analytics Engine
  * Comprehensive sports science, habit tracking, and fleet analytics engine.
  * Combines Dreeve (Eddington, heatmaps, trophies) + Intervals.icu (PMC, eFTP, ACWR ramp rate)
  */

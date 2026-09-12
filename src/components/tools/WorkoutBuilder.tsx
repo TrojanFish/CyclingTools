@@ -372,9 +372,9 @@ export const WorkoutBuilder: React.FC = () => {
   // Generate Zwift .ZWO (XML format)
   const zwoXmlContent = useMemo(() => {
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<workout_file>\n`;
-    xml += `  <author>SoloRider Cycling Tools</author>\n`;
+    xml += `  <author>Rouleur</author>\n`;
     xml += `  <name>${workoutTitle.replace(/[<>&]/g, '')}</name>\n`;
-    xml += `  <description>Generated via SoloRider Workout Builder. Target FTP: ${ftpWatts}W, TSS: ${workoutMetrics.tss}, IF: ${workoutMetrics.ifFactor}.</description>\n`;
+    xml += `  <description>Generated via Rouleur Workout Builder. Target FTP: ${ftpWatts}W, TSS: ${workoutMetrics.tss}, IF: ${workoutMetrics.ifFactor}.</description>\n`;
     xml += `  <sportType>bike</sportType>\n`;
     xml += `  <workout>\n`;
 
@@ -1041,7 +1041,7 @@ export const WorkoutBuilder: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title="科学间歇训练课表"
-        downloadFileName={`SoloRider_训练课表_${workoutTitle.replace(/\s+/g, '_')}.png`}
+        downloadFileName={`Rouleur_训练课表_${workoutTitle.replace(/\s+/g, '_')}.png`}
       />
     </div>
   );

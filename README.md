@@ -1,4 +1,4 @@
-# SoloRiderTools Pro 🚴‍♂️⚡
+# Rouleur Pro 🚴‍♂️⚡
 ### Modern Precision Cycling Science & Performance Platform
 #### 现代专业数据驱动骑行科学与性能工具站
 
@@ -17,9 +17,9 @@
 
 ## 📖 Introduction / 项目简介
 
-**SoloRiderTools Pro** is an open-source, high-precision, client-side cycling engineering and sports physiology platform. Built upon classical fluid dynamics, biomechanics, wheelbuilding trigonometry, and modern endurance exercise physiology, it equips amateur cyclists, bike fitters, mechanics, and WorldTour racers with **20 purpose-built calculation and simulation engines**.
+**Rouleur Pro** is an open-source, high-precision, client-side cycling engineering and sports physiology platform. Built upon classical fluid dynamics, biomechanics, wheelbuilding trigonometry, and modern endurance exercise physiology, it equips amateur cyclists, bike fitters, mechanics, and WorldTour racers with **20 purpose-built calculation and simulation engines**.
 
-**SoloRiderTools Pro** 是一个现代化、纯前端高精度运行的专业公路车运动科学与工程数据计算站。以流体空气动力学、经典牛顿力学、轮圈几何空间三角学、人体工效学与现代耐力运动生理学为数学底层，提供 **20 款严谨的计算器与仿真模拟工坊**，助力车手科学训练、精准改装、合理备赛与技师装车。
+**Rouleur Pro** 是一个现代化、纯前端高精度运行的专业公路车运动科学与工程数据计算站。以流体空气动力学、经典牛顿力学、轮圈几何空间三角学、人体工效学与现代耐力运动生理学为数学底层，提供 **20 款严谨的计算器与仿真模拟工坊**，助力车手科学训练、精准改装、合理备赛与技师装车。
 
 ---
 
@@ -76,7 +76,7 @@
 
 ## 🧮 Tool Suite Matrix / 20 大核心科学工具全矩阵
 
-SoloRiderTools Pro 包含 20 款针对骑行不同专业领域的科学工具，划分为四大核心板块：
+Rouleur Pro 包含 20 款针对骑行不同专业领域的科学工具，划分为四大核心板块：
 
 ### I. 动力学与传动工程 (Dynamics & Gearing) · 9 款工具
 > 主题色：`ios-blue` · 涵盖经典空气动力学、传动比数学、链条几何、编轮空间几何与双避震连杆工程。
@@ -231,7 +231,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ## ⚖️ Legal & Sports Science Disclaimer / 免责与运动科学声明
 
 1. **非医疗诊断声明 (Non-Medical Sports Science Advisory)**: 本平台提供的所有计算算法、身体拟合尺寸建议（Bike Fitting）、骑行疼痛自查建议以及能量补给方案均基于公开的运动生理学文献与经典力学数学模型，仅供日常训练、长途骑行与车辆改装参考，**不构成任何医疗诊断、处方建议或商业装车担保**。如遇急性膝盖滑囊炎、韧带损伤或心血管不适，请立即停止骑行并前往医院运动医学科就诊。
-2. **知识产权与隐私 (Privacy & Intellectual Property)**: SoloRiderTools Pro 严格遵循无打点、无追踪原则。Strava 是 Strava, Inc. 的注册商标，本项目仅通过官方公开的 API 实现车手授权下的数据提取展示。
+2. **知识产权与隐私 (Privacy & Intellectual Property)**: Rouleur Pro 严格遵循无打点、无追踪原则。Strava 是 Strava, Inc. 的注册商标，本项目仅通过官方公开的 API 实现车手授权下的数据提取展示。
 
 ---
 

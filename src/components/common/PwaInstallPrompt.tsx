@@ -16,7 +16,7 @@ export const PwaInstallPrompt: React.FC = () => {
 
   const [dismissed, setDismissed] = useState<boolean>(() => {
     try {
-      return sessionStorage.getItem('solorider_pwa_dismissed') === 'true';
+      return sessionStorage.getItem('rouleur_pwa_dismissed') === 'true';
     } catch {
       return false;
     }
@@ -66,7 +66,7 @@ export const PwaInstallPrompt: React.FC = () => {
   const handleDismiss = () => {
     setDismissed(true);
     try {
-      sessionStorage.setItem('solorider_pwa_dismissed', 'true');
+      sessionStorage.setItem('rouleur_pwa_dismissed', 'true');
     } catch {
       // ignore
     }

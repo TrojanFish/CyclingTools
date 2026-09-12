@@ -474,7 +474,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title="传动齿比与极速战报"
-        downloadFileName={`SoloRider_齿比极速_${chainringType === 'double' ? `${bigRing}-${smallRing}T` : `${bigRing}T`}.png`}
+        downloadFileName={`Rouleur_齿比极速_${chainringType === 'double' ? `${bigRing}-${smallRing}T` : `${bigRing}T`}.png`}
       />
     </div>
   );

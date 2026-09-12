@@ -1,33 +1,58 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="badgeGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#06b6d4" />
-      <stop offset="100%" stop-color="#2563eb" />
+    <linearGradient id="rouleurBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="45%" stop-color="#007AFF" />
+      <stop offset="100%" stop-color="#1D4ED8" />
     </linearGradient>
-    <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0284c7" flood-opacity="0.38" />
+
+    <linearGradient id="rouleurMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="65%" stop-color="#E0F2FE" />
+      <stop offset="100%" stop-color="#BAE6FD" />
+    </linearGradient>
+
+    <filter id="iconShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#002D6C" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#002D6C" flood-opacity="0.25" />
+    </filter>
+
+    <filter id="glyphShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#03306B" flood-opacity="0.5" />
     </filter>
   </defs>
-  
-  <!-- Crisp White Background (白底) -->
-  <rect width="512" height="512" fill="#FFFFFF" />
-  
-  <!-- Rounded Blue Squircle (蓝表 / 蓝标 - from Navbar Logo) -->
-  <rect x="66" y="66" width="380" height="380" rx="92" fill="url(#badgeGrad)" filter="url(#badgeShadow)" />
-  
-  <!-- Cycling Science Bike Emblem in Crisp White -->
-  <g transform="translate(138.00, 138.00) scale(9.833)" fill="none" stroke="#FFFFFF" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Rear Wheel -->
-    <circle cx="5.5" cy="17.5" r="3.5" />
-    <!-- Front Wheel -->
-    <circle cx="18.5" cy="17.5" r="3.5" />
-    <!-- Rider Head -->
-    <circle cx="15" cy="5" r="1.15" fill="#FFFFFF" />
-    <!-- Rider Torso, Arm & Seat Tube -->
-    <path d="M12 17.5V14l-3-3 4-3 2 3h2" />
-    <!-- Bike Frame Chainstay & Top Tube -->
-    <path d="M5.5 17.5l4.5-5.5h4" stroke-width="1.6" />
-    <!-- Front Fork -->
-    <path d="M15 11l3.5 6.5" stroke-width="1.6" />
+
+  <!-- iOS 18 Continuous Squircle (Apple HIG Standard Radius rx=108 for 512x512) -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#rouleurBg)" filter="url(#iconShadow)" />
+
+  <!-- Apple HIG Specular Rim Light -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-opacity="0.35" />
+
+  <!-- Rouleur Aero Emblem -->
+  <g filter="url(#glyphShadow)" transform="translate(10, 0)">
+    <!-- Deep-Section Aero Rim Arc -->
+    <path d="M 250 96 A 154 154 0 1 1 120 306" fill="none" stroke="url(#rouleurMetal)" stroke-width="26" stroke-linecap="round" />
+
+    <!-- Inner High-Velocity Aero Track -->
+    <path d="M 226 128 A 122 122 0 0 1 354 218" fill="none" stroke="#38BDF8" stroke-width="11" stroke-linecap="round" stroke-dasharray="14 10" opacity="0.85" />
+
+    <!-- Radial Aero Spoke Chords -->
+    <path d="M 144 234 L 216 250" stroke="url(#rouleurMetal)" stroke-width="12" stroke-linecap="round" opacity="0.75" />
+    <path d="M 174 158 L 226 216" stroke="url(#rouleurMetal)" stroke-width="12" stroke-linecap="round" opacity="0.6" />
+
+    <!-- Dynamic Rouleur 'R' Monogram Spine -->
+    <path d="M 200 162 L 200 342" stroke="url(#rouleurMetal)" stroke-width="30" stroke-linecap="round" />
+
+    <!-- Upper Teardrop Wheel Loop -->
+    <path d="M 200 162 H 272 C 318 162 344 186 344 222 C 344 258 316 278 270 278 H 200"
+          fill="none" stroke="url(#rouleurMetal)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Power Stroke Forward Drive Leg -->
+    <path d="M 256 278 L 332 342" stroke="url(#rouleurMetal)" stroke-width="32" stroke-linecap="round" />
+
+    <!-- Aerodynamic Wake Streamlines -->
+    <path d="M 324 188 Q 364 192 396 176" fill="none" stroke="#7DD3FC" stroke-width="11" stroke-linecap="round" opacity="0.8" />
+    <path d="M 342 232 Q 380 236 414 224" fill="none" stroke="#7DD3FC" stroke-width="11" stroke-linecap="round" opacity="0.8" />
+    <path d="M 318 276 Q 366 284 394 302" fill="none" stroke="#38BDF8" stroke-width="9" stroke-linecap="round" opacity="0.7" />
   </g>
 </svg>

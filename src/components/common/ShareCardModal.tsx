@@ -53,7 +53,7 @@ export const ShareCardModal: React.FC<ShareCardModalProps> = ({
   };
 
   const finalImageUrl = imageUrl || posterUrl;
-  const finalFileName = downloadFileName || fileName || 'SoloRider_ShareCard.png';
+  const finalFileName = downloadFileName || fileName || 'Rouleur_ShareCard.png';
 
   if (!isOpen || !finalImageUrl) return null;
 
