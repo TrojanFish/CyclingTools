@@ -28,6 +28,7 @@ import { SpokeLengthCalculator } from './components/tools/SpokeLengthCalculator'
 import { MtbSuspensionTuner } from './components/tools/MtbSuspensionTuner';
 import { WorkoutBuilder } from './components/tools/WorkoutBuilder';
 import { StravaDataCockpit } from './components/tools/StravaDataCockpit';
+import { TrainingPlanCalendar } from './components/tools/TrainingPlanCalendar';
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
@@ -314,6 +315,7 @@ const MainAppContent: React.FC = () => {
             {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
             {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
             {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
+            {currentToolId === 'training-calendar' && <TrainingPlanCalendar />}
           </main>
         </div>
 

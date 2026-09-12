@@ -1327,6 +1327,113 @@ export function generateCoursePacingPoster(data: CoursePacingPosterData): string
   return canvas.toDataURL('image/png');
 }
 
+// Training Plan & ATP Periodization Calendar Poster
+export interface TrainingCalendarPosterData {
+  eventName: string;
+  raceDate: string;
+  daysRemaining: number;
+  targetCtl: number;
+  targetTsb: number;
+  totalWeeks: number;
+  currentPhase: string;
+  avgWeeklyTss: number;
+  weeksOverview: {
+    weekIdx: number;
+    phaseName: string;
+    targetTss: number;
+    focus: string;
+  }[];
+}
+
+export function generateTrainingCalendarPoster(data: TrainingCalendarPosterData): string {
+  const w = 750;
+  const h = 1050;
+  const { ctx, canvas } = createPosterCanvas(w, h);
+  const accent = '#0A84FF'; // ios-blue
+
+  drawBackground(ctx, w, h, accent);
+  drawHeader(ctx, w, '年度周期训练赛历 · ATP PERIODIZATION', data.eventName, `决战倒计时 ${data.daysRemaining} 天 · 比赛日: ${data.raceDate}`, accent);
+
+  // Key KPI Tiles
+  const tileW = (w - 80 - 15) / 2;
+  drawMetricTile(ctx, 40, 204, tileW, 85, '决战倒计时', data.daysRemaining, '天', '#FF9F0A');
+  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '比赛日目标体能', data.targetCtl, 'CTL', '#0A84FF');
+  drawMetricTile(ctx, 40, 304, tileW, 85, '比赛日竞技巅峰', `+${data.targetTsb}`, 'TSB', '#30D158');
+  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '周期平均周负荷', data.avgWeeklyTss, 'TSS/周', '#BF5AF2');
+
+  // Hero Phase Bar
+  const phaseY = 410;
+  roundRect(ctx, 40, phaseY, w - 80, 80, 18);
+  ctx.fillStyle = 'rgba(10, 132, 255, 0.08)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(10, 132, 255, 0.25)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#0A84FF';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('📅 周期化训练科学定位 (Tudor Bompa Model)', 65, phaseY + 28);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`当前所处阶段: ${data.currentPhase}  ·  全宏观周期共 ${data.totalWeeks} 周`, 65, phaseY + 54);
+
+  // Weekly Breakdown Table
+  const tableY = 510;
+  const tableH = 430;
+  roundRect(ctx, 40, tableY, w - 80, tableH, 20);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('各周期间隔训练排期与目标负荷 (Weekly Overload Progression)', 65, tableY + 36);
+
+  // Table Headers
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('周序号', 65, tableY + 68);
+  ctx.fillText('所属阶段', 140, tableY + 68);
+  ctx.fillText('目标 TSS', 340, tableY + 68);
+  ctx.fillText('核心生理适应与课表重点', 450, tableY + 68);
+
+  // Draw Separator
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(65, tableY + 80);
+  ctx.lineTo(w - 65, tableY + 80);
+  ctx.stroke();
+
+  data.weeksOverview.slice(0, 6).forEach((row, idx) => {
+    const rowY = tableY + 112 + idx * 52;
+
+    // Week Label
+    ctx.fillStyle = '#0A84FF';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`W${row.weekIdx}`, 65, rowY);
+
+    // Phase
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(row.phaseName.split(' ')[0], 140, rowY);
+
+    // Target TSS
+    ctx.fillStyle = '#FFD60A';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${row.targetTss} TSS`, 340, rowY);
+
+    // Focus
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(row.focus.slice(0, 16), 450, rowY);
+  });
+
+  drawFooter(ctx, w, h);
+  return canvas.toDataURL('image/png');
+}
+
 // 11. Suspension Setup Poster
 export interface SuspensionPosterData {
   riderName?: string;

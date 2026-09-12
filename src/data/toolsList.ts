@@ -465,6 +465,29 @@ export const TOOLS_LIST: ToolMetadata[] = [
     tags: ['Strava', '看盘罗盘', '爱丁顿数', 'Eddington', 'PMC', 'CTL', 'TSB', 'eFTP', '热力图', '战车保养', 'MMP'],
     tagsEn: ['Strava', 'Cockpit', 'Eddington', 'PMC', 'CTL', 'ATL', 'TSB', 'eFTP', 'Heatmap', 'Fleet'],
     tagsTw: ['Strava', '看盤羅盤', '愛丁頓數', 'Eddington', 'PMC', 'CTL', 'TSB', 'eFTP', '熱力圖', '戰車保養', 'MMP']
+  },
+  {
+    id: 'training-calendar',
+    title: '年度周期训练赛历与巅峰规划器',
+    titleEn: 'Periodization Calendar & Target Peak Wizard',
+    titleTw: '年度週期訓練賽歷與巔峰規劃器',
+    subtitle: 'Tudor Bompa 周期化模型 / 目标赛事反推 / 课表排程 / 未来60天PMC模拟',
+    subtitleEn: 'Periodization Model / Target Race Backsolver / Workout Scheduling / 60-day PMC Projection',
+    subtitleTw: 'Tudor Bompa 週期化模型 / 目標賽事反推 / 課表排程 / 未來60天PMC模擬',
+    category: 'health',
+    categoryLabel: '生理与代谢',
+    categoryLabelEn: 'Physiology & Health',
+    categoryLabelTw: '生理與代謝',
+    icon: 'Calendar',
+    badge: '赛历规划',
+    badgeEn: 'ATP Calendar',
+    badgeTw: '賽歷規劃',
+    description: '基于经典 Tudor Bompa 与 Joe Friel 耐力运动周期化理论。以赛季 A 级目标赛事为锚点，智能反推 Base、Build、Peak、Taper 阶段，生成周度负荷目标与推荐课表。月历集成 IndexedDB 实际骑行活动与未来排课，并通过 Banister 脉冲响应模型向前推演未来 60 天 PMC (CTL/ATL/TSB) 走势，确保比赛日精准达到竞技巅峰。',
+    descriptionEn: 'Annual Training Plan (ATP) and periodization calendar based on Tudor Bompa and Joe Friel methodology. Back-solve training phases from target races, schedule workouts, view monthly actual vs planned TSS, and project future 60-day Banister PMC curves to ensure peak race readiness.',
+    descriptionTw: '基於經典 Tudor Bompa 與 Joe Friel 耐力運動週期化理論。以賽季 A 級目標賽事為錨點，智能反推 Base、Build、Peak、Taper 階段，生成週度負荷目標與推薦課表。月曆集成 IndexedDB 實際騎行活動與未來排課，並通過 Banister 脈衝響應模型向前推演未來 60 天 PMC (CTL/ATL/TSB) 走勢，確保比賽日精準達到競技巔峰。',
+    tags: ['赛历', '周期化', 'ATP', 'PMC', 'CTL', 'TSB', '目标赛事', '巅峰减量', '课表排程', 'TrainingPeaks'],
+    tagsEn: ['Calendar', 'Periodization', 'ATP', 'PMC', 'CTL', 'TSB', 'Taper', 'Workouts', 'Peak'],
+    tagsTw: ['賽歷', '週期化', 'ATP', 'PMC', 'CTL', 'TSB', '目標賽事', '巔峰減量', '課表排程', 'TrainingPeaks']
   }
 ];
 
