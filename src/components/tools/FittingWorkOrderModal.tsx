@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Printer, Check, User, Wrench, Bike, FileText, Award, Compass } from 'lucide-react';
 import { RouleurLogo } from '../common/RouleurLogo';
@@ -389,6 +389,34 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
 
   if (!isOpen) return null;
 
+  // iOS Pull-Down to Dismiss Gesture State
+  const [dragY, setDragY] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const touchStartY = useRef<number>(0);
+  const currentDragY = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const deltaY = e.touches[0].clientY - touchStartY.current;
+    if (deltaY > 0) {
+      currentDragY.current = deltaY;
+      setDragY(deltaY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    if (currentDragY.current > 75) {
+      onClose();
+    }
+    setDragY(0);
+    currentDragY.current = 0;
+  };
+
   const handlePrint = () => {
     document.body.classList.add('is-printing-work-order');
     const cleanup = () => {
@@ -419,94 +447,132 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
 
   return (
     <>
-      {/* Screen Interactive Studio Modal */}
-      <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-md flex items-center justify-center p-2 sm:p-5 no-print animate-in fade-in duration-200">
-        <div className="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-4xl max-h-[94vh] flex flex-col shadow-ios-popover overflow-hidden">
-          {/* Studio Top Action Bar */}
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-white/10 bg-slate-800/80 shrink-0">
+      {/* Dual Platform Modal (matching ShareCardModal iOS bottom sheet / macOS centered panel) */}
+      <div
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+        className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200 no-print"
+      >
+        <div
+          style={{
+            transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+            transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.32, 0.72, 0, 1)'
+          }}
+          className="relative w-full max-w-4xl max-h-[92vh] sm:max-h-[90vh] flex flex-col bg-white dark:bg-[#1C1C1E] border-t sm:border border-slate-200/80 dark:border-white/10 rounded-t-[28px] sm:rounded-2xl shadow-ios-popover overflow-hidden text-slate-900 dark:text-white isolate animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0"
+        >
+          {/* iOS Presentation Detent Drag Indicator (Mobile only) */}
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="sm:hidden w-full pt-2.5 pb-2 flex items-center justify-center touch-none cursor-grab active:cursor-grabbing select-none"
+          >
+            <div className="w-10 h-1.5 rounded-full bg-black/20 dark:bg-white/30" />
+          </div>
+
+          {/* Ambient Top Glow */}
+          <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-40 bg-ios-purple/15 dark:bg-ios-purple/25 blur-3xl rounded-full" />
+
+          {/* Modal Header */}
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/90 backdrop-blur-md select-none touch-none sm:touch-auto"
+          >
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-ios-purple/20 text-ios-purple flex items-center justify-center font-bold">
-                <Compass className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-xl bg-ios-purple/10 dark:bg-ios-purple/15 border border-ios-purple/20 text-ios-purple flex items-center justify-center">
+                <Compass className="w-4 h-4 text-ios-purple" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm sm:text-base font-bold text-white">
-                    Fitting 装车工程图纸 (CAD Spec)
-                  </h2>
-                  <span className="px-1.5 py-0.2 text-[10px] font-mono rounded bg-white/10 text-slate-300 border border-white/15">
-                    A4 单页
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400">
-                  精密矢量工程图解 · 适合车店专业调校与车手归档
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                  专业 Fitting 装车工程工单
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  A4 国际标准单页蓝图 · 适合车店专业施工与车手留档
                 </p>
               </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePrint}
-                className="apple-touch h-9 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-semibold text-xs transition shadow-ios-sm flex items-center gap-1.5"
-                title="打印工单"
-              >
-                <Printer className="w-4 h-4" />
-                <span>打印</span>
-              </button>
-              <button
-                onClick={onClose}
-                className="apple-touch w-9 h-9 rounded-xl flex items-center justify-center bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white transition"
-                title="关闭"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white flex items-center justify-center transition apple-touch"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Streamlined Meta Info Toolbar (Screen only) */}
-          <div className="px-4 sm:px-6 py-2 bg-slate-900/90 border-b border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs shrink-0">
+          {/* Streamlined Meta Info Toolbar */}
+          <div className="relative z-10 px-4 sm:px-5 py-2.5 bg-slate-50/80 dark:bg-black/20 border-b border-slate-200/80 dark:border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs shrink-0">
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-0.5">车手姓名</label>
+              <label className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block mb-0.5">车手姓名</label>
               <input
                 type="text"
                 value={riderName}
                 onChange={(e) => setRiderName(e.target.value)}
-                className="w-full h-7 px-2 rounded-lg bg-black/40 border border-white/10 text-xs text-white focus:outline-none focus:border-ios-blue"
+                className="w-full h-7 px-2 rounded-lg bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-ios-blue"
               />
             </div>
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-0.5">认证技师</label>
+              <label className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block mb-0.5">认证技师</label>
               <input
                 type="text"
                 value={fitterName}
                 onChange={(e) => setFitterName(e.target.value)}
-                className="w-full h-7 px-2 rounded-lg bg-black/40 border border-white/10 text-xs text-white focus:outline-none focus:border-ios-blue"
+                className="w-full h-7 px-2 rounded-lg bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-ios-blue"
               />
             </div>
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-0.5">车架型号</label>
+              <label className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block mb-0.5">车架型号</label>
               <input
                 type="text"
                 value={bikeModel}
                 onChange={(e) => setBikeModel(e.target.value)}
-                className="w-full h-7 px-2 rounded-lg bg-black/40 border border-white/10 text-xs text-white focus:outline-none focus:border-ios-blue"
+                className="w-full h-7 px-2 rounded-lg bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-ios-blue"
               />
             </div>
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-0.5">拟合日期</label>
+              <label className="text-[10px] font-mono text-slate-500 dark:text-slate-400 block mb-0.5">拟合日期</label>
               <input
                 type="date"
                 value={orderDate}
                 onChange={(e) => setOrderDate(e.target.value)}
-                className="w-full h-7 px-2 rounded-lg bg-black/40 border border-white/10 text-xs text-white focus:outline-none focus:border-ios-blue font-mono"
+                className="w-full h-7 px-2 rounded-lg bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-ios-blue font-mono"
               />
             </div>
           </div>
 
-          {/* Architectural Paper Preview Canvas */}
-          <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-950/80 flex justify-center">
-            <div className="w-full max-w-[210mm] bg-white text-slate-900 shadow-ios-popover rounded-sm p-6 sm:p-8">
+          {/* Architectural Paper Preview Canvas Body */}
+          <div className="relative z-10 flex-1 overflow-y-auto p-3 sm:p-6 flex flex-col items-center justify-start bg-slate-100/80 dark:bg-black/40">
+            <div className="w-full max-w-[210mm] bg-white text-slate-900 shadow-ios-popover border border-slate-200/80 dark:border-white/10 rounded-xl p-5 sm:p-7">
               <FittingSheetContent {...sheetProps} />
+            </div>
+          </div>
+
+          {/* Modal Footer Actions */}
+          <div className="relative z-10 p-3.5 sm:p-4 border-t border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/95 flex flex-wrap items-center justify-between gap-2.5">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:flex items-center gap-1.5">
+              <span>*系统将自动以纯净 A4 单页送印，无多余边框</span>
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <button
+                type="button"
+                onClick={onClose}
+                className="apple-touch flex-1 sm:flex-initial h-9 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold transition active:scale-95 flex items-center justify-center"
+              >
+                关闭
+              </button>
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="apple-touch flex-1 sm:flex-initial h-9 px-5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold text-xs shadow-ios-sm transition active:scale-95 flex items-center justify-center gap-2"
+              >
+                <Printer className="w-4 h-4" />
+                <span>打印工单 (A4)</span>
+              </button>
             </div>
           </div>
         </div>

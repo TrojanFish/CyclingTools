@@ -46,6 +46,34 @@ export const Header: React.FC<HeaderProps> = ({
   const { profile } = useRiderProfile();
   const { language, t, convertWeight } = useLanguageAndUnit();
 
+  // iOS Pull-Down to Dismiss Gesture State for Sponsor Modal
+  const [sponsorDragY, setSponsorDragY] = useState<number>(0);
+  const [isSponsorDragging, setIsSponsorDragging] = useState<boolean>(false);
+  const sponsorTouchStartY = useRef<number>(0);
+  const sponsorCurrentDragY = useRef<number>(0);
+
+  const handleSponsorTouchStart = (e: React.TouchEvent) => {
+    sponsorTouchStartY.current = e.touches[0].clientY;
+    setIsSponsorDragging(true);
+  };
+
+  const handleSponsorTouchMove = (e: React.TouchEvent) => {
+    const deltaY = e.touches[0].clientY - sponsorTouchStartY.current;
+    if (deltaY > 0) {
+      sponsorCurrentDragY.current = deltaY;
+      setSponsorDragY(deltaY);
+    }
+  };
+
+  const handleSponsorTouchEnd = () => {
+    setIsSponsorDragging(false);
+    if (sponsorCurrentDragY.current > 75) {
+      setSponsorOpen(false);
+    }
+    setSponsorDragY(0);
+    sponsorCurrentDragY.current = 0;
+  };
+
   const handleSponsorMouseEnter = () => {
     if (sponsorTimerRef.current) {
       clearTimeout(sponsorTimerRef.current);
@@ -170,55 +198,98 @@ export const Header: React.FC<HeaderProps> = ({
 
               {sponsorOpen && (
                 <div
-                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
                   onClick={(e) => {
                     if (e.target === e.currentTarget) setSponsorOpen(false);
                   }}
+                  className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 dark:bg-black/75 backdrop-blur-2xl animate-in fade-in duration-200"
                 >
                   <div
-                    onMouseEnter={handleSponsorMouseEnter}
-                    onMouseLeave={handleSponsorMouseLeave}
-                    className="relative w-full max-w-sm p-5 sm:p-6 bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-2xl shadow-ios-popover z-50 animate-in zoom-in-95 duration-200 text-left"
+                    style={{
+                      transform: sponsorDragY > 0 ? `translateY(${sponsorDragY}px)` : undefined,
+                      transition: isSponsorDragging ? 'none' : 'transform 0.25s cubic-bezier(0.32, 0.72, 0, 1)',
+                    }}
+                    className="relative w-full max-w-sm sm:max-w-md max-h-[92vh] sm:max-h-[90vh] flex flex-col bg-white dark:bg-[#1C1C1E] border-t sm:border border-slate-200/80 dark:border-white/10 rounded-t-[28px] sm:rounded-2xl shadow-ios-popover overflow-hidden text-slate-900 dark:text-white isolate animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-0 text-left"
                   >
-                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-black/[0.06] dark:border-white/10">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-rose-500/10 flex items-center justify-center">
+                    {/* iOS Presentation Detent Drag Indicator (Mobile only) */}
+                    <div
+                      onTouchStart={handleSponsorTouchStart}
+                      onTouchMove={handleSponsorTouchMove}
+                      onTouchEnd={handleSponsorTouchEnd}
+                      className="sm:hidden w-full pt-2.5 pb-2 flex items-center justify-center touch-none cursor-grab active:cursor-grabbing select-none"
+                    >
+                      <div className="w-10 h-1.5 rounded-full bg-black/20 dark:bg-white/30" />
+                    </div>
+
+                    {/* Ambient Top Glow */}
+                    <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-40 bg-rose-500/15 dark:bg-rose-500/25 blur-3xl rounded-full" />
+
+                    {/* Modal Header */}
+                    <div
+                      onTouchStart={handleSponsorTouchStart}
+                      onTouchMove={handleSponsorTouchMove}
+                      onTouchEnd={handleSponsorTouchEnd}
+                      className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/90 backdrop-blur-md select-none touch-none sm:touch-auto"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-rose-500/10 dark:bg-rose-500/15 border border-rose-500/20 text-rose-500 flex items-center justify-center">
                           <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
                         </div>
                         <div>
-                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
                             {language === 'zh-TW' ? '贊助支持作者' : '赞助支持作者'}
                           </h3>
                           <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                            {language === 'zh-TW' ? '感謝您對單車工坊的認可與喜愛' : '感谢您对单车工坊的认可与喜爱'}
+                            {language === 'zh-TW' ? '感謝對單車工坊的認可與喜愛' : '感谢对单车工坊的认可与喜爱'}
                           </p>
                         </div>
                       </div>
                       <button
+                        type="button"
                         onClick={() => setSponsorOpen(false)}
-                        className="w-8 h-8 rounded-xl flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-400 hover:text-slate-700 dark:hover:text-white transition"
-                        aria-label="Close Sponsor Modal"
+                        className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white flex items-center justify-center transition apple-touch"
+                        aria-label="Close"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="bg-white p-3.5 rounded-xl border border-black/5 shadow-xs flex flex-col items-center">
-                      <img
-                        src="/sponsor-qrcode.jpg"
-                        alt="微信赞赏码"
-                        className="w-52 h-52 sm:w-56 sm:h-56 object-contain rounded-lg"
-                      />
-                      <p className="mt-2.5 text-xs font-semibold text-slate-700 text-center leading-tight">
-                        微信扫一扫 · 给 Keiyee 赞赏
-                      </p>
+                    {/* QR Code Body */}
+                    <div className="relative z-10 flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col items-center justify-center bg-slate-100/80 dark:bg-black/40">
+                      <div className="relative rounded-2xl overflow-hidden shadow-ios-popover border border-slate-200/80 dark:border-white/10 bg-white p-4 flex flex-col items-center max-w-[260px] w-full">
+                        <img
+                          src="/sponsor-qrcode.jpg"
+                          alt="微信赞赏码"
+                          className="w-48 h-48 sm:w-52 sm:h-52 object-contain rounded-xl block select-none"
+                        />
+                        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+                          <span>微信扫一扫 · 给 Keiyee 赞赏</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3.5 text-center space-y-1 max-w-xs px-2">
+                        <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                          {language === 'zh-TW'
+                            ? '如果單車工坊對您的騎行有所幫助，歡迎請作者喝杯咖啡 ☕'
+                            : '如果单车工坊对您的骑行有所帮助，欢迎请作者喝杯咖啡 ☕'}
+                        </p>
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                          {language === 'zh-TW'
+                            ? '開源不易，您的每一份善意都是持續打磨的最大動力！'
+                            : '开源不易，您的每一份善意都是持续打磨的最大动力！'}
+                        </p>
+                      </div>
                     </div>
 
-                    <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 text-center leading-relaxed">
-                      {language === 'zh-TW'
-                        ? '如果單車工坊對您的騎行有所幫助，歡迎請作者喝杯咖啡 ☕ 您的支持是持續打磨的最大動力！'
-                        : '如果单车工坊对您的骑行有所帮助，欢迎请作者喝杯咖啡 ☕ 您的支持是持续打磨的最大动力！'}
-                    </p>
+                    {/* Modal Footer Actions */}
+                    <div className="relative z-10 p-4 border-t border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/95 flex items-center justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setSponsorOpen(false)}
+                        className="apple-touch w-full sm:w-auto h-9 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold transition active:scale-95 flex items-center justify-center"
+                      >
+                        {language === 'zh-TW' ? '關閉' : '关闭'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
