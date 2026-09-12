@@ -280,3 +280,243 @@ export const predictTaperDays = (
     predictedAtl: Math.round(simAtl * 10) / 10
   };
 };
+
+export type PmcTimeRange = '30d' | '90d' | '180d' | 'ytd' | 'all';
+
+export interface ContinuousPmcInputActivity {
+  id?: string;
+  startDate: string; // ISO
+  startTime?: number;
+  tss: number;
+  name: string;
+  distanceKm?: number;
+}
+
+export interface SeasonPmcSummary {
+  currentCtl: number;
+  currentAtl: number;
+  currentTsb: number;
+  acwr: number; // ATL / CTL (Acute:Chronic Workload Ratio)
+  rampRate7d: number; // CTL change in the last 7 days
+  totalSeasonKm: number;
+  totalSeasonTss: number;
+  weeklyAvgTss: number;
+  activeDaysCount: number;
+  readinessZone: TsbZoneInfo;
+  acwrStatus: {
+    status: 'optimal' | 'moderate' | 'high_risk' | 'low';
+    label: string;
+    advice: string;
+  };
+}
+
+export interface ContinuousPmcResult {
+  series: PmcDayData[];
+  summary: SeasonPmcSummary;
+  todayIndex: number;
+}
+
+/**
+ * Calculate continuous real season PMC based on actual activities stored in Local-First IndexedDB
+ */
+export const calculateContinuousSeasonPmc = (
+  activities: ContinuousPmcInputActivity[],
+  timeRange: PmcTimeRange = '90d',
+  baselineLevel: BaselineFitnessLevel = 'club',
+  futureProjectionDays: number = 0,
+  dailyTaperTss: number = 25
+): ContinuousPmcResult => {
+  const now = new Date();
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const ONE_DAY_MS = 86400 * 1000;
+
+  // 1. Determine date range
+  let startTimestamp = todayMidnight - 90 * ONE_DAY_MS;
+
+  if (timeRange === '30d') {
+    startTimestamp = todayMidnight - 30 * ONE_DAY_MS;
+  } else if (timeRange === '90d') {
+    startTimestamp = todayMidnight - 90 * ONE_DAY_MS;
+  } else if (timeRange === '180d') {
+    startTimestamp = todayMidnight - 180 * ONE_DAY_MS;
+  } else if (timeRange === 'ytd') {
+    const startOfYear = new Date(now.getFullYear(), 0, 1).getTime();
+    startTimestamp = Math.min(startOfYear, todayMidnight - 60 * ONE_DAY_MS);
+  } else if (timeRange === 'all') {
+    if (activities.length > 0) {
+      const earliestActTime = Math.min(
+        ...activities.map(a => (a.startTime ? a.startTime : new Date(a.startDate).getTime()))
+      );
+      startTimestamp = Math.min(earliestActTime, todayMidnight - 90 * ONE_DAY_MS);
+    } else {
+      startTimestamp = todayMidnight - 90 * ONE_DAY_MS;
+    }
+  }
+
+  // 2. Warm-up 42 days prior to startTimestamp so initial CTL/ATL are stabilized
+  const warmUpStart = startTimestamp - 42 * ONE_DAY_MS;
+  const endTimestamp = todayMidnight + futureProjectionDays * ONE_DAY_MS;
+
+  // Build day map: 'YYYY-MM-DD' -> { tss, names, distance }
+  const dailyActivityMap = new Map<string, { tss: number; names: string[]; distance: number }>();
+
+  activities.forEach(act => {
+    const actDate = new Date(act.startTime || act.startDate);
+    const key = `${actDate.getFullYear()}-${String(actDate.getMonth() + 1).padStart(2, '0')}-${String(actDate.getDate()).padStart(2, '0')}`;
+    const cur = dailyActivityMap.get(key) || { tss: 0, names: [], distance: 0 };
+    cur.tss += act.tss || 0;
+    if (act.name) cur.names.push(act.name);
+    cur.distance += act.distanceKm || 0;
+    dailyActivityMap.set(key, cur);
+  });
+
+  const TC_CTL = 42;
+  const TC_ATL = 7;
+
+  let curCtl = BASELINE_FITNESS_OPTIONS[baselineLevel]?.ctl ?? 65;
+  let curAtl = BASELINE_FITNESS_OPTIONS[baselineLevel]?.atl ?? 60;
+
+  // Walk from warmUpStart to endTimestamp
+  const allPoints: Array<{
+    timestamp: number;
+    dateStr: string;
+    tss: number;
+    ctl: number;
+    atl: number;
+    tsb: number;
+    phase: string;
+    isFuture: boolean;
+    distance: number;
+  }> = [];
+
+  let cursor = warmUpStart;
+  let dayCounter = 1;
+
+  while (cursor <= endTimestamp) {
+    const dObj = new Date(cursor);
+    const key = `${dObj.getFullYear()}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${String(dObj.getDate()).padStart(2, '0')}`;
+    const isFuture = cursor > todayMidnight;
+
+    let dayTss = 0;
+    let phase = '休息/低负荷';
+    let distance = 0;
+
+    if (isFuture) {
+      dayTss = dailyTaperTss;
+      phase = '未来预测 · 赛前减量';
+    } else {
+      const match = dailyActivityMap.get(key);
+      if (match && match.tss > 0) {
+        dayTss = Math.round(match.tss);
+        phase = match.names.join(' / ');
+        distance = match.distance;
+      }
+    }
+
+    curCtl = curCtl + (dayTss - curCtl) / TC_CTL;
+    curAtl = curAtl + (dayTss - curAtl) / TC_ATL;
+    const curTsb = curCtl - curAtl;
+
+    // Only record into allPoints if cursor >= startTimestamp
+    if (cursor >= startTimestamp) {
+      allPoints.push({
+        timestamp: cursor,
+        dateStr: `${dObj.getMonth() + 1}/${dObj.getDate()}`,
+        tss: dayTss,
+        ctl: Math.round(curCtl * 10) / 10,
+        atl: Math.round(curAtl * 10) / 10,
+        tsb: Math.round(curTsb * 10) / 10,
+        phase,
+        isFuture,
+        distance
+      });
+    }
+
+    cursor += ONE_DAY_MS;
+    dayCounter++;
+  }
+
+  // Find index corresponding to today
+  let todayIdx = allPoints.findIndex(p => Math.abs(p.timestamp - todayMidnight) < ONE_DAY_MS / 2);
+  if (todayIdx === -1) {
+    todayIdx = allPoints.length - 1 - futureProjectionDays;
+    if (todayIdx < 0) todayIdx = allPoints.length - 1;
+  }
+
+  const todayPoint = allPoints[todayIdx] || allPoints[allPoints.length - 1];
+  const ctlToday = todayPoint ? todayPoint.ctl : 60;
+  const atlToday = todayPoint ? todayPoint.atl : 50;
+  const tsbToday = todayPoint ? todayPoint.tsb : 10;
+
+  // ACWR (Acute:Chronic Workload Ratio)
+  const acwr = ctlToday > 0 ? parseFloat((atlToday / ctlToday).toFixed(2)) : 1.0;
+
+  let acwrStatus: SeasonPmcSummary['acwrStatus'] = {
+    status: 'optimal',
+    label: '黄金负荷收益区 (Sweet Spot)',
+    advice: '急性疲劳与慢性体能比例健康 (0.8 - 1.3)，体能稳步超量恢复，伤病风险处于最低区间。'
+  };
+
+  if (acwr < 0.8) {
+    acwrStatus = {
+      status: 'low',
+      label: '训练负荷偏低 (Under-training)',
+      advice: '近期负荷显著低于基准均线，体能可能逐步回落。如非重大赛后调整，建议适当提高甜区或节奏课表频次。'
+    };
+  } else if (acwr >= 1.3 && acwr <= 1.5) {
+    acwrStatus = {
+      status: 'moderate',
+      label: '负荷快速增量 (Caution Zone)',
+      advice: '近期训练量快速攀升 (1.3 - 1.5)，机体进入高刺激适应期。建议加强深层拉伸、电解质补充与睡眠监测。'
+    };
+  } else if (acwr > 1.5) {
+    acwrStatus = {
+      status: 'high_risk',
+      label: '急性过载高危 (High Injury Risk)',
+      advice: 'ACWR > 1.5 属于伤病与过度疲劳高危红线！强烈建议立即插入 1-2 天主动休骑或排酸骑，严防免疫力崩解。'
+    };
+  }
+
+  // 7-day Ramp Rate
+  const idx7dAgo = Math.max(0, todayIdx - 7);
+  const point7dAgo = allPoints[idx7dAgo];
+  const rampRate7d = point7dAgo ? Math.round((ctlToday - point7dAgo.ctl) * 10) / 10 : 0;
+
+  // Window totals
+  const nonFuturePoints = allPoints.filter(p => !p.isFuture);
+  const totalSeasonTss = nonFuturePoints.reduce((acc, p) => acc + p.tss, 0);
+  const totalSeasonKm = Math.round(nonFuturePoints.reduce((acc, p) => acc + p.distance, 0));
+  const activeDaysCount = nonFuturePoints.filter(p => p.tss > 0).length;
+  const totalWeeks = Math.max(1, Math.round(nonFuturePoints.length / 7));
+  const weeklyAvgTss = Math.round(totalSeasonTss / totalWeeks);
+
+  const series: PmcDayData[] = allPoints.map((p, idx) => ({
+    day: idx + 1,
+    date: p.dateStr,
+    tss: p.tss,
+    ctl: p.ctl,
+    atl: p.atl,
+    tsb: p.tsb,
+    phase: p.phase
+  }));
+
+  const summary: SeasonPmcSummary = {
+    currentCtl: ctlToday,
+    currentAtl: atlToday,
+    currentTsb: tsbToday,
+    acwr,
+    rampRate7d,
+    totalSeasonKm,
+    totalSeasonTss,
+    weeklyAvgTss,
+    activeDaysCount,
+    readinessZone: getTsbZoneInfo(tsbToday),
+    acwrStatus
+  };
+
+  return {
+    series,
+    summary,
+    todayIndex: todayIdx
+  };
+};

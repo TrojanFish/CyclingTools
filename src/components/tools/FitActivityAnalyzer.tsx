@@ -26,7 +26,8 @@ import {
   ArrowRight,
   Dumbbell,
   Cpu,
-  X
+  X,
+  FolderArchive
 } from 'lucide-react';
 import { PoweredByStravaBadge } from '../common/PoweredByStravaBadge';
 import { WORKOUT_TEMPLATES, WorkoutTemplate, WorkoutSegment } from './WorkoutBuilder';
@@ -74,10 +75,30 @@ import {
   PmcDayData,
   BaselineFitnessLevel,
   ManualTssEntry,
-  BASELINE_FITNESS_OPTIONS
+  BASELINE_FITNESS_OPTIONS,
+  calculateContinuousSeasonPmc,
+  PmcTimeRange,
+  ContinuousPmcResult,
+  SeasonPmcSummary
 } from '../../utils/pmcCalculator';
 import { useStrava } from '../../context/StravaContext';
 import { StravaActivityRecord } from '../../utils/indexedDb';
+import {
+  LocalActivityRecord,
+  saveActivityToDb,
+  getAllLocalActivities,
+  getLocalActivityStream
+} from '../../utils/localActivityDb';
+import {
+  batchIngestActivityFiles,
+  BatchImportProgress
+} from '../../utils/batchFitImporter';
+import {
+  computeMmpEnvelope,
+  detectActivityPrs
+} from '../../utils/mmpAggregator';
+import { ActivityArchiveModal } from './ActivityArchiveModal';
+import { BatchImportModal } from './BatchImportModal';
 
 ChartJS.register(
   CategoryScale,
@@ -143,6 +164,39 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   const [newManualTss, setNewManualTss] = useState<number>(80);
   const [newManualTitle, setNewManualTitle] = useState<string>('');
   const [newManualDayOffset, setNewManualDayOffset] = useState<number>(0);
+
+  // Local-First Activity Database State
+  const [localActivities, setLocalActivities] = useState<LocalActivityRecord[]>([]);
+  const [activeLocalActivityId, setActiveLocalActivityId] = useState<string | null>(null);
+  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState<boolean>(false);
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState<boolean>(false);
+  const [batchProgress, setBatchProgress] = useState<BatchImportProgress | null>(null);
+
+  // PMC Real Season State
+  const [pmcDataSource, setPmcDataSource] = useState<'local_history' | 'preset_mesocycle'>('local_history');
+  const [pmcTimeRange, setPmcTimeRange] = useState<PmcTimeRange>('90d');
+  const [futureProjectionDays, setFutureProjectionDays] = useState<number>(0);
+
+  // MMP Multi-Layer Envelope State
+  const [mmpShowCurrent, setMmpShowCurrent] = useState<boolean>(true);
+  const [mmpShow90d, setMmpShow90d] = useState<boolean>(true);
+  const [mmpShowAllTime, setMmpShowAllTime] = useState<boolean>(true);
+
+  const refreshLocalActivities = async () => {
+    try {
+      const list = await getAllLocalActivities();
+      setLocalActivities(list);
+      if (list.length > 0) {
+        setPmcDataSource('local_history');
+      }
+    } catch (err) {
+      console.error('Failed to load local activities:', err);
+    }
+  };
+
+  useEffect(() => {
+    refreshLocalActivities();
+  }, []);
 
   useEffect(() => {
     try {
@@ -228,8 +282,21 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     }
   };
 
-  // PMC Calculation (automatically driven by real Strava activities if connected)
-  const pmcData = useMemo(() => {
+  // PMC Calculation (driven by continuous Local-First IndexedDB activities or simulated template)
+  const continuousPmcResult = useMemo(() => {
+    if (pmcDataSource === 'local_history' && localActivities.length > 0) {
+      return calculateContinuousSeasonPmc(
+        localActivities,
+        pmcTimeRange,
+        baselineFitness,
+        futureProjectionDays,
+        25
+      );
+    }
+    return null;
+  }, [pmcDataSource, localActivities, pmcTimeRange, baselineFitness, futureProjectionDays]);
+
+  const simulatedPmcData = useMemo(() => {
     return generatePmcSeries(
       pmcMesocycle,
       analysis?.tss,
@@ -239,11 +306,18 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     );
   }, [pmcMesocycle, analysis?.tss, baselineFitness, manualTssEntries, isStravaConnected, stravaActivities]);
 
+  const pmcData = continuousPmcResult ? continuousPmcResult.series : simulatedPmcData;
+  const pmcSummary = continuousPmcResult ? continuousPmcResult.summary : null;
+
   const latestPmcDay = pmcData[pmcData.length - 1];
-  const currentTsbZone = getTsbZoneInfo(latestPmcDay ? latestPmcDay.tsb : 0);
+  const currentTsbVal = pmcSummary ? pmcSummary.currentTsb : (latestPmcDay ? latestPmcDay.tsb : 0);
+  const currentTsbZone = getTsbZoneInfo(currentTsbVal);
+  const currentCtlVal = pmcSummary ? pmcSummary.currentCtl : (latestPmcDay ? latestPmcDay.ctl : 50);
+  const currentAtlVal = pmcSummary ? pmcSummary.currentAtl : (latestPmcDay ? latestPmcDay.atl : 40);
+
   const taperPrediction = predictTaperDays(
-    latestPmcDay ? latestPmcDay.ctl : 50,
-    latestPmcDay ? latestPmcDay.atl : 40,
+    currentCtlVal,
+    currentAtlVal,
     targetTsbForPeak
   );
 
@@ -396,6 +470,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     }
   };
 
+  const batchFileInputRef = React.useRef<HTMLInputElement>(null);
+
   // File Upload Handlers
   const handleFileUpload = async (file: File) => {
     setIsLoading(true);
@@ -416,13 +492,165 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       }
 
       setAnalysis(result);
+
+      // Persist to Local-First IndexedDB
+      const firstPoint = result.points && result.points.length > 0 ? result.points[0] : null;
+      const startTimeMs = firstPoint?.timestamp
+        ? new Date(firstPoint.timestamp).getTime()
+        : Date.now() - result.totalDurationSec * 1000;
+      const actId = `act_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
+      const record: LocalActivityRecord = {
+        id: actId,
+        name: result.fileName.replace(/\.(fit|gpx|tcx)$/i, ''),
+        startDate: new Date(startTimeMs).toISOString(),
+        startTime: startTimeMs,
+        distanceKm: result.totalDistanceKm,
+        totalDurationSec: result.totalDurationSec,
+        movingTimeSec: result.movingTimeSec,
+        elevationGainM: result.elevationGainM,
+        elevationLossM: result.elevationLossM,
+        avgPower: result.avgPower,
+        maxPower: result.maxPower,
+        normalizedPower: result.normalizedPower,
+        intensityFactor: result.intensityFactor,
+        tss: result.tss,
+        variabilityIndex: result.variabilityIndex,
+        workKj: result.workKj,
+        caloriesKcal: result.caloriesKcal,
+        avgHeartRate: result.avgHeartRate,
+        maxHeartRate: result.maxHeartRate,
+        avgCadence: result.avgCadence,
+        maxCadence: result.maxCadence,
+        avgSpeedKmh: result.avgSpeedKmh,
+        maxSpeedKmh: result.maxSpeedKmh,
+        mmp: result.mmp,
+        timeInPowerZones: result.timeInPowerZones,
+        timeInHrZones: result.timeInHrZones,
+        fileType: (ext as any) || 'fit',
+        fileName: file.name,
+        fileSize: file.size,
+        hasHardwarePower: !result.isEstimatedPower,
+        hasHeartRate: !!result.avgHeartRate,
+        hasCadence: !!result.avgCadence,
+        hasShifting: !!(result.shiftingEvents && result.shiftingEvents.length > 0),
+        shiftCount: result.shiftCount,
+        isEstimatedPower: result.isEstimatedPower,
+        createdAt: Date.now()
+      };
+
+      await saveActivityToDb(record, result.points, result.shiftingEvents);
+      setActiveLocalActivityId(actId);
+      await refreshLocalActivities();
+
       showToast(
-        `解析成功！共包含 ${result.totalDistanceKm}km 骑行数据`,
+        `解析成功并已持久化入库！共包含 ${result.totalDistanceKm}km 骑行数据`,
         'success'
       );
     } catch (error: any) {
       console.error(error);
       showToast(error.message || '文件解析失败，请检查文件是否损坏', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBatchFiles = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files).filter(f => {
+      const ext = f.name.split('.').pop()?.toLowerCase();
+      return ext === 'fit' || ext === 'gpx' || ext === 'tcx';
+    });
+
+    if (fileArray.length === 0) {
+      showToast('未检测到有效的 .fit, .gpx 或 .tcx 文件', 'warning');
+      return;
+    }
+
+    setIsBatchModalOpen(true);
+    try {
+      const result = await batchIngestActivityFiles(
+        fileArray,
+        ftpWatts,
+        weightKg,
+        maxHr,
+        (p) => setBatchProgress(p)
+      );
+
+      await refreshLocalActivities();
+
+      if (result.successfulCount > 0) {
+        showToast(`成功批量入库 ${result.successfulCount} 场活动！`, 'success');
+        if (!analysis && result.importedRecords.length > 0) {
+          handleLoadLocalActivity(result.importedRecords[0]);
+        }
+      } else if (result.skippedCount > 0) {
+        showToast(`所有 ${result.skippedCount} 个文件已存在，已自动跳过重复`, 'info');
+      }
+    } catch (err: any) {
+      console.error('Batch import failed:', err);
+      showToast(`批量导入失败: ${err.message}`, 'error');
+    }
+  };
+
+  const handleLoadLocalActivity = async (record: LocalActivityRecord) => {
+    setIsLoading(true);
+    try {
+      showToast(`正在从本地时序库调出「${record.name}」...`, 'info');
+      const stream = await getLocalActivityStream(record.id);
+      const points: ActivityPoint[] = stream?.points || [];
+
+      if (points.length > 0) {
+        const parsed = analyzePoints(
+          points,
+          record.fileName || `${record.name}.${record.fileType}`,
+          record.fileType === 'demo' ? 'demo' : (record.fileType as any) || 'fit',
+          ftpWatts,
+          weightKg,
+          maxHr
+        );
+        if (stream?.shiftingEvents) {
+          parsed.shiftingEvents = stream.shiftingEvents;
+          parsed.shiftCount = stream.shiftingEvents.length;
+        }
+        setAnalysis(parsed);
+      } else {
+        const synthAnalysis: ActivityAnalysis = {
+          fileName: record.fileName || `${record.name}.${record.fileType}`,
+          fileType: record.fileType === 'demo' ? 'demo' : (record.fileType as any) || 'fit',
+          totalDurationSec: record.totalDurationSec,
+          movingTimeSec: record.movingTimeSec,
+          totalDistanceKm: record.distanceKm,
+          elevationGainM: record.elevationGainM,
+          elevationLossM: record.elevationLossM,
+          avgPower: record.avgPower,
+          maxPower: record.maxPower,
+          normalizedPower: record.normalizedPower,
+          intensityFactor: record.intensityFactor,
+          tss: record.tss,
+          variabilityIndex: record.variabilityIndex,
+          workKj: record.workKj,
+          caloriesKcal: record.caloriesKcal || Math.round(record.workKj * 1.08),
+          avgHeartRate: record.avgHeartRate,
+          maxHeartRate: record.maxHeartRate,
+          avgCadence: record.avgCadence,
+          maxCadence: record.maxCadence,
+          avgSpeedKmh: record.avgSpeedKmh,
+          maxSpeedKmh: record.maxSpeedKmh,
+          timeInPowerZones: record.timeInPowerZones || [],
+          timeInHrZones: record.timeInHrZones || [],
+          mmp: record.mmp,
+          points: [],
+          sampledPoints: []
+        };
+        setAnalysis(synthAnalysis);
+      }
+      setActiveLocalActivityId(record.id);
+      setIsArchiveModalOpen(false);
+      setActiveTab('trends');
+      showToast(`已成功载入「${record.name}」！`, 'success');
+    } catch (err: any) {
+      console.error('Failed to load local activity:', err);
+      showToast(`载入本地活动失败: ${err.message}`, 'error');
     } finally {
       setIsLoading(false);
     }
@@ -435,7 +663,11 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files[0]);
+      if (e.dataTransfer.files.length > 1) {
+        handleBatchFiles(e.dataTransfer.files);
+      } else {
+        handleFileUpload(e.dataTransfer.files[0]);
+      }
     }
   };
 
@@ -824,27 +1056,83 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     }
   };
 
-  // MMP Curve Chart Data with Coggan Benchmarks
+  // MMP Power Duration Envelopes across all local activities
+  const mmpEnvelope90d = useMemo(() => {
+    return computeMmpEnvelope(localActivities, weightKg, 90);
+  }, [localActivities, weightKg]);
+
+  const mmpEnvelopeAllTime = useMemo(() => {
+    return computeMmpEnvelope(localActivities, weightKg, undefined);
+  }, [localActivities, weightKg]);
+
+  // PR Detection for the currently active ride
+  const currentActivityPrs = useMemo(() => {
+    if (!analysis || !analysis.mmp || analysis.mmp.length === 0) return null;
+    return detectActivityPrs(analysis.mmp, localActivities, weightKg, activeLocalActivityId || undefined);
+  }, [analysis, localActivities, weightKg, activeLocalActivityId]);
+
+  // MMP Curve Chart Data with Coggan Benchmarks & Multi-Layer Envelopes
   const mmpChartData = useMemo(() => {
-    if (!analysis) return { labels: [], datasets: [] };
-    const labels = analysis.mmp.map(m => m.label);
+    if (!analysis && localActivities.length === 0) return { labels: [], datasets: [] };
+    const baseMmp = analysis?.mmp && analysis.mmp.length > 0 ? analysis.mmp : mmpEnvelope90d;
+    const labels = baseMmp.map(m => m.label);
     const isWkg = mmpUnit === 'wkg';
+    const datasets: any[] = [];
 
-    const userDataset = {
-      type: 'line' as const,
-      label: isWkg ? '本次活动峰值 (W/kg)' : '本次活动峰值 (Watts)',
-      data: analysis.mmp.map(m => isWkg ? m.wkg : m.watts),
-      borderColor: '#8b5cf6',
-      backgroundColor: 'rgba(139, 92, 246, 0.18)',
-      fill: true,
-      tension: 0.3,
-      pointRadius: 4,
-      pointBackgroundColor: '#8b5cf6',
-      borderWidth: 2.5,
-      order: 1
-    };
+    // Layer 1: Current Activity (if active & toggled)
+    if (analysis && mmpShowCurrent) {
+      datasets.push({
+        type: 'line' as const,
+        label: isWkg ? '本次活动 (W/kg)' : '本次活动 (Watts)',
+        data: analysis.mmp.map(m => isWkg ? m.wkg : m.watts),
+        borderColor: '#8b5cf6',
+        backgroundColor: 'rgba(139, 92, 246, 0.18)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#8b5cf6',
+        borderWidth: 2.5,
+        order: 1
+      });
+    }
 
-    const benchmarkDatasets: any[] = [];
+    // Layer 2: 90-Day Best Envelope (if toggled and data exists)
+    if (mmpShow90d && localActivities.length > 0) {
+      datasets.push({
+        type: 'line' as const,
+        label: isWkg ? '近90天最佳包络 (W/kg)' : '近90天最佳包络 (Watts)',
+        data: mmpEnvelope90d.map(m => isWkg ? m.wkg : m.watts),
+        borderColor: '#f59e0b',
+        borderDash: [5, 3],
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.25,
+        pointRadius: 3,
+        pointBackgroundColor: '#f59e0b',
+        borderWidth: 2,
+        order: 2
+      });
+    }
+
+    // Layer 3: All-Time Best Record (if toggled and data exists)
+    if (mmpShowAllTime && localActivities.length > 0) {
+      datasets.push({
+        type: 'line' as const,
+        label: isWkg ? '历史最佳纪录 (W/kg)' : '历史最佳纪录 (Watts)',
+        data: mmpEnvelopeAllTime.map(m => isWkg ? m.wkg : m.watts),
+        borderColor: '#ef4444',
+        borderDash: [8, 4],
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.25,
+        pointRadius: 3,
+        pointBackgroundColor: '#ef4444',
+        borderWidth: 2,
+        order: 3
+      });
+    }
+
+    // Layer 4: Coggan Benchmark Tiers
     const tiersToInclude = selectedCogganTier === 'all'
       ? COGGAN_BENCHMARKS
       : selectedCogganTier === 'none'
@@ -852,10 +1140,10 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         : COGGAN_BENCHMARKS.filter(b => b.level === selectedCogganTier);
 
     tiersToInclude.forEach(b => {
-      benchmarkDatasets.push({
+      datasets.push({
         type: 'line' as const,
         label: `${b.label} ${isWkg ? '(W/kg)' : '(W)'}`,
-        data: analysis.mmp.map(m => {
+        data: baseMmp.map(m => {
           const wkgVal = getBenchmarkWkgForDuration(b, m.durationSec);
           return isWkg ? wkgVal : Math.round(wkgVal * weightKg);
         }),
@@ -866,15 +1154,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         tension: 0.25,
         pointRadius: 0,
         borderWidth: 1.5,
-        order: 2
+        order: 4
       });
     });
 
     return {
       labels,
-      datasets: [userDataset, ...benchmarkDatasets]
+      datasets
     };
-  }, [analysis, mmpUnit, selectedCogganTier, weightKg]);
+  }, [analysis, localActivities, mmpShowCurrent, mmpShow90d, mmpShowAllTime, mmpEnvelope90d, mmpEnvelopeAllTime, mmpUnit, selectedCogganTier, weightKg]);
 
   // Skiba W' Balance Chart Data
   const wPrimeChartData = useMemo(() => {
@@ -1024,13 +1312,42 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成碼表活動深度復盤長圖海報' : '生成码表活动深度复盘长图海报'}
         actions={
-          <button
-            onClick={handleLoadDemo}
-            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-ios-red" />
-            <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsArchiveModalOpen(true)}
+              className="apple-touch h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue font-bold text-xs border border-ios-blue/20 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              title="查看已持久化的本地活动时序库"
+            >
+              <FolderArchive className="w-3.5 h-3.5" />
+              <span>战队档案库 ({localActivities.length})</span>
+            </button>
+
+            <label className="apple-touch h-9 px-3 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer">
+              <Upload className="w-3.5 h-3.5 text-ios-blue" />
+              <span>批量导入</span>
+              <input
+                ref={batchFileInputRef}
+                type="file"
+                multiple
+                accept=".fit,.gpx,.tcx"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    handleBatchFiles(e.target.files);
+                  }
+                }}
+                className="hidden"
+              />
+            </label>
+
+            <button
+              onClick={handleLoadDemo}
+              className="apple-touch h-9 px-3 sm:px-3.5 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-ios-red" />
+              <span>{language === 'zh-TW' ? '載入樣本' : '加载样本'}</span>
+            </button>
+          </div>
         }
       />
 
@@ -1045,10 +1362,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           >
             <input
               type="file"
+              multiple
               accept=".fit,.gpx,.tcx"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
-                  handleFileUpload(e.target.files[0]);
+                  if (e.target.files.length > 1) {
+                    handleBatchFiles(e.target.files);
+                  } else {
+                    handleFileUpload(e.target.files[0]);
+                  }
                 }
               }}
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
@@ -1630,6 +1952,39 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                 {mmpSubView === 'mmp_curve' && (
                   <div className="flex flex-wrap items-center gap-2 text-xs">
+                    {/* Multi-Layer Envelope Toggles */}
+                    {localActivities.length > 0 && (
+                      <div className="flex items-center bg-slate-100 dark:bg-white/10 p-0.5 rounded-xl border border-slate-200/80 dark:border-white/10">
+                        <button
+                          type="button"
+                          onClick={() => setMmpShowCurrent(!mmpShowCurrent)}
+                          className={`px-2.5 py-1 rounded-lg font-medium transition apple-touch ${
+                            mmpShowCurrent ? 'bg-white dark:bg-[#2C2C2E] text-ios-purple shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          本次
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setMmpShow90d(!mmpShow90d)}
+                          className={`px-2.5 py-1 rounded-lg font-medium transition apple-touch ${
+                            mmpShow90d ? 'bg-white dark:bg-[#2C2C2E] text-ios-orange shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          90天包络
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setMmpShowAllTime(!mmpShowAllTime)}
+                          className={`px-2.5 py-1 rounded-lg font-medium transition apple-touch ${
+                            mmpShowAllTime ? 'bg-white dark:bg-[#2C2C2E] text-ios-red shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          历史最佳
+                        </button>
+                      </div>
+                    )}
+
                     {/* Unit Switcher */}
                     <div className="flex items-center bg-slate-100 dark:bg-white/10 p-0.5 rounded-xl border border-slate-200/80 dark:border-white/10">
                       <button
@@ -1674,6 +2029,25 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               {/* VIEW 1: Continuous MMP Curve & Coggan Benchmarks */}
               {mmpSubView === 'mmp_curve' && (
                 <div className="space-y-5">
+                  {/* PR Celebration Banner */}
+                  {currentActivityPrs && (currentActivityPrs.total90dPrs > 0 || currentActivityPrs.totalAllTimePrs > 0) && (
+                    <div className="p-3 sm:p-3.5 rounded-2xl bg-ios-orange/10 border border-ios-orange/30 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-xl bg-ios-orange text-white flex items-center justify-center shrink-0 shadow-xs font-bold">
+                          <Award className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-slate-900 dark:text-white">
+                            本次骑行共刷新 {currentActivityPrs.totalAllTimePrs + currentActivityPrs.total90dPrs} 项个人功率峰值记录！
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 block font-mono">
+                            包含 {currentActivityPrs.totalAllTimePrs} 项历史全时域新纪录 🏆 与 {currentActivityPrs.total90dPrs} 项近90天巅峰新高 👑
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Rider Phenotype Card */}
                   {riderPhenotype && (
                     <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card relative overflow-hidden">
@@ -1772,13 +2146,30 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         全时域秒级阶梯最佳峰值数据表 (High-Resolution MMP Matrix)
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                        {analysis.mmp.map((m) => (
-                          <div key={m.label} className="p-2.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-0.5">
-                            <div className="text-[11px] font-bold text-ios-purple uppercase">{m.label}</div>
-                            <div className="text-base font-bold text-slate-900 dark:text-white tabular-nums">{m.watts} W</div>
-                            <div className="text-[11px] text-slate-500 tabular-nums">{m.wkg} W/kg</div>
-                          </div>
-                        ))}
+                        {analysis.mmp.map((m) => {
+                          const pr = currentActivityPrs?.prs.find(p => p.durationSec === m.durationSec);
+                          return (
+                            <div key={m.label} className="p-2.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 text-center space-y-0.5 relative overflow-hidden">
+                              {pr?.isAllTimePr ? (
+                                <span className="absolute top-1 right-1 px-1 py-0.2 rounded text-[9px] font-bold bg-ios-red text-white uppercase">
+                                  PR
+                                </span>
+                              ) : pr?.is90dPr ? (
+                                <span className="absolute top-1 right-1 px-1 py-0.2 rounded text-[9px] font-bold bg-ios-orange text-white uppercase">
+                                  90d
+                                </span>
+                              ) : null}
+                              <div className="text-[11px] font-bold text-ios-purple uppercase">{m.label}</div>
+                              <div className="text-base font-bold text-slate-900 dark:text-white tabular-nums">{m.watts} W</div>
+                              <div className="text-[11px] text-slate-500 tabular-nums">{m.wkg} W/kg</div>
+                              {pr && (pr.isAllTimePr || pr.is90dPr) && pr.wattsGain > 0 && (
+                                <div className="text-[10px] text-ios-green font-bold tabular-nums">
+                                  +{pr.wattsGain}W
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -2078,107 +2469,173 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           : 'PMC 运动表现管理模型 (CTL / ATL / TSB)'}
                       </h3>
                       <span className="px-2 py-0.5 rounded-full text-[11px] font-mono bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
-                        Bannister EWMA
+                        {pmcDataSource === 'local_history' ? 'Local-First 真实时序' : 'Bannister EWMA 模拟'}
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      {language === 'zh-TW'
-                        ? '長周期體能積累 (CTL 42天)、急性疲勞 (ATL 7天) 與比賽競技狀態 (TSB) 動態時序監測。'
+                      {pmcDataSource === 'local_history'
+                        ? `由本地持久化时序库中 ${localActivities.length} 场真实骑行连续驱动，每日自动递推计算体能累积与疲劳消退。`
                         : '长周期体能积累 (CTL 42天)、急性疲劳 (ATL 7天) 与比赛竞技状态 (TSB) 动态时序监测。'}
                     </p>
                   </div>
 
-                  {/* Baseline Fitness & Mesocycle Switchers */}
+                  {/* Mode & Timeframe Controls */}
                   <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2.5">
-                    <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 overflow-x-auto max-w-full">
-                      <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 px-2 shrink-0">
-                        体能起点:
-                      </span>
-                      {(['rec', 'club', 'elite', 'pro'] as BaselineFitnessLevel[]).map((level) => (
+                    {/* Source Switcher */}
+                    {localActivities.length > 0 && (
+                      <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
                         <button
-                          key={level}
-                          onClick={() => setBaselineFitness(level)}
-                          className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
-                            baselineFitness === level
-                              ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
+                          type="button"
+                          onClick={() => setPmcDataSource('local_history')}
+                          className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                            pmcDataSource === 'local_history'
+                              ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                           }`}
-                          title={BASELINE_FITNESS_OPTIONS[level].desc}
                         >
-                          {BASELINE_FITNESS_OPTIONS[level].label.split(' ')[0]} ({BASELINE_FITNESS_OPTIONS[level].ctl})
+                          真实历史时序
                         </button>
-                      ))}
-                    </div>
+                        <button
+                          type="button"
+                          onClick={() => setPmcDataSource('preset_mesocycle')}
+                          className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                            pmcDataSource === 'preset_mesocycle'
+                              ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          }`}
+                        >
+                          周期课表模拟
+                        </button>
+                      </div>
+                    )}
 
-                    <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
-                      <button
-                        onClick={() => setPmcMesocycle('base')}
-                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-                          pmcMesocycle === 'base'
-                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                        }`}
-                      >
-                        基础期 (60天)
-                      </button>
-                      <button
-                        onClick={() => setPmcMesocycle('build')}
-                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-                          pmcMesocycle === 'build'
-                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                        }`}
-                      >
-                        强化期 (45天)
-                      </button>
-                      <button
-                        onClick={() => setPmcMesocycle('taper')}
-                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-                          pmcMesocycle === 'taper'
-                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                        }`}
-                      >
-                        减量备战 (28天)
-                      </button>
-                      <button
-                        onClick={() => setPmcMesocycle('grand_tour')}
-                        className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
-                          pmcMesocycle === 'grand_tour'
-                            ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-                        }`}
-                      >
-                        多日赛重负荷 (21天)
-                      </button>
-                    </div>
+                    {/* Controls for Local History Mode */}
+                    {pmcDataSource === 'local_history' && (
+                      <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                        {(['30d', '90d', '180d', 'ytd', 'all'] as PmcTimeRange[]).map((tr) => (
+                          <button
+                            key={tr}
+                            type="button"
+                            onClick={() => setPmcTimeRange(tr)}
+                            className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                              pmcTimeRange === tr
+                                ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                            }`}
+                          >
+                            {tr === '30d' ? '近30天' : tr === '90d' ? '近90天' : tr === '180d' ? '近半年' : tr === 'ytd' ? '本赛季' : '全周期'}
+                          </button>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => setFutureProjectionDays(prev => prev === 0 ? 14 : 0)}
+                          className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold border transition ${
+                            futureProjectionDays > 0
+                              ? 'bg-ios-purple text-white border-ios-purple shadow-xs font-bold'
+                              : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          }`}
+                          title="向未来延长 14 天赛前减量预测"
+                        >
+                          {futureProjectionDays > 0 ? '✓ +14天减量' : '+14天预测'}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Controls for Simulated Mesocycle Mode */}
+                    {pmcDataSource === 'preset_mesocycle' && (
+                      <>
+                        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 overflow-x-auto max-w-full">
+                          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 px-2 shrink-0">
+                            体能起点:
+                          </span>
+                          {(['rec', 'club', 'elite', 'pro'] as BaselineFitnessLevel[]).map((level) => (
+                            <button
+                              key={level}
+                              onClick={() => setBaselineFitness(level)}
+                              className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                                baselineFitness === level
+                                  ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                              }`}
+                              title={BASELINE_FITNESS_OPTIONS[level].desc}
+                            >
+                              {BASELINE_FITNESS_OPTIONS[level].label.split(' ')[0]} ({BASELINE_FITNESS_OPTIONS[level].ctl})
+                            </button>
+                          ))}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10">
+                          <button
+                            onClick={() => setPmcMesocycle('base')}
+                            className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                              pmcMesocycle === 'base'
+                                ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                            }`}
+                          >
+                            基础期 (60天)
+                          </button>
+                          <button
+                            onClick={() => setPmcMesocycle('build')}
+                            className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                              pmcMesocycle === 'build'
+                                ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                            }`}
+                          >
+                            强化期 (45天)
+                          </button>
+                          <button
+                            onClick={() => setPmcMesocycle('taper')}
+                            className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                              pmcMesocycle === 'taper'
+                                ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                            }`}
+                          >
+                            减量备战 (28天)
+                          </button>
+                          <button
+                            onClick={() => setPmcMesocycle('grand_tour')}
+                            className={`apple-touch px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                              pmcMesocycle === 'grand_tour'
+                                ? 'bg-white dark:bg-white/20 text-ios-blue shadow-xs font-bold'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                            }`}
+                          >
+                            多日赛重负荷 (21天)
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
                 {/* 4 Core Current Numbers */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="p-3 sm:p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
-                    <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 block">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-center">
+                    <span className="text-[11px] font-semibold text-ios-blue block">
                       当前 CTL (长期体能)
                     </span>
-                    <span className="text-2xl sm:text-3xl font-bold font-mono text-blue-600 dark:text-blue-400 block my-1 tabular-nums">
+                    <span className="text-2xl sm:text-3xl font-bold font-mono text-ios-blue block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.ctl : '--'}
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">42 天衰减滚动均线</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">42 天滚动体能均线</span>
                   </div>
 
-                  <div className="p-3 sm:p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-center">
-                    <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 block">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-ios-orange/10 border border-ios-orange/20 text-center">
+                    <span className="text-[11px] font-semibold text-ios-orange block">
                       当前 ATL (急性疲劳)
                     </span>
-                    <span className="text-2xl sm:text-3xl font-bold font-mono text-rose-600 dark:text-rose-400 block my-1 tabular-nums">
+                    <span className="text-2xl sm:text-3xl font-bold font-mono text-ios-orange block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.atl : '--'}
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">7 天短期负荷均线</span>
                   </div>
 
-                  <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
-                    <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 block">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-ios-green/10 border border-ios-green/20 text-center">
+                    <span className="text-[11px] font-semibold text-ios-green block">
                       当前 TSB (竞技状态)
                     </span>
                     <span
@@ -2192,14 +2649,37 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                   <div className="p-3 sm:p-3.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center">
                     <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 block">
-                      本次骑行载入 TSS
+                      {pmcSummary ? 'ACWR 负荷比率' : '本次骑行载入 TSS'}
                     </span>
                     <span className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-white block my-1 tabular-nums">
-                      {analysis.tss}
+                      {pmcSummary ? pmcSummary.acwr : (analysis ? analysis.tss : '--')}
                     </span>
-                    <span className="text-[11px] text-emerald-500 font-medium">已合并进末日时间轴</span>
+                    <span className="text-[11px] text-ios-green font-medium truncate block">
+                      {pmcSummary ? `7日爬升: ${pmcSummary.rampRate7d > 0 ? `+${pmcSummary.rampRate7d}` : pmcSummary.rampRate7d}/周` : '已合并进末日时间轴'}
+                    </span>
                   </div>
                 </div>
+
+                {/* Macro Season Summary Card when in Local-First history */}
+                {pmcSummary && (
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-ios-blue" />
+                      <span className="font-bold text-slate-800 dark:text-white">
+                        时序统计宏观战报:
+                      </span>
+                      <span className="text-slate-500">
+                        所选时段累计已完成 <strong className="text-slate-900 dark:text-white font-mono tabular-nums">{pmcSummary.activeDaysCount}</strong> 天出勤训练
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-slate-600 dark:text-slate-300 text-[11px] tabular-nums">
+                      <span>总里程: <strong className="text-slate-900 dark:text-white font-bold">{pmcSummary.totalSeasonKm}</strong> km</span>
+                      <span>累计负荷: <strong className="text-slate-900 dark:text-white font-bold">{pmcSummary.totalSeasonTss}</strong> TSS</span>
+                      <span>周均负荷: <strong className="text-slate-900 dark:text-white font-bold">{pmcSummary.weeklyAvgTss}</strong> TSS/周</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Triple-Curve Line Chart */}
                 <div className="h-80 w-full pt-2">
@@ -2641,6 +3121,26 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         posterUrl={sharePosterUrl}
         fileName={`${analysis?.fileName?.replace(/\.[^/.]+$/, '') || 'Ride'}_复盘海报.png`}
         title="FIT 码表深度复盘海报"
+      />
+
+      {/* Local Activity Archive Modal */}
+      <ActivityArchiveModal
+        isOpen={isArchiveModalOpen}
+        activities={localActivities}
+        activeActivityId={activeLocalActivityId || undefined}
+        ftpWatts={ftpWatts}
+        weightKg={weightKg}
+        maxHr={maxHr}
+        onClose={() => setIsArchiveModalOpen(false)}
+        onLoadActivity={handleLoadLocalActivity}
+        onRefreshList={refreshLocalActivities}
+      />
+
+      {/* Batch Import Progress Modal */}
+      <BatchImportModal
+        isOpen={isBatchModalOpen}
+        progress={batchProgress}
+        onClose={() => setIsBatchModalOpen(false)}
       />
     </div>
   );
