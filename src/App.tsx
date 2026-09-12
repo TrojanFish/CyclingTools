@@ -8,27 +8,31 @@ import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/common/BackToTop';
-import { CyclePowerCalculator } from './components/tools/CyclePowerCalculator';
-import { RoadBikeFitter } from './components/tools/RoadBikeFitter';
-import { TirePressureCalculator } from './components/tools/TirePressureCalculator';
-import { GearSpeedCadenceCalculator } from './components/tools/GearSpeedCadenceCalculator';
-import { ChainLengthCalculator } from './components/tools/ChainLengthCalculator';
-import { ClimbPacingPlanner } from './components/tools/ClimbPacingPlanner';
-import { UpgradeRoiCalculator } from './components/tools/UpgradeRoiCalculator';
-import { PowerProfileRadar } from './components/tools/PowerProfileRadar';
-import { RoadBikePainChecker } from './components/tools/RoadBikePainChecker';
-import { RoadbookLibrary } from './components/tools/RoadbookLibrary';
-import { GpxRouteCreator } from './components/tools/GpxRouteCreator';
-import { GroupRideSimulator } from './components/tools/GroupRideSimulator';
-import { CyclingWeatherAdvisor } from './components/tools/CyclingWeatherAdvisor';
-import { HealthCalculator } from './components/tools/HealthCalculator';
-import { FitActivityAnalyzer } from './components/tools/FitActivityAnalyzer';
-import { TubelessSealantCalculator } from './components/tools/TubelessSealantCalculator';
-import { SpokeLengthCalculator } from './components/tools/SpokeLengthCalculator';
-import { MtbSuspensionTuner } from './components/tools/MtbSuspensionTuner';
-import { WorkoutBuilder } from './components/tools/WorkoutBuilder';
-import { StravaDataCockpit } from './components/tools/StravaDataCockpit';
-import { TrainingPlanCalendar } from './components/tools/TrainingPlanCalendar';
+import { IOSToolSkeleton } from './components/common/IOSToolSkeleton';
+import { prefetchTool } from './utils/toolLoader';
+
+// Lazy-loaded Tool Components with zero-jank chunking
+const CyclePowerCalculator = React.lazy(() => import('./components/tools/CyclePowerCalculator').then(m => ({ default: m.CyclePowerCalculator })));
+const RoadBikeFitter = React.lazy(() => import('./components/tools/RoadBikeFitter').then(m => ({ default: m.RoadBikeFitter })));
+const TirePressureCalculator = React.lazy(() => import('./components/tools/TirePressureCalculator').then(m => ({ default: m.TirePressureCalculator })));
+const GearSpeedCadenceCalculator = React.lazy(() => import('./components/tools/GearSpeedCadenceCalculator').then(m => ({ default: m.GearSpeedCadenceCalculator })));
+const ChainLengthCalculator = React.lazy(() => import('./components/tools/ChainLengthCalculator').then(m => ({ default: m.ChainLengthCalculator })));
+const ClimbPacingPlanner = React.lazy(() => import('./components/tools/ClimbPacingPlanner').then(m => ({ default: m.ClimbPacingPlanner })));
+const UpgradeRoiCalculator = React.lazy(() => import('./components/tools/UpgradeRoiCalculator').then(m => ({ default: m.UpgradeRoiCalculator })));
+const PowerProfileRadar = React.lazy(() => import('./components/tools/PowerProfileRadar').then(m => ({ default: m.PowerProfileRadar })));
+const RoadBikePainChecker = React.lazy(() => import('./components/tools/RoadBikePainChecker').then(m => ({ default: m.RoadBikePainChecker })));
+const RoadbookLibrary = React.lazy(() => import('./components/tools/RoadbookLibrary').then(m => ({ default: m.RoadbookLibrary })));
+const GpxRouteCreator = React.lazy(() => import('./components/tools/GpxRouteCreator').then(m => ({ default: m.GpxRouteCreator })));
+const GroupRideSimulator = React.lazy(() => import('./components/tools/GroupRideSimulator').then(m => ({ default: m.GroupRideSimulator })));
+const CyclingWeatherAdvisor = React.lazy(() => import('./components/tools/CyclingWeatherAdvisor').then(m => ({ default: m.CyclingWeatherAdvisor })));
+const HealthCalculator = React.lazy(() => import('./components/tools/HealthCalculator').then(m => ({ default: m.HealthCalculator })));
+const FitActivityAnalyzer = React.lazy(() => import('./components/tools/FitActivityAnalyzer').then(m => ({ default: m.FitActivityAnalyzer })));
+const TubelessSealantCalculator = React.lazy(() => import('./components/tools/TubelessSealantCalculator').then(m => ({ default: m.TubelessSealantCalculator })));
+const SpokeLengthCalculator = React.lazy(() => import('./components/tools/SpokeLengthCalculator').then(m => ({ default: m.SpokeLengthCalculator })));
+const MtbSuspensionTuner = React.lazy(() => import('./components/tools/MtbSuspensionTuner').then(m => ({ default: m.MtbSuspensionTuner })));
+const WorkoutBuilder = React.lazy(() => import('./components/tools/WorkoutBuilder').then(m => ({ default: m.WorkoutBuilder })));
+const StravaDataCockpit = React.lazy(() => import('./components/tools/StravaDataCockpit').then(m => ({ default: m.StravaDataCockpit })));
+const TrainingPlanCalendar = React.lazy(() => import('./components/tools/TrainingPlanCalendar').then(m => ({ default: m.TrainingPlanCalendar })));
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
@@ -251,6 +255,12 @@ const MainAppContent: React.FC = () => {
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-end min-w-0">
                   <button
                     onClick={handlePrevTool}
+                    onMouseEnter={() => {
+                      if (currentToolIndex > 0) prefetchTool(TOOLS_LIST[currentToolIndex - 1].id);
+                    }}
+                    onTouchStart={() => {
+                      if (currentToolIndex > 0) prefetchTool(TOOLS_LIST[currentToolIndex - 1].id);
+                    }}
                     disabled={currentToolIndex <= 0}
                     className="h-9 px-2 sm:px-2.5 flex items-center justify-center rounded-xl bg-white/80 dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch shadow-2xs"
                     title={t('prevTool')}
@@ -268,6 +278,12 @@ const MainAppContent: React.FC = () => {
 
                   <button
                     onClick={handleNextTool}
+                    onMouseEnter={() => {
+                      if (currentToolIndex < TOOLS_LIST.length - 1) prefetchTool(TOOLS_LIST[currentToolIndex + 1].id);
+                    }}
+                    onTouchStart={() => {
+                      if (currentToolIndex < TOOLS_LIST.length - 1) prefetchTool(TOOLS_LIST[currentToolIndex + 1].id);
+                    }}
                     disabled={currentToolIndex >= TOOLS_LIST.length - 1}
                     className="h-9 px-2 sm:px-2.5 flex items-center justify-center rounded-xl bg-white/80 dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch shadow-2xs"
                     title={t('nextTool')}
@@ -295,27 +311,29 @@ const MainAppContent: React.FC = () => {
               />
             )}
 
-            {currentToolId === 'power-calc' && <CyclePowerCalculator />}
-            {currentToolId === 'tire-pressure' && <TirePressureCalculator />}
-            {currentToolId === 'gear-calculator' && <GearSpeedCadenceCalculator />}
-            {currentToolId === 'chain-calculator' && <ChainLengthCalculator />}
-            {currentToolId === 'climb-pacing' && <ClimbPacingPlanner />}
-            {currentToolId === 'upgrade-roi' && <UpgradeRoiCalculator />}
-            {currentToolId === 'bike-fitter' && <RoadBikeFitter />}
-            {currentToolId === 'pain-checker' && <RoadBikePainChecker />}
-            {currentToolId === 'roadbook-library' && <RoadbookLibrary onNavigateTool={(id) => setCurrentToolId(id)} />}
-            {currentToolId === 'gpx-creator' && <GpxRouteCreator />}
-            {currentToolId === 'group-ride' && <GroupRideSimulator />}
-            {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
-            {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => setCurrentToolId(id)} />}
-            {currentToolId === 'health-calculator' && <HealthCalculator />}
-            {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => setCurrentToolId(id)} />}
-            {currentToolId === 'workout-builder' && <WorkoutBuilder />}
-            {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
-            {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
-            {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
-            {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
-            {currentToolId === 'training-calendar' && <TrainingPlanCalendar />}
+            <React.Suspense fallback={<IOSToolSkeleton />}>
+              {currentToolId === 'power-calc' && <CyclePowerCalculator />}
+              {currentToolId === 'tire-pressure' && <TirePressureCalculator />}
+              {currentToolId === 'gear-calculator' && <GearSpeedCadenceCalculator />}
+              {currentToolId === 'chain-calculator' && <ChainLengthCalculator />}
+              {currentToolId === 'climb-pacing' && <ClimbPacingPlanner />}
+              {currentToolId === 'upgrade-roi' && <UpgradeRoiCalculator />}
+              {currentToolId === 'bike-fitter' && <RoadBikeFitter />}
+              {currentToolId === 'pain-checker' && <RoadBikePainChecker />}
+              {currentToolId === 'roadbook-library' && <RoadbookLibrary onNavigateTool={(id) => setCurrentToolId(id)} />}
+              {currentToolId === 'gpx-creator' && <GpxRouteCreator />}
+              {currentToolId === 'group-ride' && <GroupRideSimulator />}
+              {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
+              {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => setCurrentToolId(id)} />}
+              {currentToolId === 'health-calculator' && <HealthCalculator />}
+              {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => setCurrentToolId(id)} />}
+              {currentToolId === 'workout-builder' && <WorkoutBuilder />}
+              {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
+              {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
+              {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
+              {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
+              {currentToolId === 'training-calendar' && <TrainingPlanCalendar />}
+            </React.Suspense>
           </main>
         </div>
 

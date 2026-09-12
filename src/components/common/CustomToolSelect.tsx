@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { TOOLS_LIST } from '../../data/toolsList';
 import { smoothScrollToTop } from '../../utils/toolNavHelper';
+import { prefetchTool } from '../../utils/toolLoader';
 
 export const StravaLogo: React.FC<{ className?: string }> = ({ className = 'w-3.5 h-3.5' }) => (
   <svg className={`${className} fill-[#FC4C02] shrink-0`} viewBox="0 0 24 24" role="img" aria-label="Strava">
@@ -219,6 +220,8 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
                       setIsOpen(false);
                       smoothScrollToTop();
                     }}
+                    onMouseEnter={() => prefetchTool(tItem.id)}
+                    onTouchStart={() => prefetchTool(tItem.id)}
                     className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs text-left transition apple-touch ${
                       isSelected
                         ? 'bg-ios-blue/15 text-ios-blue dark:text-ios-blue-dark font-bold shadow-2xs'

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rouleur-cache-v1';
+const CACHE_NAME = 'rouleur-cache-v2';
 const TILE_CACHE_NAME = 'rouleur-tiles-v1';
 const MAX_CACHED_TILES = 150;
 

@@ -32,6 +32,7 @@ import { TOOLS_LIST } from '../../data/toolsList';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { smoothScrollToTop } from '../../utils/toolNavHelper';
+import { prefetchTool } from '../../utils/toolLoader';
 
 const ICONS_MAP: Record<string, React.ElementType> = {
   Zap,
@@ -181,6 +182,8 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
                           onSelectTool(tool.id);
                           smoothScrollToTop();
                         }}
+                        onMouseEnter={() => prefetchTool(tool.id)}
+                        onTouchStart={() => prefetchTool(tool.id)}
                         className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-all ${
                           isActive
                             ? 'bg-ios-blue text-white shadow-xs font-medium'

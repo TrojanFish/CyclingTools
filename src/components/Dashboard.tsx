@@ -35,6 +35,7 @@ import { generateDemoStravaActivities } from '../utils/stravaCockpitAnalytics';
 import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 import { generateLatestRideSocialPoster, LatestRidePosterData } from '../utils/shareCardGenerators';
 import { LatestRideShareModal } from './common/LatestRideShareModal';
+import { prefetchTool } from '../utils/toolLoader';
 
 const ICONS_MAP: Record<string, React.ElementType> = {
   Zap,
@@ -339,6 +340,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="pt-1.5 flex items-center gap-2 sm:gap-2.5 flex-wrap">
             <button
               onClick={() => onSelectTool('activity-analyzer')}
+              onMouseEnter={() => prefetchTool('activity-analyzer')}
+              onTouchStart={() => prefetchTool('activity-analyzer')}
               className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:bg-ios-blue/90 active:scale-95 transition apple-touch"
             >
               <Activity className="w-4 h-4" />
@@ -347,6 +350,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             <button
               onClick={() => onSelectTool('strava-cockpit')}
+              onMouseEnter={() => prefetchTool('strava-cockpit')}
+              onTouchStart={() => prefetchTool('strava-cockpit')}
               className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/10 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 transition apple-touch text-xs font-semibold shadow-ios-sm"
             >
               <LayoutDashboard className="w-4 h-4 text-ios-blue" />
@@ -435,6 +440,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div
                 key={tool.id}
                 onClick={() => onSelectTool(tool.id)}
+                onMouseEnter={() => prefetchTool(tool.id)}
+                onTouchStart={() => prefetchTool(tool.id)}
                 className="group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm hover:shadow-ios-card active:scale-[0.985] transition-all duration-200 cursor-pointer apple-touch"
               >
                 <div className="space-y-3.5">
