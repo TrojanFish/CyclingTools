@@ -1,12 +1,25 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { MapPin, Mountain, Download, Upload, RefreshCw, Navigation, Play, Plus, Trash2, Search, ArrowRightLeft, ArrowUp, ArrowDown, FileCode, CheckCircle2, X } from 'lucide-react';
+import {
+  MapPin, Mountain, Download, Upload, RefreshCw, Navigation, Play, Plus, Trash2, Search,
+  ArrowRightLeft, ArrowUp, ArrowDown, FileCode, CheckCircle2, X, Wind, Zap, Compass,
+  Flame, Droplets, Bike, Sliders, ChevronRight, Activity, BarChart2, Share2, Gauge
+} from 'lucide-react';
 import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { useToast } from '../../context/ToastContext';
-import { IOSCard, IOSMetricTile } from '../common/IOSCard';
+import { useRiderProfile } from '../../context/RiderProfileContext';
+import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
+import { NumberStepper } from '../common/NumberStepper';
 import { ShareCardModal } from '../common/ShareCardModal';
-import { generateRoadbookPoster } from '../../utils/shareCardGenerators';
+import { generateRoadbookPoster, generateCoursePacingPoster } from '../../utils/shareCardGenerators';
+import {
+  computeCoursePacingPlan,
+  CourseSegment,
+  CoursePacingSummary
+} from '../../utils/routePacingEngine';
+import { ZHEJIANG_XINGZHE_ROUTES } from '../../data/zhejiangRoutes';
 
 interface Waypoint {
   id: string;
@@ -16,15 +29,29 @@ interface Waypoint {
   name?: string;
 }
 
-import { ZHEJIANG_XINGZHE_ROUTES } from '../../data/zhejiangRoutes';
+const WIND_COMPASS_PRESETS = [
+  { label: '北 N', deg: 0, sub: '0°' },
+  { label: '东北 NE', deg: 45, sub: '45°' },
+  { label: '东 E', deg: 90, sub: '90°' },
+  { label: '东南 SE', deg: 135, sub: '135°' },
+  { label: '南 S', deg: 180, sub: '180°' },
+  { label: '西南 SW', deg: 225, sub: '225°' },
+  { label: '西 W', deg: 270, sub: '270°' },
+  { label: '西北 NW', deg: 315, sub: '315°' },
+];
 
 export const GpxRouteCreator: React.FC = () => {
   const { showToast } = useToast();
+  const { profile, activeBike } = useRiderProfile();
+
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const polylineRef = useRef<L.Polyline | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const hoverMarkerRef = useRef<L.CircleMarker | null>(null);
+
+  // Active view mode: Route Studio (Map/Editing) vs Pacing & Aero Engine
+  const [activeTab, setActiveTab] = useState<'route_studio' | 'pacing_engine'>('route_studio');
 
   const [waypoints, setWaypoints] = useState<Waypoint[]>(ZHEJIANG_XINGZHE_ROUTES[0].waypoints);
   const [selectedPresetId, setSelectedPresetId] = useState<string>(ZHEJIANG_XINGZHE_ROUTES[0].id);
@@ -32,10 +59,18 @@ export const GpxRouteCreator: React.FC = () => {
   // Share Poster State
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [sharePosterTitle, setSharePosterTitle] = useState<string>('GPX 航迹路书海报');
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [routeName, setRouteName] = useState<string>(ZHEJIANG_XINGZHE_ROUTES[0].name);
+
+  // Environmental & Aerodynamic Pacing State
+  const [windSpeedKmh, setWindSpeedKmh] = useState<number>(14);
+  const [windDirectionDeg, setWindDirectionDeg] = useState<number>(90); // 90° = East wind
+  const [ambientTempC, setAmbientTempC] = useState<number>(22);
+  const [strategyMode, setStrategyMode] = useState<'conservative' | 'balanced' | 'aggressive'>('balanced');
+  const [selectedHoverSegment, setSelectedHoverSegment] = useState<CourseSegment | null>(null);
 
   // Check for route transferred from RoadbookLibrary
   useEffect(() => {
@@ -56,7 +91,7 @@ export const GpxRouteCreator: React.FC = () => {
             setRouteName(pending.name);
           }
           setSelectedPresetId('custom');
-          showToast(`已成功载入路书「${pending.name}」共 ${mapped.length} 个航点，可自由编辑！`, 'success');
+          showToast(`已成功载入路书「${pending.name}」共 ${mapped.length} 个航点，可自由编辑与测算！`, 'success');
         }
         localStorage.removeItem('solorider_pending_gpx_route');
       }
@@ -144,15 +179,15 @@ export const GpxRouteCreator: React.FC = () => {
 
       if (waypoints.length >= 2) {
         const polyline = L.polyline(latLngs, {
-          color: '#00AFFF',
+          color: '#0A84FF',
           weight: 4,
-          opacity: 0.85
+          opacity: 0.88
         }).addTo(map);
         polylineRef.current = polyline;
         map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
       }
 
-      // Add Start & End Markers with custom SVG/HTML divIcon (Zero broken images, crisp on Retina)
+      // Add Start & End Markers with custom crisp DivIcon
       if (waypoints[0]) {
         const startIcon = L.divIcon({
           className: 'custom-map-start-pin',
@@ -197,85 +232,102 @@ export const GpxRouteCreator: React.FC = () => {
     }
   }, [waypoints]);
 
-  // Elevation Profile Chart & Distance Metrics
-  const routeStats = useMemo(() => {
-    let totalDistKm = 0;
-    let totalClimbM = 0;
-    let totalDescentM = 0;
-    const profilePoints: { distKm: number; elevation: number; lat: number; lng: number }[] = [];
-
-    for (let i = 0; i < waypoints.length; i++) {
-      const curr = waypoints[i];
-      if (i > 0) {
-        const prev = waypoints[i - 1];
-        const p1 = L.latLng(prev.lat, prev.lng);
-        const p2 = L.latLng(curr.lat, curr.lng);
-        const d = p1.distanceTo(p2) / 1000;
-        totalDistKm += d;
-
-        const eleDiff = curr.elevation - prev.elevation;
-        if (eleDiff > 0) totalClimbM += eleDiff;
-        else totalDescentM += Math.abs(eleDiff);
+  // Reactive Physics & Aerodynamic Pacing Engine Solver
+  const pacingPlan: CoursePacingSummary = useMemo(() => {
+    return computeCoursePacingPlan(
+      waypoints.map(w => ({ lat: w.lat, lng: w.lng, elevation: w.elevation, name: w.name })),
+      {
+        ftpWatts: profile.ftpWatts || 220,
+        riderWeightKg: profile.weightKg || 68,
+        bikeWeightKg: activeBike?.weightKg || profile.bikeWeightKg || 8.5,
+        cda: activeBike?.cda || 0.32,
+        crr: activeBike?.crr || 0.0035,
+        windSpeedKmh,
+        windDirectionDeg,
+        ambientTempC,
+        strategyMode
       }
-      profilePoints.push({
-        distKm: parseFloat(totalDistKm.toFixed(1)),
-        elevation: curr.elevation,
-        lat: curr.lat,
-        lng: curr.lng
-      });
+    );
+  }, [waypoints, profile.ftpWatts, profile.weightKg, profile.bikeWeightKg, activeBike, windSpeedKmh, windDirectionDeg, ambientTempC, strategyMode]);
+
+  // High-Resolution Gradient Elevation Chart with Dual Y-Axis (Elevation + Target Watts)
+  const chartData = useMemo(() => {
+    const segs = pacingPlan.segments;
+    if (segs.length === 0) {
+      return { labels: [], datasets: [] };
     }
 
     return {
-      totalDistKm: parseFloat(totalDistKm.toFixed(1)),
-      totalClimbM: Math.round(totalClimbM),
-      totalDescentM: Math.round(totalDescentM),
-      profilePoints
-    };
-  }, [waypoints]);
-
-  // Elevation Chart Data
-  const chartData = useMemo(() => {
-    return {
-      labels: routeStats.profilePoints.map(p => `${p.distKm} km`),
+      labels: segs.map(s => `${s.endDistKm} km`),
       datasets: [
         {
-          label: '海拔 (m)',
-          data: routeStats.profilePoints.map(p => p.elevation),
-          borderColor: '#00AFFF',
-          backgroundColor: 'rgba(0, 175, 255, 0.15)',
+          type: 'line' as const,
+          label: '海拔剖面 (m)',
+          data: segs.map(s => s.endEleM),
+          yAxisID: 'y',
           fill: true,
-          tension: 0.35,
-          pointRadius: 4,
-          pointBackgroundColor: '#00AFFF'
+          tension: 0.3,
+          pointRadius: 2,
+          pointHoverRadius: 6,
+          segment: {
+            borderColor: (ctx: any) => {
+              const seg = segs[ctx.p1DataIndex];
+              return seg ? seg.color : '#10B981';
+            },
+            backgroundColor: (ctx: any) => {
+              const seg = segs[ctx.p1DataIndex];
+              return seg ? `${seg.color}25` : 'rgba(16, 185, 129, 0.15)';
+            }
+          }
+        },
+        {
+          type: 'line' as const,
+          label: '目标配速功率 (W)',
+          data: segs.map(s => s.targetWatts),
+          yAxisID: 'y1',
+          borderColor: '#F59E0B', // Apple Amber
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [3, 3],
+          tension: 0.25,
+          pointRadius: 1.5,
+          pointHoverRadius: 5,
+          pointBackgroundColor: '#F59E0B',
+          fill: false
         }
       ]
     };
-  }, [routeStats]);
+  }, [pacingPlan]);
 
-  // Hover chart sync marker on map
+  // Hover chart sync marker on Leaflet map
   const handleChartHover = (event: any, activeElements: any[]) => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
     if (activeElements && activeElements.length > 0) {
       const index = activeElements[0].index;
-      const pt = routeStats.profilePoints[index];
-      if (pt) {
+      const seg = pacingPlan.segments[index];
+      if (seg) {
+        setSelectedHoverSegment(seg);
         if (!hoverMarkerRef.current) {
-          hoverMarkerRef.current = L.circleMarker([pt.lat, pt.lng], {
-            radius: 7,
+          hoverMarkerRef.current = L.circleMarker([seg.lat, seg.lng], {
+            radius: 8,
             color: '#ffffff',
-            fillColor: '#00AFFF',
+            fillColor: seg.color,
             fillOpacity: 1,
-            weight: 2
+            weight: 3
           }).addTo(map);
         } else {
-          hoverMarkerRef.current.setLatLng([pt.lat, pt.lng]);
+          hoverMarkerRef.current.setLatLng([seg.lat, seg.lng]);
+          hoverMarkerRef.current.setStyle({ fillColor: seg.color });
         }
       }
-    } else if (hoverMarkerRef.current) {
-      hoverMarkerRef.current.remove();
-      hoverMarkerRef.current = null;
+    } else {
+      if (hoverMarkerRef.current) {
+        hoverMarkerRef.current.remove();
+        hoverMarkerRef.current = null;
+      }
+      setSelectedHoverSegment(null);
     }
   };
 
@@ -286,7 +338,7 @@ export const GpxRouteCreator: React.FC = () => {
       setSelectedPresetId(targetRoute.id);
       setRouteName(targetRoute.name);
       setWaypoints(targetRoute.waypoints);
-      showToast(`已加载行者实测路书: ${targetRoute.name}`, 'success', `路书编号: ${targetRoute.xingzheRoadbookId} | 全长 ${targetRoute.distanceKm}km`);
+      showToast(`已加载行者实测路书: ${targetRoute.name}`, 'success', `全长 ${targetRoute.distanceKm}km | 累计爬升 +${targetRoute.elevationGainM}m`);
     }
   };
 
@@ -338,8 +390,8 @@ export const GpxRouteCreator: React.FC = () => {
         }
 
         const parsedWaypoints: Waypoint[] = [];
-        // Sample points if too dense (max 50 points for smooth map editing)
-        const step = Math.max(1, Math.floor(trkpts.length / 50));
+        // Sample points if too dense (up to 60 key points for high performance)
+        const step = Math.max(1, Math.floor(trkpts.length / 60));
 
         for (let i = 0; i < trkpts.length; i += step) {
           const pt = trkpts[i];
@@ -361,12 +413,14 @@ export const GpxRouteCreator: React.FC = () => {
 
         setWaypoints(parsedWaypoints);
         setRouteName(file.name.replace(/\.[^/.]+$/, ''));
+        setSelectedPresetId('custom');
         showToast('GPX 文件解析导入成功！', 'success', `共导入 ${parsedWaypoints.length} 个核心航迹点`);
       } catch (err) {
         showToast('GPX 解析失败，请检查文件格式！', 'error');
       }
     };
     reader.readAsText(file);
+    e.target.value = '';
   };
 
   // Export GPX XML
@@ -377,7 +431,7 @@ export const GpxRouteCreator: React.FC = () => {
     }
 
     const gpxXml = `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="Rouleur PRO Roadbook" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx version="1.1" creator="Rouleur PRO Roadbook Studio" xmlns="http://www.topografix.com/GPX/1/1">
   <metadata>
     <name>${routeName}</name>
     <time>${new Date().toISOString()}</time>
@@ -400,33 +454,65 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
     a.download = `${routeName.replace(/\s+/g, '_')}.gpx`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('GPX 路书已生成并下载！', 'success');
+    showToast('标准 GPX 路书文件已生成并下载！', 'success');
   };
 
-  // Generate Social Share Poster
+  // Generate Roadbook / Pacing Poster
   const handleGeneratePoster = () => {
     try {
-      const maxAlt = waypoints.reduce((max, w) => Math.max(max, w.elevation), 0);
-      const avgGrade = routeStats.totalDistKm > 0 ? parseFloat(((routeStats.totalClimbM / (routeStats.totalDistKm * 1000)) * 100).toFixed(1)) : 0;
-      const url = generateRoadbookPoster({
-        routeName: routeName || '自制航迹路书',
-        sourceCode: 'GPX ROUTE',
-        distanceKm: routeStats.totalDistKm,
-        elevationGainM: routeStats.totalClimbM,
-        maxAltitudeM: maxAlt,
-        avgGradePct: avgGrade,
-        sceneryRating: 5,
-        roadCondition: routeStats.totalDistKm > 80 ? '进阶耐力路线' : '优质骑行绿道',
-        highlights: [
-          `规划航点 ${waypoints.length} 个`,
-          `累计爬升 +${routeStats.totalClimbM}m`,
-          `最高海拔标高 ${maxAlt}m`,
-          'GIS拓扑校准航迹'
-        ],
-        description: `包含 ${waypoints.length} 个核心航迹点，起止于 ${waypoints[0]?.name || '起点'} 至 ${waypoints[waypoints.length - 1]?.name || '终点'}。`
-      });
-      setSharePosterUrl(url);
-      setIsShareModalOpen(true);
+      if (activeTab === 'pacing_engine') {
+        const windDesc = `${windSpeedKmh}km/h (${windDirectionDeg}°) · 顶风 ${pacingPlan.headwindPct}%`;
+        const keySegs = pacingPlan.segments.slice(0, 7).map(s => ({
+          name: `第${s.index}区段 ${s.gradientLabel}`,
+          distKm: s.distKm,
+          gradePct: s.gradePct,
+          targetWatts: s.targetWatts,
+          speedKmh: s.speedKmh,
+          windDesc: s.windRelationLabel.split(' ')[0]
+        }));
+
+        const url = generateCoursePacingPoster({
+          routeName: routeName || '自制航迹路书',
+          distanceKm: pacingPlan.totalDistanceKm,
+          elevationGainM: pacingPlan.totalElevationGainM,
+          estTimeStr: pacingPlan.totalDurationFormatted,
+          avgSpeedKmh: pacingPlan.avgSpeedKmh,
+          npWatts: pacingPlan.normalizedPowerWatts,
+          intensityFactor: pacingPlan.intensityFactor,
+          tss: pacingPlan.trainingStressScore,
+          totalKj: pacingPlan.totalWorkKj,
+          windDesc,
+          carbsPerHourG: pacingPlan.nutrition.recommendedCarbsPerHourG,
+          fluidPerHourMl: pacingPlan.nutrition.recommendedFluidPerHourMl,
+          headwindPct: pacingPlan.headwindPct,
+          keySegments: keySegs
+        });
+        setSharePosterUrl(url);
+        setSharePosterTitle('风阻配速策略长图海报');
+        setIsShareModalOpen(true);
+      } else {
+        const maxAlt = waypoints.reduce((max, w) => Math.max(max, w.elevation), 0);
+        const url = generateRoadbookPoster({
+          routeName: routeName || '自制航迹路书',
+          sourceCode: 'GPX ROUTE',
+          distanceKm: pacingPlan.totalDistanceKm,
+          elevationGainM: pacingPlan.totalElevationGainM,
+          maxAltitudeM: maxAlt,
+          avgGradePct: pacingPlan.avgGradePct,
+          sceneryRating: 5,
+          roadCondition: pacingPlan.totalDistanceKm > 80 ? '进阶耐力路线' : '优质骑行绿道',
+          highlights: [
+            `规划航点 ${waypoints.length} 个`,
+            `累计爬升 +${pacingPlan.totalElevationGainM}m`,
+            `预估完赛 ${pacingPlan.totalDurationFormatted}`,
+            'GIS拓扑校准航迹'
+          ],
+          description: `包含 ${waypoints.length} 个核心航迹点，起止于 ${waypoints[0]?.name || '起点'} 至 ${waypoints[waypoints.length - 1]?.name || '终点'}。`
+        });
+        setSharePosterUrl(url);
+        setSharePosterTitle('GPX 航迹路书海报');
+        setIsShareModalOpen(true);
+      }
     } catch (e) {
       showToast('海报生成失败，请重试', 'error');
     }
@@ -451,17 +537,26 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
     });
   };
 
+  // Wind speed Beaufort helper
+  const getBeaufortTag = (speed: number) => {
+    if (speed <= 5) return '0-1级 微风徐徐';
+    if (speed <= 19) return '2-3级 清爽和风';
+    if (speed <= 28) return '4级 强劲清风';
+    if (speed <= 38) return '5级 显著疾风';
+    return '6级+ 强风阻力';
+  };
+
   return (
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="GIS 地理拓扑与路书工坊"
+        category="GIS 地理拓扑与路线工坊"
         categoryIcon={Navigation}
-        title="GPX 路线规划与路书工坊"
-        description="地名智能搜索、已有 GPX 导入解析、海拔剖面图联动定位与专业标准 GPX 文件导出。"
+        title="GPX 路线规划与风阻/体能策略引擎"
+        description="地名智能搜索、航点编辑、气动风阻矢量推演与 Best Bike Split 式分段体能策略解算。"
         tint="mint"
         onShare={handleGeneratePoster}
-        shareTitle="生成航迹长图海报"
+        shareTitle={activeTab === 'pacing_engine' ? '生成配速策略长图' : '生成航迹长图海报'}
         actions={
           <>
             <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
@@ -487,6 +582,32 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
           </>
         }
       />
+
+      {/* Dual Mode Switcher: Apple HIG Segmented Control */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <IOSSegmentedControl
+          options={[
+            { id: 'route_studio', value: 'route_studio', label: '航迹地图与编辑', icon: MapPin },
+            { id: 'pacing_engine', value: 'pacing_engine', label: '风阻与体能策略引擎 (Best Bike Split)', icon: Zap }
+          ]}
+          value={activeTab}
+          onChange={(val) => setActiveTab(val as 'route_studio' | 'pacing_engine')}
+          tint="blue"
+          mobileFullWidth={true}
+          className="w-full sm:w-auto"
+        />
+
+        {/* Garage Active Bike Status Pill */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-xs text-slate-600 dark:text-slate-300">
+          <Bike className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+          <span className="font-semibold truncate max-w-[170px] sm:max-w-xs">
+            {activeBike ? activeBike.name : '标准综合公路车'}
+          </span>
+          <span className="text-[11px] font-mono tabular-nums text-slate-400">
+            {activeBike ? `${activeBike.weightKg}kg · CdA ${activeBike.cda}` : '8.5kg · CdA 0.32'}
+          </span>
+        </div>
+      </div>
 
       {/* Xingzhe Verified Zhejiang Routes Showcase Bar */}
       <IOSCard variant="default" padding="none" className="p-3.5 sm:p-4 space-y-2.5">
@@ -546,8 +667,8 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                     ? 'border-white/20 text-white/80'
                     : 'border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-slate-400'
                 }`}>
-                  <span>{route.distanceKm}km</span>
-                  <span className={isSelected ? 'text-amber-200 font-bold' : 'text-ios-orange font-semibold'}>+{route.elevationGainM}m</span>
+                  <span className="tabular-nums">{route.distanceKm}km</span>
+                  <span className={`tabular-nums ${isSelected ? 'text-amber-200 font-bold' : 'text-ios-orange font-semibold'}`}>+{route.elevationGainM}m</span>
                 </div>
               </button>
             );
@@ -555,97 +676,446 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         </div>
       </IOSCard>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left Map Area */}
-        <div className="lg:col-span-7 space-y-3.5">
-          {/* Search Bar - Native iOS 18 Unified Search Pattern */}
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="搜索定位地名/山峰 (如: 杭州西湖, 莫干山, 雁荡山)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearchLocation()}
-              className="w-full h-9 bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-20 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue transition shadow-xs"
-            />
-            <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              {isSearching ? (
-                <div className="p-1 text-ios-blue pointer-events-none">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                </div>
-              ) : (
-                <>
-                  {searchQuery && (
+      {/* Main Workspace Layout */}
+      {activeTab === 'route_studio' ? (
+        /* TAB 1: Route Studio & Map Editing */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Left Map Area */}
+          <div className="lg:col-span-7 space-y-3.5">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="搜索定位地名/山峰 (如: 杭州西湖, 莫干山, 雁荡山)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearchLocation()}
+                className="w-full h-9 bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl pl-8.5 pr-20 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue transition shadow-xs"
+              />
+              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                {isSearching ? (
+                  <div className="p-1 text-ios-blue pointer-events-none">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery('')}
+                        className="w-5 h-5 rounded-full bg-slate-200/70 dark:bg-white/15 text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center transition"
+                        title="清除输入"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setSearchQuery('')}
-                      className="w-5 h-5 rounded-full bg-slate-200/70 dark:bg-white/15 text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center transition"
-                      title="清除输入"
+                      onClick={handleSearchLocation}
+                      className="apple-touch h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-ios-sm shrink-0"
+                      title="定位所输地名"
                     >
-                      <X className="w-3 h-3" />
+                      <span>定位</span>
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={handleSearchLocation}
-                    className="apple-touch h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-ios-sm shrink-0"
-                    title="定位所输地名"
-                  >
-                    <span>定位</span>
-                  </button>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
+
+            {/* Leaflet Map Canvas */}
+            <IOSCard variant="default" padding="none" className="p-2 overflow-hidden">
+              <div ref={mapContainerRef} className="w-full h-[430px] rounded-xl border border-slate-200/60 dark:border-white/10 overflow-hidden"></div>
+            </IOSCard>
           </div>
 
-          {/* Leaflet Map Canvas */}
-          <IOSCard variant="default" padding="none" className="p-2 overflow-hidden">
-            <div ref={mapContainerRef} className="w-full h-[400px] rounded-xl border border-slate-200/60 dark:border-white/10 overflow-hidden"></div>
-          </IOSCard>
+          {/* Right Route Stats & Elevation Profile */}
+          <div className="lg:col-span-5 space-y-4">
+            {/* Key Distance & Elevation Stats: 3 columns on mobile */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <IOSMetricTile
+                label="全程总距离"
+                value={pacingPlan.totalDistanceKm}
+                unit="km"
+                subtext={`${waypoints.length} 航点`}
+                theme="blue"
+                className="p-2.5 sm:p-4"
+              />
+              <IOSMetricTile
+                label="累计爬升"
+                value={`+${pacingPlan.totalElevationGainM}`}
+                unit="m"
+                subtext="海拔增益"
+                theme="green"
+                className="p-2.5 sm:p-4"
+              />
+              <IOSMetricTile
+                label="累计下降"
+                value={`-${pacingPlan.totalDescentM}`}
+                unit="m"
+                subtext="下坡缓释"
+                theme="amber"
+                className="p-2.5 sm:p-4"
+              />
+            </div>
+
+            {/* Elevation Profile Chart with Hover Sync */}
+            <IOSCard variant="default" padding="none" className="p-4 space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-semibold text-slate-800 dark:text-white flex items-center gap-1.5">
+                  <Mountain className="w-3.5 h-3.5 text-ios-blue" />
+                  高分辨率海拔剖面 (悬浮联动地图)
+                </span>
+                <span className="text-[11px] text-slate-400 dark:text-slate-500">*坡度语义分色</span>
+              </div>
+
+              <div className="h-44">
+                <Line
+                  data={chartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    onHover: handleChartHover,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        backgroundColor: 'rgba(28, 28, 30, 0.95)',
+                        titleColor: '#0A84FF',
+                        bodyColor: '#ffffff',
+                        borderColor: 'rgba(10, 132, 255, 0.3)',
+                        borderWidth: 1,
+                        padding: 8
+                      }
+                    },
+                    scales: {
+                      x: { grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                      y: { grid: { color: 'rgba(148, 163, 184, 0.1)' }, title: { display: true, text: '海拔 (m)' } },
+                      y1: { display: false }
+                    }
+                  }}
+                />
+              </div>
+            </IOSCard>
+
+            {/* Waypoints List with Move/Delete Operations */}
+            <IOSCard variant="default" padding="none" className="p-4 space-y-2.5">
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-semibold text-slate-800 dark:text-white">航点序列明细:</span>
+                <span className="text-slate-500 text-[11px]">可调整顺序或重命名</span>
+              </div>
+              <div className="max-h-44 overflow-y-auto space-y-1.5 pr-1">
+                {waypoints.map((w, idx) => (
+                  <div key={w.id} className="p-2 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex items-center justify-between text-xs gap-2">
+                    <div className="flex items-center gap-2 truncate flex-1">
+                      <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[11px] font-bold font-mono shrink-0 tabular-nums">
+                        {idx + 1}
+                      </span>
+                      <input
+                        type="text"
+                        value={w.name || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setWaypoints(prev => prev.map(item => item.id === w.id ? { ...item, name: val } : item));
+                        }}
+                        className="bg-transparent text-slate-800 dark:text-white text-xs truncate focus:outline-none focus:text-ios-blue w-full"
+                        placeholder={`航点 #${idx + 1}`}
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="font-mono text-ios-blue font-semibold text-[11px] tabular-nums">
+                        {w.elevation}m
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => moveWaypoint(idx, 'up')}
+                          disabled={idx === 0}
+                          className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 transition apple-touch"
+                          title="上移"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => moveWaypoint(idx, 'down')}
+                          disabled={idx === waypoints.length - 1}
+                          className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 transition apple-touch"
+                          title="下移"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => deleteWaypoint(w.id)}
+                          disabled={waypoints.length <= 2}
+                          className="p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/30 text-rose-500 disabled:opacity-30 transition apple-touch"
+                          title="删除航点"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </IOSCard>
+          </div>
         </div>
+      ) : (
+        /* TAB 2: Aerodynamic Wind & Pacing Strategy Engine (Best Bike Split) */
+        <div className="space-y-5">
+          {/* Virtual Wind & Environment Simulator Console */}
+          <IOSCard variant="default" padding="none" className="p-4 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 dark:border-white/10 pb-3">
+              <div className="flex items-center gap-2">
+                <Wind className="w-4 h-4 text-ios-blue" />
+                <span className="text-sm font-bold text-slate-900 dark:text-white">
+                  虚拟风阻与微气候模拟器 (Virtual Aero Climate Console)
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-mono text-ios-blue font-bold tabular-nums">ISA 空气密度: {pacingPlan.avgAirDensity} kg/m³</span>
+              </div>
+            </div>
 
-        {/* Right Route Stats & Elevation Profile */}
-        <div className="lg:col-span-5 space-y-4">
-          {/* Key Distance & Elevation Stats: 3 columns on mobile to save space */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Wind Direction Dial & Cardinal Buttons */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-600 dark:text-slate-300 font-semibold flex items-center gap-1">
+                    <Compass className="w-3.5 h-3.5 text-ios-blue" />
+                    来风方向 (Wind Origin):
+                  </span>
+                  <span className="font-mono text-ios-blue font-bold tabular-nums">
+                    {windDirectionDeg}°
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-1.5">
+                  {WIND_COMPASS_PRESETS.map(p => (
+                    <button
+                      key={p.deg}
+                      onClick={() => setWindDirectionDeg(p.deg)}
+                      className={`apple-touch h-8 px-1.5 rounded-lg text-xs font-semibold border transition flex flex-col items-center justify-center ${
+                        windDirectionDeg === p.deg
+                          ? 'bg-ios-blue text-white border-ios-blue shadow-ios-sm'
+                          : 'bg-white/60 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-ios-blue/40'
+                      }`}
+                    >
+                      <span>{p.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Wind Speed & Temperature Steppers */}
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-600 dark:text-slate-300 font-semibold flex items-center gap-1">
+                      <Wind className="w-3.5 h-3.5 text-ios-blue" />
+                      风速强度:
+                    </span>
+                    <span className="text-[11px] text-ios-orange font-semibold">
+                      {getBeaufortTag(windSpeedKmh)}
+                    </span>
+                  </div>
+                  <NumberStepper
+                    value={windSpeedKmh}
+                    onChange={setWindSpeedKmh}
+                    min={0}
+                    max={65}
+                    step={2}
+                    unit="km/h"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-600 dark:text-slate-300 font-semibold">
+                      环境气温:
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      影响空气密度与出汗率
+                    </span>
+                  </div>
+                  <NumberStepper
+                    value={ambientTempC}
+                    onChange={setAmbientTempC}
+                    min={-10}
+                    max={45}
+                    step={1}
+                    unit="°C"
+                  />
+                </div>
+              </div>
+
+              {/* Pacing Strategy Style */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-600 dark:text-slate-300 font-semibold flex items-center gap-1">
+                    <Zap className="w-3.5 h-3.5 text-ios-blue" />
+                    配速策略基调:
+                  </span>
+                  <span className="font-mono text-ios-blue font-bold">
+                    {strategyMode === 'conservative' ? '90% FTP' : strategyMode === 'balanced' ? '100% FTP' : '108% FTP'}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5">
+                  <button
+                    onClick={() => setStrategyMode('conservative')}
+                    className={`w-full p-2 rounded-xl text-left border transition apple-touch flex items-center justify-between ${
+                      strategyMode === 'conservative'
+                        ? 'bg-ios-blue/15 border-ios-blue text-ios-blue dark:text-white'
+                        : 'bg-white/60 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold">保守耐力 (Endurance / Audax)</div>
+                      <div className="text-[10px] text-slate-400">适合超长距离拉练，避免过早力竭</div>
+                    </div>
+                    {strategyMode === 'conservative' && <CheckCircle2 className="w-4 h-4 text-ios-blue shrink-0" />}
+                  </button>
+
+                  <button
+                    onClick={() => setStrategyMode('balanced')}
+                    className={`w-full p-2 rounded-xl text-left border transition apple-touch flex items-center justify-between ${
+                      strategyMode === 'balanced'
+                        ? 'bg-ios-blue/15 border-ios-blue text-ios-blue dark:text-white'
+                        : 'bg-white/60 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold">均衡巡航 (Tempo / Gran Fondo)</div>
+                      <div className="text-[10px] text-slate-400">大组挑战赛最优解，上坡发力平路巡航</div>
+                    </div>
+                    {strategyMode === 'balanced' && <CheckCircle2 className="w-4 h-4 text-ios-blue shrink-0" />}
+                  </button>
+
+                  <button
+                    onClick={() => setStrategyMode('aggressive')}
+                    className={`w-full p-2 rounded-xl text-left border transition apple-touch flex items-center justify-between ${
+                      strategyMode === 'aggressive'
+                        ? 'bg-ios-blue/15 border-ios-blue text-ios-blue dark:text-white'
+                        : 'bg-white/60 dark:bg-white/5 border-slate-200/70 dark:border-white/10 text-slate-700 dark:text-slate-300'
+                    }`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold">极限突围 (Race / Time Trial)</div>
+                      <div className="text-[10px] text-slate-400">全力以赴刷 KOM，高心率阈值极限输出</div>
+                    </div>
+                    {strategyMode === 'aggressive' && <CheckCircle2 className="w-4 h-4 text-ios-blue shrink-0" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </IOSCard>
+
+          {/* Strategy KPIs Dashboard: 6 Tiles */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
             <IOSMetricTile
-              label="全程总距离"
-              value={routeStats.totalDistKm}
-              unit="km"
-              subtext={`${waypoints.length} 航点`}
+              label="预估完赛总用时"
+              value={pacingPlan.totalDurationFormatted}
+              unit=""
+              subtext={`均速 ${pacingPlan.avgSpeedKmh} km/h`}
               theme="blue"
-              className="p-2.5 sm:p-4"
+              className="p-3 sm:p-4"
             />
             <IOSMetricTile
-              label="累计爬升"
-              value={`+${routeStats.totalClimbM}`}
-              unit="m"
-              subtext="海拔增益"
+              label="目标加权功率 NP"
+              value={pacingPlan.normalizedPowerWatts}
+              unit="W"
+              subtext={`强度系数 IF ${pacingPlan.intensityFactor}`}
               theme="green"
-              className="p-2.5 sm:p-4"
+              className="p-3 sm:p-4"
             />
             <IOSMetricTile
-              label="累计下降"
-              value={`-${routeStats.totalDescentM}`}
-              unit="m"
-              subtext="下坡缓释"
+              label="预估训练压力 TSS"
+              value={pacingPlan.trainingStressScore}
+              unit=""
+              subtext={`总做功 ${pacingPlan.totalWorkKj} kJ`}
+              theme="purple"
+              className="p-3 sm:p-4"
+            />
+            <IOSMetricTile
+              label="顶风 / 顺风分布"
+              value={`${pacingPlan.headwindPct}%`}
+              unit="顶风"
+              subtext={`顺风 ${pacingPlan.tailwindPct}% · 侧风 ${pacingPlan.crosswindPct}%`}
               theme="amber"
-              className="p-2.5 sm:p-4"
+              className="p-3 sm:p-4"
+            />
+            <IOSMetricTile
+              label="碳水补给推荐"
+              value={pacingPlan.nutrition.recommendedCarbsPerHourG}
+              unit="g/h"
+              subtext={`全程需备 ${pacingPlan.nutrition.energyGelsCount} 支能量胶`}
+              theme="orange"
+              className="p-3 sm:p-4"
+            />
+            <IOSMetricTile
+              label="水分与电解质"
+              value={pacingPlan.nutrition.recommendedFluidPerHourMl}
+              unit="ml/h"
+              subtext={`全程约需 ${pacingPlan.nutrition.hydrationBottlesCount} 壶水`}
+              theme="blue"
+              className="p-3 sm:p-4"
             />
           </div>
 
-          {/* Elevation Profile Chart with Hover Sync */}
-          <IOSCard variant="default" padding="none" className="p-4 space-y-2">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-800 dark:text-white flex items-center gap-1.5">
-                <Mountain className="w-3.5 h-3.5 text-ios-blue" />
-                全路段海拔剖面与地图悬浮联动
-              </span>
-              <span className="text-[11px] text-slate-400 dark:text-slate-500">*悬浮联动地图坐标</span>
+          {/* Dual-Axis Elevation & Target Power Chart */}
+          <IOSCard variant="default" padding="none" className="p-4 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-ios-blue" />
+                <span className="font-bold text-slate-900 dark:text-white">
+                  全赛段坡度分色切片与目标功率曲线 (Dual Pacing Telemetry)
+                </span>
+              </div>
+              <div className="flex items-center gap-3 text-[11px]">
+                <span className="flex items-center gap-1 text-slate-500">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> 平路 &lt;2%
+                </span>
+                <span className="flex items-center gap-1 text-slate-500">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> 缓坡 2-5%
+                </span>
+                <span className="flex items-center gap-1 text-slate-500">
+                  <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block"></span> 攻坚 5-8%
+                </span>
+                <span className="flex items-center gap-1 text-slate-500">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> 陡坡 &gt;8%
+                </span>
+                <span className="flex items-center gap-1 text-amber-500 font-bold">
+                  <span className="w-3 h-0.5 bg-amber-500 inline-block"></span> 目标功率
+                </span>
+              </div>
             </div>
 
-            <div className="h-44">
+            {/* Hover Segment Detailed Telemetry Ribbon */}
+            {selectedHoverSegment ? (
+              <div className="p-2.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md font-bold text-white text-[11px]" style={{ backgroundColor: selectedHoverSegment.color }}>
+                    第 {selectedHoverSegment.index} 区段 · {selectedHoverSegment.gradientLabel}
+                  </span>
+                  <span className="font-semibold text-slate-800 dark:text-white tabular-nums">
+                    里程 {selectedHoverSegment.startDistKm} ~ {selectedHoverSegment.endDistKm}km ({selectedHoverSegment.distKm}km)
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-xs font-mono tabular-nums">
+                  <span>坡度: <b className="text-slate-900 dark:text-white">{selectedHoverSegment.gradePct > 0 ? `+${selectedHoverSegment.gradePct}%` : `${selectedHoverSegment.gradePct}%`}</b></span>
+                  <span>目标功率: <b className="text-amber-500 font-bold">{selectedHoverSegment.targetWatts}W ({selectedHoverSegment.targetFtpPct}% FTP)</b></span>
+                  <span>预估速度: <b className="text-ios-blue font-bold">{selectedHoverSegment.speedKmh} km/h</b></span>
+                  <span>耗时: <b className="text-slate-700 dark:text-slate-300">{selectedHoverSegment.durationStr}</b></span>
+                  <span className="text-slate-500">{selectedHoverSegment.windRelationLabel}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                <span>💡 鼠标悬浮或滑动图表，可实时联动地图定位，并预览各分段动力学目标与阻力矢量</span>
+              </div>
+            )}
+
+            <div className="h-56">
               <Line
                 data={chartData}
                 options={{
@@ -660,88 +1130,119 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                       bodyColor: '#ffffff',
                       borderColor: 'rgba(10, 132, 255, 0.3)',
                       borderWidth: 1,
-                      padding: 8
+                      padding: 10
                     }
                   },
                   scales: {
-                    x: { grid: { color: 'rgba(148, 163, 184, 0.1)' } },
-                    y: { grid: { color: 'rgba(148, 163, 184, 0.1)' }, title: { display: true, text: '海拔 (m)' } }
+                    x: { grid: { color: 'rgba(148, 163, 184, 0.08)' } },
+                    y: {
+                      grid: { color: 'rgba(148, 163, 184, 0.08)' },
+                      title: { display: true, text: '海拔标高 (m)' }
+                    },
+                    y1: {
+                      position: 'right',
+                      grid: { drawOnChartArea: false },
+                      title: { display: true, text: '目标功率 (W)' }
+                    }
                   }
                 }}
               />
             </div>
           </IOSCard>
 
-          {/* Waypoints List with Move/Delete Operations */}
-          <IOSCard variant="default" padding="none" className="p-4 space-y-2.5">
-            <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-800 dark:text-white">航点序列明细:</span>
-              <span className="text-slate-500 text-[11px]">可调整顺序或重命名</span>
+          {/* Sector-by-Sector Pacing Breakdown Table */}
+          <IOSCard variant="default" padding="none" className="p-4 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 dark:border-white/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <BarChart2 className="w-4 h-4 text-ios-blue" />
+                <span className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
+                  赛段动力学配速执行计划表 ({pacingPlan.segments.length} 个均质切片区段)
+                </span>
+              </div>
+              <button
+                onClick={handleGeneratePoster}
+                className="apple-touch h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue text-xs font-bold border border-ios-blue/20 transition flex items-center gap-1.5 self-start sm:self-auto shrink-0"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>导出配速策略工单海报</span>
+              </button>
             </div>
-            <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1">
-              {waypoints.map((w, idx) => (
-                <div key={w.id} className="p-2 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex items-center justify-between text-xs gap-2">
-                  <div className="flex items-center gap-2 truncate flex-1">
-                    <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[11px] font-bold font-mono shrink-0">
-                      {idx + 1}
-                    </span>
-                    <input
-                      type="text"
-                      value={w.name || ''}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setWaypoints(prev => prev.map(item => item.id === w.id ? { ...item, name: val } : item));
-                      }}
-                      className="bg-transparent text-slate-800 dark:text-white text-xs truncate focus:outline-none focus:text-ios-blue w-full"
-                      placeholder={`航点 #${idx + 1}`}
-                    />
-                  </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="font-mono text-ios-blue font-semibold text-[11px]">
-                      {w.elevation}m
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => moveWaypoint(idx, 'up')}
-                        disabled={idx === 0}
-                        className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 transition apple-touch"
-                        title="上移"
+            {/* Responsive Table Container */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left">
+                <thead>
+                  <tr className="border-b border-slate-200/70 dark:border-white/10 text-slate-400 text-[11px]">
+                    <th className="pb-2 font-medium">区段</th>
+                    <th className="pb-2 font-medium">距离区间</th>
+                    <th className="pb-2 font-medium">坡度级别</th>
+                    <th className="pb-2 font-medium">气动风阻矢量</th>
+                    <th className="pb-2 font-medium text-right">目标功率</th>
+                    <th className="pb-2 font-medium text-right">预估速度</th>
+                    <th className="pb-2 font-medium text-right">分段耗时</th>
+                    <th className="pb-2 font-medium text-right">攀爬率 VAM</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200/50 dark:divide-white/5 font-mono">
+                  {pacingPlan.segments.map(seg => {
+                    const isHovered = selectedHoverSegment?.id === seg.id;
+                    return (
+                      <tr
+                        key={seg.id}
+                        onMouseEnter={() => setSelectedHoverSegment(seg)}
+                        onMouseLeave={() => setSelectedHoverSegment(null)}
+                        className={`transition hover:bg-slate-50 dark:hover:bg-white/5 ${isHovered ? 'bg-ios-blue/10 dark:bg-ios-blue/20' : ''}`}
                       >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => moveWaypoint(idx, 'down')}
-                        disabled={idx === waypoints.length - 1}
-                        className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 transition apple-touch"
-                        title="下移"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => deleteWaypoint(w.id)}
-                        disabled={waypoints.length <= 2}
-                        className="p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/30 text-rose-500 disabled:opacity-30 transition apple-touch"
-                        title="删除航点"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                        <td className="py-2.5 font-bold text-slate-700 dark:text-slate-300">
+                          #{seg.index}
+                        </td>
+                        <td className="py-2.5 text-slate-600 dark:text-slate-300 tabular-nums">
+                          {seg.startDistKm} ~ {seg.endDistKm}km
+                        </td>
+                        <td className="py-2.5">
+                          <span
+                            className="px-2 py-0.5 rounded-md font-bold text-white text-[10px] inline-flex items-center gap-1 font-sans tabular-nums"
+                            style={{ backgroundColor: seg.color }}
+                          >
+                            {seg.gradePct > 0 ? `+${seg.gradePct}%` : `${seg.gradePct}%`} · {seg.gradientLabel}
+                          </span>
+                        </td>
+                        <td className="py-2.5 font-sans text-[11px] text-slate-600 dark:text-slate-300">
+                          <span className={seg.headwindComponentMs > 2 ? 'text-rose-500 font-bold' : seg.headwindComponentMs < -2 ? 'text-emerald-500 font-bold' : 'text-slate-500'}>
+                            {seg.windRelationLabel.split(' ')[0]}
+                          </span>
+                          <span className="text-[10px] text-slate-400 ml-1 font-mono tabular-nums">({seg.bearingDeg}°)</span>
+                        </td>
+                        <td className="py-2.5 text-right font-bold text-amber-500 tabular-nums">
+                          {seg.targetWatts}W
+                          <span className="text-[10px] text-slate-400 font-normal ml-1">({seg.targetFtpPct}%)</span>
+                        </td>
+                        <td className="py-2.5 text-right font-bold text-ios-blue tabular-nums">
+                          {seg.speedKmh} <span className="text-[10px] font-normal text-slate-400">km/h</span>
+                        </td>
+                        <td className="py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">
+                          {seg.durationStr}
+                        </td>
+                        <td className="py-2.5 text-right text-slate-500 tabular-nums">
+                          {seg.vam > 0 ? `${seg.vam} m/h` : '—'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </IOSCard>
         </div>
-      </div>
+      )}
 
-      {/* Social Share Poster Modal */}
+      {/* Social / Pacing Strategy Poster Modal */}
       <ShareCardModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         posterUrl={sharePosterUrl}
-        fileName={`${routeName || 'GPX_Route'}_路书海报.png`}
-        title="GPX 航迹路书海报"
+        fileName={`${routeName || 'GPX_Route'}_策略路书海报.png`}
+        title={sharePosterTitle}
       />
     </div>
   );

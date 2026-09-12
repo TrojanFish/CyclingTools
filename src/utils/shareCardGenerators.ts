@@ -1199,6 +1199,134 @@ export function generateRoadbookPoster(data: RoadbookPosterData): string {
   return canvas.toDataURL('image/png');
 }
 
+// Course Aerodynamic Pacing Strategy Poster
+export interface CoursePacingPosterData {
+  routeName: string;
+  distanceKm: number;
+  elevationGainM: number;
+  estTimeStr: string;
+  avgSpeedKmh: number;
+  npWatts: number;
+  intensityFactor: number;
+  tss: number;
+  totalKj: number;
+  windDesc: string;
+  carbsPerHourG: number;
+  fluidPerHourMl: number;
+  headwindPct: number;
+  keySegments: {
+    name: string;
+    distKm: number;
+    gradePct: number;
+    targetWatts: number;
+    speedKmh: number;
+    windDesc: string;
+  }[];
+}
+
+export function generateCoursePacingPoster(data: CoursePacingPosterData): string {
+  const w = 750;
+  const h = 1050;
+  const { ctx, canvas } = createPosterCanvas(w, h);
+  const accent = '#0A84FF'; // ios-blue
+
+  drawBackground(ctx, w, h, accent);
+  drawHeader(ctx, w, '风阻与体能策略工坊 · BEST BIKE SPLIT', data.routeName, `环境风阻模拟: ${data.windDesc}`, accent);
+
+  // Key KPI Tiles
+  const tileW = (w - 80 - 15) / 2;
+  drawMetricTile(ctx, 40, 204, tileW, 85, '预估完赛总用时', data.estTimeStr, '', '#0A84FF');
+  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '目标加权功率 NP', `${data.npWatts}W`, `IF ${data.intensityFactor}`, '#30D158');
+  drawMetricTile(ctx, 40, 304, tileW, 85, '路线全程均速', `${data.avgSpeedKmh}`, 'km/h', '#FF9F0A');
+  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '预估训练压力 TSS', data.tss, `总能耗 ${data.totalKj}kJ`, '#BF5AF2');
+
+  // Nutrition & Hydration Bar
+  const nutY = 410;
+  roundRect(ctx, 40, nutY, w - 80, 85, 18);
+  ctx.fillStyle = 'rgba(10, 132, 255, 0.08)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(10, 132, 255, 0.25)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#0A84FF';
+  ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('⚡ 运动人体科学补给方案 (Nutrition & Hydration)', 65, nutY + 28);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`碳水化合物: ${data.carbsPerHourG}g / 小时  (约 ${Math.ceil((data.carbsPerHourG * 2.5) / 25)} 支能量胶)`, 65, nutY + 52);
+  ctx.fillText(`水分与电解质: ${data.fluidPerHourMl}ml / 小时  (顶风占比 ${data.headwindPct}%)`, 65, nutY + 72);
+
+  // Sector Pacing Breakdown Box
+  const tableY = 515;
+  const tableH = 430;
+  roundRect(ctx, 40, tableY, w - 80, tableH, 20);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('各路段动力学分配与执行指标 (Sector Pacing Strategy)', 65, tableY + 36);
+
+  // Table Headers
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+  ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('分段名称 / 坡度', 65, tableY + 68);
+  ctx.fillText('里程', 280, tableY + 68);
+  ctx.fillText('目标功率', 370, tableY + 68);
+  ctx.fillText('预估车速', 480, tableY + 68);
+  ctx.fillText('气动风况', 590, tableY + 68);
+
+  // Draw Separator
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(65, tableY + 80);
+  ctx.lineTo(w - 65, tableY + 80);
+  ctx.stroke();
+
+  const sampleRows = data.keySegments.slice(0, 6);
+  sampleRows.forEach((row, idx) => {
+    const rowY = tableY + 112 + idx * 52;
+
+    // Dot indicator
+    ctx.beginPath();
+    ctx.arc(72, rowY - 4, 4, 0, Math.PI * 2);
+    ctx.fillStyle = row.gradePct > 5 ? '#EF4444' : row.gradePct > 2 ? '#FF9F0A' : '#30D158';
+    ctx.fill();
+
+    // Sector Name
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${row.name} (${row.gradePct > 0 ? '+' : ''}${row.gradePct}%)`, 86, rowY);
+
+    // Distance
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${row.distKm}km`, 280, rowY);
+
+    // Target Power
+    ctx.fillStyle = '#FFD60A';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${row.targetWatts}W`, 370, rowY);
+
+    // Speed
+    ctx.fillStyle = '#0A84FF';
+    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${row.speedKmh} km/h`, 480, rowY);
+
+    // Wind
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(row.windDesc, 590, rowY);
+  });
+
+  drawFooter(ctx, w, h);
+  return canvas.toDataURL('image/png');
+}
+
 // 11. Suspension Setup Poster
 export interface SuspensionPosterData {
   riderName?: string;
