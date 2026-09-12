@@ -154,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
               {mobileSearchOpen ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             </button>
 
-            {/* Sponsor / Appreciation Button & Popover */}
+            {/* Sponsor / Appreciation Button & Centered Modal */}
             <div className="relative" ref={sponsorRef}>
               <button
                 onClick={() => setSponsorOpen((prev) => !prev)}
@@ -170,42 +170,56 @@ export const Header: React.FC<HeaderProps> = ({
 
               {sponsorOpen && (
                 <div
-                  onMouseEnter={handleSponsorMouseEnter}
-                  onMouseLeave={handleSponsorMouseLeave}
-                  className="absolute right-0 top-full mt-2 w-64 sm:w-72 p-4 bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl shadow-ios-popover z-50 animate-in fade-in zoom-in-95 duration-150"
+                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+                  onClick={(e) => {
+                    if (e.target === e.currentTarget) setSponsorOpen(false);
+                  }}
                 >
-                  <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-black/[0.06] dark:border-white/10">
-                    <div className="flex items-center gap-1.5">
-                      <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
-                      <span className="text-xs font-bold text-slate-900 dark:text-white">
-                        {language === 'zh-TW' ? '贊助支持作者' : '赞助支持作者'}
-                      </span>
+                  <div
+                    onMouseEnter={handleSponsorMouseEnter}
+                    onMouseLeave={handleSponsorMouseLeave}
+                    className="relative w-full max-w-sm p-5 sm:p-6 bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl border border-black/10 dark:border-white/10 rounded-2xl shadow-ios-popover z-50 animate-in zoom-in-95 duration-200 text-left"
+                  >
+                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-black/[0.06] dark:border-white/10">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-xl bg-rose-500/10 flex items-center justify-center">
+                          <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                            {language === 'zh-TW' ? '贊助支持作者' : '赞助支持作者'}
+                          </h3>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                            {language === 'zh-TW' ? '感謝您對單車工坊的認可與喜愛' : '感谢您对单车工坊的认可与喜爱'}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setSponsorOpen(false)}
+                        className="w-8 h-8 rounded-xl flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-400 hover:text-slate-700 dark:hover:text-white transition"
+                        aria-label="Close Sponsor Modal"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => setSponsorOpen(false)}
-                      className="w-6 h-6 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition"
-                      aria-label="Close Sponsor Popover"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
 
-                  <div className="bg-white p-2.5 rounded-xl border border-black/5 shadow-xs flex flex-col items-center">
-                    <img
-                      src="/sponsor-qrcode.jpg"
-                      alt="微信赞赏码"
-                      className="w-44 h-44 sm:w-48 sm:h-48 object-contain rounded-lg"
-                    />
-                    <p className="mt-2 text-[11px] font-medium text-slate-600 text-center leading-tight">
-                      微信扫一扫 · 给 Keiyee 赞赏
+                    <div className="bg-white p-3.5 rounded-xl border border-black/5 shadow-xs flex flex-col items-center">
+                      <img
+                        src="/sponsor-qrcode.jpg"
+                        alt="微信赞赏码"
+                        className="w-52 h-52 sm:w-56 sm:h-56 object-contain rounded-lg"
+                      />
+                      <p className="mt-2.5 text-xs font-semibold text-slate-700 text-center leading-tight">
+                        微信扫一扫 · 给 Keiyee 赞赏
+                      </p>
+                    </div>
+
+                    <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 text-center leading-relaxed">
+                      {language === 'zh-TW'
+                        ? '如果單車工坊對您的騎行有所幫助，歡迎請作者喝杯咖啡 ☕ 您的支持是持續打磨的最大動力！'
+                        : '如果单车工坊对您的骑行有所帮助，欢迎请作者喝杯咖啡 ☕ 您的支持是持续打磨的最大动力！'}
                     </p>
                   </div>
-
-                  <p className="mt-2.5 text-[11px] text-slate-500 dark:text-slate-400 text-center leading-relaxed">
-                    {language === 'zh-TW'
-                      ? '若單車工坊對您的騎行有所幫助，歡迎請作者喝杯咖啡 ☕'
-                      : '若单车工坊对您的骑行有所帮助，欢迎请作者喝杯咖啡 ☕'}
-                  </p>
                 </div>
               )}
             </div>

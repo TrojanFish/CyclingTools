@@ -152,14 +152,46 @@ export const GpxRouteCreator: React.FC = () => {
         map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
       }
 
-      // Add Start & End Markers
+      // Add Start & End Markers with custom SVG/HTML divIcon (Zero broken images, crisp on Retina)
       if (waypoints[0]) {
-        const startMarker = L.marker([waypoints[0].lat, waypoints[0].lng]).addTo(map).bindPopup('起点: ' + (waypoints[0].name || '起点'));
+        const startIcon = L.divIcon({
+          className: 'custom-map-start-pin',
+          html: `
+            <div style="display:flex; flex-direction:column; align-items:center; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.35)); pointer-events:auto; cursor:pointer;">
+              <div style="background:#10B981; color:#FFFFFF; font-weight:700; font-size:11px; padding:2px 8px; border-radius:12px; border:2px solid #FFFFFF; white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.2);">
+                起点
+              </div>
+              <div style="width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid #10B981; margin-top:-1px;"></div>
+            </div>
+          `,
+          iconSize: [42, 30],
+          iconAnchor: [21, 29],
+          popupAnchor: [0, -29]
+        });
+        const startMarker = L.marker([waypoints[0].lat, waypoints[0].lng], { icon: startIcon })
+          .addTo(map)
+          .bindPopup(`<b>起点: ${waypoints[0].name || '起点'}</b><br/>海拔: ${waypoints[0].elevation}m`);
         markersRef.current.push(startMarker);
       }
       if (waypoints.length > 1) {
         const endW = waypoints[waypoints.length - 1];
-        const endMarker = L.marker([endW.lat, endW.lng]).addTo(map).bindPopup('终点: ' + (endW.name || '终点'));
+        const endIcon = L.divIcon({
+          className: 'custom-map-end-pin',
+          html: `
+            <div style="display:flex; flex-direction:column; align-items:center; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.35)); pointer-events:auto; cursor:pointer;">
+              <div style="background:#EF4444; color:#FFFFFF; font-weight:700; font-size:11px; padding:2px 8px; border-radius:12px; border:2px solid #FFFFFF; white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.2);">
+                终点
+              </div>
+              <div style="width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid #EF4444; margin-top:-1px;"></div>
+            </div>
+          `,
+          iconSize: [42, 30],
+          iconAnchor: [21, 29],
+          popupAnchor: [0, -29]
+        });
+        const endMarker = L.marker([endW.lat, endW.lng], { icon: endIcon })
+          .addTo(map)
+          .bindPopup(`<b>终点: ${endW.name || '终点'}</b><br/>海拔: ${endW.elevation}m`);
         markersRef.current.push(endMarker);
       }
     }
@@ -575,28 +607,31 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
 
         {/* Right Route Stats & Elevation Profile */}
         <div className="lg:col-span-5 space-y-4">
-          {/* Key Distance & Elevation Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+          {/* Key Distance & Elevation Stats: 3 columns on mobile to save space */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             <IOSMetricTile
               label="全程总距离"
               value={routeStats.totalDistKm}
               unit="km"
-              subtext={`${waypoints.length} 个航迹点`}
+              subtext={`${waypoints.length} 航点`}
               theme="blue"
+              className="p-2.5 sm:p-4"
             />
             <IOSMetricTile
               label="累计爬升"
               value={`+${routeStats.totalClimbM}`}
               unit="m"
-              subtext="坡度海拔增益"
+              subtext="海拔增益"
               theme="green"
+              className="p-2.5 sm:p-4"
             />
             <IOSMetricTile
               label="累计下降"
               value={`-${routeStats.totalDescentM}`}
               unit="m"
-              subtext="下坡缓释段"
+              subtext="下坡缓释"
               theme="amber"
+              className="p-2.5 sm:p-4"
             />
           </div>
 

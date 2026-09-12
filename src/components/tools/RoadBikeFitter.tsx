@@ -209,8 +209,9 @@ export const RoadBikeFitter: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center">
                     {language === 'zh-TW' ? '身高' : '身高'} (cm)
+                    <Tooltip content="脱鞋赤脚背靠平整墙面直立，双脚微闭，下颌微收保持平视，用直角尺贴平头顶垂直向下测量至地面的距离。" />
                   </label>
                   {isImperial && (
                     <span className="text-[11px] text-ios-purple font-mono font-medium">
@@ -224,7 +225,7 @@ export const RoadBikeFitter: React.FC = () => {
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center">
                     {language === 'zh-TW' ? '跨高' : '跨高'} (cm)
-                    <Tooltip content="赤脚靠墙站立，双脚间距15cm，用硬皮书夹紧会阴部测量地面到书顶垂直距离。" />
+                    <Tooltip content="赤脚靠墙站立，双脚间距15cm，用硬皮书垂直紧贴会阴部向上顶紧（模拟坐垫承托压力），测量地面到书顶垂直距离。" />
                   </label>
                   {isImperial && (
                     <span className="text-[11px] text-ios-purple font-mono font-medium">
@@ -239,14 +240,16 @@ export const RoadBikeFitter: React.FC = () => {
             {/* Torso & Arm */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-1.5">
                   {language === 'zh-TW' ? '軀幹長' : '躯干长'} (cm)
+                  <Tooltip content="端坐或站立，测量从胸骨上切迹（两锁骨中间凹槽）垂直向下至会阴骨盆鞍座支撑面的距离。" />
                 </label>
                 <NumberStepper value={torso} onChange={setTorso} step={0.5} min={40} max={85} unit="cm" decimals={1} />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-1.5">
                   {language === 'zh-TW' ? '手臂長' : '手臂长'} (cm)
+                  <Tooltip content="手臂握拳水平前伸，测量从肩峰外缘突起（肩锁关节）到握拳中心（虎口指骨关节线）的直线距离。" />
                 </label>
                 <NumberStepper value={armLength} onChange={setArmLength} step={0.5} min={45} max={90} unit="cm" decimals={1} />
               </div>
@@ -254,16 +257,18 @@ export const RoadBikeFitter: React.FC = () => {
 
             {/* Shoulder Width */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-1.5">
                 {language === 'zh-TW' ? '肩寬' : '肩宽'} (cm)
+                <Tooltip content="双手自然下垂，测量左右两侧肩峰外侧骨性突起之间的直线距离。车把中对中（C-C）宽度通常与肩宽相同。" />
               </label>
               <NumberStepper value={shoulderWidth} onChange={setShoulderWidth} step={0.5} min={34} max={50} unit="cm" decimals={1} />
             </div>
 
             {/* Riding Style */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-2">
                 {language === 'zh-TW' ? '騎行目標偏好' : '骑行目标偏好'}
+                <Tooltip content="休闲骑游重在挺立舒适与开阔视野；长途耐力平衡气动性与抗疲劳支撑；竞技突围追求极致气动投影与大落差。" />
               </label>
               <IOSSegmentedControl
                 options={[
@@ -279,8 +284,9 @@ export const RoadBikeFitter: React.FC = () => {
 
             {/* Flexibility */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-2">
                 {language === 'zh-TW' ? '身體柔韌度' : '身体柔韧度'}
+                <Tooltip content="直腿站立弯腰体前屈测试：手掌触地为极佳，指尖及地为正常，手无法触及膝下为较低。直接决定把立垫圈高度与座舱落差承受力。" />
               </label>
               <IOSSegmentedControl
                 options={[
@@ -310,26 +316,30 @@ export const RoadBikeFitter: React.FC = () => {
               {showAdvancedInputs && (
                 <div className="grid grid-cols-2 gap-3 mt-3 animate-in fade-in duration-200">
                   <div>
-                    <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
+                    <label className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center mb-1">
                       {language === 'zh-TW' ? '坐高' : '坐高'} (cm)
+                      <Tooltip content="坐在平整硬质凳面上背部挺直，测量凳面到头顶的垂直高度。结合身高可精确研判躯干与下肢的比例特征。" />
                     </label>
                     <NumberStepper value={sittingHeight} onChange={setSittingHeight} min={70} max={115} unit="cm" />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
+                    <label className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center mb-1">
                       {language === 'zh-TW' ? '大腿長' : '大腿长'} (cm)
+                      <Tooltip content="端坐在椅子上（大腿水平、小腿垂直），测量臀部大转子后缘到膝盖前缘的水平距离。用于精确微调坐垫后移量 (Setback)。" />
                     </label>
                     <NumberStepper value={thighLength} onChange={setThighLength} min={30} max={65} unit="cm" />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
+                    <label className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center mb-1">
                       {language === 'zh-TW' ? '小腿長' : '小腿长'} (cm)
+                      <Tooltip content="端坐屈膝90°，测量膝关节外侧关节间隙（膝眼水平面）垂直至地面的距离。与踩踏杠杆和曲柄长度选型密切相关。" />
                     </label>
                     <NumberStepper value={lowerLegLength} onChange={setLowerLegLength} min={30} max={65} unit="cm" />
                   </div>
                   <div>
-                    <label className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
+                    <label className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center mb-1">
                       {language === 'zh-TW' ? '腳長' : '脚长'} (cm)
+                      <Tooltip content="赤脚自然踩在白纸上绘制轮廓，测量足跟最凸点至最长脚趾尖的垂直距离。指导锁鞋尺码与锁片前后移动基准线。" />
                     </label>
                     <NumberStepper value={footLength} onChange={setFootLength} min={20} max={35} unit="cm" />
                   </div>
