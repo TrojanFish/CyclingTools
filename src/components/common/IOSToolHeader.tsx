@@ -77,7 +77,7 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
 
       {/* Mobile Top-Right Share Icon Button */}
       {onShare && (
-        <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 md:hidden z-20">
+        <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 sm:hidden z-20">
           <button
             type="button"
             onClick={onShare}
@@ -90,8 +90,8 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
         </div>
       )}
 
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-        <div className={`space-y-1 ${onShare ? 'pr-11 md:pr-0' : ''}`}>
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className={`space-y-1 ${onShare ? 'pr-11 sm:pr-0' : ''}`}>
           {category && (
             <div
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-semibold mb-1 ${currentTint.badge}`}
@@ -111,9 +111,9 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
         </div>
 
         {(actions || onShare) && (
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-start md:self-auto w-full md:w-auto">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-start sm:self-auto w-full sm:w-auto">
             {actions && (
-              <div className="flex-1 md:flex-initial min-w-0 w-full md:w-auto flex flex-wrap items-center gap-2.5 sm:gap-3">
+              <div className="flex-1 sm:flex-initial min-w-0 w-full sm:w-auto flex flex-wrap items-center gap-2.5 sm:gap-3">
                 {actions}
               </div>
             )}
@@ -122,7 +122,7 @@ export const IOSToolHeader: React.FC<IOSToolHeaderProps> = ({
               <button
                 type="button"
                 onClick={onShare}
-                className="hidden md:flex apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition items-center justify-center shadow-2xs shrink-0"
+                className="hidden sm:flex apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition items-center justify-center shadow-2xs shrink-0"
                 title={shareTitle || defaultShareTooltip}
                 aria-label={shareTitle || defaultShareTooltip}
               >

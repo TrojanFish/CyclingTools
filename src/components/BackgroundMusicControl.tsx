@@ -71,7 +71,7 @@ export const BackgroundMusicControl: React.FC = () => {
 
       {/* macOS Control Center Style Frosted Popover */}
       {isOpenPopover && (
-        <div className="absolute right-0 top-11 w-76 p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-ios-popover bg-white/85 dark:bg-[#252528]/85 backdrop-blur-3xl saturate-180 z-50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+        <div className="absolute right-0 top-11 w-76 max-w-[calc(100vw-24px)] p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/[0.12] shadow-ios-popover bg-white/85 dark:bg-[#252528]/85 backdrop-blur-3xl saturate-180 z-50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
           {/* Header indicator */}
           <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-0.5">
             <span>Now Playing · 骑行电台</span>

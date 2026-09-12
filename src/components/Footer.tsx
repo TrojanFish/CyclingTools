@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
   return (
     <footer className="mt-8 sm:mt-12 border-t border-black/[0.05] dark:border-white/[0.08] bg-white/70 dark:bg-black/50 backdrop-blur-xl no-print transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3.5 sm:gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3.5 sm:gap-4">
           {/* Brand & Slogan */}
           <div
             className="flex items-center gap-3 cursor-pointer group select-none"
@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
           </div>
 
           {/* Legal Modal Triggers & Copyright */}
-          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 text-[11px] text-slate-500 dark:text-slate-400">
             <button
               type="button"
               onClick={() => setActiveModalTab('disclaimer')}

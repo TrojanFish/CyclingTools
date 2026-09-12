@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Center Search Input (Desktop) - iOS Spotlight style */}
-          <div className="hidden md:flex items-center flex-1 max-w-md mx-4 lg:mx-6">
+          <div className="hidden sm:flex items-center flex-1 max-w-md mx-4 lg:mx-6">
             <div className="relative w-full">
               <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
@@ -118,7 +118,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Search Button - Uniform Apple HIG 36px button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition shrink-0"
+              className="sm:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition shrink-0"
               title="Search Tools"
               aria-label="Search Tools"
             >
@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Mobile Search Expand Drawer */}
         {mobileSearchOpen && (
-          <div className="md:hidden px-4 pb-3 pt-1 border-t border-slate-200/80 dark:border-white/10 animate-in fade-in slide-in-from-top-1">
+          <div className="sm:hidden px-4 pb-3 pt-1 border-t border-slate-200/80 dark:border-white/10 animate-in fade-in slide-in-from-top-1">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -176,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 autoFocus
-                className="w-full bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
+                className="w-full h-9 bg-slate-100 dark:bg-[#1C1C1E] border border-slate-200/80 dark:border-white/10 rounded-xl pl-9 pr-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
               />
             </div>
           </div>

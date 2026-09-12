@@ -661,7 +661,7 @@ export const GroupRideSimulator: React.FC = () => {
                 riders.length < 8 ? (
                   <button
                     onClick={addRider}
-                    className="flex items-center gap-1 text-xs text-ios-mint hover:opacity-80 font-medium apple-touch px-2.5 py-1 rounded-full bg-ios-mint/10 dark:bg-ios-mint/20"
+                    className="flex items-center gap-1 text-xs text-ios-mint hover:opacity-80 font-medium apple-touch h-9 px-3 rounded-xl bg-ios-mint/10 dark:bg-ios-mint/20 transition"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     添加车手

@@ -95,7 +95,7 @@ export const PwaInstallPrompt: React.FC = () => {
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={handleInstallClick}
-              className="apple-touch flex items-center gap-1 px-2.5 py-1 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white font-bold text-[11px] transition shadow-xs active:scale-95"
+              className="apple-touch flex items-center gap-1 h-7 px-2.5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white font-bold text-[11px] transition shadow-xs active:scale-95"
             >
               <Download className="w-3 h-3 text-white" />
               <span>

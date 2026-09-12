@@ -234,7 +234,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="space-y-4 sm:space-y-5">
       {/* iOS Large Title Header (Mobile Only, Apple HIG Style) */}
-      <div className="md:hidden pt-0.5 pb-1">
+      <div className="sm:hidden pt-0.5 pb-1">
         <span className="text-[11px] font-bold text-ios-blue dark:text-ios-blue-dark uppercase tracking-wider">
           {language === 'zh-TW' ? '科學單車動力學' : '科学骑行动力学'}
         </span>
@@ -378,7 +378,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* iOS Segmented Navigation & Spotlight Search */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-2 bg-white/70 dark:bg-[#1C1C1E]/70 backdrop-blur-2xl rounded-2xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-2 bg-white/70 dark:bg-[#1C1C1E]/70 backdrop-blur-2xl rounded-2xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm">
         <div className="overflow-x-auto py-0.5 no-scrollbar">
           <IOSSegmentedControl
             options={categoryOptions}
@@ -388,15 +388,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
           />
         </div>
 
-        {/* Spotlight Quick Search */}
-        <div className="relative flex-1 lg:max-w-xs">
+        {/* Spotlight Quick Search - Standard h-9 height matching segmented control */}
+        <div className="relative flex-1 sm:max-w-xs">
           <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('searchPrompt')}
-            className="w-full bg-black/[0.04] dark:bg-white/[0.07] border border-transparent focus:border-ios-blue rounded-xl pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition"
+            className="w-full h-9 bg-black/[0.04] dark:bg-white/[0.07] border border-transparent focus:border-ios-blue rounded-xl pl-9 pr-8 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none transition"
           />
           {searchTerm && (
             <button
@@ -432,7 +432,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
           {filteredTools.map((tool) => {
             const IconComp = ICONS_MAP[tool.icon] || Zap;
             const toolTitle = language === 'zh-TW' && tool.titleTw ? tool.titleTw : tool.title;

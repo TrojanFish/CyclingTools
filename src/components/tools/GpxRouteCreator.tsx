@@ -534,7 +534,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                   <button
                     type="button"
                     onClick={handleSearchLocation}
-                    className="apple-touch h-8 sm:h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-ios-sm"
+                    className="apple-touch h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark text-xs font-semibold border border-ios-blue/20 transition flex items-center gap-1 shadow-ios-sm shrink-0"
                     title="定位所输地名"
                   >
                     <span>定位</span>
@@ -553,7 +553,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         {/* Right Route Stats & Elevation Profile */}
         <div className="lg:col-span-5 space-y-4">
           {/* Key Distance & Elevation Stats */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
             <IOSMetricTile
               label="全程总距离"
               value={routeStats.totalDistKm}

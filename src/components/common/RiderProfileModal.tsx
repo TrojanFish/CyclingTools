@@ -640,7 +640,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                                 );
                               }
                             }}
-                            className="w-full sm:flex-1 bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-200 text-[11px] rounded-lg px-2 py-1 border border-black/[0.06] dark:border-white/[0.1] focus:ring-1 focus:ring-orange-500 min-w-0 font-sans"
+                            className="w-full sm:flex-1 h-9 bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-200 text-xs rounded-xl px-3 border border-black/[0.06] dark:border-white/[0.1] focus:ring-1 focus:ring-orange-500 min-w-0 font-sans"
                           >
                             <option value="">未绑定</option>
                             {athlete.bikes.map(sb => (

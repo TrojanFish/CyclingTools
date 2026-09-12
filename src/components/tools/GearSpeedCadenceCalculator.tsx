@@ -246,7 +246,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         </div>
 
         {/* Inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">牙盘制式</label>
             <IOSSegmentedControl

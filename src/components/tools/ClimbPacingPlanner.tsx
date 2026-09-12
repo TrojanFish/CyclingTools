@@ -652,7 +652,7 @@ export const ClimbPacingPlanner: React.FC = () => {
           </span>
           <button
             onClick={handleOpenStravaSegments}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30 whitespace-nowrap shrink-0"
+            className="flex items-center gap-1 h-9 px-3 rounded-xl text-xs font-bold transition shadow-ios-sm apple-touch border bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] border-[#FC4C02]/30 whitespace-nowrap shrink-0"
             title="浏览并导入 Strava 赛段与经典 KOM 坡度"
           >
             <svg className="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24">
@@ -1038,12 +1038,12 @@ export const ClimbPacingPlanner: React.FC = () => {
                     value={customSegmentInput}
                     onChange={(e) => setCustomSegmentInput(e.target.value)}
                     placeholder="输入赛段 ID (如 661401)"
-                    className="flex-1 sm:w-44 bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 sm:py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-[#FC4C02]"
+                    className="flex-1 sm:w-44 h-9 bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-[#FC4C02]"
                   />
                   <button
                     onClick={handleFetchCustomSegment}
                     disabled={isFetchingCustomId || !customSegmentInput.trim()}
-                    className="apple-touch px-3.5 py-2 sm:py-1.5 rounded-xl bg-[#FC4C02] text-white text-xs font-semibold hover:bg-[#e04300] transition disabled:opacity-50 shrink-0 whitespace-nowrap"
+                    className="apple-touch h-9 px-3.5 flex items-center justify-center rounded-xl bg-[#FC4C02] text-white text-xs font-semibold hover:bg-[#e04300] transition disabled:opacity-50 shrink-0 whitespace-nowrap"
                   >
                     {isFetchingCustomId ? '查询中' : '解析导入'}
                   </button>

@@ -377,7 +377,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       </IOSToolHeader>
 
       {/* Top Tuning Parameters & Rider Loading */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Weight & Gear */}
         <IOSCard>
           <IOSCardHeader title={language === 'zh-TW' ? '騎手與裝備全負重' : '车手与装备全负重'} />
@@ -967,7 +967,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       <IOSCard>
         <IOSCardHeader title={language === 'zh-TW' ? '動態視覺化避震行程標尺與 O 圈狀態' : '动态可视化避震行程标尺与 O 圈状态'} />
         <div className="space-y-4 pt-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
             {/* Fork SVG */}
             <div>
               <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">
@@ -1048,7 +1048,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       {/* Pro Trailside Tuning & Diagnostics Playbook */}
       <IOSCard>
         <IOSCardHeader title={language === 'zh-TW' ? '車隊技師調校疑難排解指南' : '车队技师调校疑难排解指南'} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-3">
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-amber-600 dark:text-amber-400">
               <AlertTriangle className="w-4 h-4" />

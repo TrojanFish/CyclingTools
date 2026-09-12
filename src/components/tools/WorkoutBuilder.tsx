@@ -584,7 +584,7 @@ export const WorkoutBuilder: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {WORKOUT_TEMPLATES.map((tmpl) => {
             const isSelected = selectedTemplateId === tmpl.id;
             return (
@@ -719,7 +719,7 @@ export const WorkoutBuilder: React.FC = () => {
             return (
               <div
                 key={seg.id}
-                className="p-3 sm:p-3.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3.5 transition"
+                className="p-3 sm:p-3.5 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 transition"
               >
                 {/* Left: Sequence & Info */}
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">

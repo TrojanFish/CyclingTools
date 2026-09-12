@@ -876,23 +876,23 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                     </div>
                   </div>
 
-                  {/* Route Key Metric Grid */}
-                  <div className="grid grid-cols-4 gap-2 mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/10 text-center font-mono">
-                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
+                  {/* Route Key Metric Grid - 2x2 on mobile, 4-col on desktop */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/10 text-center font-mono">
+                    <div className="p-1.5 rounded-xl bg-white/60 dark:bg-white/5">
                       <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '總里程' : '总里程'}</span>
-                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{convertDistance(route.distanceKm).formatted}</span>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 tabular-nums">{convertDistance(route.distanceKm).formatted}</span>
                     </div>
-                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
+                    <div className="p-1.5 rounded-xl bg-white/60 dark:bg-white/5">
                       <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</span>
-                      <span className="text-xs font-bold text-ios-blue">+{convertElevation(route.elevationGainM).formatted}</span>
+                      <span className="text-xs font-bold text-ios-blue tabular-nums">+{convertElevation(route.elevationGainM).formatted}</span>
                     </div>
-                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
+                    <div className="p-1.5 rounded-xl bg-white/60 dark:bg-white/5">
                       <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '最高海拔' : '最高海拔'}</span>
-                      <span className="text-xs font-bold text-ios-orange">{convertElevation(route.maxAltitudeM).formatted}</span>
+                      <span className="text-xs font-bold text-ios-orange tabular-nums">{convertElevation(route.maxAltitudeM).formatted}</span>
                     </div>
-                    <div className="p-1.5 rounded-2xl bg-white/60 dark:bg-white/5">
+                    <div className="p-1.5 rounded-xl bg-white/60 dark:bg-white/5">
                       <span className="text-[11px] text-slate-400 block">{language === 'zh-TW' ? '平均坡度' : '平均坡度'}</span>
-                      <span className="text-xs font-bold text-ios-green">{route.avgGradePct}%</span>
+                      <span className="text-xs font-bold text-ios-green tabular-nums">{route.avgGradePct}%</span>
                     </div>
                   </div>
 
@@ -1045,14 +1045,14 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                   <>
                     <button
                       onClick={() => onNavigateTool('weather-advisor')}
-                      className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      className="flex items-center gap-1.5 h-9 px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
                     >
                       <Compass className="w-3.5 h-3.5 text-ios-blue" />
                       {language === 'zh-TW' ? '沿途天氣' : '沿途天气'}
                     </button>
                     <button
                       onClick={handleSendToGpxCreator}
-                      className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      className="flex items-center gap-1.5 h-9 px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
                       title={language === 'zh-TW' ? '將此路書航點載入 GPX 工坊自訂編輯' : '将此路书航点载入 GPX 工坊自定义编辑'}
                     >
                       <MapPin className="w-3.5 h-3.5 text-emerald-500" />
@@ -1060,7 +1060,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                     </button>
                     <button
                       onClick={handleSendToClimbPacing}
-                      className="flex items-center gap-1.5 px-3.5 py-2 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-2xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      className="flex items-center gap-1.5 h-9 px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
                       title={language === 'zh-TW' ? '將此路線坡度帶入爬坡配速規劃器' : '将此路线坡度带入爬坡配速规划器'}
                     >
                       <Mountain className="w-3.5 h-3.5 text-amber-500" />
@@ -1240,14 +1240,14 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
                     {stravaRoutes.length > 0 && (
                       <button
                         onClick={handleImportAllStravaRoutes}
-                        className="px-3.5 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold transition apple-touch"
+                        className="h-9 px-3.5 flex items-center justify-center rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold transition apple-touch"
                       >
                         全部批量导入
                       </button>
                     )}
                     <button
                       onClick={() => setIsStravaModalOpen(false)}
-                      className="px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-300 dark:hover:bg-white/15 transition apple-touch"
+                      className="h-9 px-3.5 flex items-center justify-center rounded-xl bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-semibold hover:bg-slate-300 dark:hover:bg-white/15 transition apple-touch"
                     >
                       完成
                     </button>

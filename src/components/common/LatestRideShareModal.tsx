@@ -307,7 +307,7 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
           </div>
 
           {/* Center Main: Poster Preview (Left) + Linked Social Copy (Right) */}
-          <div className="flex flex-col md:flex-row items-center md:items-stretch gap-4 flex-1">
+          <div className="flex flex-col sm:flex-row items-center sm:items-stretch gap-4 flex-1">
             {/* Left: 3:4 Poster Image Container */}
             <div className="flex flex-col items-center justify-center flex-1 max-w-full">
               <div className="relative rounded-2xl overflow-hidden shadow-ios-popover border border-slate-200/80 dark:border-white/10 bg-[#1C1C1E]">
@@ -342,7 +342,7 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
             </div>
 
             {/* Right: Social Copywriting Section (Linked with Selected Theme) */}
-            <div className="w-full md:w-80 flex flex-col justify-between p-3.5 rounded-2xl bg-white dark:bg-[#252528] border border-slate-200/80 dark:border-white/10 shadow-ios-card">
+            <div className="w-full sm:w-80 flex flex-col justify-between p-3.5 rounded-2xl bg-white dark:bg-[#252528] border border-slate-200/80 dark:border-white/10 shadow-ios-card">
               <div className="space-y-3">
                 {/* Copy Section Header */}
                 <div className="flex items-center justify-between">

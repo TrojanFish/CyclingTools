@@ -222,7 +222,7 @@ export const HealthCalculator: React.FC = () => {
         }
         tint="red"
         actions={
-          <div className="w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+          <div className="w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
             <IOSSegmentedControl
               options={[
                 { id: 'fueling', label: language === 'zh-TW' ? '補給' : '补给', icon: Apple },

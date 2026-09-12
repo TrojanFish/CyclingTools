@@ -755,8 +755,8 @@ export const SpokeLengthCalculator: React.FC = () => {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-ios-blue flex items-center gap-1.5">
               <Check className="w-4 h-4" />
               <span>1. 辐条螺纹与条帽咬合深度</span>
@@ -766,7 +766,7 @@ export const SpokeLengthCalculator: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
               <Check className="w-4 h-4" />
               <span>2. 气门嘴对准与商标美学</span>
@@ -776,7 +776,7 @@ export const SpokeLengthCalculator: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
               <Check className="w-4 h-4" />
               <span>3. 应力释放 (Stress Relieving)</span>

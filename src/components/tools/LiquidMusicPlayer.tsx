@@ -331,8 +331,8 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
 
   // Floating Widget Mode
   return (
-    <div className="fixed bottom-5 right-5 z-50">
-      <div className="ios-card p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/15 shadow-ios-popover bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl w-80 space-y-2.5">
+    <div className="fixed bottom-20 sm:bottom-5 right-4 sm:right-5 z-50">
+      <div className="ios-card p-3.5 rounded-2xl border border-black/[0.08] dark:border-white/15 shadow-ios-popover bg-white/95 dark:bg-[#1C1C1E]/95 backdrop-blur-2xl w-80 max-w-[calc(100vw-2rem)] space-y-2.5">
         {/* Widget Top Bar */}
         <div className="flex items-center justify-between border-b border-black/[0.05] dark:border-white/10 pb-2">
           <div className="flex items-center gap-2">
