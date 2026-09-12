@@ -4,7 +4,7 @@ interface RouleurLogoProps {
   className?: string;
   size?: number;
   /**
-   * 'glyph' renders the pure vector mark (transparent background, inherits stroke or gradient).
+   * 'glyph' renders the pure vector mark (transparent background, inherits text-color).
    * 'badge' renders the complete Apple HIG squircle icon with gradient background.
    */
   variant?: 'glyph' | 'badge';
@@ -35,19 +35,13 @@ export const RouleurLogo: React.FC<RouleurLogoProps> = ({
             <stop offset="100%" stopColor="#1D4ED8" />
           </linearGradient>
 
-          <linearGradient id="rouleurMetalStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="65%" stopColor="#E0F2FE" />
-            <stop offset="100%" stopColor="#BAE6FD" />
-          </linearGradient>
-
           <filter id="rouleurBadgeShadow" x="-10%" y="-10%" width="125%" height="125%">
             <feDropShadow dx="0" dy="16" stdDeviation="20" floodColor="#002D6C" floodOpacity="0.45" />
             <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#002D6C" floodOpacity="0.25" />
           </filter>
 
           <filter id="rouleurGlyphGlow" x="-15%" y="-15%" width="130%" height="130%">
-            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#03306B" floodOpacity="0.5" />
+            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#03306B" floodOpacity="0.4" />
           </filter>
         </defs>
 
@@ -75,164 +69,60 @@ export const RouleurLogo: React.FC<RouleurLogoProps> = ({
           strokeOpacity="0.35"
         />
 
-        {/* Rouleur Aero Emblem */}
-        <g filter="url(#rouleurGlyphGlow)" transform="translate(10, 0)">
-          {/* Deep-Section Aero Rim Arc */}
-          <path
-            d="M 250 96 A 154 154 0 1 1 120 306"
-            fill="none"
-            stroke="url(#rouleurMetalStroke)"
-            strokeWidth="26"
-            strokeLinecap="round"
-          />
+        {/* Breakaway Rouleur Silhouette Group */}
+        <g filter="url(#rouleurGlyphGlow)" transform="translate(48, 48) scale(4.16)" fill="#FFFFFF">
+          {/* Rear Aero Wheel */}
+          <circle cx="26" cy="65" r="16" fill="none" stroke="#FFFFFF" strokeWidth="4.5" />
+          <circle cx="26" cy="65" r="6.5" fill="#FFFFFF" opacity="0.35" />
 
-          {/* Inner High-Velocity Aero Track */}
-          <path
-            d="M 226 128 A 122 122 0 0 1 354 218"
-            fill="none"
-            stroke="#38BDF8"
-            strokeWidth="11"
-            strokeLinecap="round"
-            strokeDasharray="14 10"
-            opacity="0.85"
-          />
+          {/* Front Aero Wheel */}
+          <circle cx="74" cy="65" r="16" fill="none" stroke="#FFFFFF" strokeWidth="4.5" />
+          <circle cx="74" cy="65" r="6.5" fill="#FFFFFF" opacity="0.35" />
 
-          {/* Radial Aero Spoke Chords */}
-          <path
-            d="M 144 234 L 216 250"
-            stroke="url(#rouleurMetalStroke)"
-            strokeWidth="12"
-            strokeLinecap="round"
-            opacity="0.75"
-          />
-          <path
-            d="M 174 158 L 226 216"
-            stroke="url(#rouleurMetalStroke)"
-            strokeWidth="12"
-            strokeLinecap="round"
-            opacity="0.6"
-          />
+          {/* Aero Road Frame & Fork */}
+          <path d="M 26 65 L 48 65 L 61 46 L 74 65" fill="none" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M 48 65 L 38 42 L 34 42" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M 48 65 L 61 46 L 40 46" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M 74 65 L 62 39 L 68 37" fill="none" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
 
-          {/* Dynamic Rouleur 'R' Monogram Spine */}
-          <path
-            d="M 200 162 L 200 342"
-            stroke="url(#rouleurMetalStroke)"
-            strokeWidth="30"
-            strokeLinecap="round"
-          />
-
-          {/* Upper Teardrop Wheel Loop */}
-          <path
-            d="M 200 162 H 272 C 318 162 344 186 344 222 C 344 258 316 278 270 278 H 200"
-            fill="none"
-            stroke="url(#rouleurMetalStroke)"
-            strokeWidth="30"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          {/* Power Stroke Forward Drive Leg */}
-          <path
-            d="M 256 278 L 332 342"
-            stroke="url(#rouleurMetalStroke)"
-            strokeWidth="32"
-            strokeLinecap="round"
-          />
-
-          {/* Aerodynamic Wake Streamlines */}
-          <path
-            d="M 324 188 Q 364 192 396 176"
-            fill="none"
-            stroke="#7DD3FC"
-            strokeWidth="11"
-            strokeLinecap="round"
-            opacity="0.8"
-          />
-          <path
-            d="M 342 232 Q 380 236 414 224"
-            fill="none"
-            stroke="#7DD3FC"
-            strokeWidth="11"
-            strokeLinecap="round"
-            opacity="0.8"
-          />
-          <path
-            d="M 318 276 Q 366 284 394 302"
-            fill="none"
-            stroke="#38BDF8"
-            strokeWidth="9"
-            strokeLinecap="round"
-            opacity="0.7"
-          />
+          {/* Rouleur Cyclist in Aggressive Aero Breakaway Tuck */}
+          <path d="M 53 25 C 57 23 62 25 64 29 C 62 31.5 58 32.5 53 30.5 Z" fill="#FFFFFF" />
+          <path d="M 37 40 C 44 32.5 52 29.5 58 31.5 L 67 36.5 L 64 40.5 L 56 36.5 C 50 34.5 44 37.5 39 42.5 Z" fill="#FFFFFF" />
+          <path d="M 39 42.5 L 44 53.5 L 48 65" fill="none" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
         </g>
       </svg>
     );
   }
 
-  // Standalone vector glyph (optimized for 16px - 48px rendering)
+  // Standalone vector glyph (optimized for 16px - 48px rendering, inherits text-color)
   return (
     <svg
       viewBox="0 0 100 100"
       className={className}
       style={style}
-      fill="none"
-      stroke="currentColor"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="Rouleur Logo"
     >
-      {/* Outer Aero Wheel Velocity Arc */}
-      <path
-        d="M 50 12 A 38 38 0 1 1 18 64"
-        strokeWidth="6.5"
-        strokeLinecap="round"
-      />
-      {/* Aero Rim Velocity Track */}
-      <path
-        d="M 44 20 A 30 30 0 0 1 76 42"
-        strokeWidth="3"
-        strokeLinecap="round"
-        opacity="0.65"
-      />
-      {/* Spoke Chord */}
-      <path
-        d="M 24 46 L 42 50"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        opacity="0.8"
-      />
-      {/* Rouleur 'R' Vertical Spine (Aero Blade) */}
-      <path
-        d="M 38 28 L 38 72"
-        strokeWidth="7.5"
-        strokeLinecap="round"
-      />
-      {/* Rouleur 'R' Upper Loop (Aero Wheel Teardrop) */}
-      <path
-        d="M 38 28 H 56 C 67 28 73 34 73 43 C 73 52 66 57 55 57 H 38"
-        strokeWidth="7.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Rouleur 'R' Power Drive Leg */}
-      <path
-        d="M 52 57 L 70 72"
-        strokeWidth="8"
-        strokeLinecap="round"
-      />
-      {/* Aero Streamlines */}
-      <path
-        d="M 68 34 Q 78 35 84 31"
-        strokeWidth="3"
-        strokeLinecap="round"
-        opacity="0.75"
-      />
-      <path
-        d="M 72 45 Q 81 46 88 43"
-        strokeWidth="3"
-        strokeLinecap="round"
-        opacity="0.75"
-      />
+      {/* Rear Aero Wheel */}
+      <circle cx="26" cy="65" r="16" fill="none" stroke="currentColor" strokeWidth="4.5" />
+      <circle cx="26" cy="65" r="6.5" fill="currentColor" opacity="0.35" />
+
+      {/* Front Aero Wheel */}
+      <circle cx="74" cy="65" r="16" fill="none" stroke="currentColor" strokeWidth="4.5" />
+      <circle cx="74" cy="65" r="6.5" fill="currentColor" opacity="0.35" />
+
+      {/* Aero Road Frame & Fork */}
+      <path d="M 26 65 L 48 65 L 61 46 L 74 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 48 65 L 38 42 L 34 42" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 48 65 L 61 46 L 40 46" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 74 65 L 62 39 L 68 37" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+
+      {/* Rouleur Cyclist in Aggressive Aero Breakaway Tuck */}
+      <path d="M 53 25 C 57 23 62 25 64 29 C 62 31.5 58 32.5 53 30.5 Z" fill="currentColor" />
+      <path d="M 37 40 C 44 32.5 52 29.5 58 31.5 L 67 36.5 L 64 40.5 L 56 36.5 C 50 34.5 44 37.5 39 42.5 Z" fill="currentColor" />
+      <path d="M 39 42.5 L 44 53.5 L 48 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 };

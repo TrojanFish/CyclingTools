@@ -1,24 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
+    <!-- Background Gradient (Apple Azure / Cyan Velocity) -->
     <linearGradient id="rouleurBg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0284C7" />
       <stop offset="45%" stop-color="#007AFF" />
       <stop offset="100%" stop-color="#1D4ED8" />
     </linearGradient>
 
-    <linearGradient id="rouleurMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Metallic Specular Stroke Gradient -->
+    <linearGradient id="rouleurWhite" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="65%" stop-color="#E0F2FE" />
-      <stop offset="100%" stop-color="#BAE6FD" />
+      <stop offset="100%" stop-color="#E0F2FE" />
     </linearGradient>
 
+    <!-- Ambient & Key Shadow for iOS 18 -->
     <filter id="iconShadow" x="-10%" y="-10%" width="125%" height="125%">
       <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#002D6C" flood-opacity="0.45" />
       <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#002D6C" flood-opacity="0.25" />
     </filter>
 
     <filter id="glyphShadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#03306B" flood-opacity="0.5" />
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#03306B" flood-opacity="0.4" />
     </filter>
   </defs>
 
@@ -28,31 +30,28 @@
   <!-- Apple HIG Specular Rim Light -->
   <rect x="24" y="24" width="464" height="464" rx="108" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-opacity="0.35" />
 
-  <!-- Rouleur Aero Emblem -->
-  <g filter="url(#glyphShadow)" transform="translate(10, 0)">
-    <!-- Deep-Section Aero Rim Arc -->
-    <path d="M 250 96 A 154 154 0 1 1 120 306" fill="none" stroke="url(#rouleurMetal)" stroke-width="26" stroke-linecap="round" />
+  <!-- Breakaway Rouleur Silhouette Group (Scaled up to 512 space) -->
+  <g filter="url(#glyphShadow)" transform="translate(48, 48) scale(4.16)" fill="#FFFFFF" color="#FFFFFF">
+    <!-- Rear Aero Wheel -->
+    <circle cx="26" cy="65" r="16" fill="none" stroke="#FFFFFF" stroke-width="4.5" />
+    <circle cx="26" cy="65" r="6.5" fill="#FFFFFF" opacity="0.35" />
 
-    <!-- Inner High-Velocity Aero Track -->
-    <path d="M 226 128 A 122 122 0 0 1 354 218" fill="none" stroke="#38BDF8" stroke-width="11" stroke-linecap="round" stroke-dasharray="14 10" opacity="0.85" />
+    <!-- Front Aero Wheel -->
+    <circle cx="74" cy="65" r="16" fill="none" stroke="#FFFFFF" stroke-width="4.5" />
+    <circle cx="74" cy="65" r="6.5" fill="#FFFFFF" opacity="0.35" />
 
-    <!-- Radial Aero Spoke Chords -->
-    <path d="M 144 234 L 216 250" stroke="url(#rouleurMetal)" stroke-width="12" stroke-linecap="round" opacity="0.75" />
-    <path d="M 174 158 L 226 216" stroke="url(#rouleurMetal)" stroke-width="12" stroke-linecap="round" opacity="0.6" />
+    <!-- Aero Road Frame & Fork -->
+    <path d="M 26 65 L 48 65 L 61 46 L 74 65" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 48 65 L 38 42 L 34 42" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 48 65 L 61 46 L 40 46" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 74 65 L 62 39 L 68 37" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
 
-    <!-- Dynamic Rouleur 'R' Monogram Spine -->
-    <path d="M 200 162 L 200 342" stroke="url(#rouleurMetal)" stroke-width="30" stroke-linecap="round" />
-
-    <!-- Upper Teardrop Wheel Loop -->
-    <path d="M 200 162 H 272 C 318 162 344 186 344 222 C 344 258 316 278 270 278 H 200"
-          fill="none" stroke="url(#rouleurMetal)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" />
-
-    <!-- Power Stroke Forward Drive Leg -->
-    <path d="M 256 278 L 332 342" stroke="url(#rouleurMetal)" stroke-width="32" stroke-linecap="round" />
-
-    <!-- Aerodynamic Wake Streamlines -->
-    <path d="M 324 188 Q 364 192 396 176" fill="none" stroke="#7DD3FC" stroke-width="11" stroke-linecap="round" opacity="0.8" />
-    <path d="M 342 232 Q 380 236 414 224" fill="none" stroke="#7DD3FC" stroke-width="11" stroke-linecap="round" opacity="0.8" />
-    <path d="M 318 276 Q 366 284 394 302" fill="none" stroke="#38BDF8" stroke-width="9" stroke-linecap="round" opacity="0.7" />
+    <!-- Rouleur Cyclist in Aggressive Aero Breakaway Tuck -->
+    <!-- Aero Helmet -->
+    <path d="M 53 25 C 57 23 62 25 64 29 C 62 31.5 58 32.5 53 30.5 Z" fill="#FFFFFF" />
+    <!-- Torso & Arms in low drop-bar tuck -->
+    <path d="M 37 40 C 44 32.5 52 29.5 58 31.5 L 67 36.5 L 64 40.5 L 56 36.5 C 50 34.5 44 37.5 39 42.5 Z" fill="#FFFFFF" />
+    <!-- Power Leg Drive -->
+    <path d="M 39 42.5 L 44 53.5 L 48 65" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
   </g>
 </svg>

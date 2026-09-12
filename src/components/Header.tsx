@@ -86,9 +86,6 @@ export const Header: React.FC<HeaderProps> = ({
               <div>
                 <div className="flex items-center gap-1 sm:gap-1.5 font-sans">
                   <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">{t('brandName')}</span>
-                  {t('brandSuffix') ? (
-                    <span className="text-ios-blue dark:text-ios-blue-dark font-semibold text-sm sm:text-base">{t('brandSuffix')}</span>
-                  ) : null}
                   <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 dark:bg-ios-blue/20 text-ios-blue dark:text-ios-blue-dark font-mono font-bold tracking-tight">{t('brandPro')}</span>
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 tracking-normal hidden xl:block">

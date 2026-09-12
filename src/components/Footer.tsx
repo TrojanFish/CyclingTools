@@ -25,11 +25,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
               <RouleurLogo className="w-4.5 h-4.5 text-white" />
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
-              <div className="flex items-center gap-1 font-mono">
+              <div className="flex items-center gap-1.5 font-mono">
                 <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
-                {t('brandSuffix') ? (
-                  <span className="text-ios-blue dark:text-ios-blue font-bold text-sm">{t('brandSuffix')}</span>
-                ) : null}
                 <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-mono font-semibold">{t('brandPro')}</span>
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400">· {t('slogan')}</span>

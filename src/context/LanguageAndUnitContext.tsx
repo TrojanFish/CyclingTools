@@ -82,7 +82,8 @@ export const LanguageAndUnitProvider: React.FC<{ children: React.ReactNode }> = 
   // Translation lookup
   const t = (key: TranslationKey, replacements?: Record<string, string | number>): string => {
     const dict = language === 'zh-TW' ? zhTW : zh;
-    let str: string = (dict as any)[key] || (zh as any)[key] || key;
+    const val = (dict as any)[key] ?? (zh as any)[key];
+    let str: string = typeof val === 'string' ? val : key;
 
     if (replacements) {
       Object.entries(replacements).forEach(([rKey, rVal]) => {
