@@ -416,29 +416,46 @@ input[type="number"],
 
 @page {
   size: A4 portrait;
-  margin: 8mm 10mm;
+  margin: 6mm 8mm;
 }
 
 @media print {
+  /* 1. Force exact background colors, borders, and SVGs across all browsers */
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
     margin: 0 !important;
     padding: 0 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
   }
 
-  /* Professional Work Order Single-Page Isolation */
+  /* 2. Hide everything in body except the print portal */
+  body > *:not(#print-work-order-portal) {
+    display: none !important;
+  }
+
+  body:has(#print-work-order-portal) > *:not(#print-work-order-portal),
   body.is-printing-work-order > *:not(#print-work-order-portal) {
     display: none !important;
   }
 
-  body.is-printing-work-order #print-work-order-portal {
+  /* 3. Force show the print portal whenever print is triggered */
+  body > #print-work-order-portal,
+  #print-work-order-portal {
     display: block !important;
+    visibility: visible !important;
     position: static !important;
     width: 100% !important;
-    max-width: 190mm !important;
+    max-width: 194mm !important;
     margin: 0 auto !important;
     padding: 0 !important;
     border: none !important;
@@ -446,6 +463,27 @@ input[type="number"],
     background: #ffffff !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
+  }
+
+  /* 4. Solid colors & high-contrast overrides for printer engines */
+  #print-work-order-portal .bg-slate-900 {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+  }
+
+  #print-work-order-portal .text-white {
+    color: #ffffff !important;
+  }
+
+  #print-work-order-portal .bg-slate-50,
+  #print-work-order-portal .bg-slate-50\/80,
+  #print-work-order-portal .bg-slate-50\/50 {
+    background-color: #f8fafc !important;
+  }
+
+  #print-work-order-portal .border-slate-200,
+  #print-work-order-portal .border-slate-200\/80 {
+    border-color: #e2e8f0 !important;
   }
 
   header, footer, nav, aside, .no-print, button {
@@ -458,3 +496,4 @@ input[type="number"],
     box-shadow: none !important;
   }
 }
+

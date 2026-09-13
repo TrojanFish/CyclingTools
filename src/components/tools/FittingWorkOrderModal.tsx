@@ -398,15 +398,28 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
 
   const { sheetStyle, handlers: swipeHandlers } = useSwipeToDismiss({ onClose });
 
+  React.useEffect(() => {
+    return () => {
+      document.body.classList.remove('is-printing-work-order');
+    };
+  }, []);
+
   const handlePrint = () => {
     document.body.classList.add('is-printing-work-order');
     const cleanup = () => {
       document.body.classList.remove('is-printing-work-order');
       window.removeEventListener('afterprint', cleanup);
     };
-    window.addEventListener('afterprint', cleanup);
-    window.print();
-    setTimeout(cleanup, 2500);
+    window.addEventListener('afterprint', cleanup, { once: true });
+
+    // Allow DOM repaint and layout pass before print dialog blocks thread
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        window.print();
+        // Safe generous fallback cleanup timeout (60s instead of 2.5s)
+        setTimeout(cleanup, 60000);
+      }, 80);
+    });
   };
 
   const ridingStyleName =
@@ -530,7 +543,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
           {/* Modal Footer Actions */}
           <div className="relative z-10 p-3.5 sm:p-4 border-t border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/95 flex flex-wrap items-center justify-between gap-2.5">
             <div className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:flex items-center gap-1.5">
-              <span>*系统将自动以纯净 A4 单页送印，无多余边框</span>
+              <span>* 系统将自动以纯净 A4 单页送印 (支持直接打印或导出为标准 PDF)</span>
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
@@ -555,7 +568,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
       </div>
 
       {/* Top-Level Portal strictly for printing, isolated from modal scroll/layout context */}
-      <div id="print-work-order-portal" aria-hidden="true">
+      <div id="print-work-order-portal" aria-hidden="true" className="w-full bg-white text-slate-900 p-4 print:p-0">
         <FittingSheetContent {...sheetProps} />
       </div>
     </>
