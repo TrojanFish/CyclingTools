@@ -539,7 +539,37 @@ export function analyzePoints(
     }
   }
 
-  const movingTimeSec = Math.max(1, movingPointsCount > 0 ? movingPointsCount : totalDurationSec);
+  // Calculate moving time: handle both 1Hz telemetry and sparse/smart-recorded intervals
+  let movingTimeSec = 0;
+  const isOneHz = points.length > 1 && (points[points.length - 1].time - points[0].time) <= points.length;
+
+  if (isOneHz) {
+    // Standard 1Hz recording: each point represents 1 second
+    movingTimeSec = Math.max(1, movingPointsCount > 0 ? movingPointsCount : totalDurationSec);
+  } else if (points.length > 1) {
+    // Non-1Hz recording (e.g. smart recording GPX, course trackpoints): accumulate interval deltas
+    for (let i = 1; i < points.length; i++) {
+      const pPrev = points[i - 1];
+      const pCurr = points[i];
+      const dt = Math.max(0, pCurr.time - pPrev.time);
+      if (dt === 0) continue;
+
+      const intervalSpeed = ((pCurr.distance - pPrev.distance) / dt) * 3.6;
+      const isMoving =
+        (pCurr.speed ?? intervalSpeed) > 1.2 ||
+        (pPrev.speed ?? intervalSpeed) > 1.2 ||
+        (pCurr.cadence ?? 0) > 0 ||
+        (pCurr.power ?? 0) > 15;
+
+      if (isMoving) {
+        movingTimeSec += dt;
+      }
+    }
+    movingTimeSec = Math.max(1, movingTimeSec > 0 ? movingTimeSec : totalDurationSec);
+  } else {
+    movingTimeSec = 1;
+  }
+
   const avgPower = validPowers.length > 0 ? Math.round(sumPower / validPowers.length) : 0;
   const normalizedPower = calculateNormalizedPower(validPowers);
   const intensityFactor = parseFloat((normalizedPower / (ftpWatts || 240)).toFixed(3));
@@ -577,7 +607,9 @@ export function analyzePoints(
   }
 
   // Work in kJ and estimated Calories (assuming 24% human gross mechanical efficiency)
-  const workKj = Math.round((sumPower * 1) / 1000);
+  // For 1Hz, sumPower * 1; for variable delta, avgPower * movingTimeSec
+  const workJoules = isOneHz ? sumPower : avgPower * movingTimeSec;
+  const workKj = Math.round(workJoules / 1000);
   let caloriesKcal = Math.round(workKj / 1.05); // 1 kJ ≈ 1 kcal at ~24% gross mechanical efficiency
   if ((workKj === 0 || caloriesKcal === 0) && options?.recordedCalories && options.recordedCalories > 0) {
     caloriesKcal = options.recordedCalories;
