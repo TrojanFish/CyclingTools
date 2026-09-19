@@ -279,7 +279,13 @@ export const exportActivitiesBackup = async (): Promise<string> => {
  * Import activities from JSON backup
  */
 export const importActivitiesBackup = async (jsonContent: string): Promise<number> => {
-  const parsed = JSON.parse(jsonContent);
+  let parsed: any;
+  try {
+    parsed = JSON.parse(jsonContent);
+  } catch {
+    throw new Error('备份文件非有效的 JSON 格式');
+  }
+
   const items: LocalActivityRecord[] = Array.isArray(parsed)
     ? parsed
     : Array.isArray(parsed.activities)
