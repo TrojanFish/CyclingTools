@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Bike } from 'lucide-react';
+import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Bike, RotateCcw } from 'lucide-react';
 import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -9,10 +9,35 @@ import { IOSToolHeader } from '../common/IOSToolHeader';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { useToolDraftState } from '../../hooks/useToolDraftState';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateFittingPoster } from '../../utils/shareCardGenerators';
 import { FittingWorkOrderModal } from './FittingWorkOrderModal';
+
+interface BikeFitterDraft {
+  torso: number;
+  armLength: number;
+  shoulderWidth: number;
+  sittingHeight: number;
+  thighLength: number;
+  lowerLegLength: number;
+  footLength: number;
+  ridingStyle: 'recreational' | 'endurance' | 'racing';
+  flexibility: 'low' | 'medium' | 'high';
+}
+
+const DEFAULT_FITTER_DRAFT: BikeFitterDraft = {
+  torso: 60,
+  armLength: 62,
+  shoulderWidth: 42,
+  sittingHeight: 90,
+  thighLength: 43,
+  lowerLegLength: 42,
+  footLength: 26,
+  ridingStyle: 'endurance',
+  flexibility: 'medium',
+};
 
 export const RoadBikeFitter: React.FC = () => {
   const { profile, activeBike, updateActiveBikeGeometry } = useRiderProfile();
@@ -29,19 +54,51 @@ export const RoadBikeFitter: React.FC = () => {
     if (profile.heightCm) setHeight(profile.heightCm);
     if (profile.inseamCm) setInseam(profile.inseamCm);
   }, [profile.heightCm, profile.inseamCm]);
-  const [torso, setTorso] = useState<number>(60);
-  const [armLength, setArmLength] = useState<number>(62);
-  const [shoulderWidth, setShoulderWidth] = useState<number>(42);
 
-  // Advanced Optional Measurements
-  const [sittingHeight, setSittingHeight] = useState<number>(90);
-  const [thighLength, setThighLength] = useState<number>(43);
-  const [lowerLegLength, setLowerLegLength] = useState<number>(42);
-  const [footLength, setFootLength] = useState<number>(26);
+  // Draft persistence for anthropometric measurements & fitting preferences
+  const {
+    draft: fitterDraft,
+    setDraft: setFitterDraft,
+    resetDraft: resetFitterDraft,
+    hasSavedDraft,
+  } = useToolDraftState<BikeFitterDraft>('road_bike_fitter', DEFAULT_FITTER_DRAFT);
 
-  // Preferences
-  const [ridingStyle, setRidingStyle] = useState<'recreational' | 'endurance' | 'racing'>('endurance');
-  const [flexibility, setFlexibility] = useState<'low' | 'medium' | 'high'>('medium');
+  const torso = fitterDraft.torso;
+  const setTorso = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, torso: typeof val === 'function' ? val(prev.torso) : val }));
+
+  const armLength = fitterDraft.armLength;
+  const setArmLength = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, armLength: typeof val === 'function' ? val(prev.armLength) : val }));
+
+  const shoulderWidth = fitterDraft.shoulderWidth;
+  const setShoulderWidth = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, shoulderWidth: typeof val === 'function' ? val(prev.shoulderWidth) : val }));
+
+  const sittingHeight = fitterDraft.sittingHeight;
+  const setSittingHeight = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, sittingHeight: typeof val === 'function' ? val(prev.sittingHeight) : val }));
+
+  const thighLength = fitterDraft.thighLength;
+  const setThighLength = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, thighLength: typeof val === 'function' ? val(prev.thighLength) : val }));
+
+  const lowerLegLength = fitterDraft.lowerLegLength;
+  const setLowerLegLength = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, lowerLegLength: typeof val === 'function' ? val(prev.lowerLegLength) : val }));
+
+  const footLength = fitterDraft.footLength;
+  const setFootLength = (val: number | ((prev: number) => number)) =>
+    setFitterDraft(prev => ({ ...prev, footLength: typeof val === 'function' ? val(prev.footLength) : val }));
+
+  const ridingStyle = fitterDraft.ridingStyle;
+  const setRidingStyle = (val: 'recreational' | 'endurance' | 'racing') =>
+    setFitterDraft(prev => ({ ...prev, ridingStyle: val }));
+
+  const flexibility = fitterDraft.flexibility;
+  const setFlexibility = (val: 'low' | 'medium' | 'high') =>
+    setFitterDraft(prev => ({ ...prev, flexibility: val }));
+
   const [showAdvancedInputs, setShowAdvancedInputs] = useState<boolean>(false);
 
   // Comprehensive Fitting Calculation
@@ -189,6 +246,20 @@ export const RoadBikeFitter: React.FC = () => {
             <IOSCopyResultButton
               textToCopy={`【Rouleur 专业公路车Fitting建议】车手身高: ${height}cm / 跨高: ${inseam}cm (${ridingStyle === 'racing' ? '竞技突围' : ridingStyle === 'endurance' ? '长途耐力' : '休闲骑游'}) → 推荐坐高: ${result.saddleHeight} cm (LeMond) / 等效上管ETT: ${result.effectiveTopTube} mm / 把立长度: ${result.stemLength} mm / 车把宽度: ${result.handlebarWidth} mm / 曲柄长度: ${result.crankLength} mm`}
             />
+            {hasSavedDraft && (
+              <button
+                type="button"
+                onClick={() => {
+                  resetFitterDraft();
+                  showToast(language === 'zh-TW' ? '已重置擬合參數' : '已重置拟合参数', 'info');
+                }}
+                className="apple-touch h-9 px-3 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-medium border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                title={language === 'zh-TW' ? '清除草稿並還原預設' : '清除草稿并还原预设'}
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-ios-gray" />
+                <span>{language === 'zh-TW' ? '重置' : '重置'}</span>
+              </button>
+            )}
             <button
               onClick={handlePrint}
               className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"

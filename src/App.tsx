@@ -38,6 +38,7 @@ import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { MacosSidebar } from './components/common/MacosSidebar';
 import { CommandPaletteModal } from './components/common/CommandPaletteModal';
+import { OfflineStatusPill } from './components/common/OfflineStatusPill';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TOOLS_LIST } from './data/toolsList';
 import { smoothScrollToTop } from './utils/toolNavHelper';
@@ -428,6 +429,9 @@ const MainAppContent: React.FC = () => {
       onClose={() => setIsCommandPaletteOpen(false)}
       onSelectTool={(id) => handleSelectTool(id)}
     />
+
+    {/* Apple HIG Offline Perception Pill */}
+    <OfflineStatusPill />
 
     <BackToTop />
   </div>
