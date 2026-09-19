@@ -112,8 +112,9 @@ export const TirePressureCalculator: React.FC = () => {
       adjustedBase -= 2.5;
     }
 
-    const frontRatio = (effectiveFrontPct / 50) * 0.94;
-    const rearRatio = (effectiveRearPct / 50) * 1.06;
+    // Weight distribution factor relative to equal 50/50 balance (e.g. 44% front -> 0.94, 56% rear -> 1.06)
+    const frontRatio = 0.5 + (effectiveFrontPct / 100);
+    const rearRatio = 0.5 + (effectiveRearPct / 100);
 
     let frontRec = Math.round(adjustedBase * frontRatio);
     let rearRec = Math.round(adjustedBase * rearRatio);
