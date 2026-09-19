@@ -6,6 +6,7 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
+import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateChainLengthPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -180,17 +181,22 @@ export const ChainLengthCalculator: React.FC = () => {
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成截鏈規範海報' : '生成截链规范海报'}
         actions={
-          <IOSSegmentedControl
-            options={[
-              { value: 'compact_34', label: '公路 50/34T' },
-              { value: 'semi_30', label: '公路 52/36T' },
-              { value: 'sram_axs', label: 'AXS 48/35T' },
-              { value: 'gravel_1x', label: 'Gravel 40T' },
-            ]}
-            value={activePreset || ''}
-            onChange={(val) => loadPreset(val)}
-            size="md"
-          />
+          <div className="flex items-center gap-2">
+            <IOSCopyResultButton
+              textToCopy={`【Rouleur 链条长度计算】后下叉RC: ${chainstayLengthMm}mm · 前齿盘: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T`} · 飞轮: ${smallCog}-${bigCog}T → 推荐截链节数: ${result.recommendedLinks} 节 (链长 ${result.chainLengthInches} 英寸) · 后拨齿容量需求: ${result.requiredCapacity}T (${result.rearDerailleurRecommendation})`}
+            />
+            <IOSSegmentedControl
+              options={[
+                { value: 'compact_34', label: '公路 50/34T' },
+                { value: 'semi_30', label: '公路 52/36T' },
+                { value: 'sram_axs', label: 'AXS 48/35T' },
+                { value: 'gravel_1x', label: 'Gravel 40T' },
+              ]}
+              value={activePreset || ''}
+              onChange={(val) => loadPreset(val)}
+              size="md"
+            />
+          </div>
         }
       />
 

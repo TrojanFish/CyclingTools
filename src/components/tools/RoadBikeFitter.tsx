@@ -10,6 +10,7 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { ShareCardModal } from '../common/ShareCardModal';
+import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateFittingPoster } from '../../utils/shareCardGenerators';
 import { FittingWorkOrderModal } from './FittingWorkOrderModal';
 
@@ -184,13 +185,18 @@ export const RoadBikeFitter: React.FC = () => {
         onShare={handleGeneratePoster}
         shareTitle="生成个人 Fitting 档案长图"
         actions={
-          <button
-            onClick={handlePrint}
-            className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-          >
-            <Printer className="w-3.5 h-3.5 text-ios-purple" />
-            {language === 'zh-TW' ? '列印工單' : '打印工单'}
-          </button>
+          <div className="flex items-center gap-2">
+            <IOSCopyResultButton
+              textToCopy={`【Rouleur 专业公路车Fitting建议】车手身高: ${height}cm / 跨高: ${inseam}cm (${ridingStyle === 'racing' ? '竞技突围' : ridingStyle === 'endurance' ? '长途耐力' : '休闲骑游'}) → 推荐坐高: ${result.saddleHeight} cm (LeMond) / 等效上管ETT: ${result.effectiveTopTube} mm / 把立长度: ${result.stemLength} mm / 车把宽度: ${result.handlebarWidth} mm / 曲柄长度: ${result.crankLength} mm`}
+            />
+            <button
+              onClick={handlePrint}
+              className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+            >
+              <Printer className="w-3.5 h-3.5 text-ios-purple" />
+              {language === 'zh-TW' ? '列印工單' : '打印工单'}
+            </button>
+          </div>
         }
       />
 

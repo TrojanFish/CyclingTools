@@ -40,10 +40,16 @@ import { MacosSidebar } from './components/common/MacosSidebar';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TOOLS_LIST } from './data/toolsList';
 import { smoothScrollToTop } from './utils/toolNavHelper';
+import { parseToolIdFromHash, syncHashToBrowser } from './utils/hashRouter';
 import { Home, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
-  const [currentToolId, setCurrentToolId] = useState<string | null>(null);
+  const [currentToolId, setCurrentToolId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return parseToolIdFromHash(window.location.hash);
+    }
+    return null;
+  });
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
@@ -149,17 +155,41 @@ const MainAppContent: React.FC = () => {
     return TOOLS_LIST.find(t => t.id === currentToolId);
   }, [currentToolId]);
 
+  // Unified tool navigation with browser URL hash sync
+  const handleSelectTool = (id: string | null) => {
+    setCurrentToolId(id);
+    syncHashToBrowser(id);
+    smoothScrollToTop();
+  };
+
+  // Bidirectional synchronization with browser URL hash and back/forward history
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleUrlChange = () => {
+      const toolFromHash = parseToolIdFromHash(window.location.hash);
+      setCurrentToolId(toolFromHash);
+      smoothScrollToTop();
+    };
+
+    window.addEventListener('hashchange', handleUrlChange);
+    window.addEventListener('popstate', handleUrlChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, []);
+
   const handlePrevTool = () => {
     if (currentToolIndex > 0) {
-      setCurrentToolId(TOOLS_LIST[currentToolIndex - 1].id);
-      smoothScrollToTop();
+      handleSelectTool(TOOLS_LIST[currentToolIndex - 1].id);
     }
   };
 
   const handleNextTool = () => {
     if (currentToolIndex < TOOLS_LIST.length - 1) {
-      setCurrentToolId(TOOLS_LIST[currentToolIndex + 1].id);
-      smoothScrollToTop();
+      handleSelectTool(TOOLS_LIST[currentToolIndex + 1].id);
     }
   };
 
@@ -174,14 +204,12 @@ const MainAppContent: React.FC = () => {
           themeMode={themeMode}
           setThemeMode={handleSetThemeMode}
           onNavigateHome={() => {
-            setCurrentToolId(null);
+            handleSelectTool(null);
             setSelectedCategory('all');
-            smoothScrollToTop();
           }}
           currentToolId={currentToolId}
           onSelectTool={(id) => {
-            setCurrentToolId(id);
-            smoothScrollToTop();
+            handleSelectTool(id);
           }}
           profileModalOpen={profileModalOpen}
           setProfileModalOpen={setProfileModalOpen}
@@ -199,8 +227,7 @@ const MainAppContent: React.FC = () => {
             <MacosSidebar
               currentToolId={currentToolId}
               onSelectTool={(id) => {
-                setCurrentToolId(id);
-                smoothScrollToTop();
+                handleSelectTool(id);
               }}
               onOpenProfile={() => setProfileModalOpen(true)}
               isCollapsed={!isSidebarOpen}
@@ -221,7 +248,7 @@ const MainAppContent: React.FC = () => {
                 <div className="flex items-center gap-2 shrink-0">
                   {/* Below lg: Back to Home Button with Home SVG Icon - Standard h-9 w-9 Apple HIG control */}
                   <button
-                    onClick={() => setCurrentToolId(null)}
+                    onClick={() => handleSelectTool(null)}
                     className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 shrink-0 apple-touch"
                     title={t('backToHome')}
                     aria-label={t('backToHome')}
@@ -232,7 +259,7 @@ const MainAppContent: React.FC = () => {
                   {/* Desktop: Breadcrumb Hierarchy: 首页 > 分类 > 工具名 */}
                   <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
                     <button
-                      onClick={() => setCurrentToolId(null)}
+                      onClick={() => handleSelectTool(null)}
                       className="cursor-pointer hover:text-ios-blue transition font-medium hover:underline text-slate-600 dark:text-slate-300"
                     >
                       {language === 'zh-TW' ? '首頁' : '首页'}
@@ -273,7 +300,7 @@ const MainAppContent: React.FC = () => {
 
                   <CustomToolSelect
                     currentToolId={currentToolId}
-                    onSelectTool={(id) => setCurrentToolId(id)}
+                    onSelectTool={(id) => handleSelectTool(id)}
                     language={language}
                   />
 
@@ -301,8 +328,7 @@ const MainAppContent: React.FC = () => {
             {currentToolId === null && (
               <Dashboard
                 onSelectTool={(id) => {
-                  setCurrentToolId(id);
-                  smoothScrollToTop();
+                  handleSelectTool(id);
                 }}
                 filteredTools={filteredTools}
                 selectedCategory={selectedCategory}
@@ -315,9 +341,8 @@ const MainAppContent: React.FC = () => {
             <ErrorBoundary
               fallbackTitle={language === 'zh-TW' ? '此工具載入或運行發生異常' : '该工具加载或运行发生异常'}
               onReset={() => {
-                setCurrentToolId(null);
+                handleSelectTool(null);
                 setSelectedCategory('all');
-                smoothScrollToTop();
               }}
             >
               <React.Suspense fallback={<IOSToolSkeleton />}>
@@ -329,18 +354,18 @@ const MainAppContent: React.FC = () => {
                 {currentToolId === 'upgrade-roi' && <UpgradeRoiCalculator />}
                 {currentToolId === 'bike-fitter' && <RoadBikeFitter />}
                 {currentToolId === 'pain-checker' && <RoadBikePainChecker />}
-                {currentToolId === 'roadbook-library' && <RoadbookLibrary onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'roadbook-library' && <RoadbookLibrary onNavigateTool={(id) => handleSelectTool(id)} />}
                 {currentToolId === 'gpx-creator' && <GpxRouteCreator />}
                 {currentToolId === 'group-ride' && <GroupRideSimulator />}
                 {currentToolId === 'weather-advisor' && <CyclingWeatherAdvisor />}
-                {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'power-radar' && <PowerProfileRadar onNavigateTool={(id) => handleSelectTool(id)} />}
                 {currentToolId === 'health-calculator' && <HealthCalculator />}
-                {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'activity-analyzer' && <FitActivityAnalyzer onNavigateTool={(id) => handleSelectTool(id)} />}
                 {currentToolId === 'workout-builder' && <WorkoutBuilder />}
                 {currentToolId === 'tubeless-sealant' && <TubelessSealantCalculator />}
                 {currentToolId === 'spoke-calculator' && <SpokeLengthCalculator />}
                 {currentToolId === 'mtb-suspension' && <MtbSuspensionTuner />}
-                {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => setCurrentToolId(id)} />}
+                {currentToolId === 'strava-cockpit' && <StravaDataCockpit onNavigateTool={(id) => handleSelectTool(id)} />}
                 {currentToolId === 'training-calendar' && <TrainingPlanCalendar />}
               </React.Suspense>
             </ErrorBoundary>
@@ -351,9 +376,8 @@ const MainAppContent: React.FC = () => {
         <div className="hidden lg:block">
           <Footer
             onNavigateHome={() => {
-              setCurrentToolId(null);
+              handleSelectTool(null);
               setSelectedCategory('all');
-              smoothScrollToTop();
             }}
           />
         </div>
@@ -364,9 +388,8 @@ const MainAppContent: React.FC = () => {
     <div className="lg:hidden">
       <Footer
         onNavigateHome={() => {
-          setCurrentToolId(null);
+          handleSelectTool(null);
           setSelectedCategory('all');
-          smoothScrollToTop();
         }}
       />
     </div>
@@ -375,13 +398,11 @@ const MainAppContent: React.FC = () => {
     <MobileBottomNav
       currentToolId={currentToolId}
       onNavigateHome={() => {
-        setCurrentToolId(null);
+        handleSelectTool(null);
         setSelectedCategory('all');
-        smoothScrollToTop();
       }}
       onSelectTool={(id) => {
-        setCurrentToolId(id);
-        smoothScrollToTop();
+        handleSelectTool(id);
       }}
       onOpenProfile={() => setProfileModalOpen(true)}
     />

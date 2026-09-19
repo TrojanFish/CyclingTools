@@ -8,6 +8,7 @@ import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { ShareCardModal } from '../common/ShareCardModal';
+import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateTirePressurePoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
@@ -208,16 +209,21 @@ export const TirePressureCalculator: React.FC = () => {
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成胎壓調校卡片' : '生成胎压调校卡片'}
         actions={
-          <IOSSegmentedControl
-            options={[
-              { id: 'psi', label: 'PSI' },
-              { id: 'bar', label: 'BAR' },
-              { id: 'kpa', label: 'KPA' },
-            ]}
-            value={pressureUnit}
-            onChange={(val) => setPressureUnit(val as any)}
-            size="md"
-          />
+          <div className="flex items-center gap-2">
+            <IOSCopyResultButton
+              textToCopy={`【Rouleur 智能胎压】系统总重 ${(riderWeight + bikeGearWeight).toFixed(1)}kg (${riderWeight}kg车手+${bikeGearWeight}kg车) · ${nominalWidth}c ${tireSetup} (${SURFACE_FACTORS[surfaceKey]?.label || ''}) → 推荐气压：前轮 ${result.front.rec} ${pressureUnit.toUpperCase()} / 后轮 ${result.rear.rec} ${pressureUnit.toUpperCase()}`}
+            />
+            <IOSSegmentedControl
+              options={[
+                { id: 'psi', label: 'PSI' },
+                { id: 'bar', label: 'BAR' },
+                { id: 'kpa', label: 'KPA' },
+              ]}
+              value={pressureUnit}
+              onChange={(val) => setPressureUnit(val as any)}
+              size="md"
+            />
+          </div>
         }
       />
 

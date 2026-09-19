@@ -7,6 +7,7 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
+import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateGearSpeedPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -197,13 +198,15 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     };
   }, [bigRing, smallRing, chainringType, cogsList, tireCircumferenceMm, isImperial]);
 
-  const handleGeneratePoster = () => {
-    const unitStr = isImperial ? 'mph' : 'km/h';
-    const maxKmh = speedMatrix[0]?.row[0]?.speedKmh || 0;
-    const maxSpd = isImperial ? (maxKmh * 0.621371).toFixed(1) : maxKmh;
-    const minKmh = speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.speedKmh || 0;
-    const minSpd = isImperial ? (minKmh * 0.621371).toFixed(1) : minKmh;
+  const unitStr = isImperial ? 'mph' : 'km/h';
+  const maxKmh = speedMatrix[0]?.row[0]?.speedKmh || 0;
+  const maxSpd = isImperial ? (maxKmh * 0.621371).toFixed(1) : maxKmh;
+  const minKmh = speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.speedKmh || 0;
+  const minSpd = isImperial ? (minKmh * 0.621371).toFixed(1) : minKmh;
+  const maxRatio = (speedMatrix[0]?.row[0]?.ratio || 0).toFixed(2);
+  const minRatio = (speedMatrix[speedMatrix.length - 1]?.row[cogsList.length - 1]?.ratio || 0).toFixed(2);
 
+  const handleGeneratePoster = () => {
     const url = generateGearSpeedPoster({
       chainringStr: chainringType === 'double' ? `${bigRing}/${smallRing}T` : `${bigRing}T`,
       cogsStr,
@@ -230,16 +233,21 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         onShare={handleGeneratePoster}
         shareTitle="生成齿比与踏频速度海报"
         actions={
-          <IOSSegmentedControl
-            options={[
-              { id: 'matrix', label: '档位矩阵' },
-              { id: 'cadence_table', label: '踏频对照' },
-              { id: 'chart', label: '速度曲线' },
-            ]}
-            value={activeTab}
-            onChange={(val) => setActiveTab(val as any)}
-            size="md"
-          />
+          <div className="flex items-center gap-2">
+            <IOSCopyResultButton
+              textToCopy={`【Rouleur 齿比与速度计算】前牙盘: ${chainringType === 'single' ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} · 飞轮: ${cogsList[0]}-${cogsList[cogsList.length - 1]}T (${cogsList.length}速) @ ${cadenceRpm}rpm → 速度范围: ${minSpd} ~ ${maxSpd} ${unitStr} · 齿比范围: ${minRatio} (爬坡极比) ~ ${maxRatio} (平路竞速)`}
+            />
+            <IOSSegmentedControl
+              options={[
+                { id: 'matrix', label: '档位矩阵' },
+                { id: 'cadence_table', label: '踏频对照' },
+                { id: 'chart', label: '速度曲线' },
+              ]}
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as any)}
+              size="md"
+            />
+          </div>
         }
       />
 
