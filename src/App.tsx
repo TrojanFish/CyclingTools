@@ -37,6 +37,7 @@ import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { MacosSidebar } from './components/common/MacosSidebar';
+import { CommandPaletteModal } from './components/common/CommandPaletteModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TOOLS_LIST } from './data/toolsList';
 import { smoothScrollToTop } from './utils/toolNavHelper';
@@ -123,7 +124,20 @@ const MainAppContent: React.FC = () => {
   }, [isDark]);
 
   const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const { language, t } = useLanguageAndUnit();
+
+  // Global keyboard shortcut: Cmd+K / Ctrl+K opens Command Palette
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   // Filter tools by category & search term
   const filteredTools = useMemo(() => {
@@ -215,6 +229,7 @@ const MainAppContent: React.FC = () => {
           setProfileModalOpen={setProfileModalOpen}
           isSidebarOpen={isSidebarOpen}
           onToggleSidebar={handleToggleSidebar}
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         />
 
         {/* PWA Installation Prompt Bar (Mobile & Desktop, positioned below header) */}
@@ -405,6 +420,13 @@ const MainAppContent: React.FC = () => {
         handleSelectTool(id);
       }}
       onOpenProfile={() => setProfileModalOpen(true)}
+    />
+
+    {/* Global ⌘K Command Palette */}
+    <CommandPaletteModal
+      isOpen={isCommandPaletteOpen}
+      onClose={() => setIsCommandPaletteOpen(false)}
+      onSelectTool={(id) => handleSelectTool(id)}
     />
 
     <BackToTop />

@@ -21,6 +21,7 @@ interface HeaderProps {
   setProfileModalOpen?: (open: boolean) => void;
   isSidebarOpen?: boolean;
   onToggleSidebar?: () => void;
+  onOpenCommandPalette?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -34,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
   profileModalOpen,
   setProfileModalOpen,
   isSidebarOpen = true,
-  onToggleSidebar
+  onToggleSidebar,
+  onOpenCommandPalette
 }) => {
   const [internalProfileOpen, setInternalProfileOpen] = useState<boolean>(false);
   const isProfileOpen = profileModalOpen !== undefined ? profileModalOpen : internalProfileOpen;
@@ -131,18 +133,33 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Center Search Input (Desktop) - iOS Spotlight style */}
           <div className="hidden sm:flex items-center flex-1 max-w-md mx-4 lg:mx-6">
-            <div className="relative w-full">
+            <div
+              className="relative w-full cursor-pointer"
+              onClick={() => (onOpenCommandPalette ? onOpenCommandPalette() : searchInputRef.current?.focus())}
+            >
               <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onClick={(e) => {
+                  if (onOpenCommandPalette) {
+                    e.preventDefault();
+                    onOpenCommandPalette();
+                  }
+                }}
+                onFocus={(e) => {
+                  if (onOpenCommandPalette) {
+                    e.target.blur();
+                    onOpenCommandPalette();
+                  }
+                }}
                 placeholder={t('searchPlaceholder')}
-                className="w-full h-9 bg-slate-200/50 dark:bg-[#2C2C2E]/80 border border-black/[0.04] dark:border-white/[0.08] rounded-xl pl-9 pr-12 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ios-blue/40 focus:bg-white dark:focus:bg-[#2C2C2E] transition-all"
+                className="w-full h-9 bg-slate-200/50 dark:bg-[#2C2C2E]/80 border border-black/[0.04] dark:border-white/[0.08] rounded-xl pl-9 pr-14 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-ios-blue/40 focus:bg-white dark:focus:bg-[#2C2C2E] transition-all cursor-pointer"
               />
-              <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[11px] font-mono font-medium text-slate-400 dark:text-slate-400 bg-white dark:bg-[#3A3A3C] border border-black/[0.06] dark:border-white/[0.08] rounded-md shadow-xs select-none">
-                /
+              <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-400 dark:text-slate-400 bg-white dark:bg-[#3A3A3C] border border-black/[0.06] dark:border-white/[0.08] rounded-md shadow-xs select-none pointer-events-none">
+                ⌘K
               </kbd>
             </div>
           </div>
@@ -151,7 +168,13 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Mobile Search Button - Uniform Apple HIG 36px button */}
             <button
-              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+              onClick={() => {
+                if (onOpenCommandPalette) {
+                  onOpenCommandPalette();
+                } else {
+                  setMobileSearchOpen(!mobileSearchOpen);
+                }
+              }}
               className="sm:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100/90 dark:bg-[#2C2C2E]/80 border border-black/[0.05] dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white apple-touch transition shrink-0"
               title="Search Tools"
               aria-label="Search Tools"
