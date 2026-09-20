@@ -350,7 +350,7 @@ export const ChainLengthCalculator: React.FC = () => {
           )}
 
           {/* Main Key Link Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
             <IOSMetricTile
               label="标准截链推荐"
               value={result.recommendedLinks}

@@ -234,18 +234,25 @@ export const UpgradeRoiCalculator: React.FC = () => {
       ...prev,
       {
         id: newId,
-        name: `自定义改装件 #${prev.length + 1}`,
+        name: language === 'zh-TW' ? `自訂改裝件 #${prev.length + 1}` : `自定义改装件 #${prev.length + 1}`,
         category: 'aero',
         weightSaveG: 50,
         powerSaveWatts: 2.0,
         costYuan: 500,
         enabled: true,
+        selectedSpecIndex: 0,
         specs: [
-          { label: '自定义规格', weightG: 50, baseWatts40: 2.0, refPrice: 500, note: '用户手动自定义设定' }
+          {
+            label: language === 'zh-TW' ? '自訂規格 (可自由修改下方參數)' : '自定义规格 (可自由修改下方参数)',
+            weightG: 50,
+            baseWatts40: 2.0,
+            refPrice: 500,
+            note: language === 'zh-TW' ? '可在下方卡片中自由微調實測價格、減重克數與省瓦收益' : '可在下方卡片中自由微调实测价格、减重克数与省瓦收益'
+          }
         ]
       }
     ]);
-    showToast('已添加自定义改装件！', 'success');
+    showToast(language === 'zh-TW' ? '已新增自訂改裝升級項目！' : '已添加自定义改装升级项！', 'success');
   };
 
   // Delete item
@@ -256,7 +263,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
 
   const resetToDefaults = () => {
     setItems(DEFAULT_ITEMS_WITH_SPECS);
-    showToast('已恢复默认预设改装清单', 'info');
+    showToast(language === 'zh-TW' ? '已恢復預設改裝清單' : '已恢复默认预设改装清单', 'info');
   };
 
   // Calculation of Savings and ROI
@@ -442,14 +449,38 @@ export const UpgradeRoiCalculator: React.FC = () => {
         {/* Left Upgrade Items (Spec Picker + Custom In-place Inputs) */}
         <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-ios-blue" />
-                备选改装清单（下拉选择规格自动带出实测参数）
-              </h2>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                已生效 {analysis.activeCount} / {items.length} 件
-              </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-ios-blue shrink-0" />
+                <div>
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-200 tracking-tight">
+                    {language === 'zh-TW' ? '備選改裝清單（下拉選型自動帶出實測參數）' : '备选改装清单（下拉选择规格自动带出实测参数）'}
+                  </h2>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                    已生效 {analysis.activeCount} / {items.length} 件
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={handleAddCustomItem}
+                  className="apple-touch h-8 px-2.5 sm:px-3 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{language === 'zh-TW' ? '新增改裝' : '新增改装'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={resetToDefaults}
+                  className="apple-touch h-8 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300 text-xs font-medium flex items-center gap-1 transition"
+                  title={language === 'zh-TW' ? '還原為預設改裝清單' : '还原为默认预设清单'}
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-ios-gray" />
+                  <span>{language === 'zh-TW' ? '重置' : '重置'}</span>
+                </button>
+              </div>
             </div>
 
             <div className="space-y-3.5">
@@ -575,6 +606,26 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Bottom Action Bar */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+              <button
+                type="button"
+                onClick={handleAddCustomItem}
+                className="flex-1 h-10 rounded-xl border border-dashed border-ios-blue/40 hover:border-ios-blue bg-ios-blue/5 hover:bg-ios-blue/10 text-ios-blue text-xs font-semibold flex items-center justify-center gap-1.5 transition apple-touch shadow-xs"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{language === 'zh-TW' ? '新增自訂改裝升級項目' : '新增自定义改装升级项目'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={resetToDefaults}
+                className="h-10 px-4 rounded-xl border border-black/[0.06] dark:border-white/[0.08] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 text-xs font-medium flex items-center justify-center gap-1.5 transition apple-touch"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-ios-gray" />
+                <span>{language === 'zh-TW' ? '恢復預設清單' : '恢复默认清单'}</span>
+              </button>
             </div>
           </IOSCard>
         </div>
