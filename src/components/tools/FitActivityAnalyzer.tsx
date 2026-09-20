@@ -53,6 +53,7 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateFitActivityPoster } from '../../utils/shareCardGenerators';
+import { triggerHaptic } from '../../utils/haptics';
 import {
   ActivityAnalysis,
   ActivityPoint,
@@ -366,6 +367,41 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   const [showElevation, setShowElevation] = useState<boolean>(true);
   const [showSpeed, setShowSpeed] = useState<boolean>(false);
   const [showCadence, setShowCadence] = useState<boolean>(false);
+
+  // Real-time Scrubbed / Hovered Point Index for Telemetry HUD
+  const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
+
+  const currentScrubbedPoint = useMemo(() => {
+    if (!analysis || !analysis.sampledPoints || hoveredPointIndex === null) return null;
+    return analysis.sampledPoints[hoveredPointIndex] || null;
+  }, [analysis, hoveredPointIndex]);
+
+  const setPresetChannels = (preset: 'physiology' | 'transmission' | 'all') => {
+    triggerHaptic('selection');
+    if (preset === 'physiology') {
+      setShowPower(true);
+      setShowHeartRate(true);
+      setShowElevation(true);
+      setShowSpeed(false);
+      setShowCadence(false);
+    } else if (preset === 'transmission') {
+      setShowPower(true);
+      setShowSpeed(true);
+      setShowCadence(true);
+      setShowHeartRate(false);
+      setShowElevation(false);
+    } else if (preset === 'all') {
+      setShowPower(true);
+      setShowHeartRate(true);
+      setShowElevation(true);
+      setShowSpeed(true);
+      setShowCadence(true);
+    }
+  };
+
+  const isPhysiologyPreset = showPower && showHeartRate && showElevation && !showSpeed && !showCadence;
+  const isTransmissionPreset = showPower && showSpeed && showCadence && !showHeartRate && !showElevation;
+  const isAllPreset = showPower && showHeartRate && showElevation && showSpeed && showCadence;
 
   // Automatically load demo ride on first render so user has immediate rich data
   useEffect(() => {
@@ -719,7 +755,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         yAxisID: 'yPower',
         borderWidth: 1.5,
         pointRadius: 0,
-        tension: 0.1
+        tension: 0.1,
+        order: 1
       });
     }
 
@@ -733,7 +770,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         borderWidth: 1.5,
         yAxisID: 'yHr',
         pointRadius: 0,
-        tension: 0.2
+        tension: 0.2,
+        order: 2
       });
     }
 
@@ -748,7 +786,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         borderWidth: 1.2,
         yAxisID: 'yElevation',
         pointRadius: 0,
-        tension: 0.2
+        tension: 0.2,
+        order: 10
       });
     }
 
@@ -762,7 +801,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         borderWidth: 1.2,
         yAxisID: 'ySpeed',
         pointRadius: 0,
-        tension: 0.2
+        tension: 0.2,
+        order: 3
       });
     }
 
@@ -776,7 +816,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         borderWidth: 1.2,
         yAxisID: 'yCadence',
         pointRadius: 0,
-        tension: 0.1
+        tension: 0.1,
+        order: 4
       });
     }
 
@@ -787,29 +828,36 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     return {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 400 },
+      animation: { duration: 250 },
+      events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
       interaction: {
         mode: 'index',
         intersect: false
       },
+      onHover: (_e: any, elements: any[]) => {
+        if (elements && elements.length > 0) {
+          setHoveredPointIndex(elements[0].index);
+        } else {
+          setHoveredPointIndex(null);
+        }
+      },
       plugins: {
         legend: {
-          display: true,
-          position: 'top',
-          labels: {
-            boxWidth: 12,
-            font: { size: 11 },
-            color: '#94a3b8'
-          }
+          display: false
         },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.92)',
+          enabled: true,
+          backgroundColor: 'rgba(15, 23, 42, 0.94)',
           titleColor: '#38bdf8',
           bodyColor: '#f1f5f9',
-          borderColor: 'rgba(56, 189, 248, 0.3)',
+          borderColor: 'rgba(255, 255, 255, 0.12)',
           borderWidth: 1,
-          padding: 10,
-          boxPadding: 4
+          padding: 8,
+          boxPadding: 4,
+          cornerRadius: 10,
+          titleFont: { size: 11, weight: 'bold' },
+          bodyFont: { size: 10 },
+          displayColors: true
         }
       },
       scales: {
@@ -817,7 +865,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           grid: { display: false },
           ticks: {
             color: '#8E8E93',
-            maxTicksLimit: 8,
+            maxTicksLimit: 6,
             font: { size: 10 }
           }
         },
@@ -827,7 +875,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           position: 'left',
           grid: { color: 'rgba(148, 163, 184, 0.08)' },
           ticks: { color: '#06b6d4', font: { size: 10 } },
-          title: { display: true, text: 'Watts', color: '#06b6d4', font: { size: 10 } }
+          title: { display: false }
         },
         yHr: {
           type: 'linear',
@@ -835,20 +883,30 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           position: 'right',
           grid: { display: false },
           ticks: { color: '#f43f5e', font: { size: 10 } },
-          title: { display: true, text: 'BPM', color: '#f43f5e', font: { size: 10 } }
+          title: { display: false }
         },
         yElevation: {
           type: 'linear',
-          display: showElevation && !showHeartRate,
+          display: showElevation && !showHeartRate && !showPower,
           position: 'right',
           grid: { display: false },
           ticks: { color: '#10b981', font: { size: 10 } }
         },
-        ySpeed: { display: false },
-        yCadence: { display: false }
+        ySpeed: {
+          type: 'linear',
+          display: false,
+          min: 0,
+          max: (analysis?.maxSpeedKmh ? Math.max(60, Math.ceil(analysis.maxSpeedKmh * 1.15)) : 70)
+        },
+        yCadence: {
+          type: 'linear',
+          display: false,
+          min: 0,
+          max: (analysis?.maxCadence ? Math.max(130, Math.ceil(analysis.maxCadence * 1.1)) : 140)
+        }
       }
     };
-  }, [showPower, showHeartRate, showElevation]);
+  }, [showPower, showHeartRate, showElevation, analysis]);
 
   // Coggan 7-Zone Bar Chart
   const powerZoneBarData = useMemo(() => {
@@ -1764,12 +1822,64 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             <div className="w-full sm:max-w-md">
               <IOSSegmentedControl
                 options={[
-                  { value: 'trends', label: language === 'zh-TW' ? '時序趨勢' : '时序趋势' },
-                  { value: 'zones', label: language === 'zh-TW' ? '區間駐留' : '区间驻留' },
-                  { value: 'mmp', label: language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线' },
-                  ...(analysis.shiftingEvents && analysis.shiftingEvents.length > 0 ? [{ value: 'shifting', label: language === 'zh-TW' ? '電子變速' : '电子变速' }] : []),
-                  { value: 'pmc', label: language === 'zh-TW' ? 'PMC 負荷' : 'PMC 负荷' },
-                  { value: 'coaching', label: language === 'zh-TW' ? '生理診斷' : '生理诊断' }
+                  {
+                    value: 'trends',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '趨勢' : '趋势'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '時序趨勢' : '时序趋势'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'zones',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '區間' : '区间'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '區間駐留' : '区间驻留'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'mmp',
+                    label: (
+                      <>
+                        <span className="sm:hidden">MMP</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? 'MMP 曲線' : 'MMP 曲线'}</span>
+                      </>
+                    )
+                  },
+                  ...(analysis.shiftingEvents && analysis.shiftingEvents.length > 0
+                    ? [
+                        {
+                          value: 'shifting' as const,
+                          label: (
+                            <>
+                              <span className="sm:hidden">{language === 'zh-TW' ? '變速' : '变速'}</span>
+                              <span className="hidden sm:inline">{language === 'zh-TW' ? '電子變速' : '电子变速'}</span>
+                            </>
+                          )
+                        }
+                      ]
+                    : []),
+                  {
+                    value: 'pmc',
+                    label: (
+                      <>
+                        <span className="sm:hidden">PMC</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? 'PMC 負荷' : 'PMC 负荷'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'coaching',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '診斷' : '诊断'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '生理診斷' : '生理诊断'}</span>
+                      </>
+                    )
+                  }
                 ]}
                 value={activeTab}
                 onChange={(v) => setActiveTab(v as any)}
@@ -1779,67 +1889,222 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB 1: Time-Series Trends */}
           {activeTab === 'trends' && (
-            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="text-xs font-bold text-slate-850 dark:text-white">
-                  {'多轨遥测曲线 (时间轴：分:秒)'}
+            <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5 select-none">
+              {/* Header Bar with Scrubbed Time & Presets */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-black/[0.05] dark:border-white/[0.06] pb-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="w-2 h-2 rounded-full bg-ios-blue animate-pulse shrink-0" />
+                  <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                    {language === 'zh-TW' ? '多軌時序遙測曲線' : '多轨时序遥测曲线'}
+                  </span>
+                  {currentScrubbedPoint ? (
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-ios-blue/15 text-ios-blue border border-ios-blue/30 tabular-nums">
+                      ⏱️ {formatDuration(currentScrubbedPoint.time)}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-mono tabular-nums">
+                      0:00 ~ {formatDuration(analysis.totalDurationSec)}
+                    </span>
+                  )}
                 </div>
 
-                {/* Channel Visibility Switches */}
-                <div className="flex flex-wrap items-center gap-2 text-xs">
+                {/* Quick Presets */}
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="text-[11px] text-slate-400 hidden sm:inline">
+                    {language === 'zh-TW' ? '推薦組合:' : '推荐组合:'}
+                  </span>
                   <button
-                    onClick={() => setShowPower(!showPower)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
-                      showPower ? 'bg-ios-blue text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
+                    type="button"
+                    onClick={() => setPresetChannels('physiology')}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold apple-touch transition ${
+                      isPhysiologyPreset
+                        ? 'bg-ios-blue text-white shadow-ios-sm'
+                        : 'bg-black/[0.04] dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-black/[0.08]'
                     }`}
                   >
-                    <Zap className="w-3 h-3" />
-                    <span>{language === 'zh-TW' ? '功率' : '功率'}</span>
+                    {language === 'zh-TW' ? '生理動力' : '生理动力'}
                   </button>
-
                   <button
-                    onClick={() => setShowHeartRate(!showHeartRate)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
-                      showHeartRate ? 'bg-ios-red text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
+                    type="button"
+                    onClick={() => setPresetChannels('transmission')}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold apple-touch transition ${
+                      isTransmissionPreset
+                        ? 'bg-ios-blue text-white shadow-ios-sm'
+                        : 'bg-black/[0.04] dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-black/[0.08]'
                     }`}
                   >
-                    <Heart className="w-3 h-3" />
-                    <span>{language === 'zh-TW' ? '心率' : '心率'}</span>
+                    {language === 'zh-TW' ? '巡航表現' : '巡航表现'}
                   </button>
-
                   <button
-                    onClick={() => setShowElevation(!showElevation)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
-                      showElevation ? 'bg-ios-mint text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
+                    type="button"
+                    onClick={() => setPresetChannels('all')}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold apple-touch transition ${
+                      isAllPreset
+                        ? 'bg-ios-blue text-white shadow-ios-sm'
+                        : 'bg-black/[0.04] dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-black/[0.08]'
                     }`}
                   >
-                    <Mountain className="w-3 h-3" />
-                    <span>{language === 'zh-TW' ? '海拔' : '海拔'}</span>
-                  </button>
-
-                  <button
-                    onClick={() => setShowSpeed(!showSpeed)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
-                      showSpeed ? 'bg-ios-blue text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
-                    }`}
-                  >
-                    <Gauge className="w-3 h-3" />
-                    <span>{language === 'zh-TW' ? '速度' : '速度'}</span>
-                  </button>
-
-                  <button
-                    onClick={() => setShowCadence(!showCadence)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-medium apple-touch transition ${
-                      showCadence ? 'bg-ios-orange text-white shadow-ios-sm' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
-                    }`}
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    <span>{language === 'zh-TW' ? '踏頻' : '踏频'}</span>
+                    {language === 'zh-TW' ? '全開' : '全开'}
                   </button>
                 </div>
               </div>
 
-              <div className="h-72 sm:h-96 w-full">
+              {/* 5-Channel Unified HUD & Toggle Controls */}
+              <div className="grid grid-cols-5 gap-1 sm:gap-2 text-xs">
+                {/* 1. Power */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    setShowPower(!showPower);
+                  }}
+                  className={`apple-touch transition-all duration-150 rounded-xl px-1 sm:px-3 py-1.5 sm:py-2 flex flex-col items-center justify-center min-w-0 ${
+                    showPower
+                      ? 'bg-cyan-500 text-white shadow-ios-sm ring-1 ring-cyan-400/40'
+                      : 'bg-slate-100 dark:bg-white/[0.06] text-slate-400 dark:text-slate-500 opacity-60 hover:opacity-80'
+                  }`}
+                  title={language === 'zh-TW' ? '功率通道開關' : '功率通道开关'}
+                >
+                  <div className="flex items-center gap-1 text-[11px] font-semibold leading-none truncate max-w-full">
+                    <Zap className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{language === 'zh-TW' ? '功率' : '功率'}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold tabular-nums mt-1 leading-tight truncate max-w-full">
+                    {currentScrubbedPoint ? (
+                      currentScrubbedPoint.power !== undefined ? `${currentScrubbedPoint.power}W` : '--'
+                    ) : (
+                      <>
+                        <span>{analysis.avgPower}W</span>
+                        <span className="text-[9px] opacity-75 ml-0.5 hidden sm:inline">均</span>
+                      </>
+                    )}
+                  </div>
+                </button>
+
+                {/* 2. Heart Rate */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    setShowHeartRate(!showHeartRate);
+                  }}
+                  className={`apple-touch transition-all duration-150 rounded-xl px-1 sm:px-3 py-1.5 sm:py-2 flex flex-col items-center justify-center min-w-0 ${
+                    showHeartRate
+                      ? 'bg-rose-500 text-white shadow-ios-sm ring-1 ring-rose-400/40'
+                      : 'bg-slate-100 dark:bg-white/[0.06] text-slate-400 dark:text-slate-500 opacity-60 hover:opacity-80'
+                  }`}
+                  title={language === 'zh-TW' ? '心率通道開關' : '心率通道开关'}
+                >
+                  <div className="flex items-center gap-1 text-[11px] font-semibold leading-none truncate max-w-full">
+                    <Heart className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{language === 'zh-TW' ? '心率' : '心率'}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold tabular-nums mt-1 leading-tight truncate max-w-full">
+                    {currentScrubbedPoint ? (
+                      currentScrubbedPoint.heartRate ? `${currentScrubbedPoint.heartRate}` : '--'
+                    ) : (
+                      <>
+                        <span>{analysis.avgHeartRate ?? '--'}</span>
+                        <span className="text-[9px] opacity-75 ml-0.5 hidden sm:inline">均</span>
+                      </>
+                    )}
+                  </div>
+                </button>
+
+                {/* 3. Elevation */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    setShowElevation(!showElevation);
+                  }}
+                  className={`apple-touch transition-all duration-150 rounded-xl px-1 sm:px-3 py-1.5 sm:py-2 flex flex-col items-center justify-center min-w-0 ${
+                    showElevation
+                      ? 'bg-emerald-500 text-white shadow-ios-sm ring-1 ring-emerald-400/40'
+                      : 'bg-slate-100 dark:bg-white/[0.06] text-slate-400 dark:text-slate-500 opacity-60 hover:opacity-80'
+                  }`}
+                  title={language === 'zh-TW' ? '海拔通道開關' : '海拔通道开关'}
+                >
+                  <div className="flex items-center gap-1 text-[11px] font-semibold leading-none truncate max-w-full">
+                    <Mountain className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{language === 'zh-TW' ? '海拔' : '海拔'}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold tabular-nums mt-1 leading-tight truncate max-w-full">
+                    {currentScrubbedPoint ? (
+                      currentScrubbedPoint.altitude !== undefined ? `${Math.round(currentScrubbedPoint.altitude)}m` : '--'
+                    ) : (
+                      <span>+{analysis.elevationGainM}m</span>
+                    )}
+                  </div>
+                </button>
+
+                {/* 4. Speed */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    setShowSpeed(!showSpeed);
+                  }}
+                  className={`apple-touch transition-all duration-150 rounded-xl px-1 sm:px-3 py-1.5 sm:py-2 flex flex-col items-center justify-center min-w-0 ${
+                    showSpeed
+                      ? 'bg-blue-500 text-white shadow-ios-sm ring-1 ring-blue-400/40'
+                      : 'bg-slate-100 dark:bg-white/[0.06] text-slate-400 dark:text-slate-500 opacity-60 hover:opacity-80'
+                  }`}
+                  title={language === 'zh-TW' ? '速度通道開關' : '速度通道开关'}
+                >
+                  <div className="flex items-center gap-1 text-[11px] font-semibold leading-none truncate max-w-full">
+                    <Gauge className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{language === 'zh-TW' ? '速度' : '速度'}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold tabular-nums mt-1 leading-tight truncate max-w-full">
+                    {currentScrubbedPoint ? (
+                      currentScrubbedPoint.speed !== undefined ? `${currentScrubbedPoint.speed.toFixed(1)}` : '--'
+                    ) : (
+                      <>
+                        <span>{analysis.avgSpeedKmh}</span>
+                        <span className="text-[9px] opacity-75 ml-0.5 hidden sm:inline">均</span>
+                      </>
+                    )}
+                  </div>
+                </button>
+
+                {/* 5. Cadence */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    setShowCadence(!showCadence);
+                  }}
+                  className={`apple-touch transition-all duration-150 rounded-xl px-1 sm:px-3 py-1.5 sm:py-2 flex flex-col items-center justify-center min-w-0 ${
+                    showCadence
+                      ? 'bg-amber-500 text-white shadow-ios-sm ring-1 ring-amber-400/40'
+                      : 'bg-slate-100 dark:bg-white/[0.06] text-slate-400 dark:text-slate-500 opacity-60 hover:opacity-80'
+                  }`}
+                  title={language === 'zh-TW' ? '踏頻通道開關' : '踏频通道开关'}
+                >
+                  <div className="flex items-center gap-1 text-[11px] font-semibold leading-none truncate max-w-full">
+                    <RotateCcw className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{language === 'zh-TW' ? '踏頻' : '踏频'}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold tabular-nums mt-1 leading-tight truncate max-w-full">
+                    {currentScrubbedPoint ? (
+                      currentScrubbedPoint.cadence !== undefined ? `${currentScrubbedPoint.cadence}` : '--'
+                    ) : (
+                      <>
+                        <span>{analysis.avgCadence ?? '--'}</span>
+                        <span className="text-[9px] opacity-75 ml-0.5 hidden sm:inline">均</span>
+                      </>
+                    )}
+                  </div>
+                </button>
+              </div>
+
+              {/* Chart Canvas with Scrubbing Touch Handlers */}
+              <div
+                className="h-72 sm:h-96 w-full touch-none select-none relative"
+                onMouseLeave={() => setHoveredPointIndex(null)}
+                onTouchEnd={() => setHoveredPointIndex(null)}
+              >
                 <Line data={trendChartData} options={trendChartOptions} />
               </div>
             </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { triggerHaptic } from '../../utils/haptics';
 
 export type SegmentOption<T extends string = string> = {
-  label: string;
+  label: React.ReactNode;
   icon?: React.ComponentType<{ className?: string }>;
   badge?: string | number;
   dot?: boolean;
