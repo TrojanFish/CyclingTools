@@ -874,39 +874,102 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           display: showPower,
           position: 'left',
           grid: { color: 'rgba(148, 163, 184, 0.08)' },
-          ticks: { color: '#06b6d4', font: { size: 10 } },
-          title: { display: false }
+          ticks: {
+            color: '#06b6d4',
+            font: { size: 10 },
+            maxTicksLimit: 5
+          },
+          title: {
+            display: showPower && (!showSpeed || !showHeartRate),
+            text: 'Watts',
+            color: '#06b6d4',
+            font: { size: 9, weight: 'bold' }
+          }
         },
         yHr: {
           type: 'linear',
           display: showHeartRate,
           position: 'right',
           grid: { display: false },
-          ticks: { color: '#f43f5e', font: { size: 10 } },
-          title: { display: false }
-        },
-        yElevation: {
-          type: 'linear',
-          display: showElevation && !showHeartRate && !showPower,
-          position: 'right',
-          grid: { display: false },
-          ticks: { color: '#10b981', font: { size: 10 } }
+          ticks: {
+            color: '#f43f5e',
+            font: { size: 10 },
+            maxTicksLimit: 5
+          },
+          title: {
+            display: showHeartRate && (!showCadence || !showPower),
+            text: 'BPM',
+            color: '#f43f5e',
+            font: { size: 9, weight: 'bold' }
+          }
         },
         ySpeed: {
           type: 'linear',
-          display: false,
+          display: showSpeed,
+          position: !showPower ? 'left' : (!showHeartRate ? 'right' : 'left'),
+          grid: {
+            display: !showPower,
+            color: 'rgba(148, 163, 184, 0.08)'
+          },
           min: 0,
-          max: (analysis?.maxSpeedKmh ? Math.max(60, Math.ceil(analysis.maxSpeedKmh * 1.15)) : 70)
+          max: (analysis?.maxSpeedKmh ? Math.max(50, Math.ceil(analysis.maxSpeedKmh * 1.15)) : 60),
+          ticks: {
+            color: '#3b82f6',
+            font: { size: 10 },
+            maxTicksLimit: 5
+          },
+          title: {
+            display: !showPower || !showHeartRate,
+            text: 'km/h',
+            color: '#3b82f6',
+            font: { size: 9, weight: 'bold' }
+          }
         },
         yCadence: {
           type: 'linear',
-          display: false,
+          display: showCadence,
+          position: !showHeartRate ? 'right' : (!showPower && !showSpeed ? 'left' : 'right'),
+          grid: {
+            display: !showPower && !showSpeed && !showHeartRate,
+            color: 'rgba(148, 163, 184, 0.08)'
+          },
           min: 0,
-          max: (analysis?.maxCadence ? Math.max(130, Math.ceil(analysis.maxCadence * 1.1)) : 140)
+          max: (analysis?.maxCadence ? Math.max(120, Math.ceil(analysis.maxCadence * 1.1)) : 130),
+          ticks: {
+            color: '#eab308',
+            font: { size: 10 },
+            maxTicksLimit: 5
+          },
+          title: {
+            display: !showHeartRate || (!showPower && !showSpeed),
+            text: 'RPM',
+            color: '#eab308',
+            font: { size: 9, weight: 'bold' }
+          }
+        },
+        yElevation: {
+          type: 'linear',
+          display: showElevation && (!showPower || !showHeartRate || (!showSpeed && !showCadence)),
+          position: (!showPower && !showSpeed && !showCadence) ? 'left' : 'right',
+          grid: {
+            display: !showPower && !showSpeed && !showCadence,
+            color: 'rgba(148, 163, 184, 0.08)'
+          },
+          ticks: {
+            color: '#10b981',
+            font: { size: 10 },
+            maxTicksLimit: 5
+          },
+          title: {
+            display: !showPower && !showSpeed && !showCadence,
+            text: '米 (m)',
+            color: '#10b981',
+            font: { size: 9, weight: 'bold' }
+          }
         }
       }
     };
-  }, [showPower, showHeartRate, showElevation, analysis]);
+  }, [showPower, showHeartRate, showElevation, showSpeed, showCadence, analysis]);
 
   // Coggan 7-Zone Bar Chart
   const powerZoneBarData = useMemo(() => {
