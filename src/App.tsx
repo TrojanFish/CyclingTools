@@ -56,9 +56,12 @@ const MainAppContent: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('solorider_sidebar_open');
-      if (saved !== null) return saved === 'true';
-      return true;
+      try {
+        const saved = localStorage.getItem('solorider_sidebar_open');
+        if (saved !== null) return saved === 'true';
+      } catch {
+        return true;
+      }
     }
     return true;
   });
@@ -67,7 +70,11 @@ const MainAppContent: React.FC = () => {
     setIsSidebarOpen(prev => {
       const next = !prev;
       if (typeof window !== 'undefined') {
-        localStorage.setItem('solorider_sidebar_open', String(next));
+        try {
+          localStorage.setItem('solorider_sidebar_open', String(next));
+        } catch {
+          // Gracefully ignore storage quota / privacy mode errors
+        }
       }
       return next;
     });
@@ -77,9 +84,13 @@ const MainAppContent: React.FC = () => {
   // Auto-detect phone OS prefers-color-scheme, plus persistent manual toggle
   const [themeMode, setThemeMode] = useState<'system' | 'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('solorider_theme_mode');
-      if (saved === 'system' || saved === 'dark' || saved === 'light') {
-        return saved;
+      try {
+        const saved = localStorage.getItem('solorider_theme_mode');
+        if (saved === 'system' || saved === 'dark' || saved === 'light') {
+          return saved;
+        }
+      } catch {
+        return 'system';
       }
     }
     return 'system'; // Default to automatic phone system detection
@@ -109,7 +120,11 @@ const MainAppContent: React.FC = () => {
   const handleSetThemeMode = (mode: 'system' | 'dark' | 'light') => {
     setThemeMode(mode);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('solorider_theme_mode', mode);
+      try {
+        localStorage.setItem('solorider_theme_mode', mode);
+      } catch {
+        // Gracefully ignore storage quota / privacy mode errors
+      }
     }
   };
 

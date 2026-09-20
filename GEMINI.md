@@ -39,12 +39,13 @@ This project targets **two platforms** with a single React + Tailwind codebase:
 Adhere to the `obra/superpowers` engineering discipline: **Evidence over claims, test-driven development, and mandatory verification before completion**.
 
 1. **TDD for Scientific Calculations**: Any changes or additions to mathematical, aerodynamic, physiological, or mechanical algorithms (e.g., `src/utils/pmcCalculator.ts`, `routePacingEngine.ts`, `activityParser.ts`) MUST include corresponding unit tests in `src/utils/__tests__/`.
-2. **Automated Quality Gate**: Before marking any task complete or finishing a branch, all 4 gates must pass:
+2. **Automated Quality Gate**: Before marking any task complete or finishing a branch, all gates must pass:
    ```bash
-   npm run test                                                             # 1. Vitest suite (100% pass)
-   python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src # 2. Apple HIG compliance (100/100)
-   node .\node_modules\typescript\bin\tsc --noEmit                         # 3. TypeScript strict check (0 errors)
-   node .\node_modules\vite\bin\vite.js build                              # 4. Production build (exit 0)
+   npm run test                                                                              # 1. Vitest suite (100% pass)
+   python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src                  # 2. Apple HIG compliance (100/100)
+   python .agents/skills/cycling-telemetry-pipeline/scripts/defensive_checker.py scan src     # 3. Defensive & Telemetry audit (100/100)
+   node .\node_modules\typescript\bin\tsc --noEmit                                          # 4. TypeScript strict check (0 errors)
+   node .\node_modules\vite\bin\vite.js build                                               # 5. Production build (exit 0)
    ```
 3. **Defensive Code Quality**:
    - Never use `console.log` in production code.

@@ -32,11 +32,14 @@ jobs:
       - name: 1. Apple HIG Compliance Audit
         run: python .agents/skills/apple-hig-compliance/scripts/hig_checker.py scan src
 
-      - name: 2. TypeScript Strict Typecheck
+      - name: 2. Defensive Code Quality & Telemetry Audit
+        run: python .agents/skills/cycling-telemetry-pipeline/scripts/defensive_checker.py scan src
+
+      - name: 3. TypeScript Strict Typecheck
         run: npx tsc --noEmit
 
-      - name: 3. Unit Test Suite (Superpowers TDD)
+      - name: 4. Unit Test Suite (Superpowers TDD)
         run: npm run test
 
-      - name: 4. Production Build Verification
+      - name: 5. Production Build Verification
         run: npm run build
