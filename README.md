@@ -244,34 +244,88 @@ npm run build
 
 ---
 
-## 🌐 Production Deployment / 生产投放指南
+## 🌐 Production Deployment / 生产部署与投放指南
 
-### 方案 1：Vercel 部署 (推荐 · 零配置即开即用)
-本项目根目录已内置适配好的 `vercel.json`，包含了单页应用 (SPA) 重定向规则与安全标头：
+本项目为基于 **React 18 + TypeScript + Vite 5** 的纯静态单页应用（SPA），采用 **Local-First（本地优先）** 架构。所有 IndexedDB 时序数据库与个性化配置均在用户浏览器端运行，**无需任何后端服务器与外部数据库**，支持在各大静态托管平台一键免费上线。
+
+---
+
+### 方案 1：Cloudflare Pages 部署 (官方推荐 · 全球极速 Anycast 边缘 CDN)
+
+本项目已在 `public/` 内置专用的 `_redirects`（SPA 路由防 404）与 `_headers`（1 年长效静态资源缓存与安全标头），与 Cloudflare Pages 100% 原生适配。
+
+#### 1. 控制台一键导入
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)；
+2. 进入 **Workers & Pages** -> 点击 **Create application** -> 切换至 **Pages** 选项卡；
+3. 点击 **Connect to Git**（连接到 Git），授权访问并选中您的 GitHub 仓库；
+4. 点击 **Begin setup**。
+
+#### 2. 构建与输出参数配置 (Build settings)
+| 配置项 | 推荐填入值 | 说明 |
+| :--- | :--- | :--- |
+| **Project name** | `cycling-tools` (或自定义) | 生成的二级域名为 `*.pages.dev` |
+| **Production branch** | `main` | 触发自动部署的主分支 |
+| **Framework preset** | `Vite` | 自动配置 Vite 构建预设 |
+| **Build command** | `npm run build` | 执行 TypeScript 严格检查与 Vite 生产构建 |
+| **Build output directory** | `dist` | 静态资源编译导出目录 |
+| **Root directory** | 留空（默认根目录 `/`） | 项目根目录 |
+
+#### 3. 环境变量配置 (Environment variables)
+在下方展开 **Environment variables** 填入：
+- `NODE_VERSION`: `20` (推荐 Node.js 20 LTS 运行时)
+- `VITE_STRAVA_CLIENT_ID`: `(可选)` 若需为整站开启默认公共 Strava 授权可填入，普通用户亦可直接在前端设置面板填入个人密钥。
+
+#### 4. 完成部署与自动化 CI/CD
+- 点击 **Save and Deploy**，Cloudflare 将在 1~2 分钟内完成全自动化全球部署并分配免费的 HTTPS 域名（例如 `https://cycling-tools.pages.dev`）。
+- **自动化持续集成**：后续每次向 `main` 分支执行 `git push`，Cloudflare Pages 会自动拉取最新代码并触发增量构建与全球热更新。
+- **自定义域名**：可在 Pages 项目的 **Custom domains** 页面随时绑定个人独立域名，Cloudflare 自动颁发权威 SSL/TLS 证书。
+
+---
+
+### 方案 2：Vercel 部署 (零配置即开即用)
+本项目根目录已内置经过严格校验的 `vercel.json`，包含了单页应用 (SPA) 重定向规则与安全标头：
 1. 将本仓库推送到 GitHub；
 2. 登录 [Vercel](https://vercel.com)，点击 **Add New...** -> **Project** 并导入该仓库；
-3. Vercel 会自动识别 Vite 框架并执行 `npm run build`，几十秒内全球 CDN 自动化上线。
+3. Vercel 会自动识别 Vite 框架并执行 `npm run build`，几十秒内全球 Anycast CDN 自动化上线。
 
-### 方案 2：Cloudflare Pages
-1. 登录 Cloudflare 控制台，进入 **Workers & Pages** -> **Create application** -> **Pages**；
-2. 关联 GitHub 仓库；
-3. 构建命令填入：`npm run build`，构建输出目录填入：`dist`；
-4. 环境变量根据需要填入 `VITE_STRAVA_CLIENT_ID`（如需启用自定义 Strava 联动）。
+---
 
-### 方案 3：Docker / Nginx 容器化运行
+### 方案 3：Docker / Nginx 容器化私有部署
+若希望在自有服务器、家庭 NAS 或局域网私有化运行，可使用以下轻量级多阶段构建：
+
 ```dockerfile
-FROM node:18-alpine AS builder
+# 阶段一：源码构建
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 
+# 阶段二：Nginx 高性能静态托管
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 配置 try_files 支持 SPA 刷新防 404
+RUN echo 'server { \
+    listen 80; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html index.htm; \
+        try_files $uri $uri/ /index.html; \
+    } \
+    location /assets/ { \
+        root /usr/share/nginx/html; \
+        expires 1y; \
+        add_header Cache-Control "public, immutable"; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
+```
+```bash
+# 启动容器
+docker build -t rouleur-app .
+docker run -d -p 8080:80 --name rouleur rouleur-app
 ```
 
 ---
