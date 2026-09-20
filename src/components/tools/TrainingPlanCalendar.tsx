@@ -330,7 +330,7 @@ X-WR-CALNAME:LaBao Pro 周期训练赛历
     // Add Goal Event
     const evDateStr = goalEvent.date.replace(/-/g, '');
     icsContent += `BEGIN:VEVENT
-UID:goal-${goalEvent.id}@labao.tools
+UID:goal-${goalEvent.id}@labao.app
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
 DTSTART;VALUE=DATE:${evDateStr}
 DTEND;VALUE=DATE:${evDateStr}
@@ -344,7 +344,7 @@ END:VEVENT
     plannedWorkouts.forEach(w => {
       const dStr = w.date.replace(/-/g, '');
       icsContent += `BEGIN:VEVENT
-UID:${w.id}@labao.tools
+UID:${w.id}@labao.app
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
 DTSTART;VALUE=DATE:${dStr}
 DTEND;VALUE=DATE:${dStr}

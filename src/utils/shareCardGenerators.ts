@@ -172,7 +172,7 @@ function drawFooter(ctx: CanvasRenderingContext2D, w: number, h: number) {
   // Right tag
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
   ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  const rightTag = 'labao.tools';
+  const rightTag = 'labao.app';
   const rightWidth = ctx.measureText(rightTag).width;
   ctx.fillText(rightTag, w - 40 - rightWidth, y + 36);
 }
