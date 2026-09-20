@@ -95,9 +95,9 @@ export const DayWorkoutModal: React.FC<DayWorkoutModalProps> = ({
   const handleExportZwo = (wkt: PlannedWorkout) => {
     const zwoXml = `<?xml version="1.0" encoding="UTF-8"?>
 <workout_file>
-  <author>Rouleur Pro ATP</author>
+  <author>LaBao Pro ATP</author>
   <name>${wkt.title}</name>
-  <description>Rouleur Pro 年度周期训练课表 · 计划 TSS: ${wkt.targetTss}</description>
+  <description>LaBao Pro 年度周期训练课表 · 计划 TSS: ${wkt.targetTss}</description>
   <sportType>bike</sportType>
   <workout>
     <Warmup Duration="600" PowerLow="0.5" PowerHigh="0.75" />

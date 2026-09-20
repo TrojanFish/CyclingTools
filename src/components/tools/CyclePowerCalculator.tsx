@@ -339,7 +339,7 @@ export const CyclePowerCalculator: React.FC = () => {
         actions={
           <div className="flex items-center gap-2">
             <IOSCopyResultButton
-              textToCopy={`【Rouleur 骑行动力学计算】车手 ${riderWeight}kg + 车重 ${bikeWeight}kg (坡度 ${grade}%) → 巡航速度: ${result.speedKmh} km/h · 所需功率: ${result.power} W (${result.wkg} W/kg · ${result.levelTitle}) · 空阻占比: ${result.aeroPct}% / 重力占比: ${result.gravityPct}% / 滚阻占比: ${result.rollingPct}%`}
+              textToCopy={`【LaBao 拉爆动力学计算】车手 ${riderWeight}kg + 车重 ${bikeWeight}kg (坡度 ${grade}%) → 巡航速度: ${result.speedKmh} km/h · 所需功率: ${result.power} W (${result.wkg} W/kg · ${result.levelTitle}) · 空阻占比: ${result.aeroPct}% / 重力占比: ${result.gravityPct}% / 滚阻占比: ${result.rollingPct}%`}
             />
             <IOSSegmentedControl
               options={[
@@ -919,7 +919,7 @@ export const CyclePowerCalculator: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title={language === 'zh-TW' ? '騎行功率與速度戰報' : '骑行功率与速度战报'}
-        downloadFileName={`Rouleur_功率速度_${result.speedKmh}kmh_${result.power}W.png`}
+        downloadFileName={`LaBao_功率速度_${result.speedKmh}kmh_${result.power}W.png`}
       />
     </div>
   );

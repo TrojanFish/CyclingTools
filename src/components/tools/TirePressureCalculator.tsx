@@ -211,7 +211,7 @@ export const TirePressureCalculator: React.FC = () => {
         actions={
           <div className="flex items-center gap-2">
             <IOSCopyResultButton
-              textToCopy={`【Rouleur 智能胎压】系统总重 ${(riderWeight + bikeGearWeight).toFixed(1)}kg (${riderWeight}kg车手+${bikeGearWeight}kg车) · ${nominalWidth}c ${tireSetup} (${SURFACE_FACTORS[surfaceKey]?.label || ''}) → 推荐气压：前轮 ${result.front.rec} ${pressureUnit.toUpperCase()} / 后轮 ${result.rear.rec} ${pressureUnit.toUpperCase()}`}
+              textToCopy={`【LaBao 拉爆智能胎压】系统总重 ${(riderWeight + bikeGearWeight).toFixed(1)}kg (${riderWeight}kg车手+${bikeGearWeight}kg车) · ${nominalWidth}c ${tireSetup} (${SURFACE_FACTORS[surfaceKey]?.label || ''}) → 推荐气压：前轮 ${result.front.rec} ${pressureUnit.toUpperCase()} / 后轮 ${result.rear.rec} ${pressureUnit.toUpperCase()}`}
             />
             <IOSSegmentedControl
               options={[
@@ -655,7 +655,7 @@ export const TirePressureCalculator: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title="科学胎压调校卡"
-        downloadFileName={`Rouleur_科学胎压_${actualWidth}mm_${pressureUnit.toUpperCase()}.png`}
+        downloadFileName={`LaBao_科学胎压_${actualWidth}mm_${pressureUnit.toUpperCase()}.png`}
       />
     </div>
   );

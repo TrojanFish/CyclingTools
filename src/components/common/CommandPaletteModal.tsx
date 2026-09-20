@@ -285,7 +285,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
             </span>
           </div>
           <span className="text-[10px] opacity-75">
-            Rouleur 21 Tools
+            LaBao 21 Tools
           </span>
         </div>
       </div>

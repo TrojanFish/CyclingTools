@@ -321,21 +321,21 @@ export const TrainingPlanCalendar: React.FC = () => {
   const handleExportICal = () => {
     let icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Rouleur Pro//Cycling ATP Calendar//CN
+PRODID:-//LaBao Pro//Cycling ATP Calendar//CN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:Rouleur Pro 周期训练赛历
+X-WR-CALNAME:LaBao Pro 周期训练赛历
 `;
 
     // Add Goal Event
     const evDateStr = goalEvent.date.replace(/-/g, '');
     icsContent += `BEGIN:VEVENT
-UID:goal-${goalEvent.id}@rouleur.pro
+UID:goal-${goalEvent.id}@labao.tools
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
 DTSTART;VALUE=DATE:${evDateStr}
 DTEND;VALUE=DATE:${evDateStr}
 SUMMARY:🏆 ${goalEvent.name} [${goalEvent.priority}级目标]
-DESCRIPTION:Rouleur Pro 目标赛事 · 目标 CTL: ${goalEvent.targetCtl} · 目标 TSB: +${goalEvent.targetTsb}
+DESCRIPTION:LaBao Pro 目标赛事 · 目标 CTL: ${goalEvent.targetCtl} · 目标 TSB: +${goalEvent.targetTsb}
 STATUS:CONFIRMED
 END:VEVENT
 `;
@@ -344,7 +344,7 @@ END:VEVENT
     plannedWorkouts.forEach(w => {
       const dStr = w.date.replace(/-/g, '');
       icsContent += `BEGIN:VEVENT
-UID:${w.id}@rouleur.pro
+UID:${w.id}@labao.tools
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
 DTSTART;VALUE=DATE:${dStr}
 DTEND;VALUE=DATE:${dStr}
@@ -361,7 +361,7 @@ END:VEVENT
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Rouleur_Pro_训练赛历_${goalEvent.name.replace(/\s+/g, '_')}.ics`;
+    a.download = `LaBao_Pro_训练赛历_${goalEvent.name.replace(/\s+/g, '_')}.ics`;
     a.click();
     URL.revokeObjectURL(url);
     showToast('已导出标准 iCalendar (.ics) 日历，可导入 Apple/Google 日历！', 'success');
@@ -856,7 +856,7 @@ END:VEVENT
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         posterUrl={sharePosterUrl}
-        fileName={`Rouleur_Pro_年度周期赛历海报.png`}
+        fileName={`LaBao_Pro_年度周期赛历海报.png`}
         title="年度周期规划与训练赛历海报"
       />
     </div>

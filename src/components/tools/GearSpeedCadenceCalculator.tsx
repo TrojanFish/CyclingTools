@@ -235,7 +235,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         actions={
           <div className="flex items-center gap-2">
             <IOSCopyResultButton
-              textToCopy={`【Rouleur 齿比与速度计算】前牙盘: ${chainringType === 'single' ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} · 飞轮: ${cogsList[0]}-${cogsList[cogsList.length - 1]}T (${cogsList.length}速) @ ${cadenceRpm}rpm → 速度范围: ${minSpd} ~ ${maxSpd} ${unitStr} · 齿比范围: ${minRatio} (爬坡极比) ~ ${maxRatio} (平路竞速)`}
+              textToCopy={`【LaBao 拉爆齿比与速度计算】前牙盘: ${chainringType === 'single' ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T 双盘`} · 飞轮: ${cogsList[0]}-${cogsList[cogsList.length - 1]}T (${cogsList.length}速) @ ${cadenceRpm}rpm → 速度范围: ${minSpd} ~ ${maxSpd} ${unitStr} · 齿比范围: ${minRatio} (爬坡极比) ~ ${maxRatio} (平路竞速)`}
             />
             <IOSSegmentedControl
               options={[
@@ -525,7 +525,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title="传动齿比与极速战报"
-        downloadFileName={`Rouleur_齿比极速_${chainringType === 'double' ? `${bigRing}-${smallRing}T` : `${bigRing}T`}.png`}
+        downloadFileName={`LaBao_齿比极速_${chainringType === 'double' ? `${bigRing}-${smallRing}T` : `${bigRing}T`}.png`}
       />
     </div>
   );

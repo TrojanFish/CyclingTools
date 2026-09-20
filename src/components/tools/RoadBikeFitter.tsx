@@ -244,7 +244,7 @@ export const RoadBikeFitter: React.FC = () => {
         actions={
           <div className="flex items-center gap-2">
             <IOSCopyResultButton
-              textToCopy={`【Rouleur 专业公路车Fitting建议】车手身高: ${height}cm / 跨高: ${inseam}cm (${ridingStyle === 'racing' ? '竞技突围' : ridingStyle === 'endurance' ? '长途耐力' : '休闲骑游'}) → 推荐坐高: ${result.saddleHeight} cm (LeMond) / 等效上管ETT: ${result.effectiveTopTube} mm / 把立长度: ${result.stemLength} mm / 车把宽度: ${result.handlebarWidth} mm / 曲柄长度: ${result.crankLength} mm`}
+              textToCopy={`【LaBao 拉爆 Fitting建议】车手身高: ${height}cm / 跨高: ${inseam}cm (${ridingStyle === 'racing' ? '竞技突围' : ridingStyle === 'endurance' ? '长途耐力' : '休闲骑游'}) → 推荐坐高: ${result.saddleHeight} cm (LeMond) / 等效上管ETT: ${result.effectiveTopTube} mm / 把立长度: ${result.stemLength} mm / 车把宽度: ${result.handlebarWidth} mm / 曲柄长度: ${result.crankLength} mm`}
             />
             {hasSavedDraft && (
               <button

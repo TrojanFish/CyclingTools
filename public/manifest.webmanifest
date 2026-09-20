@@ -1,12 +1,12 @@
 {
-  "name": "Rouleur Pro - Precision Cycling Science",
-  "short_name": "Rouleur",
-  "description": "Modern precision data-driven cycling science and aerodynamics platform with 20 tools.",
+  "name": "LaBao 拉爆 - 骑行科学工坊",
+  "short_name": "LaBao",
+  "description": "LaBao 拉爆 · 现代公路车运动科学与性能工坊，拥有21款高精度骑行计算与仿真模拟引擎。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",
-  "theme_color": "#0284c7",
+  "theme_color": "#FF3B30",
   "orientation": "any",
   "categories": ["sports", "fitness", "utilities"],
   "icons": [

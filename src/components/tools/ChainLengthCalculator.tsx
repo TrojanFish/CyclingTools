@@ -183,7 +183,7 @@ export const ChainLengthCalculator: React.FC = () => {
         actions={
           <div className="flex items-center gap-2">
             <IOSCopyResultButton
-              textToCopy={`【Rouleur 链条长度计算】后下叉RC: ${chainstayLengthMm}mm · 前齿盘: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T`} · 飞轮: ${smallCog}-${bigCog}T → 推荐截链节数: ${result.recommendedLinks} 节 (链长 ${result.chainLengthInches} 英寸) · 后拨齿容量需求: ${result.requiredCapacity}T (${result.rearDerailleurRecommendation})`}
+              textToCopy={`【LaBao 拉爆链长计算】后下叉RC: ${chainstayLengthMm}mm · 前齿盘: ${isSingleRing ? `${bigRing}T 单盘` : `${bigRing}/${smallRing}T`} · 飞轮: ${smallCog}-${bigCog}T → 推荐截链节数: ${result.recommendedLinks} 节 (链长 ${result.chainLengthInches} 英寸) · 后拨齿容量需求: ${result.requiredCapacity}T (${result.rearDerailleurRecommendation})`}
             />
             <IOSSegmentedControl
               options={[
@@ -474,7 +474,7 @@ export const ChainLengthCalculator: React.FC = () => {
         onClose={() => setIsShareModalOpen(false)}
         imageUrl={sharePosterUrl}
         title="技师截链规范卡"
-        downloadFileName={`Rouleur_截链规范_${result.recommendedLinks}节.png`}
+        downloadFileName={`LaBao_截链规范_${result.recommendedLinks}节.png`}
       />
     </div>
   );

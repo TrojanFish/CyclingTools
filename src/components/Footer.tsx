@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Lock, X, CheckCircle2, FileText } from 'lucide-react';
-import { RouleurLogo } from './common/RouleurLogo';
+import { LaBaoLogo } from './common/LaBaoLogo';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
 import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 
@@ -21,13 +21,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
             className="flex items-center gap-3 cursor-pointer group select-none"
             onClick={onNavigateHome}
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-ios-blue to-blue-600 text-white flex items-center justify-center font-bold shadow-ios-sm group-hover:scale-105 transition shrink-0">
-              <RouleurLogo className="w-4.5 h-4.5 text-white" />
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-ios-red to-ios-orange text-white flex items-center justify-center font-bold shadow-ios-sm group-hover:scale-105 transition shrink-0">
+              <LaBaoLogo className="w-4.5 h-4.5 text-white" />
             </div>
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
               <div className="flex items-center gap-1.5 font-mono">
                 <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-100">{t('brandName')}</span>
-                <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue font-mono font-semibold">{t('brandPro')}</span>
+                <span className="text-xs font-bold text-ios-red dark:text-ios-orange">{t('brandSuffix')}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-red/10 border border-ios-red/20 text-ios-red font-mono font-semibold">{t('brandPro')}</span>
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400">· {t('slogan')}</span>
             </div>
@@ -71,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
             <span className="text-slate-300 dark:text-slate-700">·</span>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-              <span>© {new Date().getFullYear()} Rouleur</span>
+              <span>© {new Date().getFullYear()} LaBao</span>
             </div>
           </div>
         </div>
@@ -105,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateHome }) => {
                     {language === 'zh-TW' ? '法律合規與隱私承諾' : '法律合规与隐私承诺'}
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    {language === 'zh-TW' ? 'Rouleur 運動科學規範' : 'Rouleur 运动科学规范'}
+                    {language === 'zh-TW' ? 'LaBao 運動科學規範' : 'LaBao 运动科学规范'}
                   </p>
                 </div>
               </div>

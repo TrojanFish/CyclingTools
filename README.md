@@ -1,6 +1,6 @@
-# Rouleur Pro 🚴‍♂️⚡
+# LaBao 拉爆 🚴‍♂️⚡
 ### Modern Precision Cycling Science & Performance Platform
-#### 现代专业数据驱动骑行科学与全息性能平台
+#### 现代专业数据驱动骑行科学与全息性能平台 · LaBao 拉爆 骑行科学工坊
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-61dafb?logo=react)](https://reactjs.org/)
@@ -21,9 +21,9 @@
 
 ## 📖 Introduction / 项目简介
 
-**Rouleur Pro** is a modern, high-precision, client-side cycling engineering and endurance sports physiology operating system. Built upon classical aerodynamics, Newton mechanics, wheel trigonometry, biomechanics, and modern exercise physiology (Coggan, Banister, Seiler, Bompa & Friel), it equips amateur riders, bike fitters, mechanics, and competitive athletes with **21 purpose-built scientific calculation and simulation engines**.
+**LaBao 拉爆 (LaBao Pro)** is a modern, high-precision, client-side cycling engineering and endurance sports physiology operating system. Built upon classical aerodynamics, Newton mechanics, wheel trigonometry, biomechanics, and modern exercise physiology (Coggan, Banister, Seiler, Bompa & Friel), it equips amateur riders, bike fitters, mechanics, and competitive athletes with **21 purpose-built scientific calculation and simulation engines**.
 
-**Rouleur Pro** 是一个现代化、纯前端高精度运行的专业公路车运动科学与工程数据计算站。以流体空气动力学、经典牛顿力学、轮圈几何空间三角学、人体工效学与现代耐力运动生理学（Coggan、Banister、Seiler、Bompa 与 Friel 理论）为数学底层，提供 **21 款严谨的计算器与仿真模拟工坊**，涵盖空气动力学推导、时序数据库与 PMC 训练看板、路线风阻配速引擎、年度周期化赛历排程与战车改装调校。
+**LaBao 拉爆 (LaBao Pro)** 是一个现代化、纯前端高精度运行的专业公路车运动科学与工程数据计算站。以流体空气动力学、经典牛顿力学、轮圈几何空间三角学、人体工效学与现代耐力运动生理学（Coggan、Banister、Seiler、Bompa 与 Friel 理论）为数学底层，提供 **21 款严谨的计算器与仿真模拟工坊**，涵盖空气动力学推导、时序数据库与 PMC 训练看板、路线风阻配速引擎、年度周期化赛历排程与战车改装调校。
 
 ---
 
@@ -67,7 +67,7 @@ graph TB
 
 ## 🏆 Five Major Upgrades / 五大系统性升级
 
-在历经五大阶段的深度重构与架构升维后，Rouleur Pro 已完成从单一工具集合到**媲美 TrainingPeaks、Intervals.icu 与 Best Bike Split 的 Local-First 骑行操作系统**的蜕变：
+在历经五大阶段的深度重构与架构升维后，LaBao 拉爆 已完成从单一工具集合到**媲美 TrainingPeaks、Intervals.icu 与 Best Bike Split 的 Local-First 骑行操作系统**的蜕变：
 
 ### 1. 🚲 Phase 1: 虚拟车库与动力学联动总线 (Virtual Garage Data Bus)
 - **多战车资产管理**：支持公路气动车、超轻爬坡车、全地形 Gravel 等多台车辆参数建档；
@@ -128,7 +128,7 @@ npx tsx scratch/simulate_five_phases.ts
 
 ## 🧮 Complete 21-Tool Matrix / 21 大核心科学工具全矩阵
 
-Rouleur Pro 严格划分为四大科学领域，各领域具有统一的 Apple HIG 语义色彩体系：
+LaBao Pro 严格划分为四大科学领域，各领域具有统一的 Apple HIG 语义色彩体系：
 
 ### I. 动力学与传动工程 (Dynamics & Gearing) · 9 款工具
 > 专属色：`text-ios-blue` / `bg-ios-blue` (`#007AFF`) · 经典空气动力学、牛顿迭代法、传动比数学、空间三角学与避震力学。
@@ -203,7 +203,7 @@ Rouleur Pro 严格划分为四大科学领域，各领域具有统一的 Apple H
 - **Binary & FIT Parser**: `@garmin/fitsdk` + 自研二进制流解码器 (支持 `.fit`, `.gpx`, `.tcx` 离线秒级解析)
 - **External API**: Open-Meteo REST API (全球无限制免费高精气象源，原生 HTTPS，免 API Key)
 - **Icons**: Lucide React (高保真线性矢量图标库)
-- **PWA Runtime**: Service Worker (`rouleur-cache-v2`) + Web App Manifest (支持离线冷启动)
+- **PWA Runtime**: Service Worker (`labao-cache-v1`) + Web App Manifest (支持离线冷启动)
 
 ---
 
@@ -324,8 +324,8 @@ CMD ["nginx", "-g", "daemon off;"]
 ```
 ```bash
 # 启动容器
-docker build -t rouleur-app .
-docker run -d -p 8080:80 --name rouleur rouleur-app
+docker build -t labao-app .
+docker run -d -p 8080:80 --name labao labao-app
 ```
 
 ---
@@ -352,7 +352,7 @@ docker run -d -p 8080:80 --name rouleur rouleur-app
 ## ⚖️ Legal & Sports Science Disclaimer / 免责与运动科学声明
 
 1. **非医疗诊断声明 (Non-Medical Sports Science Advisory)**: 本平台提供的所有计算算法、身体拟合尺寸建议（Bike Fitting）、骑行疼痛自查建议、周期化训练排程以及能量补给方案均基于公开的运动生理学文献与经典力学数学模型，仅供日常训练、长途骑行与车辆改装参考，**不构成任何医疗诊断、处方建议或商业装车担保**。如遇急性膝盖滑囊炎、韧带损伤或心血管不适，请立即停止骑行并前往医院运动医学科就诊。
-2. **知识产权与隐私 (Privacy & Intellectual Property)**: Rouleur Pro 严格遵循无打点、无追踪原则。Strava 是 Strava, Inc. 的注册商标，本项目仅通过官方公开的 API 实现车手授权下的数据提取展示。
+2. **知识产权与隐私 (Privacy & Intellectual Property)**: LaBao Pro 严格遵循无打点、无追踪原则。Strava 是 Strava, Inc. 的注册商标，本项目仅通过官方公开的 API 实现车手授权下的数据提取展示。
 
 ---
 
