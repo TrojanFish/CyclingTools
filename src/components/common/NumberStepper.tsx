@@ -223,7 +223,7 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          className="w-full text-center bg-transparent text-slate-900 dark:text-white font-mono text-sm font-semibold tabular-nums focus:outline-none py-1.5 min-w-0"
+          className="w-full text-center bg-transparent text-slate-900 dark:text-white font-mono text-sm font-semibold tabular-nums focus:outline-none py-1.5 min-w-0 selection:bg-ios-blue/20 selection:text-slate-900 dark:selection:text-white caret-ios-blue"
         />
         {unit && <span className="text-[11px] text-slate-400 dark:text-slate-500 font-sans mr-1 select-none shrink-0">{unit}</span>}
       </div>

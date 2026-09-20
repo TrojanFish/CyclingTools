@@ -910,6 +910,9 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                   { value: 'time', label: '时段分布' },
                   { value: 'day', label: '周度规律' }
                 ]}
+                size="sm"
+                mobileFullWidth={false}
+                className="shrink-0"
               />
             }
           />
@@ -958,6 +961,9 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                   { value: 'watts', label: '瓦特' },
                   { value: 'wkg', label: 'W/kg' }
                 ]}
+                size="sm"
+                mobileFullWidth={false}
+                className="shrink-0"
               />
             }
           />
@@ -982,30 +988,31 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       </div>
 
       {/* 8. Fleet Management & Component Health */}
-      <IOSCard className="space-y-4">
+      <IOSCard className="space-y-3.5">
         <IOSCardHeader
           title="战车机队全景与零部件损耗管家"
           subtitle="各车出勤里程统计 · 链条/外胎/刹车健康度寿命预警"
           icon={Bike}
           iconColor="text-ios-blue bg-ios-blue/10"
-          action={
-            <div className="flex items-center gap-1.5">
-              {fleet.map((b, idx) => (
-                <button
-                  key={b.id}
-                  onClick={() => setSelectedBikeIdx(idx)}
-                  className={`h-7 px-2.5 rounded-lg text-xs font-medium transition apple-touch ${
-                    selectedBikeIdx === idx
-                      ? 'bg-ios-blue text-white shadow-2xs'
-                      : 'bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300'
-                  }`}
-                >
-                  {b.name.split(' ')[0]}
-                </button>
-              ))}
-            </div>
-          }
         />
+
+        {/* Bike Selector Pills - horizontal scrolling on mobile, flexible on desktop */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          {fleet.map((b, idx) => (
+            <button
+              key={b.id}
+              onClick={() => setSelectedBikeIdx(idx)}
+              className={`h-8 px-3.5 rounded-xl text-xs font-semibold whitespace-nowrap transition apple-touch shrink-0 flex items-center gap-1.5 ${
+                selectedBikeIdx === idx
+                  ? 'bg-ios-blue text-white shadow-ios-sm ring-1.5 ring-ios-blue/35'
+                  : 'bg-slate-100/90 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300'
+              }`}
+            >
+              <Bike className="w-3.5 h-3.5 shrink-0" />
+              <span>{b.name.split(' ')[0]}</span>
+            </button>
+          ))}
+        </div>
 
         {activeBike && (
           <div className="space-y-3">
