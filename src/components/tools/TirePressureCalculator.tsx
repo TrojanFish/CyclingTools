@@ -4,6 +4,7 @@ import { SURFACE_FACTORS, TIRE_SETUP_FACTORS, getBaseTirePsi } from '../../data/
 import { Tooltip } from '../common/Tooltip';
 import { TireGauge } from '../common/TireGauge';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSGarageSyncFooter } from '../common/IOSGarageSyncFooter';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
@@ -546,8 +547,17 @@ export const TirePressureCalculator: React.FC = () => {
             </div>
           )}
 
-          {/* Visual Dials Row */}
-          <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
+          {/* Recommended Output Card */}
+          <IOSCard variant="default" className="space-y-5">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '推薦胎壓計算結果' : '推荐胎压计算结果'}
+              subtitle={language === 'zh-TW' ? '基於專業滾阻測試模型' : '基于专业滚阻测试模型'}
+              icon={Gauge}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+            />
+
+            {/* Visual Dials Row */}
+            <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
             <TireGauge
               label={language === 'zh-TW' ? '前輪推薦胎壓儀表' : '前轮推荐气压仪表'}
               psi={result.front.rawPsi}
@@ -584,11 +594,14 @@ export const TirePressureCalculator: React.FC = () => {
             />
           </div>
 
-          {/* Quick Sync to Active Bike Button */}
+          {/* Quick Sync to Active Bike Footer */}
           {activeBike && (
-            <button
-              type="button"
-              onClick={() => {
+            <IOSGarageSyncFooter
+              bikeName={activeBike.name}
+              badgeText="气压联动"
+              detailText={`建议前 ${result.front.rec} / 后 ${result.rear.rec} ${pressureUnit.toUpperCase()}`}
+              buttonText={language === 'zh-TW' ? '保存氣壓至戰車' : '保存气压至战车'}
+              onSave={() => {
                 const fPsi = Math.round(result.front.rawPsi);
                 const rPsi = Math.round(result.rear.rawPsi);
                 updateActiveBikeWheelTire({
@@ -607,41 +620,34 @@ export const TirePressureCalculator: React.FC = () => {
                   'success'
                 );
               }}
-              className="w-full h-9 rounded-xl bg-ios-blue hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-ios-sm apple-touch"
-            >
-              <Bike className="w-4 h-4" />
-              <span>
-                {language === 'zh-TW'
-                  ? `保存氣壓至當前戰車【${activeBike.name.split('/')[0]}】`
-                  : `保存气压至当前战车【${activeBike.name.split('/')[0]}】`}
-              </span>
-            </button>
-          )}
-
-          {/* Tips and Explanation Box */}
-          <IOSCard variant="default" className="space-y-4">
-            <IOSCardHeader
-              title={language === 'zh-TW' ? '氣壓微調與防扎防護建議' : '气压微调与防扎防护建议'}
-              icon={Info}
-              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
             />
-            <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
-              {result.notes.map((note, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ios-blue mt-1.5 shrink-0"></span>
-                  <span className="leading-relaxed">{note}</span>
-                </li>
-              ))}
-              <li className="flex items-start gap-2">
+          )}
+        </IOSCard>
+
+        {/* Tips and Explanation Box */}
+        <IOSCard variant="default" className="space-y-4">
+          <IOSCardHeader
+            title={language === 'zh-TW' ? '氣壓微調與防扎防護建議' : '气压微调与防扎防护建议'}
+            icon={Info}
+            iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
+          />
+          <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
+            {result.notes.map((note, idx) => (
+              <li key={idx} className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-ios-blue mt-1.5 shrink-0"></span>
-                <span className="leading-relaxed">
-                  <strong>温度气压效应：</strong>气温每上升或下降 5°C，外胎气压会随之波动约 1~1.5 PSI。夏季室外暴晒骑行前建议留有余量。
-                </span>
+                <span className="leading-relaxed">{note}</span>
               </li>
-            </ul>
-          </IOSCard>
-        </div>
+            ))}
+            <li className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-ios-blue mt-1.5 shrink-0"></span>
+              <span className="leading-relaxed">
+                <strong>温度气压效应：</strong>气温每上升或下降 5°C，外胎气压会随之波动约 1~1.5 PSI。夏季室外暴晒骑行前建议留有余量。
+              </span>
+            </li>
+          </ul>
+        </IOSCard>
       </div>
+    </div>
 
       {/* Social Share Poster Modal */}
       <ShareCardModal

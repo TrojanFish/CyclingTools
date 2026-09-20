@@ -5,6 +5,7 @@ import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSGarageSyncFooter } from '../common/IOSGarageSyncFooter';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -444,77 +445,85 @@ export const RoadBikeFitter: React.FC = () => {
             />
           </IOSCard>
 
-          {/* Key Output Metric Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <IOSMetricTile
-              label={language === 'zh-TW' ? '推薦坐高' : '推荐坐高'}
-              value={result.saddleHeight}
-              unit="cm"
-              subtext={isImperial ? `${(result.saddleHeight / 2.54).toFixed(1)} in | 中轴至坐垫顶` : '中轴中心至坐垫顶'}
-              accentColor="purple"
+          {/* Key Output Metric Card with Docked Garage Sync Footer */}
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+            <IOSCardHeader
+              title={language === 'zh-TW' ? '核心 Fitting 幾何建議' : '核心 Fitting 几何建议'}
+              subtitle={language === 'zh-TW' ? '基於人體幾何與騎行風格解算' : '基于人体几何与骑行风格精算'}
+              icon={Ruler}
+              iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
             />
 
-            <IOSMetricTile
-              label={language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
-              value={result.effectiveTopTube}
-              unit="cm"
-              subtext={isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | 水平上管长` : '水平有效上管长'}
-              accentColor="blue"
-            />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <IOSMetricTile
+                label={language === 'zh-TW' ? '推薦坐高' : '推荐坐高'}
+                value={result.saddleHeight}
+                unit="cm"
+                subtext={isImperial ? `${(result.saddleHeight / 2.54).toFixed(1)} in | 中轴至坐垫顶` : '中轴中心至坐垫顶'}
+                accentColor="purple"
+              />
 
-            <IOSMetricTile
-              label={language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
-              value={result.saddleSetback}
-              unit="cm"
-              subtext="鼻头距离五通垂线"
-              accentColor="green"
-            />
+              <IOSMetricTile
+                label={language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
+                value={result.effectiveTopTube}
+                unit="cm"
+                subtext={isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | 水平上管长` : '水平有效上管长'}
+                accentColor="blue"
+              />
 
-            <IOSMetricTile
-              label={language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
-              value={result.saddleDrop}
-              unit="cm"
-              subtext="坐垫顶与车把高差"
-              accentColor="orange"
-            />
-          </div>
+              <IOSMetricTile
+                label={language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
+                value={result.saddleSetback}
+                unit="cm"
+                subtext="鼻头距离五通垂线"
+                accentColor="green"
+              />
 
-          {/* Quick Sync Fitting to Active Bike */}
-          {activeBike && (
-            <button
-              type="button"
-              onClick={() => {
-                const sHeight = Math.round(result.saddleHeight * 10);
-                const sDrop = Math.round(result.saddleDrop * 10);
-                const sSetback = Math.round(result.saddleSetback * 10);
-                const stem = result.stemLength;
-                const hb = result.handlebarWidth * 10;
-                updateActiveBikeGeometry({
-                  saddleHeightMm: sHeight,
-                  saddleDropMm: sDrop,
-                  saddleSetbackMm: sSetback,
-                  stemLengthMm: stem,
-                  handlebarWidthMm: hb,
-                  reachMm: result.estimatedReach,
-                  stackMm: result.estimatedStack,
-                });
-                showToast(
+              <IOSMetricTile
+                label={language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
+                value={result.saddleDrop}
+                unit="cm"
+                subtext="坐垫顶与车把高差"
+                accentColor="orange"
+              />
+            </div>
+
+            {/* Quick Sync Fitting to Active Bike Footer */}
+            {activeBike && (
+              <IOSGarageSyncFooter
+                bikeName={activeBike.name}
+                badgeText="Fitting 联动"
+                detailText={
                   language === 'zh-TW'
-                    ? `已將 Fitting 建議幾何 (坐高 ${sHeight}mm · 把立 ${stem}mm) 同步至戰車【${activeBike.name.split('/')[0]}】`
-                    : `已将 Fitting 建议几何 (坐高 ${sHeight}mm · 把立 ${stem}mm) 同步至战车【${activeBike.name.split('/')[0]}】`,
-                  'success'
-                );
-              }}
-              className="w-full h-9 rounded-xl bg-ios-blue hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-ios-sm apple-touch"
-            >
-              <Bike className="w-4 h-4" />
-              <span>
-                {language === 'zh-TW'
-                  ? `同步 Fitting 尺寸至戰車【${activeBike.name.split('/')[0]}】`
-                  : `同步 Fitting 尺寸至战车【${activeBike.name.split('/')[0]}】`}
-              </span>
-            </button>
-          )}
+                    ? `坐高 ${Math.round(result.saddleHeight * 10)}mm · 落差 ${Math.round(result.saddleDrop * 10)}mm · 把立 ${result.stemLength}mm`
+                    : `坐高 ${Math.round(result.saddleHeight * 10)}mm · 落差 ${Math.round(result.saddleDrop * 10)}mm · 把立 ${result.stemLength}mm`
+                }
+                buttonText={language === 'zh-TW' ? '同步 Fitting 尺寸至戰車' : '同步 Fitting 尺寸至战车'}
+                onSave={() => {
+                  const sHeight = Math.round(result.saddleHeight * 10);
+                  const sDrop = Math.round(result.saddleDrop * 10);
+                  const sSetback = Math.round(result.saddleSetback * 10);
+                  const stem = result.stemLength;
+                  const hb = result.handlebarWidth * 10;
+                  updateActiveBikeGeometry({
+                    saddleHeightMm: sHeight,
+                    saddleDropMm: sDrop,
+                    saddleSetbackMm: sSetback,
+                    stemLengthMm: stem,
+                    handlebarWidthMm: hb,
+                    reachMm: result.estimatedReach,
+                    stackMm: result.estimatedStack,
+                  });
+                  showToast(
+                    language === 'zh-TW'
+                      ? `已將 Fitting 建議幾何 (坐高 ${sHeight}mm · 把立 ${stem}mm) 同步至戰車【${activeBike.name.split('/')[0]}】`
+                      : `已将 Fitting 建议几何 (坐高 ${sHeight}mm · 把立 ${stem}mm) 同步至战车【${activeBike.name.split('/')[0]}】`,
+                    'success'
+                  );
+                }}
+              />
+            )}
+          </IOSCard>
 
           {/* Stack & Reach + Body Proportion Analysis */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">

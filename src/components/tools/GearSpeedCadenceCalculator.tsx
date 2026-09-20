@@ -5,6 +5,7 @@ import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
+import { IOSGarageSyncFooter } from '../common/IOSGarageSyncFooter';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateGearSpeedPoster } from '../../utils/shareCardGenerators';
@@ -247,31 +248,6 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* Inputs & Presets */}
       <IOSCard variant="default" className="space-y-5">
-        {/* Active Bike Sync Banner & Save Button */}
-        {activeBike && (
-          <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-ios-blue/10 dark:bg-ios-blue/15 border border-ios-blue/20">
-            <div className="flex items-center gap-2 text-xs font-semibold text-ios-blue dark:text-ios-blue-dark">
-              <Bike className="w-4 h-4 shrink-0" />
-              <span>已同步装配战车：<strong>{activeBike.name.split('/')[0]}</strong></span>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                updateActiveBikeDrivetrain({
-                  chainringType,
-                  bigRing,
-                  smallRing: chainringType === 'double' ? smallRing : bigRing,
-                  cassette: cogsList
-                });
-                showToast(`已将当前齿比 (${chainringType === 'single' ? `${bigRing}T` : `${bigRing}/${smallRing}T`} · ${cogsList[0]}-${cogsList[cogsList.length - 1]}T) 保存至战车【${activeBike.name.split('/')[0]}】`, 'success');
-              }}
-              className="h-8 px-3 rounded-lg bg-ios-blue hover:bg-blue-600 text-white text-xs font-semibold transition active:scale-95 apple-touch shrink-0"
-            >
-              保存齿比至当前战车
-            </button>
-          </div>
-        )}
-
         {/* Gruppo Presets */}
         <div>
           <div className="w-full">
@@ -362,6 +338,28 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
             );
           })}
         </div>
+
+        {/* Quick Sync to Active Bike Footer */}
+        {activeBike && (
+          <IOSGarageSyncFooter
+            bikeName={activeBike.name}
+            badgeText="传动联动"
+            detailText={`${chainringType === 'single' ? `${bigRing}T` : `${bigRing}/${smallRing}T`} · ${cogsList[0] || 11}-${cogsList[cogsList.length - 1] || 34}T`}
+            buttonText="保存齿比至战车"
+            onSave={() => {
+              updateActiveBikeDrivetrain({
+                chainringType,
+                bigRing,
+                smallRing: chainringType === 'double' ? smallRing : bigRing,
+                cassette: cogsList,
+              });
+              showToast(
+                `已将当前齿比 (${chainringType === 'single' ? `${bigRing}T` : `${bigRing}/${smallRing}T`} · ${cogsList[0]}-${cogsList[cogsList.length - 1]}T) 保存至战车【${activeBike.name.split('/')[0]}】`,
+                'success'
+              );
+            }}
+          />
+        )}
       </IOSCard>
 
       {/* Step % Difference Analysis */}
