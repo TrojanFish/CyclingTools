@@ -11,7 +11,6 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { useToolDraftState } from '../../hooks/useToolDraftState';
 import { ShareCardModal } from '../common/ShareCardModal';
-import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateFittingPoster } from '../../utils/shareCardGenerators';
 import { FittingWorkOrderModal } from './FittingWorkOrderModal';
 
@@ -243,9 +242,6 @@ export const RoadBikeFitter: React.FC = () => {
         shareTitle="生成个人 Fitting 档案长图"
         actions={
           <div className="flex items-center gap-2">
-            <IOSCopyResultButton
-              textToCopy={`【LaBao 拉爆 Fitting建议】车手身高: ${height}cm / 跨高: ${inseam}cm (${ridingStyle === 'racing' ? '竞技突围' : ridingStyle === 'endurance' ? '长途耐力' : '休闲骑游'}) → 推荐坐高: ${result.saddleHeight} cm (LeMond) / 等效上管ETT: ${result.effectiveTopTube} mm / 把立长度: ${result.stemLength} mm / 车把宽度: ${result.handlebarWidth} mm / 曲柄长度: ${result.crankLength} mm`}
-            />
             {hasSavedDraft && (
               <button
                 type="button"

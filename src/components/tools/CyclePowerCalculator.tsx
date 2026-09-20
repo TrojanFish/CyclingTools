@@ -18,7 +18,6 @@ import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
-import { IOSCopyResultButton } from '../common/IOSCopyResultButton';
 import { generateCyclePowerPoster } from '../../utils/shareCardGenerators';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useToast } from '../../context/ToastContext';
@@ -337,21 +336,16 @@ export const CyclePowerCalculator: React.FC = () => {
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成動力海報' : '生成动力海报'}
         actions={
-          <div className="flex items-center gap-2">
-            <IOSCopyResultButton
-              textToCopy={`【LaBao 拉爆动力学计算】车手 ${riderWeight}kg + 车重 ${bikeWeight}kg (坡度 ${grade}%) → 巡航速度: ${result.speedKmh} km/h · 所需功率: ${result.power} W (${result.wkg} W/kg · ${result.levelTitle}) · 空阻占比: ${result.aeroPct}% / 重力占比: ${result.gravityPct}% / 滚阻占比: ${result.rollingPct}%`}
-            />
-            <IOSSegmentedControl
-              options={[
-                { id: 'speed', label: language === 'zh-TW' ? '功率求速度' : '功率求速度' },
-                { id: 'power', label: language === 'zh-TW' ? '速度求功率' : '速度求功率' },
-                { id: 'wkg', label: language === 'zh-TW' ? '推重比求功率' : '推重比求功率' },
-              ]}
-              value={calcMode}
-              onChange={(val) => setCalcMode(val as any)}
-              size="md"
-            />
-          </div>
+          <IOSSegmentedControl
+            options={[
+              { id: 'speed', label: language === 'zh-TW' ? '功率求速度' : '功率求速度' },
+              { id: 'power', label: language === 'zh-TW' ? '速度求功率' : '速度求功率' },
+              { id: 'wkg', label: language === 'zh-TW' ? '推重比求功率' : '推重比求功率' },
+            ]}
+            value={calcMode}
+            onChange={(val) => setCalcMode(val as any)}
+            size="md"
+          />
         }
       />
 
