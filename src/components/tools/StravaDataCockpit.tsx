@@ -1172,6 +1172,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         onClose={() => setIsShareModalOpen(false)}
         posterUrl={sharePosterUrl}
         title="车手战报海报"
+        fileName={`LaBao_车手数据战报_${selectedPeriod}.png`}
       />
     </div>
   );

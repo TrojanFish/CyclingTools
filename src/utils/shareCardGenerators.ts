@@ -1811,27 +1811,19 @@ export interface StravaCockpitPosterData {
  * Generate Apple-aesthetic Strava Cockpit Share Poster
  */
 export async function generateStravaCockpitPoster(data: StravaCockpitPosterData): Promise<string> {
-  const w = 800;
-  const h = 1080;
+  const w = 750;
+  const h = 1050;
   const { canvas, ctx } = createPosterCanvas(w, h);
 
   drawBackground(ctx, w, h, '#007AFF');
-  drawHeader(ctx, w, 'STRAVA 骑行数据罗盘战报', data.periodLabel || '年度全景总览');
-
-  // Athlete Card
-  roundRect(ctx, 40, 100, w - 80, 70, 16);
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-  ctx.stroke();
-
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(data.athleteName || 'LaBao 车手', 60, 142);
-
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`画像判定: ${data.riderPattern}`, 460, 142);
+  drawHeader(
+    ctx,
+    w,
+    'STRAVA 骑行数据罗盘战报',
+    data.periodLabel || '年度全景总览',
+    `${data.athleteName || 'LaBao 车手'} · 战力画像: ${data.riderPattern}`,
+    '#007AFF'
+  );
 
   // 6 Metric Tiles in 2 rows x 3 cols
   const metrics = [
@@ -1843,16 +1835,16 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
     { label: '加权平均功率', value: `${data.avgNpWatts}`, unit: 'W NP', color: '#00C7BE' },
   ];
 
-  const gridY = 190;
-  const cardW = 226;
-  const cardH = 95;
-  const gap = 20;
+  const gridY = 204;
+  const cardW = 212;
+  const cardH = 86;
+  const gap = 17;
 
   metrics.forEach((m, idx) => {
     const col = idx % 3;
     const row = Math.floor(idx / 3);
     const x = 40 + col * (cardW + gap);
-    const y = gridY + row * (cardH + gap);
+    const y = gridY + row * (cardH + 14);
 
     roundRect(ctx, x, y, cardW, cardH, 16);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
@@ -1862,30 +1854,30 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(m.label, x + 16, y + 28);
+    ctx.fillText(m.label, x + 16, y + 26);
 
     ctx.fillStyle = m.color;
-    ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(m.value, x + 16, y + 62);
+    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(m.value, x + 16, y + 58);
 
     if (m.unit) {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.fillText(m.unit, x + 16 + ctx.measureText(m.value).width + 6, y + 62);
+      ctx.fillText(m.unit, x + 16 + ctx.measureText(m.value).width + 5, y + 58);
     }
   });
 
   // Sports Science & Achievement Section
-  const sciY = 440;
-  roundRect(ctx, 40, sciY, w - 80, 260, 20);
+  const sciY = 415;
+  roundRect(ctx, 40, sciY, w - 80, 240, 20);
   ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
   ctx.fill();
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
   ctx.stroke();
 
   ctx.fillStyle = '#007AFF';
-  ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('运动生理科学 (Intervals.icu 模型) & 状态评估', 65, sciY + 38);
+  ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('运动生理科学 (Intervals.icu 模型) & 状态评估', 65, sciY + 34);
 
   // PMC Tri-state pills
   const pmcItems = [
@@ -1894,31 +1886,32 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
     { label: 'TSB (竞技状态)', val: `${data.tsb > 0 ? '+' : ''}${data.tsb}`, color: data.tsb >= 0 ? '#34C759' : '#FF3B30' },
   ];
 
+  const pillW = (w - 80 - 50 - 24) / 3;
   pmcItems.forEach((p, idx) => {
-    const px = 65 + idx * 230;
-    const py = sciY + 60;
-    roundRect(ctx, px, py, 210, 60, 12);
+    const px = 65 + idx * (pillW + 12);
+    const py = sciY + 48;
+    roundRect(ctx, px, py, pillW, 54, 12);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
     ctx.fill();
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(p.label, px + 14, py + 24);
+    ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(p.label, px + 12, py + 22);
 
     ctx.fillStyle = p.color;
-    ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(p.val, px + 14, py + 50);
+    ctx.font = 'bold 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(p.val, px + 12, py + 45);
   });
 
   // TSB Diagnosis text
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`• 当前身心竞技状态判定: ${data.tsbLabel}`, 65, sciY + 160);
-  ctx.fillText(`• 连续出勤记录: 已连续打卡 ${data.streakDays} 天`, 65, sciY + 195);
-  ctx.fillText(`• 垂直空间征服: 累计爬升相当于征服了 ${data.everestCount} 座珠穆朗玛峰 (Everest)`, 65, sciY + 230);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`• 当前身心竞技状态判定: ${data.tsbLabel}`, 65, sciY + 134);
+  ctx.fillText(`• 连续出勤记录: 已连续打卡 ${data.streakDays} 天`, 65, sciY + 165);
+  ctx.fillText(`• 垂直空间征服: 累计爬升相当于征服了 ${data.everestCount} 座珠穆朗玛峰 (Everest)`, 65, sciY + 196);
 
   // Eddington Hero Block
-  const eddY = 720;
+  const eddY = 675;
   roundRect(ctx, 40, eddY, w - 80, 220, 20);
   ctx.fillStyle = 'rgba(0, 122, 255, 0.06)';
   ctx.fill();
@@ -1927,16 +1920,16 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
 
   ctx.fillStyle = '#007AFF';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('车手爱丁顿数 (EDDINGTON NUMBER)', 65, eddY + 36);
+  ctx.fillText('车手爱丁顿数 (EDDINGTON NUMBER)', 65, eddY + 34);
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 64px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`E = ${data.eddingtonE}`, 65, eddY + 115);
+  ctx.font = 'bold 56px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`E = ${data.eddingtonE}`, 65, eddY + 105);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`代表车手一生中至少有 ${data.eddingtonE} 天，单日骑行里程超过了 ${data.eddingtonE} 公里。`, 65, eddY + 155);
-  ctx.fillText(`这是全球严肃骑行者用汗水与车轮丈量大地的终极耐力勋章！`, 65, eddY + 185);
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText(`代表车手一生中至少有 ${data.eddingtonE} 天，单日骑行里程超过了 ${data.eddingtonE} 公里。`, 65, eddY + 148);
+  ctx.fillText(`这是全球严肃骑行者用汗水与车轮丈量大地的终极耐力勋章！`, 65, eddY + 176);
 
   drawFooter(ctx, w, h);
   return canvas.toDataURL('image/png');
