@@ -182,10 +182,42 @@ export const ChainLengthCalculator: React.FC = () => {
         actions={
           <IOSSegmentedControl
             options={[
-              { value: 'compact_34', label: '公路 50/34T' },
-              { value: 'semi_30', label: '公路 52/36T' },
-              { value: 'sram_axs', label: 'AXS 48/35T' },
-              { value: 'gravel_1x', label: 'Gravel 40T' },
+              {
+                value: 'compact_34',
+                label: (
+                  <>
+                    <span className="sm:hidden">50/34T</span>
+                    <span className="hidden sm:inline">公路 50/34T</span>
+                  </>
+                )
+              },
+              {
+                value: 'semi_30',
+                label: (
+                  <>
+                    <span className="sm:hidden">52/36T</span>
+                    <span className="hidden sm:inline">公路 52/36T</span>
+                  </>
+                )
+              },
+              {
+                value: 'sram_axs',
+                label: (
+                  <>
+                    <span className="sm:hidden">48/35T</span>
+                    <span className="hidden sm:inline">AXS 48/35T</span>
+                  </>
+                )
+              },
+              {
+                value: 'gravel_1x',
+                label: (
+                  <>
+                    <span className="sm:hidden">单盘 40T</span>
+                    <span className="hidden sm:inline">Gravel 40T</span>
+                  </>
+                )
+              },
             ]}
             value={activePreset || ''}
             onChange={(val) => loadPreset(val)}

@@ -338,9 +338,33 @@ export const CyclePowerCalculator: React.FC = () => {
         actions={
           <IOSSegmentedControl
             options={[
-              { id: 'speed', label: language === 'zh-TW' ? '功率求速度' : '功率求速度' },
-              { id: 'power', label: language === 'zh-TW' ? '速度求功率' : '速度求功率' },
-              { id: 'wkg', label: language === 'zh-TW' ? '推重比求功率' : '推重比求功率' },
+              {
+                id: 'speed',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '求速度' : '求速度'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '功率求速度' : '功率求速度'}</span>
+                  </>
+                )
+              },
+              {
+                id: 'power',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '求功率' : '求功率'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '速度求功率' : '速度求功率'}</span>
+                  </>
+                )
+              },
+              {
+                id: 'wkg',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '求推重比' : '求推重比'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '推重比求功率' : '推重比求功率'}</span>
+                  </>
+                )
+              },
             ]}
             value={calcMode}
             onChange={(val) => setCalcMode(val as any)}

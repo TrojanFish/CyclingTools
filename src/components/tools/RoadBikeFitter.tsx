@@ -346,9 +346,33 @@ export const RoadBikeFitter: React.FC = () => {
               </label>
               <IOSSegmentedControl
                 options={[
-                  { id: 'recreational', label: language === 'zh-TW' ? '休閒騎遊' : '休闲骑游' },
-                  { id: 'endurance', label: language === 'zh-TW' ? '長途耐力' : '长途耐力' },
-                  { id: 'racing', label: language === 'zh-TW' ? '競技突圍' : '竞技突围' },
+                  {
+                    id: 'recreational',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '休閒' : '休闲'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '休閒騎遊' : '休闲骑游'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    id: 'endurance',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '耐力' : '耐力'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '長途耐力' : '长途耐力'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    id: 'racing',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '競技' : '竞技'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '競技突圍' : '竞技突围'}</span>
+                      </>
+                    )
+                  },
                 ]}
                 value={ridingStyle}
                 onChange={(val) => setRidingStyle(val as any)}

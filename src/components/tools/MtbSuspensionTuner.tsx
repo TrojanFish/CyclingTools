@@ -360,10 +360,42 @@ export const MtbSuspensionTuner: React.FC = () => {
         <div className="w-full">
           <IOSSegmentedControl
             options={[
-              { value: 'xc_race', label: 'XC 竞速 (120mm)' },
-              { value: 'trail_allround', label: 'Trail 林道 (140mm)' },
-              { value: 'enduro_race', label: 'Enduro 耐力 (170mm)' },
-              { value: 'dh_park', label: 'DH 速降 (200mm)' },
+              {
+                value: 'xc_race',
+                label: (
+                  <>
+                    <span className="sm:hidden">XC 120</span>
+                    <span className="hidden sm:inline">XC 竞速 (120mm)</span>
+                  </>
+                )
+              },
+              {
+                value: 'trail_allround',
+                label: (
+                  <>
+                    <span className="sm:hidden">Trail 140</span>
+                    <span className="hidden sm:inline">Trail 林道 (140mm)</span>
+                  </>
+                )
+              },
+              {
+                value: 'enduro_race',
+                label: (
+                  <>
+                    <span className="sm:hidden">Enduro 170</span>
+                    <span className="hidden sm:inline">Enduro 耐力 (170mm)</span>
+                  </>
+                )
+              },
+              {
+                value: 'dh_park',
+                label: (
+                  <>
+                    <span className="sm:hidden">DH 200</span>
+                    <span className="hidden sm:inline">DH 速降 (200mm)</span>
+                  </>
+                )
+              },
             ]}
             value={
               discipline === 'xc' ? 'xc_race' :
@@ -437,9 +469,33 @@ export const MtbSuspensionTuner: React.FC = () => {
               </label>
               <IOSSegmentedControl
                 options={[
-                  { value: 'plush', label: language === 'zh-TW' ? '柔軟吸震' : '软糯吸震' },
-                  { value: 'balanced', label: language === 'zh-TW' ? '黃金平衡' : '黄金平衡' },
-                  { value: 'firm', label: language === 'zh-TW' ? '支撐競速' : '硬朗支撑' }
+                  {
+                    value: 'plush',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '柔軟' : '软糯'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '柔軟吸震' : '软糯吸震'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'balanced',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '平衡' : '平衡'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '黃金平衡' : '黄金平衡'}</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'firm',
+                    label: (
+                      <>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '支撐' : '硬朗'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '支撐競速' : '硬朗支撑'}</span>
+                      </>
+                    )
+                  }
                 ]}
                 value={ridingStyle}
                 onChange={(v) => setRidingStyle(v as 'balanced' | 'plush' | 'firm')}
@@ -452,10 +508,26 @@ export const MtbSuspensionTuner: React.FC = () => {
               </label>
               <IOSSegmentedControl
                 options={[
-                  { value: 'xc', label: 'XC 竞速' },
+                  {
+                    value: 'xc',
+                    label: (
+                      <>
+                        <span className="sm:hidden">XC</span>
+                        <span className="hidden sm:inline">XC 竞速</span>
+                      </>
+                    )
+                  },
                   { value: 'trail', label: 'Trail' },
                   { value: 'enduro', label: 'Enduro' },
-                  { value: 'dh', label: 'DH 速降' }
+                  {
+                    value: 'dh',
+                    label: (
+                      <>
+                        <span className="sm:hidden">DH</span>
+                        <span className="hidden sm:inline">DH 速降</span>
+                      </>
+                    )
+                  }
                 ]}
                 value={discipline}
                 onChange={(v) => setDiscipline(v as any)}
@@ -525,9 +597,33 @@ export const MtbSuspensionTuner: React.FC = () => {
               </label>
               <IOSSegmentedControl
                 options={[
-                  { value: 'linear', label: '线性 (单转点)' },
-                  { value: 'progressive', label: '渐进 (VPP/Horst)' },
-                  { value: 'high_progressive', label: '高渐进 (>25%)' }
+                  {
+                    value: 'linear',
+                    label: (
+                      <>
+                        <span className="sm:hidden">线性</span>
+                        <span className="hidden sm:inline">线性 (单转点)</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'progressive',
+                    label: (
+                      <>
+                        <span className="sm:hidden">渐进</span>
+                        <span className="hidden sm:inline">渐进 (VPP/Horst)</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'high_progressive',
+                    label: (
+                      <>
+                        <span className="sm:hidden">超渐进</span>
+                        <span className="hidden sm:inline">{'高渐进 (>25%)'}</span>
+                      </>
+                    )
+                  }
                 ]}
                 value={linkageProgressivity}
                 onChange={(v) => setLinkageProgressivity(v as any)}

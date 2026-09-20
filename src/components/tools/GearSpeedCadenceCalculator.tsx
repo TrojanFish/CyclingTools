@@ -253,11 +253,51 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           <div className="w-full">
             <IOSSegmentedControl
               options={[
-                { value: 'compact', label: '公路 50/34T' },
-                { value: 'semi_compact', label: '公路 52/36T' },
-                { value: 'pro_racing', label: '竞速 54/40T' },
-                { value: 'sram_axs', label: 'AXS 48/35T' },
-                { value: 'gravel_1x', label: 'Gravel 40T' },
+                {
+                  value: 'compact',
+                  label: (
+                    <>
+                      <span className="sm:hidden">50/34T</span>
+                      <span className="hidden sm:inline">公路 50/34T</span>
+                    </>
+                  )
+                },
+                {
+                  value: 'semi_compact',
+                  label: (
+                    <>
+                      <span className="sm:hidden">52/36T</span>
+                      <span className="hidden sm:inline">公路 52/36T</span>
+                    </>
+                  )
+                },
+                {
+                  value: 'pro_racing',
+                  label: (
+                    <>
+                      <span className="sm:hidden">54/40T</span>
+                      <span className="hidden sm:inline">竞速 54/40T</span>
+                    </>
+                  )
+                },
+                {
+                  value: 'sram_axs',
+                  label: (
+                    <>
+                      <span className="sm:hidden">48/35T</span>
+                      <span className="hidden sm:inline">AXS 48/35T</span>
+                    </>
+                  )
+                },
+                {
+                  value: 'gravel_1x',
+                  label: (
+                    <>
+                      <span className="sm:hidden">40T</span>
+                      <span className="hidden sm:inline">Gravel 40T</span>
+                    </>
+                  )
+                },
               ]}
               value={activeGruppo}
               onChange={(val) => loadPresetGruppo(val)}

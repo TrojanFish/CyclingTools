@@ -499,9 +499,39 @@ END:VEVENT
       <div className="flex justify-center sm:justify-start">
         <IOSSegmentedControl
           options={[
-            { id: 'month', value: 'month', label: '月历全景看板', icon: CalendarIcon },
-            { id: 'macro', value: 'macro', label: '宏观周期与未来 PMC 模拟', icon: TrendingUp },
-            { id: 'week', value: 'week', label: '本周课表执行', icon: Dumbbell }
+            {
+              id: 'month',
+              value: 'month',
+              label: (
+                <>
+                  <span className="sm:hidden">月历看板</span>
+                  <span className="hidden sm:inline">月历全景看板</span>
+                </>
+              ),
+              icon: CalendarIcon
+            },
+            {
+              id: 'macro',
+              value: 'macro',
+              label: (
+                <>
+                  <span className="sm:hidden">周期 PMC</span>
+                  <span className="hidden sm:inline">宏观周期与未来 PMC 模拟</span>
+                </>
+              ),
+              icon: TrendingUp
+            },
+            {
+              id: 'week',
+              value: 'week',
+              label: (
+                <>
+                  <span className="sm:hidden">本周课表</span>
+                  <span className="hidden sm:inline">本周课表执行</span>
+                </>
+              ),
+              icon: Dumbbell
+            }
           ]}
           value={activeTab}
           onChange={(val) => setActiveTab(val as any)}

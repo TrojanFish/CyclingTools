@@ -384,10 +384,42 @@ export const UpgradeRoiCalculator: React.FC = () => {
           <>
             <IOSSegmentedControl
               options={[
-                { id: 'CNY', label: '¥ CNY' },
-                { id: 'USD', label: '$ USD' },
-                { id: 'EUR', label: '€ EUR' },
-                { id: 'GBP', label: '£ GBP' },
+                {
+                  id: 'CNY',
+                  label: (
+                    <>
+                      <span className="sm:hidden">¥</span>
+                      <span className="hidden sm:inline">¥ CNY</span>
+                    </>
+                  )
+                },
+                {
+                  id: 'USD',
+                  label: (
+                    <>
+                      <span className="sm:hidden">$</span>
+                      <span className="hidden sm:inline">$ USD</span>
+                    </>
+                  )
+                },
+                {
+                  id: 'EUR',
+                  label: (
+                    <>
+                      <span className="sm:hidden">€</span>
+                      <span className="hidden sm:inline">€ EUR</span>
+                    </>
+                  )
+                },
+                {
+                  id: 'GBP',
+                  label: (
+                    <>
+                      <span className="sm:hidden">£</span>
+                      <span className="hidden sm:inline">£ GBP</span>
+                    </>
+                  )
+                },
               ]}
               value={currency}
               onChange={(val) => setCurrency(val as any)}

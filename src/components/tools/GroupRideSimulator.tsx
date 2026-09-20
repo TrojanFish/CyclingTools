@@ -449,8 +449,24 @@ export const GroupRideSimulator: React.FC = () => {
           <div className="w-full sm:w-72">
             <IOSSegmentedControl
               options={[
-                { value: 'peloton', label: language === 'zh-TW' ? '公路大組團騎' : '公路大组团骑' },
-                { value: 'ttt', label: language === 'zh-TW' ? 'TTT 車隊計時賽' : 'TTT 车队计时赛' }
+                {
+                  value: 'peloton',
+                  label: (
+                    <>
+                      <span className="sm:hidden">{language === 'zh-TW' ? '公路大組' : '公路大组'}</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? '公路大組團騎' : '公路大组团骑'}</span>
+                    </>
+                  )
+                },
+                {
+                  value: 'ttt',
+                  label: (
+                    <>
+                      <span className="sm:hidden">{language === 'zh-TW' ? '車隊 TTT' : '车队 TTT'}</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? 'TTT 車隊計時賽' : 'TTT 车队计时赛'}</span>
+                    </>
+                  )
+                }
               ]}
               value={mode}
               onChange={(v) => {
@@ -594,9 +610,33 @@ export const GroupRideSimulator: React.FC = () => {
                 </div>
                 <IOSSegmentedControl
                   options={[
-                    { value: '4th', label: '第 4 人冲线 (UCI 标准)' },
-                    { value: '5th', label: '第 5 人冲线 (7-8人队)' },
-                    { value: 'last', label: '全员不掉队' }
+                    {
+                      value: '4th',
+                      label: (
+                        <>
+                          <span className="sm:hidden">第 4 人</span>
+                          <span className="hidden sm:inline">第 4 人冲线 (UCI 标准)</span>
+                        </>
+                      )
+                    },
+                    {
+                      value: '5th',
+                      label: (
+                        <>
+                          <span className="sm:hidden">第 5 人</span>
+                          <span className="hidden sm:inline">第 5 人冲线 (7-8人队)</span>
+                        </>
+                      )
+                    },
+                    {
+                      value: 'last',
+                      label: (
+                        <>
+                          <span className="sm:hidden">全员到齐</span>
+                          <span className="hidden sm:inline">全员不掉队</span>
+                        </>
+                      )
+                    }
                   ]}
                   value={tttFinishRule}
                   onChange={(v) => setTttFinishRule(v as any)}
@@ -640,9 +680,33 @@ export const GroupRideSimulator: React.FC = () => {
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">风向风阻</label>
                 <IOSSegmentedControl
                   options={[
-                    { value: 'headwind', label: `顶风 (${isImperial ? '6 mph' : '10 km/h'})` },
-                    { value: 'crosswind', label: `侧风 (${isImperial ? '6 mph' : '10 km/h'})` },
-                    { value: 'tailwind', label: `顺风 (${isImperial ? '6 mph' : '10 km/h'})` }
+                    {
+                      value: 'headwind',
+                      label: (
+                        <>
+                          <span className="sm:hidden">顶风</span>
+                          <span className="hidden sm:inline">{`顶风 (${isImperial ? '6 mph' : '10 km/h'})`}</span>
+                        </>
+                      )
+                    },
+                    {
+                      value: 'crosswind',
+                      label: (
+                        <>
+                          <span className="sm:hidden">侧风</span>
+                          <span className="hidden sm:inline">{`侧风 (${isImperial ? '6 mph' : '10 km/h'})`}</span>
+                        </>
+                      )
+                    },
+                    {
+                      value: 'tailwind',
+                      label: (
+                        <>
+                          <span className="sm:hidden">顺风</span>
+                          <span className="hidden sm:inline">{`顺风 (${isImperial ? '6 mph' : '10 km/h'})`}</span>
+                        </>
+                      )
+                    }
                   ]}
                   value={windDirection}
                   onChange={(v) => setWindDirection(v as any)}

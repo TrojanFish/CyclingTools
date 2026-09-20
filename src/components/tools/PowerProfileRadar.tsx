@@ -401,10 +401,46 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         <div className="w-full sm:w-auto">
           <IOSSegmentedControl
             options={[
-              { value: 'sprinter', label: language === 'zh-TW' ? '衝刺手' : '冲刺手', icon: Zap },
-              { value: 'climber', label: language === 'zh-TW' ? '爬坡手' : '爬坡手', icon: Mountain },
-              { value: 'rouleur', label: language === 'zh-TW' ? '計時突圍' : '计时突围', icon: Timer },
-              { value: 'allrounder', label: language === 'zh-TW' ? '全能型' : '全能型', icon: Award },
+              {
+                value: 'sprinter',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '衝刺' : '冲刺'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '衝刺手' : '冲刺手'}</span>
+                  </>
+                ),
+                icon: Zap
+              },
+              {
+                value: 'climber',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '爬坡' : '爬坡'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '爬坡手' : '爬坡手'}</span>
+                  </>
+                ),
+                icon: Mountain
+              },
+              {
+                value: 'rouleur',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '計時' : '计时'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '計時突圍' : '计时突围'}</span>
+                  </>
+                ),
+                icon: Timer
+              },
+              {
+                value: 'allrounder',
+                label: (
+                  <>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '全能' : '全能'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '全能型' : '全能型'}</span>
+                  </>
+                ),
+                icon: Award
+              },
             ]}
             value={activeRiderPreset || ''}
             onChange={(val) => loadPreset(val as any)}

@@ -225,11 +225,47 @@ export const Dashboard: React.FC<DashboardProps> = ({
   };
 
   const categoryOptions = [
-    { id: 'all', icon: Sparkles, label: language === 'zh-TW' ? '全部工具' : '全部工具' },
-    { id: 'dynamics', icon: Zap, label: language === 'zh-TW' ? '動力傳動' : '动力传动' },
+    {
+      id: 'all',
+      icon: Sparkles,
+      label: (
+        <>
+          <span className="sm:hidden">{language === 'zh-TW' ? '全部' : '全部'}</span>
+          <span className="hidden sm:inline">{language === 'zh-TW' ? '全部工具' : '全部工具'}</span>
+        </>
+      )
+    },
+    {
+      id: 'dynamics',
+      icon: Zap,
+      label: (
+        <>
+          <span className="sm:hidden">{language === 'zh-TW' ? '動力' : '动力'}</span>
+          <span className="hidden sm:inline">{language === 'zh-TW' ? '動力傳動' : '动力传动'}</span>
+        </>
+      )
+    },
     { id: 'fitting', icon: Ruler, label: 'Fitting' },
-    { id: 'route', icon: MapPin, label: language === 'zh-TW' ? '路線氣象' : '路线气象' },
-    { id: 'health', icon: HeartPulse, label: language === 'zh-TW' ? '生理代謝' : '生理代谢' },
+    {
+      id: 'route',
+      icon: MapPin,
+      label: (
+        <>
+          <span className="sm:hidden">{language === 'zh-TW' ? '路線' : '路线'}</span>
+          <span className="hidden sm:inline">{language === 'zh-TW' ? '路線氣象' : '路线气象'}</span>
+        </>
+      )
+    },
+    {
+      id: 'health',
+      icon: HeartPulse,
+      label: (
+        <>
+          <span className="sm:hidden">{language === 'zh-TW' ? '生理' : '生理'}</span>
+          <span className="hidden sm:inline">{language === 'zh-TW' ? '生理代謝' : '生理代谢'}</span>
+        </>
+      )
+    },
   ];
 
   return (

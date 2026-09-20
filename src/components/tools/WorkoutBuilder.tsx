@@ -991,8 +991,24 @@ export const WorkoutBuilder: React.FC = () => {
             <div className="w-full sm:max-w-xs">
               <IOSSegmentedControl
                 options={[
-                  { value: 'zwo', label: 'Zwift (.ZWO XML)' },
-                  { value: 'mrc', label: 'Garmin/Wahoo (.MRC)' }
+                  {
+                    value: 'zwo',
+                    label: (
+                      <>
+                        <span className="sm:hidden">Zwift (.ZWO)</span>
+                        <span className="hidden sm:inline">Zwift (.ZWO XML)</span>
+                      </>
+                    )
+                  },
+                  {
+                    value: 'mrc',
+                    label: (
+                      <>
+                        <span className="sm:hidden">Garmin (.MRC)</span>
+                        <span className="hidden sm:inline">Garmin/Wahoo (.MRC)</span>
+                      </>
+                    )
+                  }
                 ]}
                 value={exportFormat}
                 onChange={(v) => setExportFormat(v as any)}

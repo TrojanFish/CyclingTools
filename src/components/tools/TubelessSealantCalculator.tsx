@@ -215,10 +215,42 @@ export const TubelessSealantCalculator: React.FC = () => {
         actions={
           <IOSSegmentedControl
             options={[
-              { value: 'road28', label: language === 'zh-TW' ? '公路 28c' : '公路 28c' },
-              { value: 'road32', label: language === 'zh-TW' ? '全路況 32c' : '全路况 32c' },
-              { value: 'gravel40', label: 'Gravel 40c' },
-              { value: 'mtb225', label: language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"' },
+              {
+                value: 'road28',
+                label: (
+                  <>
+                    <span className="sm:hidden">28c</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '公路 28c' : '公路 28c'}</span>
+                  </>
+                )
+              },
+              {
+                value: 'road32',
+                label: (
+                  <>
+                    <span className="sm:hidden">32c</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '全路況 32c' : '全路况 32c'}</span>
+                  </>
+                )
+              },
+              {
+                value: 'gravel40',
+                label: (
+                  <>
+                    <span className="sm:hidden">40c</span>
+                    <span className="hidden sm:inline">Gravel 40c</span>
+                  </>
+                )
+              },
+              {
+                value: 'mtb225',
+                label: (
+                  <>
+                    <span className="sm:hidden">2.25"</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '山地 2.25"' : '山地 2.25"'}</span>
+                  </>
+                )
+              },
             ]}
             value={activePreset || ''}
             onChange={(val) => handlePreset(val as any)}

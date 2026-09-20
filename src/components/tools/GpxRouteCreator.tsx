@@ -587,8 +587,28 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <IOSSegmentedControl
           options={[
-            { id: 'route_studio', value: 'route_studio', label: '航迹地图与编辑', icon: MapPin },
-            { id: 'pacing_engine', value: 'pacing_engine', label: '风阻与体能策略引擎 (Best Bike Split)', icon: Zap }
+            {
+              id: 'route_studio',
+              value: 'route_studio',
+              label: (
+                <>
+                  <span className="sm:hidden">航迹编辑</span>
+                  <span className="hidden sm:inline">航迹地图与编辑</span>
+                </>
+              ),
+              icon: MapPin
+            },
+            {
+              id: 'pacing_engine',
+              value: 'pacing_engine',
+              label: (
+                <>
+                  <span className="sm:hidden">BBS 策略</span>
+                  <span className="hidden sm:inline">风阻与体能策略引擎 (Best Bike Split)</span>
+                </>
+              ),
+              icon: Zap
+            }
           ]}
           value={activeTab}
           onChange={(val) => setActiveTab(val as 'route_studio' | 'pacing_engine')}

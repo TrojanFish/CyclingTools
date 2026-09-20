@@ -369,9 +369,33 @@ export const TirePressureCalculator: React.FC = () => {
                     </span>
                     <IOSSegmentedControl
                       options={[
-                        { id: 'front', label: '车头/前叉包' },
-                        { id: 'frame', label: '车架包均衡' },
-                        { id: 'rear', label: '后鞍包/后驮包' }
+                        {
+                          id: 'front',
+                          label: (
+                            <>
+                              <span className="sm:hidden">前叉包</span>
+                              <span className="hidden sm:inline">车头/前叉包</span>
+                            </>
+                          )
+                        },
+                        {
+                          id: 'frame',
+                          label: (
+                            <>
+                              <span className="sm:hidden">车架包</span>
+                              <span className="hidden sm:inline">车架包均衡</span>
+                            </>
+                          )
+                        },
+                        {
+                          id: 'rear',
+                          label: (
+                            <>
+                              <span className="sm:hidden">后鞍包</span>
+                              <span className="hidden sm:inline">后鞍包/后驮包</span>
+                            </>
+                          )
+                        }
                       ]}
                       value={luggageBias}
                       onChange={(val) => setLuggageBias(val as any)}

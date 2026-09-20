@@ -2270,8 +2270,24 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 <div className="w-full sm:max-w-xs">
                   <IOSSegmentedControl
                     options={[
-                      { value: 'mmp_curve', label: language === 'zh-TW' ? 'MMP 峰值與天梯' : 'MMP 峰值与天梯' },
-                      { value: 'w_balance', label: language === 'zh-TW' ? "W' Balance 耗竭模型" : "W' Balance 耗竭模型" }
+                      {
+                        value: 'mmp_curve',
+                        label: (
+                          <>
+                            <span className="sm:hidden">{language === 'zh-TW' ? 'MMP 天梯' : 'MMP 天梯'}</span>
+                            <span className="hidden sm:inline">{language === 'zh-TW' ? 'MMP 峰值與天梯' : 'MMP 峰值与天梯'}</span>
+                          </>
+                        )
+                      },
+                      {
+                        value: 'w_balance',
+                        label: (
+                          <>
+                            <span className="sm:hidden">W' 耗竭</span>
+                            <span className="hidden sm:inline">{language === 'zh-TW' ? "W' Balance 耗竭模型" : "W' Balance 耗竭模型"}</span>
+                          </>
+                        )
+                      }
                     ]}
                     value={mmpSubView}
                     onChange={(v) => setMmpSubView(v as any)}
@@ -2299,7 +2315,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                             mmpShow90d ? 'bg-white dark:bg-[#2C2C2E] text-ios-orange shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                           }`}
                         >
-                          90天包络
+                          <span className="sm:hidden">90天</span>
+                          <span className="hidden sm:inline">90天包络</span>
                         </button>
                         <button
                           type="button"
@@ -2308,7 +2325,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                             mmpShowAllTime ? 'bg-white dark:bg-[#2C2C2E] text-ios-red shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                           }`}
                         >
-                          历史最佳
+                          <span className="sm:hidden">最佳</span>
+                          <span className="hidden sm:inline">历史最佳</span>
                         </button>
                       </div>
                     )}
@@ -2322,7 +2340,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           mmpUnit === 'wkg' ? 'bg-white dark:bg-[#2C2C2E] text-ios-purple shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
-                        W/kg (推重比)
+                        <span className="sm:hidden">W/kg</span>
+                        <span className="hidden sm:inline">W/kg (推重比)</span>
                       </button>
                       <button
                         type="button"
@@ -2331,7 +2350,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           mmpUnit === 'watts' ? 'bg-white dark:bg-[#2C2C2E] text-ios-purple shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
-                        Watts (瓦特)
+                        <span className="sm:hidden">瓦特</span>
+                        <span className="hidden sm:inline">Watts (瓦特)</span>
                       </button>
                     </div>
 
