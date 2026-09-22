@@ -78,7 +78,7 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* ── 1. Top Status Row (Strictly 1 single horizontal row on mobile and desktop) ── */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-1.5 min-w-0">
         {/* Left: Readiness Score Tag */}
         <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold tracking-wide shrink-0 ${
           data ? TINT_BADGE[data.readinessTint] : 'bg-ios-mint/10 text-ios-mint border-ios-mint/20'
@@ -87,17 +87,22 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
             data ? TINT_DOT[data.readinessTint] : 'bg-ios-mint'
           }`} />
           <span>
-            {data ? `${data.readinessScore}分 · ${data.readinessLabel}` : (isTw ? '出騎適宜度計算中...' : '出骑适宜度计算中...')}
+            {data ? (
+              <>
+                <span className="sm:hidden">{data.readinessScore}分 · {data.readinessLabel.replace('出骑时机', '').replace('骑行', '')}</span>
+                <span className="hidden sm:inline">{data.readinessScore}分 · {data.readinessLabel}</span>
+              </>
+            ) : (isTw ? '適宜度計算中' : '适宜度计算中')}
           </span>
         </span>
 
-        {/* Right: Location Search Pill + Quick GPS Re-center + Refresh (All on single row) */}
-        <div className="flex items-center gap-1.5 min-w-0">
+        {/* Right: Location Search Pill + Quick GPS Re-center + Refresh (Shrink-proof single row) */}
+        <div className="flex items-center gap-1 shrink-0 min-w-0">
           {/* Location Search Trigger Button */}
           <button
             type="button"
             onClick={() => setIsSearchModalOpen(true)}
-            className="h-7 pl-2 pr-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1 transition apple-touch max-w-[140px] sm:max-w-[200px]"
+            className="h-7 pl-2 pr-1.5 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1 transition apple-touch max-w-[100px] xs:max-w-[125px] sm:max-w-[180px] min-w-0"
             title={isTw ? '點擊搜尋城市或區縣' : '点击搜索城市或区县'}
             aria-label={isTw ? '搜尋地點' : '搜索地点'}
           >
@@ -137,9 +142,9 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
       </div>
 
       {/* ── 2. Headline & Dynamic Advice (Mirrors Title & Vehicle Info) ── */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display flex items-center gap-2">
-          <span className="truncate">{selectedLocation.name} · {cur?.weatherLabel || (isTw ? '環境研判' : '环境研判')}</span>
+      <div className="min-w-0">
+        <h1 className="text-lg sm:text-xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display flex items-center gap-1.5 flex-wrap min-w-0">
+          <span className="truncate max-w-[210px] sm:max-w-none">{selectedLocation.name} · {cur?.weatherLabel || (isTw ? '環境研判' : '环境研判')}</span>
           {selectedLocation.isGps && (
             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-mint/15 text-ios-mint font-semibold border border-ios-mint/30 shrink-0">
               GPS 当地

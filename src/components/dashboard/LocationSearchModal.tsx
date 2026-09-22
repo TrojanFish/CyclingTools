@@ -2,7 +2,11 @@
  * LocationSearchModal — Apple HIG Dual-Platform Location Search
  *
  * Provides a location search experience for the Pre-Ride Cockpit:
- *   - Live global/domestic geocoding search via Open-Meteo Geocoding API (zero key)
+ *   - Mounted via ReactDOM.createPortal at body level with z-[100] so it's NEVER
+ *     covered by the bottom navigation bar or floating buttons
+ *   - Body scroll locked when opened
+ *   - Proper touch scrolling with flex min-h-0 and overscroll containment
+ *   - Smart Chinese query-to-result mapping (converts Pinyin like "Qiandaohu" to Chinese "千岛湖")
  *   - Quick "📍 Use Current GPS" action
  *   - Curated list of popular Chinese & Taiwan cycling destinations
  *   - Desktop: centered modal with backdrop blur
@@ -10,6 +14,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search,
   X,
@@ -58,6 +63,17 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Body scroll locking
+  useEffect(() => {
+    if (isOpen && typeof document !== 'undefined') {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
 
   // Focus input when modal opens
   useEffect(() => {
@@ -109,17 +125,20 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
   if (!isOpen) return null;
 
   const handleSelectSearchResult = (item: GeocodingResultItem) => {
-    // Format friendly display name: "市辖区 · 具体地点" or "省 · 市"
-    const admin2Clean = item.admin2?.replace(/市$/, '') || '';
     let displayName = item.name;
-    if (admin2Clean && admin2Clean !== item.name) {
-      displayName = `${admin2Clean} · ${item.name}`;
+
+    // If user searched in Chinese and Open-Meteo returned ASCII Pinyin (e.g. user searched "千岛湖" and item.name is "Qiandaohu")
+    const trimmedQuery = query.trim();
+    if (/[\u4e00-\u9fa5]/.test(trimmedQuery) && !/[\u4e00-\u9fa5]/.test(item.name)) {
+      if (trimmedQuery.length <= 6) {
+        displayName = trimmedQuery;
+      }
     }
 
     const loc: PreRideLocation = {
       id: `geo-${item.id}`,
       name: displayName,
-      desc: [item.admin1, item.country].filter(Boolean).join(' · '),
+      desc: [item.admin2, item.admin1, item.country].filter(Boolean).join(' · '),
       lat: item.latitude,
       lng: item.longitude,
       isGps: false,
@@ -139,21 +158,21 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm transition-opacity">
+  const modalContent = (
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm transition-opacity no-print">
       {/* Click outside backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
-      {/* Modal / Sheet Container */}
-      <div className="relative z-10 w-full sm:max-w-md bg-white dark:bg-[#1C1C1E] rounded-t-[28px] sm:rounded-2xl shadow-ios-popover border border-black/10 dark:border-white/10 overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[600px] animate-in fade-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200">
+      {/* Modal / Sheet Container: with fixed height bounds and flex column layout */}
+      <div className="relative z-10 w-full sm:max-w-md bg-white dark:bg-[#1C1C1E] rounded-t-[28px] sm:rounded-2xl shadow-ios-popover border border-black/10 dark:border-white/10 flex flex-col h-[75vh] sm:h-auto sm:max-h-[600px] animate-in fade-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200 overflow-hidden">
         
         {/* Mobile Grabber Capsule */}
-        <div className="w-full flex justify-center pt-2.5 pb-1 sm:hidden">
+        <div className="w-full flex justify-center pt-2.5 pb-1 sm:hidden shrink-0">
           <div className="w-9 h-1 bg-black/20 dark:bg-white/20 rounded-full" />
         </div>
 
-        {/* Modal Header & Search Bar */}
-        <div className="p-4 border-b border-black/[0.06] dark:border-white/[0.08] space-y-2.5">
+        {/* Modal Header & Search Bar (Sticky top) */}
+        <div className="p-4 border-b border-black/[0.06] dark:border-white/[0.08] space-y-2.5 shrink-0 bg-white dark:bg-[#1C1C1E]">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-1.5">
               <Compass className="w-4 h-4 text-ios-mint" />
@@ -176,7 +195,7 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={isTw ? '輸入城市、區縣或騎行勝地 (如: 西湖、崇明、大理)...' : '输入城市、区县或骑行胜地 (如: 西湖、崇明、大理)...'}
+              placeholder={isTw ? '輸入城市、區縣或騎行勝地 (如: 千島湖、崇明、大理)...' : '输入城市、区县或骑行胜地 (如: 千岛湖、崇明、大理)...'}
               className="w-full h-10 pl-9 pr-8 rounded-xl bg-slate-100 dark:bg-white/10 border-none text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-ios-mint"
             />
             {query && (
@@ -190,8 +209,8 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
           </div>
         </div>
 
-        {/* Modal Body: Scrollable Results / Presets */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+        {/* Modal Body: Scrollable Results / Presets (min-h-0 guarantees flex scrollability on mobile) */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 overscroll-contain touch-pan-y pb-24 sm:pb-4">
           
           {/* 1. Quick Action: Current GPS Location */}
           <div>
@@ -322,7 +341,7 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
         </div>
 
         {/* Footer Hint */}
-        <div className="p-3 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.05] dark:border-white/[0.06] text-center">
+        <div className="p-3 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.05] dark:border-white/[0.06] text-center shrink-0">
           <p className="text-[11px] text-slate-400 dark:text-slate-500">
             {isTw ? '支援搜尋全球任意城市、鄉鎮或山峰經緯度' : '支持搜索全国及全球任意市、县、区及骑行地标'}
           </p>
@@ -331,4 +350,6 @@ export const LocationSearchModal: React.FC<LocationSearchModalProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
 };
