@@ -144,25 +144,33 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
       {/* ── 2. Headline & Dynamic Advice (Mirrors Title & Vehicle Info) ── */}
       <div className="min-w-0">
         <h1 className="text-lg sm:text-xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display flex items-center gap-1.5 flex-wrap min-w-0">
-          <span className="truncate max-w-[210px] sm:max-w-none">{selectedLocation.name} · {cur?.weatherLabel || (isTw ? '環境研判' : '环境研判')}</span>
+          <span className="truncate max-w-[220px] sm:max-w-none">{selectedLocation.name} · {cur?.weatherLabel || (isTw ? '環境研判' : '环境研判')}</span>
           {selectedLocation.isGps && (
             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-mint/15 text-ios-mint font-semibold border border-ios-mint/30 shrink-0">
               GPS 当地
             </span>
           )}
-          {data && (
-            <span className={`text-base font-bold tabular-nums font-mono shrink-0 ${TINT_SCORE_TEXT[data.readinessTint]}`}>
-              ({data.readinessScore}分)
-            </span>
-          )}
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">{isTw ? '穿著: ' : '穿衣: '}</span>
-          {data?.gearAdvice || (isTw ? '舒適排汗騎行服' : '舒适排汗骑行服')}
-          <span className="mx-1.5 text-slate-300 dark:text-slate-600">·</span>
-          <span className="font-semibold text-slate-700 dark:text-slate-300">{isTw ? '補水: ' : '补水: '}</span>
-          {data?.hydrationAdvice || (isTw ? '每小時約 500ml' : '每小时约 500ml')}
-        </p>
+
+        {/* Equipment & Hydration Dual-Row Badges (Zero Squeezing on Mobile) */}
+        <div className="mt-1.5 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="px-1.5 py-0.5 rounded-md bg-black/5 dark:bg-white/10 font-bold text-[10px] text-slate-700 dark:text-slate-300 shrink-0">
+              {isTw ? '裝備' : '装备'}
+            </span>
+            <span className="truncate text-slate-600 dark:text-slate-400 text-xs">
+              {data?.gearAdvice || (isTw ? '舒適排汗騎行服' : '舒适排汗骑行服')}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="px-1.5 py-0.5 rounded-md bg-ios-blue/10 dark:bg-ios-blue/20 font-bold text-[10px] text-ios-blue shrink-0">
+              {isTw ? '補水' : '补水'}
+            </span>
+            <span className="truncate text-slate-600 dark:text-slate-400 text-xs">
+              {data?.hydrationAdvice || (isTw ? '每小時約 500ml' : '每小时约 500ml')}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* ── 3. 6-Grid Tactical Metrics (2 cols mobile, 3 cols tablet, 6 cols desktop — identical to Post-Ride debrief) ── */}
