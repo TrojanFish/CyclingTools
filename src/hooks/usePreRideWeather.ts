@@ -402,13 +402,19 @@ export async function reverseGeocode(lat: number, lng: number): Promise<{ name: 
     );
     if (!res.ok) throw new Error('Geocode failed');
     const d = await res.json();
-    const city = d.city || d.locality || '';
+    const city = (d.city || '').replace(/市$/, '');
     const district = d.locality || '';
     const province = d.principalSubdivision || '';
 
-    const name = city || district || '当地位置';
-    const subParts = [province, district].filter(p => p && p !== name);
-    const desc = subParts.length > 0 ? `${subParts.join(' · ')} (GPS)` : 'GPS 精准定位';
+    // If both city and district are available, combine for high precision: e.g. "杭州 · 拱墅区"
+    let name = '当地位置';
+    if (city && district && city !== district) {
+      name = `${city} · ${district}`;
+    } else if (city || district) {
+      name = city || district;
+    }
+
+    const desc = province ? `${province} · GPS 精准定位` : 'GPS 精准定位';
     return { name, desc };
   } catch {
     const nearest = findNearestLocation(lat, lng);

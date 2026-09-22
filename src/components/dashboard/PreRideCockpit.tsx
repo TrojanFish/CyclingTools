@@ -3,28 +3,31 @@
  *
  * Slim, unified pre-ride weather dashboard strictly aligned with the Post-Ride
  * debrief card:
+ *   - Strictly 1 single row for top status bar (badge + search location button + GPS + refresh)
+ *   - Precise location display (City + District, e.g. "杭州 · 拱墅区")
+ *   - Global & domestic location search via LocationSearchModal (replaces static dropdown)
  *   - 2 columns on mobile (<640px), 3 on tablet, 6 on desktop (matching Post-Ride debrief)
- *   - Unified height (~380px) to prevent layout jumping upon dual-mode switching
- *   - Zero data redundancy (no duplicate wind/AQI text lines)
+ *   - Unified height (~380px) to eliminate layout shift upon dual-mode switching
+ *   - Zero data redundancy
  *   - 3 single-row action buttons (no awkward line breaks)
  *   - Full Apple HIG compliance
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CloudSun,
   Gauge,
   Dumbbell,
   RefreshCw,
-  MapPin,
   AlertTriangle,
   Navigation,
   ChevronDown,
+  Search,
 } from 'lucide-react';
 import { usePreRideWeather } from '../../hooks/usePreRideWeather';
-import { PRE_RIDE_LOCATIONS } from '../../data/preRideLocations';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { prefetchTool } from '../../utils/toolLoader';
+import { LocationSearchModal } from './LocationSearchModal';
 
 interface PreRideCockpitProps {
   onNavigateTool: (id: string) => void;
@@ -65,115 +68,85 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
     refresh
   } = usePreRideWeather();
 
-  const isLoading = status === 'loading' || status === 'locating';
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === 'current-gps') {
-      requestCurrentLocation();
-      return;
-    }
-    const loc = PRE_RIDE_LOCATIONS.find(l => l.id === e.target.value);
-    if (loc) {
-      setLocation(loc);
-    }
-  };
+  const isLoading = status === 'loading' || status === 'locating';
 
   const cur = data?.current;
   const aq = data?.airQuality;
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      {/* ── 1. Top Tag & Context Metadata Row (mirrors Post-Ride debrief top row) ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Readiness Score Tag */}
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold tracking-wide ${
-            data ? TINT_BADGE[data.readinessTint] : 'bg-ios-mint/10 text-ios-mint border-ios-mint/20'
-          }`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${
-              data ? TINT_DOT[data.readinessTint] : 'bg-ios-mint'
-            }`} />
-            <span>
-              {data ? `${data.readinessScore}分 · ${data.readinessLabel}` : (isTw ? '出騎適宜度計算中...' : '出骑适宜度计算中...')}
-            </span>
+      {/* ── 1. Top Status Row (Strictly 1 single horizontal row on mobile and desktop) ── */}
+      <div className="flex items-center justify-between gap-2">
+        {/* Left: Readiness Score Tag */}
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold tracking-wide shrink-0 ${
+          data ? TINT_BADGE[data.readinessTint] : 'bg-ios-mint/10 text-ios-mint border-ios-mint/20'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${
+            data ? TINT_DOT[data.readinessTint] : 'bg-ios-mint'
+          }`} />
+          <span>
+            {data ? `${data.readinessScore}分 · ${data.readinessLabel}` : (isTw ? '出騎適宜度計算中...' : '出骑适宜度计算中...')}
           </span>
+        </span>
 
-          {/* Current Location & GPS Badge */}
-          <span className="inline-flex items-center gap-1 text-xs text-slate-600 dark:text-slate-300 font-medium">
-            <MapPin className="w-3 h-3 text-ios-mint shrink-0" />
-            <span className="truncate max-w-[120px] sm:max-w-[160px] font-semibold">{selectedLocation.name}</span>
-            {selectedLocation.isGps && (
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-ios-mint/15 text-ios-mint font-semibold border border-ios-mint/30">
-                GPS
-              </span>
-            )}
-          </span>
+        {/* Right: Location Search Pill + Quick GPS Re-center + Refresh (All on single row) */}
+        <div className="flex items-center gap-1.5 min-w-0">
+          {/* Location Search Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setIsSearchModalOpen(true)}
+            className="h-7 pl-2 pr-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1 transition apple-touch max-w-[140px] sm:max-w-[200px]"
+            title={isTw ? '點擊搜尋城市或區縣' : '点击搜索城市或区县'}
+            aria-label={isTw ? '搜尋地點' : '搜索地点'}
+          >
+            <Search className="w-3 h-3 text-ios-mint shrink-0" />
+            <span className="truncate">{selectedLocation.name}</span>
+            <ChevronDown className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+          </button>
 
-          {/* Weather status label */}
-          {cur && (
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono hidden sm:inline">
-              {cur.weatherLabel}
-            </span>
-          )}
-        </div>
-
-        {/* Compact Right Controls: GPS Locate + City Select + Refresh */}
-        <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
-          {/* GPS Locate Button */}
+          {/* GPS Quick Relocate Button */}
           <button
             type="button"
             onClick={requestCurrentLocation}
             disabled={isLoading}
-            className={`h-7 px-2 rounded-lg border text-[11px] font-semibold flex items-center gap-1 transition apple-touch shadow-2xs disabled:opacity-50 ${
+            className={`h-7 w-7 rounded-lg flex items-center justify-center transition apple-touch shrink-0 disabled:opacity-50 ${
               selectedLocation.isGps
-                ? 'bg-ios-mint/15 text-ios-mint border-ios-mint/30'
-                : 'bg-black/5 dark:bg-white/10 border-transparent text-slate-600 dark:text-slate-300 hover:text-ios-mint'
+                ? 'bg-ios-mint/20 text-ios-mint border border-ios-mint/30'
+                : 'bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-ios-mint'
             }`}
-            title={isTw ? '自動取得目前當地位置' : '自动读取当前当地位置'}
+            title={isTw ? '使用目前 GPS 定位' : '使用当前 GPS 精准定位'}
+            aria-label={isTw ? '定位我' : '定位我'}
           >
-            <Navigation className={`w-3 h-3 ${status === 'locating' ? 'animate-spin text-ios-mint' : selectedLocation.isGps ? 'fill-current' : ''}`} />
-            <span>{status === 'locating' ? (isTw ? '定位中' : '定位中') : selectedLocation.isGps ? (isTw ? '當地' : '当地') : (isTw ? '定位' : '定位')}</span>
+            <Navigation className={`w-3.5 h-3.5 ${status === 'locating' ? 'animate-spin text-ios-mint' : selectedLocation.isGps ? 'fill-current' : ''}`} />
           </button>
 
-          {/* City Selector */}
-          <div className="relative">
-            <select
-              value={selectedLocation.isGps ? 'current-gps' : selectedLocation.id}
-              onChange={handleCityChange}
-              className="h-7 pl-2 pr-5 rounded-lg bg-black/5 dark:bg-white/10 border border-transparent hover:border-black/10 dark:hover:border-white/15 text-[11px] font-medium text-slate-700 dark:text-slate-200 focus:outline-none appearance-none cursor-pointer apple-touch"
-              aria-label={isTw ? '切換城市' : '切换城市'}
-            >
-              {selectedLocation.isGps && (
-                <option value="current-gps">📍 {selectedLocation.name} ({isTw ? '目前定位' : '当前定位'})</option>
-              )}
-              {PRE_RIDE_LOCATIONS.map(loc => (
-                <option key={loc.id} value={loc.id}>
-                  {isTw && loc.nameTw ? loc.nameTw : loc.name}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-2.5 h-2.5 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          </div>
-
-          {/* Refresh Button */}
+          {/* Weather Refresh Button */}
           <button
             type="button"
             onClick={refresh}
             disabled={isLoading}
-            className="h-7 w-7 rounded-lg bg-black/5 dark:bg-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-ios-mint transition apple-touch disabled:opacity-40"
+            className="h-7 w-7 rounded-lg bg-black/5 dark:bg-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-ios-mint transition apple-touch shrink-0 disabled:opacity-40"
             title={isTw ? '刷新氣象數據' : '刷新气象数据'}
+            aria-label={isTw ? '刷新' : '刷新'}
           >
-            <RefreshCw className={`w-3 h-3 ${isLoading ? 'animate-spin text-ios-mint' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-ios-mint' : ''}`} />
           </button>
         </div>
       </div>
 
-      {/* ── 2. Headline & Dynamic Advice (mirrors Title & Vehicle Info) ── */}
+      {/* ── 2. Headline & Dynamic Advice (Mirrors Title & Vehicle Info) ── */}
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display flex items-center gap-2">
-          <span>{data?.readinessLabel ? `${data.readinessLabel} · ${cur?.weatherLabel || '适宜出骑'}` : (isTw ? '今日騎行氣象' : '今日骑行气象')}</span>
+          <span className="truncate">{selectedLocation.name} · {cur?.weatherLabel || (isTw ? '環境研判' : '环境研判')}</span>
+          {selectedLocation.isGps && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-mint/15 text-ios-mint font-semibold border border-ios-mint/30 shrink-0">
+              GPS 当地
+            </span>
+          )}
           {data && (
-            <span className={`text-base font-bold tabular-nums font-mono ${TINT_SCORE_TEXT[data.readinessTint]}`}>
+            <span className={`text-base font-bold tabular-nums font-mono shrink-0 ${TINT_SCORE_TEXT[data.readinessTint]}`}>
               ({data.readinessScore}分)
             </span>
           )}
@@ -316,6 +289,16 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
           <span className="truncate">{error}</span>
         </div>
       )}
+
+      {/* Location Search Modal / Bottom Sheet */}
+      <LocationSearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        currentLocation={selectedLocation}
+        onSelectLocation={setLocation}
+        onRequestGps={requestCurrentLocation}
+        isGpsLocating={status === 'locating'}
+      />
     </div>
   );
 };
