@@ -36,6 +36,7 @@ import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 import { generateLatestRideSocialPoster, LatestRidePosterData } from '../utils/shareCardGenerators';
 import { LatestRideShareModal } from './common/LatestRideShareModal';
 import { prefetchTool } from '../utils/toolLoader';
+import { PreRideCockpit } from './dashboard/PreRideCockpit';
 
 const ICONS_MAP: Record<string, React.ElementType> = {
   Zap,
@@ -187,6 +188,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
   const [posterData, setPosterData] = useState<LatestRidePosterData | null>(null);
 
+  // Dual-mode Hero Card: 'pre-ride' (weather cockpit) | 'post-ride' (ride debrief)
+  // Default to pre-ride — riders typically open the app before heading out
+  type HeroMode = 'pre-ride' | 'post-ride';
+  const [heroMode, setHeroMode] = useState<HeroMode>(() => {
+    try {
+      const saved = localStorage.getItem('solorider_hero_mode');
+      return saved === 'pre-ride' || saved === 'post-ride' ? saved : 'pre-ride';
+    } catch {
+      return 'pre-ride';
+    }
+  });
+
+  const handleHeroModeChange = (mode: string) => {
+    setHeroMode(mode as HeroMode);
+    try { localStorage.setItem('solorider_hero_mode', mode); } catch { /* ignore quota errors */ }
+  };
+
   const handleOpenSocialPoster = async () => {
     if (!latestStats) return;
     setIsGeneratingPoster(true);
@@ -270,143 +288,196 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* Dynamic Keynote-Style Hero Card: Latest Ride Tactical Debrief */}
-      <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20 shadow-ios-sm">
-        <div className="absolute -right-16 -top-16 w-80 h-80 bg-ios-blue/10 dark:bg-ios-blue/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute right-32 bottom-0 w-64 h-64 bg-ios-purple/10 dark:bg-ios-purple/10 rounded-full blur-2xl pointer-events-none" />
+      {/* Dual-Mode Hero Card: Pre-Ride Decision Cockpit ↔ Post-Ride Tactical Debrief */}
+      <div className={`relative overflow-hidden rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] shadow-ios-sm transition-all duration-500 ${
+        heroMode === 'pre-ride'
+          ? 'bg-gradient-to-br from-white via-[#F8FFFB] to-green-50/30 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-green-950/10'
+          : 'bg-gradient-to-br from-white via-[#F8F9FB] to-blue-50/40 dark:from-[#1C1C1E] dark:via-[#161618] dark:to-blue-950/20'
+      }`}>
+        {/* Background ambient glow */}
+        <div className={`absolute -right-16 -top-16 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-colors duration-500 ${
+          heroMode === 'pre-ride' ? 'bg-ios-green/10 dark:bg-ios-green/12' : 'bg-ios-blue/10 dark:bg-ios-blue/15'
+        }`} />
+        <div className={`absolute right-32 bottom-0 w-64 h-64 rounded-full blur-2xl pointer-events-none transition-colors duration-500 ${
+          heroMode === 'pre-ride' ? 'bg-ios-mint/10 dark:bg-ios-mint/8' : 'bg-ios-purple/10 dark:bg-ios-purple/10'
+        }`} />
 
         <div className="relative z-10 space-y-3 sm:space-y-4">
-          {/* Top Tag & Context Metadata */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-bold tracking-wide">
-                <span className="w-1.5 h-1.5 rounded-full bg-ios-blue" />
-                <span>{language === 'zh-TW' ? '最新騎行極客深度戰報' : '最新骑行极客深度战报'}</span>
-              </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                {latestStats?.dateStr}
-              </span>
-              {!latestStats?.isRealData && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium">
-                  {language === 'zh-TW' ? '演示樣本' : '演示样本'}
-                </span>
-              )}
-            </div>
-
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              <span>{language === 'zh-TW' ? '戰術屬性: ' : '战术属性: '}</span>
-              <strong className={latestStats?.tacticalTextColor}>{latestStats?.tacticalPace}</strong>
-            </div>
+          {/* Dual-mode segmented toggle — sits at the very top of Hero */}
+          <div className="flex items-center justify-between gap-3">
+            <IOSSegmentedControl
+              options={[
+                {
+                  id: 'pre-ride' as const,
+                  icon: CloudSun,
+                  label: (
+                    <>
+                      <span className="sm:hidden">{language === 'zh-TW' ? '出騎決策' : '出骑决策'}</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? '出騎決策羅盤' : '出骑决策罗盘'}</span>
+                    </>
+                  ),
+                },
+                {
+                  id: 'post-ride' as const,
+                  icon: Activity,
+                  label: (
+                    <>
+                      <span className="sm:hidden">{language === 'zh-TW' ? '騎行戰報' : '骑行战报'}</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? '最新騎行戰報' : '最新骑行战报'}</span>
+                    </>
+                  ),
+                },
+              ]}
+              value={heroMode}
+              onChange={handleHeroModeChange}
+              tint={heroMode === 'pre-ride' ? 'mint' : 'blue'}
+              size="md"
+              mobileFullWidth={true}
+            />
           </div>
 
-          {/* Ride Title & Vehicle Info */}
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
-              {latestStats?.name}
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              {latestStats?.sportType} · {language === 'zh-TW' ? '主力戰車: ' : '主力战车: '}{activeBike?.name || '公路战车'}
-            </p>
-          </div>
+          {/* ── PRE-RIDE MODE: Weather Decision Cockpit ──────────────────── */}
+          {heroMode === 'pre-ride' && (
+            <PreRideCockpit onNavigateTool={onSelectTool} />
+          )}
 
-          {/* 6-Grid Tactical Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 pt-0.5">
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
-              <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums font-mono mt-0.5">
-                {latestStats?.distKm} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">km</span>
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                {language === 'zh-TW' ? '均速' : '均速'} {latestStats?.avgSpeed}km/h
-              </div>
-            </div>
+          {/* ── POST-RIDE MODE: Tactical Debrief (existing content) ──────── */}
+          {heroMode === 'post-ride' && (
+            <>
+              {/* Top Tag & Context Metadata */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-bold tracking-wide">
+                    <span className="w-1.5 h-1.5 rounded-full bg-ios-blue" />
+                    <span>{language === 'zh-TW' ? '最新騎行極客深度戰報' : '最新骑行极客深度战报'}</span>
+                  </span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    {latestStats?.dateStr}
+                  </span>
+                  {!latestStats?.isRealData && (
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium">
+                      {language === 'zh-TW' ? '演示樣本' : '演示样本'}
+                    </span>
+                  )}
+                </div>
 
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
-              <div className="text-base sm:text-lg font-bold text-ios-green tabular-nums font-mono mt-0.5">
-                +{latestStats?.eleM} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">m</span>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  <span>{language === 'zh-TW' ? '戰術屬性: ' : '战术属性: '}</span>
+                  <strong className={latestStats?.tacticalTextColor}>{latestStats?.tacticalPace}</strong>
+                </div>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                {language === 'zh-TW' ? '時長' : '时长'} {latestStats?.timeStr}
-              </div>
-            </div>
 
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
-              <div className="text-base sm:text-lg font-bold text-ios-blue tabular-nums font-mono mt-0.5">
-                {latestStats?.np} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">W</span>
+              {/* Ride Title & Vehicle Info */}
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
+                  {latestStats?.name}
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  {latestStats?.sportType} · {language === 'zh-TW' ? '主力戰車: ' : '主力战车: '}{activeBike?.name || '公路战车'}
+                </p>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                AvgP {latestStats?.avgP}W{latestStats?.wKg ? ` · ${latestStats.wKg}W/kg` : ''}
-              </div>
-            </div>
 
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
-              <div className="text-base sm:text-lg font-bold text-ios-purple tabular-nums font-mono mt-0.5">
-                {latestStats?.ifVal}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                VI {latestStats?.vi} · FTP比率
-              </div>
-            </div>
+              {/* 6-Grid Tactical Metrics */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5 pt-0.5">
+                <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '單場里程' : '单场里程'}</div>
+                  <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums font-mono mt-0.5">
+                    {latestStats?.distKm} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">km</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    {language === 'zh-TW' ? '均速' : '均速'} {latestStats?.avgSpeed}km/h
+                  </div>
+                </div>
 
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
-              <div className="text-base sm:text-lg font-bold text-ios-orange tabular-nums font-mono mt-0.5">
-                {latestStats?.tss}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                {language === 'zh-TW' ? '做功' : '做功'} {latestStats?.calories} kcal
-              </div>
-            </div>
+                <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '累計爬升' : '累计爬升'}</div>
+                  <div className="text-base sm:text-lg font-bold text-ios-green tabular-nums font-mono mt-0.5">
+                    +{latestStats?.eleM} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">m</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    {language === 'zh-TW' ? '時長' : '时长'} {latestStats?.timeStr}
+                  </div>
+                </div>
 
-            <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
-              <div className="text-base sm:text-lg font-bold text-ios-mint tabular-nums font-mono mt-0.5">
-                {latestStats?.ef ? latestStats.ef : '--'}
+                <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '標準化 NP' : '标准化 NP'}</div>
+                  <div className="text-base sm:text-lg font-bold text-ios-blue tabular-nums font-mono mt-0.5">
+                    {latestStats?.np} <span className="text-[11px] font-normal text-slate-500 dark:text-slate-400">W</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    AvgP {latestStats?.avgP}W{latestStats?.wKg ? ` · ${latestStats.wKg}W/kg` : ''}
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '強度係數 IF' : '强度系数 IF'}</div>
+                  <div className="text-base sm:text-lg font-bold text-ios-purple tabular-nums font-mono mt-0.5">
+                    {latestStats?.ifVal}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    VI {latestStats?.vi} · FTP比率
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '訓練負荷 TSS' : '训练负荷 TSS'}</div>
+                  <div className="text-base sm:text-lg font-bold text-ios-orange tabular-nums font-mono mt-0.5">
+                    {latestStats?.tss}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    {language === 'zh-TW' ? '做功' : '做功'} {latestStats?.calories} kcal
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/80 dark:bg-[#252528]/80 backdrop-blur-md border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{language === 'zh-TW' ? '效率因子 EF' : '效率因子 EF'}</div>
+                  <div className="text-base sm:text-lg font-bold text-ios-mint tabular-nums font-mono mt-0.5">
+                    {latestStats?.ef ? latestStats.ef : '--'}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` (極${latestStats.maxHr})` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
+                  </div>
+                </div>
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` (極${latestStats.maxHr})` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
+
+              {/* Quick Action Navigation Buttons */}
+              <div className="pt-1.5 flex items-center gap-2 sm:gap-2.5 flex-wrap">
+                <button
+                  onClick={() => onSelectTool('activity-analyzer')}
+                  onMouseEnter={() => prefetchTool('activity-analyzer')}
+                  onTouchStart={() => prefetchTool('activity-analyzer')}
+                  className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:bg-ios-blue/90 active:scale-95 transition apple-touch"
+                >
+                  <Activity className="w-4 h-4" />
+                  <span>{language === 'zh-TW' ? '逐秒回放' : '逐秒回放'}</span>
+                </button>
+
+                <button
+                  onClick={() => onSelectTool('strava-cockpit')}
+                  onMouseEnter={() => prefetchTool('strava-cockpit')}
+                  onTouchStart={() => prefetchTool('strava-cockpit')}
+                  className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/10 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 transition apple-touch text-xs font-semibold shadow-ios-sm"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-ios-blue" />
+                  <span>{language === 'zh-TW' ? '數據羅盤' : '数据罗盘'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleOpenSocialPoster}
+                  disabled={isGeneratingPoster}
+                  className="apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition flex items-center justify-center shadow-2xs shrink-0 disabled:opacity-50"
+                  title={language === 'zh-TW' ? '生成分享海報' : '生成分享海报'}
+                  aria-label={language === 'zh-TW' ? '生成分享海報' : '生成分享海报'}
+                >
+                  <Share2 className={`w-4 h-4 ${isGeneratingPoster ? 'animate-spin text-ios-blue' : ''}`} />
+                </button>
               </div>
-            </div>
-          </div>
-
-          {/* Quick Action Navigation Buttons */}
-          <div className="pt-1.5 flex items-center gap-2 sm:gap-2.5 flex-wrap">
-            <button
-              onClick={() => onSelectTool('activity-analyzer')}
-              onMouseEnter={() => prefetchTool('activity-analyzer')}
-              onTouchStart={() => prefetchTool('activity-analyzer')}
-              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-ios-blue text-white text-xs font-semibold shadow-ios-sm hover:bg-ios-blue/90 active:scale-95 transition apple-touch"
-            >
-              <Activity className="w-4 h-4" />
-              <span>{language === 'zh-TW' ? '逐秒回放' : '逐秒回放'}</span>
-            </button>
-
-            <button
-              onClick={() => onSelectTool('strava-cockpit')}
-              onMouseEnter={() => prefetchTool('strava-cockpit')}
-              onTouchStart={() => prefetchTool('strava-cockpit')}
-              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/10 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 active:scale-95 transition apple-touch text-xs font-semibold shadow-ios-sm"
-            >
-              <LayoutDashboard className="w-4 h-4 text-ios-blue" />
-              <span>{language === 'zh-TW' ? '數據羅盤' : '数据罗盘'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleOpenSocialPoster}
-              disabled={isGeneratingPoster}
-              className="apple-touch w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 hover:text-ios-blue dark:hover:text-ios-blue transition flex items-center justify-center shadow-2xs shrink-0 disabled:opacity-50"
-              title={language === 'zh-TW' ? '生成分享海報' : '生成分享海报'}
-              aria-label={language === 'zh-TW' ? '生成分享海報' : '生成分享海报'}
-            >
-              <Share2 className={`w-4 h-4 ${isGeneratingPoster ? 'animate-spin text-ios-blue' : ''}`} />
-            </button>
-          </div>
+            </>
+          )}
         </div>
       </div>
+
 
       {/* iOS Segmented Navigation & Spotlight Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-2 bg-white/70 dark:bg-[#1C1C1E]/70 backdrop-blur-2xl rounded-2xl border border-black/[0.05] dark:border-white/[0.08] shadow-ios-sm">
