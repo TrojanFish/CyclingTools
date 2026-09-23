@@ -412,7 +412,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Weight & Gear */}
         <IOSCard>
-          <IOSCardHeader title={language === 'zh-TW' ? '騎手與裝備全負重' : '车手与装备全负重'} />
+          <IOSCardHeader title={language === 'zh-TW' ? '車手全負重' : '车手全负重'} />
           <div className="space-y-4 pt-3">
             <div>
               <div className="flex justify-between text-xs mb-1.5">
@@ -461,7 +461,7 @@ export const MtbSuspensionTuner: React.FC = () => {
 
         {/* Riding Style & Feel */}
         <IOSCard>
-          <IOSCardHeader title={language === 'zh-TW' ? '騎行風格與下沉偏好' : '骑行风格与下沉偏好'} />
+          <IOSCardHeader title={language === 'zh-TW' ? '風格與預壓偏好' : '风格与预压偏好'} />
           <div className="space-y-4 pt-3">
             <div>
               <label className="text-xs text-slate-600 dark:text-slate-400 mb-2 block">
@@ -543,7 +543,7 @@ export const MtbSuspensionTuner: React.FC = () => {
 
         {/* Linkage & Frame Leverage */}
         <IOSCard>
-          <IOSCardHeader title={language === 'zh-TW' ? '車架連桿與後輪槓桿比' : '车架连杆与后轮杠杆比'} />
+          <IOSCardHeader title={language === 'zh-TW' ? '後輪槓桿比' : '后轮杠杆比'} />
           <div className="space-y-4 pt-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -648,7 +648,7 @@ export const MtbSuspensionTuner: React.FC = () => {
         <div className="space-y-4">
           <IOSCard>
             <IOSCardHeader
-              title={language === 'zh-TW' ? '前避震前叉設定 (Front Fork)' : '前避震前叉设定 (Front Fork)'}
+              title={language === 'zh-TW' ? '前叉設定' : '前叉设定'}
               action={
                 <span className="text-xs font-mono font-bold text-ios-blue">
                   {forkBrand.toUpperCase()} {forkStanchionMm}mm / {forkTravelMm}mm
@@ -855,7 +855,7 @@ export const MtbSuspensionTuner: React.FC = () => {
         <div className="space-y-4">
           <IOSCard>
             <IOSCardHeader
-              title={language === 'zh-TW' ? '後避震器調校 (Rear Shock)' : '后避震器调校 (Rear Shock)'}
+              title={language === 'zh-TW' ? '後避震調校' : '后避震调校'}
               action={
                 <div className="flex items-center gap-2">
                   <button
@@ -1062,7 +1062,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       {/* Pro Dynamic SAG Graphic Ruler (SVG) */}
       <IOSCard>
         <IOSCardHeader
-          title={language === 'zh-TW' ? '行程標尺與 O 圈' : '行程标尺与 O 圈'}
+          title={language === 'zh-TW' ? '行程與 O 圈' : '行程与 O 圈'}
           subtitle={language === 'zh-TW' ? '動態視覺化避震行程狀態' : '动态可视化避震行程状态'}
         />
         <div className="space-y-4 pt-3">
@@ -1147,7 +1147,7 @@ export const MtbSuspensionTuner: React.FC = () => {
       {/* Pro Trailside Tuning & Diagnostics Playbook */}
       <IOSCard>
         <IOSCardHeader
-          title={language === 'zh-TW' ? '技師疑難排解' : '技师疑难排解'}
+          title={language === 'zh-TW' ? '疑難排解' : '疑难排解'}
           subtitle={language === 'zh-TW' ? '車隊級避震調校疑難排解指南' : '车队级避震调校疑难排解指南'}
         />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-3">

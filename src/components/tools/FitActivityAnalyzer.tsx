@@ -327,7 +327,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       labels: pmcData.map(d => d.date),
       datasets: [
         {
-          label: 'CTL (体能 / 42天均线)',
+          label: language === 'zh-TW' ? 'CTL (體能)' : 'CTL (体能)',
           data: pmcData.map(d => d.ctl),
           borderColor: '#00AFFF',
           backgroundColor: 'transparent',
@@ -337,7 +337,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           yAxisID: 'y'
         },
         {
-          label: 'ATL (疲劳 / 7天均线)',
+          label: language === 'zh-TW' ? 'ATL (疲勞)' : 'ATL (疲劳)',
           data: pmcData.map(d => d.atl),
           borderColor: '#f43f5e',
           backgroundColor: 'transparent',
@@ -347,7 +347,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           yAxisID: 'y'
         },
         {
-          label: 'TSB (竞技状态 / CTL - ATL)',
+          label: language === 'zh-TW' ? 'TSB (狀態)' : 'TSB (状态)',
           data: pmcData.map(d => d.tsb),
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.15)',
@@ -359,7 +359,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         }
       ]
     };
-  }, [pmcData]);
+  }, [pmcData, language]);
 
   // Chart Channel Visibility Toggles
   const [showPower, setShowPower] = useState<boolean>(true);
@@ -1431,7 +1431,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
         tint="red"
         onShare={handleGeneratePoster}
-        shareTitle={language === 'zh-TW' ? '生成碼表活動深度復盤長圖海報' : '生成码表活动深度复盘长图海报'}
+        shareTitle={language === 'zh-TW' ? '生成復盤海報' : '生成复盘海报'}
         actions={
           <div className="flex items-center gap-2">
             <button
@@ -2451,7 +2451,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                          {'最佳平均峰值功率 (MMP) 曲线与天梯标尺'}
+                          {language === 'zh-TW' ? 'MMP 功率曲線' : 'MMP 功率曲线'}
                         </h3>
                         <p className="text-xs text-slate-500 mt-0.5">
                           {'车手在各个标准时段内所维持的最高平均输出（瓦特与推重比对比 Coggan 世界标准）'}
@@ -2491,7 +2491,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     {/* MMP Grid Table */}
                     <div className="pt-2">
                       <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                        全时域秒级阶梯最佳峰值数据表 (High-Resolution MMP Matrix)
+                        {language === 'zh-TW' ? 'MMP 階梯數據表' : 'MMP 阶梯数据表'}
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                         {analysis.mmp.map((m) => {
@@ -2534,7 +2534,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <div className="flex items-center gap-2">
                           <Battery className="w-4 h-4 text-ios-green" />
                           <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                            Skiba (2012) W' Balance 无氧电量动力学模型
+                            {language === 'zh-TW' ? "W' Balance 無氧電量" : "W' Balance 无氧电量"}
                           </h3>
                         </div>
                         <p className="text-xs text-slate-500 mt-0.5">
@@ -2813,8 +2813,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <TrendingUp className="w-5 h-5 text-ios-blue" />
                       <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                         {language === 'zh-TW'
-                          ? 'PMC 運動表現管理模型 (CTL / ATL / TSB)'
-                          : 'PMC 运动表现管理模型 (CTL / ATL / TSB)'}
+                          ? '體能管理模型 (PMC)'
+                          : '体能管理模型 (PMC)'}
                       </h3>
                       <span className="px-2 py-0.5 rounded-full text-[11px] font-mono bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
                         {pmcDataSource === 'local_history' ? 'Local-First 真实时序' : 'Bannister EWMA 模拟'}

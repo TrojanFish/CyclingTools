@@ -484,8 +484,8 @@ export const GroupRideSimulator: React.FC = () => {
               <div className="w-full sm:w-auto">
                 <IOSSegmentedControl
                   options={[
-                    { value: 'ttt_worldtour', label: '世巡赛 40km TTT' },
-                    { value: 'ttt_regional', label: '俱乐部 25km TTT' }
+                    { value: 'ttt_worldtour', label: '世巡赛 TTT (40km)' },
+                    { value: 'ttt_regional', label: '俱乐部 TTT (25km)' }
                   ]}
                   value={activePreset === 'ttt_worldtour' || activePreset === 'ttt_regional' ? activePreset : ''}
                   onChange={(v) => applyPreset(v as any)}
@@ -496,7 +496,7 @@ export const GroupRideSimulator: React.FC = () => {
               <div className="w-full sm:w-auto">
                 <IOSSegmentedControl
                   options={[
-                    { value: 'peloton_standard', label: '标准大组团骑 80km' }
+                    { value: 'peloton_standard', label: '大组团骑 (80km)' }
                   ]}
                   value={activePreset === 'peloton_standard' ? 'peloton_standard' : ''}
                   onChange={(v) => applyPreset(v as any)}
@@ -553,7 +553,7 @@ export const GroupRideSimulator: React.FC = () => {
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
-              title={mode === 'ttt' ? 'TTT 赛道与极限节奏参数' : '编队巡航与环境设定'}
+              title={mode === 'ttt' ? 'TTT 节奏与赛道' : '巡航与环境设定'}
               icon={Sliders}
               iconColor="mint"
               action={
@@ -902,8 +902,8 @@ export const GroupRideSimulator: React.FC = () => {
             <IOSCardHeader
               title={
                 mode === 'ttt'
-                  ? 'TTT 编队极限放电: W\' 无氧电池动态消耗曲线'
-                  : '全员 W\' 无氧能量储备消耗曲线 (W\' Balance %)'
+                  ? "W' 动态消耗曲线"
+                  : "W' 能量储备消耗曲线"
               }
               icon={TrendingUp}
               iconColor="mint"
@@ -947,7 +947,7 @@ export const GroupRideSimulator: React.FC = () => {
           {/* Rider Survival Analysis Summary */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
             <IOSCardHeader
-              title={mode === 'ttt' ? 'TTT 战术角色履职与体能负载评估' : '团队战术与体能负荷分析'}
+              title={mode === 'ttt' ? '战术与体能评估' : '战术与负荷分析'}
               icon={Shield}
               iconColor="mint"
               action={

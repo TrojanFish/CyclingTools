@@ -60,9 +60,9 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: true,
     selectedSpecIndex: 1,
     specs: [
-      { label: '修身普通骑行服 (相比宽松风衣)', weightG: 0, baseWatts40: 4.0, refPrice: 200, note: '消除衣物兜风鼓包，风洞实测省 ~4W' },
-      { label: '贴身破风竞技分体服', weightG: 0, baseWatts40: 7.5, refPrice: 450, note: '手臂与肩部采用低风阻导流面料，实测省 ~7.5W' },
-      { label: '顶级破风一体连体服 (Skinsuit)', weightG: 0, baseWatts40: 11.0, refPrice: 1500, note: '无接缝极致贴合，职业风洞黄金升级，省 ~11W' },
+      { label: '修身骑行服', weightG: 0, baseWatts40: 4.0, refPrice: 200, note: '相比宽松风衣，消除衣物兜风鼓包，风洞实测省 ~4W' },
+      { label: '破风分体服', weightG: 0, baseWatts40: 7.5, refPrice: 450, note: '手臂与肩部采用低风阻导流面料，实测省 ~7.5W' },
+      { label: '破风连体服 (Skinsuit)', weightG: 0, baseWatts40: 11.0, refPrice: 1500, note: '无接缝极致贴合，职业风洞黄金升级，省 ~11W' },
     ]
   },
   {
@@ -75,9 +75,9 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: true,
     selectedSpecIndex: 1,
     specs: [
-      { label: '乳胶内胎 Latex (相比普通丁基胶)', weightG: 80, baseWatts40: 2.2, refPrice: 120, note: '滞后损失小，路感柔和，滚阻省 ~2.2W' },
-      { label: '超轻 TPU 内胎 (28g-36g 对装)', weightG: 140, baseWatts40: 3.2, refPrice: 160, note: '极致减重 140g 旋转质量，滚阻省 ~3.2W' },
-      { label: '无内胎系统 Tubeless + 顶级真空胎', weightG: 180, baseWatts40: 4.8, refPrice: 900, note: '免除内胎摩擦，极低滚阻兼顾防扎，省 ~4.8W' },
+      { label: '乳胶内胎 (Latex)', weightG: 80, baseWatts40: 2.2, refPrice: 120, note: '相比普通丁基胶滞后损失小，路感柔和，滚阻省 ~2.2W' },
+      { label: '超轻 TPU 内胎', weightG: 140, baseWatts40: 3.2, refPrice: 160, note: '28g-36g 对装，极致减重 140g 旋转质量，滚阻省 ~3.2W' },
+      { label: '真空胎系统 (Tubeless)', weightG: 180, baseWatts40: 4.8, refPrice: 900, note: '免除内胎摩擦，极低滚阻兼顾防扎，省 ~4.8W' },
     ]
   },
   {
@@ -90,9 +90,9 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: true,
     selectedSpecIndex: 1,
     specs: [
-      { label: '轻量半透气综合破风盔', weightG: 0, baseWatts40: 3.0, refPrice: 450, note: '兼顾散热与正面破风导流，省 ~3W' },
-      { label: '全破风气动公路盔 (如 Evade/Utopia)', weightG: -10, baseWatts40: 5.0, refPrice: 1200, note: '针对头部正面高风压区优化，省 ~5W' },
-      { label: '封闭式计时 TT 气动水滴头盔', weightG: -60, baseWatts40: 8.5, refPrice: 2200, note: '后部气流平滑顺延背部，极致省 ~8.5W' },
+      { label: '半透气破风盔', weightG: 0, baseWatts40: 3.0, refPrice: 450, note: '兼顾散热与正面破风导流，省 ~3W' },
+      { label: '全气动破风盔', weightG: -10, baseWatts40: 5.0, refPrice: 1200, note: '如 Evade/Utopia，针对头部正面高风压区优化，省 ~5W' },
+      { label: 'TT 计时水滴盔', weightG: -60, baseWatts40: 8.5, refPrice: 2200, note: '后部气流平滑顺延背部，极致省 ~8.5W' },
     ]
   },
   {
@@ -105,9 +105,9 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: true,
     selectedSpecIndex: 1,
     specs: [
-      { label: '38mm 轻量爬坡碳轮 (相比铝轮)', weightG: 400, baseWatts40: 3.5, refPrice: 3200, note: '大减重适合山地爬坡，平路气动省 ~3.5W' },
-      { label: '50mm 全能综合框高碳轮 (破风兼顾侧风)', weightG: 280, baseWatts40: 6.5, refPrice: 4200, note: '黄金综合高度，平路巡航利器，省 ~6.5W' },
-      { label: '60mm+ 高框平路破风巡航轮组', weightG: 120, baseWatts40: 9.0, refPrice: 6500, note: '大深框破风惯性极佳，平路高速省 ~9W' },
+      { label: '38mm 爬坡碳轮', weightG: 400, baseWatts40: 3.5, refPrice: 3200, note: '相比铝轮大减重适合山地爬坡，平路气动省 ~3.5W' },
+      { label: '50mm 综合碳轮', weightG: 280, baseWatts40: 6.5, refPrice: 4200, note: '破风兼顾侧风，黄金综合高度，平路巡航利器，省 ~6.5W' },
+      { label: '60mm+ 破风碳轮', weightG: 120, baseWatts40: 9.0, refPrice: 6500, note: '大深框破风惯性极佳，平路高速省 ~9W' },
     ]
   },
   {
@@ -120,8 +120,8 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: true,
     selectedSpecIndex: 1,
     specs: [
-      { label: '气动扁平分体碳弯把', weightG: 50, baseWatts40: 2.0, refPrice: 500, note: '上把位机翼扁平截面，减少把前风阻 ~2W' },
-      { label: '一体式全内走线气动碳把组', weightG: 90, baseWatts40: 3.8, refPrice: 1200, note: '隐藏全部外露线管，车头迎风面极度纯净，省 ~3.8W' },
+      { label: '分体气动碳把', weightG: 50, baseWatts40: 2.0, refPrice: 500, note: '上把位机翼扁平截面，减少把前风阻 ~2W' },
+      { label: '一体全内走线碳把', weightG: 90, baseWatts40: 3.8, refPrice: 1200, note: '隐藏全部外露线管，车头迎风面极度纯净，省 ~3.8W' },
     ]
   },
   {
@@ -134,8 +134,8 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: false,
     selectedSpecIndex: 0,
     specs: [
-      { label: '硬底全碳纤维公路锁鞋 (相比尼龙底)', weightG: 160, baseWatts40: 1.5, refPrice: 990, note: '硬度指数10+极大提高踩踏刚性，减重足底旋转质量' },
-      { label: '平整低风阻气动破风鞋套', weightG: -40, baseWatts40: 3.0, refPrice: 150, note: '平滑包裹鞋面旋钮与卡扣，降低脚部旋转扰流 ~3W' },
+      { label: '全碳硬底锁鞋', weightG: 160, baseWatts40: 1.5, refPrice: 990, note: '相比尼龙底，硬度指数10+极大提高踩踏刚性，减重足底旋转质量' },
+      { label: '气动破风鞋套', weightG: -40, baseWatts40: 3.0, refPrice: 150, note: '平滑包裹鞋面旋钮与卡扣，降低脚部旋转扰流 ~3W' },
     ]
   },
   {
@@ -148,7 +148,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: false,
     selectedSpecIndex: 0,
     specs: [
-      { label: '超低阻浸蜡链条 / 陶瓷大导轮', weightG: -20, baseWatts40: 1.5, refPrice: 880, note: '降低链节弯折角度与摩擦阻力，机械传动省 ~1.5W' },
+      { label: '浸蜡链条 / 陶瓷大导轮', weightG: -20, baseWatts40: 1.5, refPrice: 880, note: '降低链节弯折角度与摩擦阻力，机械传动省 ~1.5W' },
     ]
   },
 ];

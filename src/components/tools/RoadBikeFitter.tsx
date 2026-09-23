@@ -273,7 +273,7 @@ export const RoadBikeFitter: React.FC = () => {
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
+              title={language === 'zh-TW' ? '身體測量數據' : '身体测量数据'}
               subtitle={language === 'zh-TW' ? '人體解剖學精密擬合' : '人体解剖学精密拟合'}
               icon={User}
               iconColor="purple"
@@ -472,7 +472,7 @@ export const RoadBikeFitter: React.FC = () => {
           {/* Key Output Metric Card with Docked Garage Sync Footer */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '核心 Fitting 幾何建議' : '核心 Fitting 几何建议'}
+              title={language === 'zh-TW' ? '車架幾何建議' : '车架几何建议'}
               subtitle={language === 'zh-TW' ? '基於人體幾何與騎行風格解算' : '基于人体几何与骑行风格精算'}
               icon={Ruler}
               iconColor="text-ios-blue bg-ios-blue/10 dark:bg-ios-blue/20"
@@ -552,7 +552,7 @@ export const RoadBikeFitter: React.FC = () => {
           {/* Stack & Reach + Body Proportion Analysis */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
-              title="Stack & Reach 建议"
+              title="Stack & Reach"
               subtitle={language === 'zh-TW' ? '車架幾何與身材特徵推斷' : '车架几何与身材特征推断'}
               icon={Activity}
               iconColor="purple"
@@ -590,7 +590,7 @@ export const RoadBikeFitter: React.FC = () => {
           {/* Cleat & Cockpit Advice Card */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
-              title="KOPS 铅垂线与锁片"
+              title={language === 'zh-TW' ? 'KOPS 與鎖片' : 'KOPS 与锁片'}
               subtitle={language === 'zh-TW' ? '膝關節垂線與踩踏生物力學' : '膝关节垂线与踩踏生物力学'}
               icon={Footprints}
               iconColor="purple"

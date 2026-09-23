@@ -245,7 +245,7 @@ export const HealthCalculator: React.FC = () => {
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '個人身體與心率數據' : '个人身体与心率数据'}
+              title={language === 'zh-TW' ? '身體與心率' : '身体与心率'}
               subtitle={language === 'zh-TW' ? '自動同步車手檔案' : '自动同步车手档案'}
               icon={User}
               iconColor="red"
@@ -461,7 +461,7 @@ export const HealthCalculator: React.FC = () => {
             <div className="space-y-4 sm:space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <IOSMetricTile
-                  label="基础代谢率 (BMR)"
+                  label={language === 'zh-TW' ? '基礎代謝 (BMR)' : '基础代谢 (BMR)'}
                   value={bmrResult.bmr}
                   unit="kcal/天"
                   subtext="维持机体存活最基本的能量消耗"
@@ -470,7 +470,7 @@ export const HealthCalculator: React.FC = () => {
                 />
 
                 <IOSMetricTile
-                  label="每日总能量消耗 (TDEE)"
+                  label={language === 'zh-TW' ? '每日總能耗 (TDEE)' : '每日总能耗 (TDEE)'}
                   value={bmrResult.tdee}
                   unit="kcal/天"
                   subtext="包含日常骑行及所有活动能耗"

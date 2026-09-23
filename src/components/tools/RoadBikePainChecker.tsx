@@ -7,6 +7,7 @@ import { IOSToolHeader } from '../common/IOSToolHeader';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generatePainCheckPoster } from '../../utils/shareCardGenerators';
 import { useToast } from '../../context/ToastContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 const areaIconMap: Record<string, React.FC<{ className?: string }>> = {
   knee: Activity,
@@ -19,6 +20,7 @@ const areaIconMap: Record<string, React.FC<{ className?: string }>> = {
 
 export const RoadBikePainChecker: React.FC = () => {
   const { showToast } = useToast();
+  const { language } = useLanguageAndUnit();
   const [selectedAreaId, setSelectedAreaId] = useState<string>('knee');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -102,7 +104,7 @@ export const RoadBikePainChecker: React.FC = () => {
         description="覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。"
         tint="purple"
         onShare={handleGeneratePoster}
-        shareTitle="生成针对性调车自纠处方海报卡片"
+        shareTitle={language === 'zh-TW' ? '生成調車處方' : '生成调车处方'}
       />
 
       {/* Search & Area Selection Card */}
@@ -112,7 +114,7 @@ export const RoadBikePainChecker: React.FC = () => {
           <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="搜索不适关键词快速定位 (如: 髌骨, 膝前痛, 手麻, 会阴, 锁片, 塌腰)..."
+            placeholder={language === 'zh-TW' ? '搜尋不適部位或症狀 (如髕骨、手麻)...' : '搜索不适部位或症状 (如髌骨、手麻)...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-9 bg-black/[0.04] dark:bg-white/[0.07] border border-black/[0.05] dark:border-white/[0.08] rounded-xl pl-8.5 pr-4 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-ios-purple transition"

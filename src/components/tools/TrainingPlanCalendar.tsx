@@ -278,7 +278,7 @@ export const TrainingPlanCalendar: React.FC = () => {
       datasets: [
         {
           type: 'line' as const,
-          label: '体能 CTL (Fitness)',
+          label: 'CTL (体能)',
           data: points.map(p => p.ctl),
           borderColor: '#0A84FF', // Apple Blue
           backgroundColor: 'transparent',
@@ -289,7 +289,7 @@ export const TrainingPlanCalendar: React.FC = () => {
         },
         {
           type: 'line' as const,
-          label: '疲劳 ATL (Fatigue)',
+          label: 'ATL (疲劳)',
           data: points.map(p => p.atl),
           borderColor: '#FF453A', // Apple Red
           backgroundColor: 'transparent',
@@ -300,7 +300,7 @@ export const TrainingPlanCalendar: React.FC = () => {
         },
         {
           type: 'line' as const,
-          label: '状态 TSB (Form 竞技巅峰)',
+          label: 'TSB (状态)',
           data: points.map(p => p.tsb),
           borderColor: '#FFD60A', // Apple Gold
           backgroundColor: 'rgba(255, 214, 10, 0.1)',
@@ -471,7 +471,7 @@ END:VEVENT
             className="p-3 sm:p-4"
           />
           <IOSMetricTile
-            label="当前体能 → 目标 CTL"
+            label="体能目标 (CTL)"
             value={`${currentCtl} → ${planSummary.targetRaceCtl}`}
             unit="CTL"
             subtext="基于历史 42 日负荷"
@@ -479,7 +479,7 @@ END:VEVENT
             className="p-3 sm:p-4"
           />
           <IOSMetricTile
-            label="比赛日竞技状态"
+            label="比赛日状态"
             value={`+${planSummary.targetRaceTsb}`}
             unit="TSB"
             subtext="黄金比赛窗口 (+15~25)"
@@ -487,7 +487,7 @@ END:VEVENT
             className="p-3 sm:p-4"
           />
           <IOSMetricTile
-            label="当前所属周期阶段"
+            label="当前训练周期"
             value={currentWeekPlan?.phaseLabel.split(' ')[0] || '基础期'}
             unit=""
             subtext={`本周第 ${planSummary.currentWeekIndex} 周 · 目标 ${currentWeekPlan?.targetTss || 400} TSS`}
