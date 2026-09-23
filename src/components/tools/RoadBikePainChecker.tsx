@@ -167,9 +167,9 @@ export const RoadBikePainChecker: React.FC = () => {
       </IOSCard>
 
       {/* Main Analysis Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Column: Symptoms & Interactive Body Map */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           {/* Interactive Body Visualizer */}
           <BodyPainDiagram
             selectedAreaId={selectedAreaId}
@@ -194,9 +194,9 @@ export const RoadBikePainChecker: React.FC = () => {
         </div>
 
         {/* Right Column: Step by Step Action Plan & Checklist */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* Specific Self-Check Action Items with Checklist */}
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <h2 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
@@ -249,7 +249,7 @@ export const RoadBikePainChecker: React.FC = () => {
           </IOSCard>
 
           {/* Root Causes Accordion / List */}
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
+          <IOSCard variant="default" className="space-y-4">
             <h2 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
               <Wrench className="w-4 h-4 text-ios-blue" />
               根源成因深度剖析

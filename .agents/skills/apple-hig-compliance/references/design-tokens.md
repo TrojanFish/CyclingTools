@@ -110,16 +110,16 @@ Both CSS and font-feature-settings are applied globally via `index.css`:
 
 ---
 
-## 3. Spacing
+## 3. Spacing System (Apple 4-Step Grid)
 
-### 3.1 Page-Level Spacing
+### 3.1 4-Step Micro & Macro Spacing Grid
 
-| Context          | Mobile      | Desktop         |
-| :--------------- | :---------- | :-------------- |
-| Page padding     | `p-4`       | `sm:p-5`        |
-| Section spacing  | `space-y-4` | `sm:space-y-5`  |
-| Grid gap         | `gap-4`     | `sm:gap-5`      |
-| Card padding     | `p-4`       | `sm:p-5`        |
+| Tier | Tokens | Values (Mobile / Desktop) | Exact Usage Context |
+| :--- | :--- | :--- | :--- |
+| **Level 1 · Atomic (亲密原子级)** | `space-y-1.5`, `mb-1.5`, `gap-1.5` | `6px` | ① Form Label ↔ Input field<br>② Inline Icon ↔ text span (`gap-1.5`)<br>③ Eyebrow category badge ↔ Title (`mb-1.5`) |
+| **Level 2 · Group (组内紧凑级)** | `gap-2`, `space-y-2` | `8px` | ① Button group items (`gap-2`)<br>② Filter tag chips (`gap-2`)<br>③ Compact collapsible list rows (`space-y-2`) |
+| **Level 3 · Field (模块表单级)** | `space-y-4`, `gap-4` | `16px` | ① Form field rows stack inside `IOSCard`<br>② Card header (`IOSCardHeader`) ↔ content container<br>③ Metric tile grids (`gap-3 sm:gap-4`) |
+| **Level 4 · Container (宏观容器级)** | `space-y-4 sm:space-y-5`, `p-4 sm:p-5`, `gap-4 sm:gap-5` | `16px / 20px` | ① Tool page root vertical flow (`space-y-4 sm:space-y-5`)<br>② Standard `IOSCard` padding (`padding="md"`: `p-4 sm:p-5`)<br>③ Outer layout grid columns gap (`gap-4 sm:gap-5`) |
 
 ### 3.2 Component-Level Spacing & Dimensions
 
@@ -128,12 +128,13 @@ Both CSS and font-feature-settings are applied globally via `index.css`:
 | Button & Control height | `h-9` (36px)                          | Standard Apple control height (`IOSSegmentedControl`, Buttons, Selects) |
 | Input field height    | `h-10` (40px)                           | Text & number input fields |
 | Minimum touch target  | `min-h-[44px] min-w-[44px]` (44pt)      | Apple HIG minimum physical/logical hit area |
-| Card internal gap     | `space-y-3` or `space-y-4`              | |
-| Input ↔ label gap     | `space-y-1.5`                           | |
-| Button group gap      | `gap-2`                                 | |
-| Inset group row pad   | `py-3 px-4` (12px × 16px)              | |
-| Metric tile padding   | `p-3 sm:p-4`                            | |
-| Tag / badge padding   | `px-2.5 py-0.5`                         | |
+| Card internal gap     | `space-y-4` (strictly 16px)             | Field-to-field flow inside cards |
+| Input ↔ label gap     | `space-y-1.5` or `mb-1.5` (strictly 6px)| Label to control |
+| Button group gap      | `gap-2` (strictly 8px)                  | Action button groups |
+| Inset group row pad   | `py-3 px-4` (12px × 16px)              | Grouped table view rows |
+| Metric tile padding   | `p-2.5 sm:p-4`                          | Compact on mobile, airy on desktop |
+| Tag / badge padding   | `px-2.5 py-0.5`                         | Pill badges |
+| Icon dimensions       | Standard `w-4 h-4`, badge `w-3.5 h-3.5` | Lucide icon tokens |
 
 ---
 

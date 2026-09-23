@@ -607,7 +607,7 @@ export const ClimbPacingPlanner: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
@@ -734,7 +734,7 @@ export const ClimbPacingPlanner: React.FC = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs & Segments */}
         <div className="lg:col-span-5 space-y-4">
           {/* Rider Parameters */}

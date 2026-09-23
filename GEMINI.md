@@ -10,7 +10,7 @@ This project targets **two platforms** with a single React + Tailwind codebase:
 ### Always-On Rules
 
 1. **Breakpoint**: Use `sm:` (640 px) as the sole mobile↔desktop breakpoint.
-2. **Spacing**: `p-4 sm:p-5` for page/card padding; `space-y-4 sm:space-y-5` for sections. Never use `p-6` or larger on standard cards.
+2. **Spacing**: 4-Step Grid. Macro: `p-4 sm:p-5` for card/page padding; `space-y-4 sm:space-y-5` for tool root & section flow. Micro: `space-y-4` inside cards, `space-y-1.5` / `mb-1.5` for label-to-input, `gap-2` for button groups, `gap-1.5` for icon-text. Never use `p-6` or larger on standard cards.
 3. **Radius**: Cards `rounded-2xl`, inner elements `rounded-xl`, buttons `rounded-xl`, tags `rounded-full`. Never `rounded-3xl` on regular cards.
 4. **Typography**: Titles `text-lg sm:text-xl font-bold font-display`. Max weight `font-bold` (never `font-extrabold`).
 5. **Buttons & Controls**: `h-9 rounded-xl` (36px, Apple HIG standard control height). Action buttons, segmented controls (`IOSSegmentedControl`), header buttons, and `<select>` dropdowns share identical `h-9` height for unified visual alignment. Always add `apple-touch` class.

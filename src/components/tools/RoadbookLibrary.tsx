@@ -734,7 +734,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '路線戰術氣象' : '路线战术气象'}
@@ -876,7 +876,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
       )}
 
       {/* Main Grid: Left Route Cards + Right Interactive Map & Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Column: Route Cards Matrix */}
         <div className="lg:col-span-5 space-y-3 max-h-[820px] overflow-y-auto pr-1">
           {filteredRoutes.length === 0 ? (

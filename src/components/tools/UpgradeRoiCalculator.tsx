@@ -663,7 +663,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Dashboard & ROI Rating (macOS Sticky Canvas) */}
-        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {/* Key Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <IOSMetricTile
@@ -717,7 +717,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
           </div>
 
           {/* ROI Metric & Badge */}
-          <IOSCard variant="default" className="p-5 space-y-3">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-xs text-slate-600 dark:text-slate-400">改装性价比与边际收益评级</span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold border ${analysis.roiBadgeColor}`}>
@@ -740,7 +740,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
           </IOSCard>
 
           {/* Single Item Wattage Contribution Chart */}
-          <IOSCard variant="default" className="p-5 space-y-2">
+          <IOSCard variant="default" className="space-y-4">
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-300 block">各单品省瓦贡献对比柱状图 (Watts @ {flatCruiseSpeedKmh}km/h)</span>
             <div className="h-44">
               <Bar

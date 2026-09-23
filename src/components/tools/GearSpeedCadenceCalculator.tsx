@@ -247,7 +247,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       />
 
       {/* Inputs & Presets */}
-      <IOSCard variant="default" className="space-y-5">
+      <IOSCard variant="default" className="space-y-4">
         {/* Gruppo Presets */}
         <div>
           <div className="w-full">
@@ -425,7 +425,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* TAB 1: Speed & Gear Ratio Matrix */}
       {activeTab === 'matrix' && (
-        <IOSCard variant="default" className="p-5 space-y-4 shadow-xs">
+        <IOSCard variant="default" className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
             <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
               在 {cadenceRpm} RPM 踏频下的全档位速度 ({isImperial ? 'mph' : 'km/h'}) 与前进距离 ({isImperial ? 'gear in' : 'm'}) 矩阵
@@ -482,7 +482,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* TAB 2: Multi-Cadence Sweep Table */}
       {activeTab === 'cadence_table' && (
-        <IOSCard variant="default" className="p-5 space-y-4 shadow-xs">
+        <IOSCard variant="default" className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
             <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
               大盘 {bigRing}T 在不同踏频 (70 ~ 110 RPM) 下的速度对照 ({isImperial ? 'mph' : 'km/h'})
@@ -522,7 +522,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
       {/* TAB 3: Speed vs Cadence Visual Chart */}
       {activeTab === 'chart' && (
-        <IOSCard variant="default" className="p-5 space-y-4">
+        <IOSCard variant="default" className="space-y-4">
           <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
             高速档、中盘巡航与爬坡极限档 踏频-车速线性曲线
           </span>

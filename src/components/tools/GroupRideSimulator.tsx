@@ -414,7 +414,7 @@ export const GroupRideSimulator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '路線戰術氣象' : '路线战术气象'}
@@ -548,10 +548,10 @@ export const GroupRideSimulator: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Settings & Rider List */}
-        <div className="lg:col-span-5 space-y-4">
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title={mode === 'ttt' ? 'TTT 赛道与极限节奏参数' : '编队巡航与环境设定'}
               icon={Sliders}
@@ -896,9 +896,9 @@ export const GroupRideSimulator: React.FC = () => {
         </div>
 
         {/* Right Charts & Survival Panel */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* W' Balance Timeline Chart */}
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title={
                 mode === 'ttt'

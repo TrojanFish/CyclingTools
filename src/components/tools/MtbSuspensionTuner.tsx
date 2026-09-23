@@ -325,7 +325,7 @@ export const MtbSuspensionTuner: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}

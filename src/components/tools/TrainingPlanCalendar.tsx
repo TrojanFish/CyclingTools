@@ -396,7 +396,7 @@ END:VEVENT
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
@@ -678,9 +678,9 @@ END:VEVENT
 
       {/* VIEW 2: Macro Periodization & Future PMC Projection */}
       {activeTab === 'macro' && (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {/* PMC Projected Line Chart */}
-          <IOSCard variant="default" padding="none" className="p-4 sm:p-5 space-y-3">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 dark:border-white/10 pb-3">
               <div>
                 <div className="flex items-center gap-2">

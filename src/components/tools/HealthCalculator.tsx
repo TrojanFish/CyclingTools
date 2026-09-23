@@ -240,9 +240,9 @@ export const HealthCalculator: React.FC = () => {
       />
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-5">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '個人身體與心率數據' : '个人身体与心率数据'}
@@ -343,10 +343,10 @@ export const HealthCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Panels */}
-        <div className="lg:col-span-7 space-y-5">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* TAB 1: In-ride Fueling Plan View */}
           {activeTab === 'fueling' && (
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {/* Ride Duration & Intensity Selectors */}
               <IOSCard variant="inset" className="p-4 sm:p-5 space-y-3.5">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
@@ -458,7 +458,7 @@ export const HealthCalculator: React.FC = () => {
 
           {/* TAB 3: BMR & TDEE View */}
           {activeTab === 'bmr' && (
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <IOSMetricTile
                   label="基础代谢率 (BMR)"

@@ -359,7 +359,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category="路线战术气象"
@@ -419,10 +419,10 @@ export const CyclingWeatherAdvisor: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs & Map */}
-        <div className="lg:col-span-5 space-y-4">
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title="路线与出发参数"
               icon={Compass}
@@ -507,7 +507,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
         </div>
 
         {/* Right Segment Weather Details */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {weatherSegments.length === 0 ? (
             <div className="ios-card p-4 sm:p-5 py-10 sm:py-12 rounded-2xl border border-slate-200/80 dark:border-white/10 text-center flex flex-col items-center justify-center space-y-2.5 shadow-ios-card">
               <div className="w-12 h-12 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-center text-ios-blue shadow-ios-sm">

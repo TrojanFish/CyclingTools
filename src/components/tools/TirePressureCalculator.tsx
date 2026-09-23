@@ -225,7 +225,7 @@ export const TirePressureCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs */}
         <div className="lg:col-span-6 space-y-4 sm:space-y-5">
-          <IOSCard variant="default" className="space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '車輛與騎行參數' : '车辆与骑行参数'}
               subtitle={language === 'zh-TW' ? '車型、重量與輪胎結構' : '车型、重量与轮胎结构'}
@@ -532,7 +532,7 @@ export const TirePressureCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Results (macOS Sticky Canvas / Inspector on desktop) */}
-        <div className="lg:col-span-6 space-y-5 lg:sticky lg:top-20 self-start">
+        <div className="lg:col-span-6 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {/* Hookless ETRTO Width Mismatch Banner */}
           {result.isHooklessWidthMismatch && (
             <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-950 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm">
@@ -572,7 +572,7 @@ export const TirePressureCalculator: React.FC = () => {
           )}
 
           {/* Recommended Output Card */}
-          <IOSCard variant="default" className="space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '推薦胎壓計算結果' : '推荐胎压计算结果'}
               subtitle={language === 'zh-TW' ? '基於專業滾阻測試模型' : '基于专业滚阻测试模型'}

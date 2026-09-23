@@ -231,7 +231,7 @@ export const RoadBikeFitter: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category="Fitting与工效"
@@ -268,9 +268,9 @@ export const RoadBikeFitter: React.FC = () => {
         }
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs */}
-        <div className="lg:col-span-5 space-y-5">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '核心生理測量數據' : '核心生理测量数据'}
@@ -448,9 +448,9 @@ export const RoadBikeFitter: React.FC = () => {
         </div>
 
         {/* Right Output & Interactive Bike Diagram */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* Interactive Bike Diagram */}
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {language === 'zh-TW' ? '公路車關鍵擬合幾何實時矢量圖譜' : '公路车关键拟合几何实时矢量图谱'}

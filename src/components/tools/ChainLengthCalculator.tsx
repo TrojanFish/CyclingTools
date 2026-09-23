@@ -229,7 +229,7 @@ export const ChainLengthCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs (macOS Inspector) */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
-          <IOSCard variant="default" className="space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '車架幾何與齒盤參數' : '车架几何与齿盘参数'}
               subtitle={language === 'zh-TW' ? '後下叉長度與大中小盤組合' : '后下叉长度与大中小盘组合'}
@@ -366,7 +366,7 @@ export const ChainLengthCalculator: React.FC = () => {
         </div>
 
         {/* Right Outputs & Visualization (macOS Sticky Canvas) */}
-        <div className="lg:col-span-7 space-y-5 lg:sticky lg:top-20 self-start">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {(result.isRingInverted || result.isCogInverted) && (
             <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-amber-700 dark:text-amber-400 text-xs shadow-ios-sm">
               <AlertTriangle className="w-5 h-5 shrink-0 text-amber-500 mt-0.5" />
@@ -412,7 +412,7 @@ export const ChainLengthCalculator: React.FC = () => {
           </div>
 
           {/* Drivetrain Visual SVG Schematic */}
-          <IOSCard variant="default" className="p-5 space-y-3">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex justify-between items-center text-xs">
               <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5 text-ios-blue" />
@@ -470,7 +470,7 @@ export const ChainLengthCalculator: React.FC = () => {
           </IOSCard>
 
           {/* Installation Best Practices Card */}
-          <IOSCard variant="default" className="p-5 space-y-3">
+          <IOSCard variant="default" className="space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               官方装配与物理测量截链法则

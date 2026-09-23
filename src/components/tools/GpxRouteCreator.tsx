@@ -547,7 +547,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category="路线战术气象"
@@ -699,7 +699,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
       {/* Main Workspace Layout */}
       {activeTab === 'route_studio' ? (
         /* TAB 1: Route Studio & Map Editing */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           {/* Left Map Area */}
           <div className="lg:col-span-7 space-y-3.5">
             {/* Search Bar */}
@@ -881,9 +881,9 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
         </div>
       ) : (
         /* TAB 2: Aerodynamic Wind & Pacing Strategy Engine (Best Bike Split) */
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {/* Virtual Wind & Environment Simulator Console */}
-          <IOSCard variant="default" padding="none" className="p-4 space-y-4">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 dark:border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <Wind className="w-4 h-4 text-ios-blue" />

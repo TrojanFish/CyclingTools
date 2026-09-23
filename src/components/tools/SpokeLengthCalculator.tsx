@@ -292,7 +292,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       {/* Main Grid: Inputs (7 cols) + Results (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs (7 cols) */}
-        <div className="lg:col-span-7 space-y-5">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* Wheel Position & Brake System */}
           <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
@@ -468,7 +468,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               iconColor="text-purple-500 bg-purple-500/10 dark:bg-purple-500/20"
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
               {/* Left Side (NDS rear or Disc front) */}
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
                 <div className="flex items-center justify-between">
@@ -583,9 +583,9 @@ export const SpokeLengthCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Results (macOS Sticky Canvas) */}
-        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {/* Main Spoke Length Result Card */}
-          <IOSCard variant="default" className="space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-ios-blue uppercase tracking-wider flex items-center gap-1.5">
                 <Disc className="w-4 h-4" />
@@ -732,7 +732,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               </svg>
             </div>
 
-            <div className="flex items-center justify-center gap-6 text-[11px]">
+            <div className="flex items-center justify-center gap-4 sm:gap-6 text-[11px]">
               <span className="flex items-center gap-1.5 text-blue-500">
                 <span className="w-3 h-0.5 bg-blue-500"></span>
                 <span>左侧辐条 ({result.roundedLeft}mm · {leftCross}X)</span>

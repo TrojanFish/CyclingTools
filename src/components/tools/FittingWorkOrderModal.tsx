@@ -534,7 +534,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
           </div>
 
           {/* Architectural Paper Preview Canvas Body */}
-          <div className="relative z-10 flex-1 overflow-y-auto p-3 sm:p-6 flex flex-col items-center justify-start bg-slate-100/80 dark:bg-black/40">
+          <div className="relative z-10 flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col items-center justify-start bg-slate-100/80 dark:bg-black/40">
             <div className="w-full max-w-[210mm] bg-white text-slate-900 shadow-ios-popover border border-slate-200/80 dark:border-white/10 rounded-xl p-5 sm:p-7">
               <FittingSheetContent {...sheetProps} />
             </div>

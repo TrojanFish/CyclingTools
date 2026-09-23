@@ -1422,7 +1422,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
@@ -1473,7 +1473,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       />
 
       {/* File Upload Zone & Rider Anchor Bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
         {/* Upload Dropzone & Strava Quick Load Bar */}
         <div className="lg:col-span-2 space-y-3">
           <div
@@ -1611,7 +1611,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
       {/* Main Analysis Display */}
       {analysis && (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {/* Sensor Diagnostics Banner */}
           {analysis.sensorDiagnostics && (
             <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
@@ -2175,7 +2175,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB 2: Time in Zones */}
           {activeTab === 'zones' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
               {/* Coggan 7-Zone Power Distribution */}
               <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                 <div className="flex items-center justify-between">
@@ -2376,7 +2376,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
               {/* VIEW 1: Continuous MMP Curve & Coggan Benchmarks */}
               {mmpSubView === 'mmp_curve' && (
-                <div className="space-y-5">
+                <div className="space-y-4 sm:space-y-5">
                   {/* PR Celebration Banner */}
                   {currentActivityPrs && (currentActivityPrs.total90dPrs > 0 || currentActivityPrs.totalAllTimePrs > 0) && (
                     <div className="p-3 sm:p-3.5 rounded-2xl bg-ios-orange/10 border border-ios-orange/30 flex items-center justify-between gap-3 text-xs">
@@ -2526,7 +2526,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
               {/* VIEW 2: Skiba W' Balance Anaerobic Battery Exhaustion Model */}
               {mmpSubView === 'w_balance' && wPrimeResult && (
-                <div className="space-y-5">
+                <div className="space-y-4 sm:space-y-5">
                   {/* Parameter Tuning Bar */}
                   <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -2775,7 +2775,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
           {/* TAB: PMC (Performance Management Chart) */}
           {activeTab === 'pmc' && (
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {/* PMC Overview Card */}
               <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-4">
                 {/* Strava Live Sync Banner if Connected */}
@@ -3079,7 +3079,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               </div>
 
               {/* Race Day Peak Predictor & Coach Diagnostic */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 {/* Left: TSB Status Diagnostic */}
                 <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3">
                   <div className="flex items-center justify-between">

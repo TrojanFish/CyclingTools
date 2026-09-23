@@ -294,7 +294,7 @@ export const TubelessSealantCalculator: React.FC = () => {
       {/* Main Interactive Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Input Configuration (7 cols) */}
-        <div className="lg:col-span-7 space-y-5">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           {/* Section 1: Wheel & Tire Geometry */}
           <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
@@ -500,9 +500,9 @@ export const TubelessSealantCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Scoreboard (macOS Sticky Canvas) */}
-        <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {/* Main Dosage Recommendation Card */}
-          <IOSCard variant="default" className="space-y-5 relative overflow-hidden">
+          <IOSCard variant="default" className="space-y-4 relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-ios-blue uppercase tracking-wider flex items-center gap-1.5">
                 <Droplets className="w-4 h-4" />

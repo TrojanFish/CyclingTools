@@ -22,6 +22,10 @@ a shared component, or a minor layout tweak—**must** follow the rules below.
 | :---------------- | :---------------------------------------------- | :----------------------------------------------- |
 | Page padding      | `p-4`                                           | `sm:p-5`                                         |
 | Section gap       | `space-y-4` / `gap-4`                           | `sm:space-y-5` / `sm:gap-5`                      |
+| Card internal flow| `space-y-4`                                     | `space-y-4`                                      |
+| Label ↔ Input gap | `space-y-1.5` / `mb-1.5`                        | same                                             |
+| Button group gap  | `gap-2`                                         | same                                             |
+| Icon ↔ text gap   | `gap-1.5`                                       | same                                             |
 | Card radius       | `rounded-2xl`                                   | `sm:rounded-2xl`                                 |
 | Card padding      | `p-4`                                           | `sm:p-5`                                         |
 | Button & Control  | `h-9` (36px)                                    | `h-9` (36px)                                     |

@@ -376,7 +376,7 @@ export const CyclePowerCalculator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Inputs (macOS Inspector) */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
-          <IOSCard variant="default" className="space-y-5">
+          <IOSCard variant="default" className="space-y-4">
             <IOSCardHeader
               title={language === 'zh-TW' ? '動力與環境變量輸入' : '动力与环境变量输入'}
               subtitle={language === 'zh-TW' ? '精密動力學與氣象設定' : '精密动力学与气象设定'}
@@ -703,7 +703,7 @@ export const CyclePowerCalculator: React.FC = () => {
         </div>
 
         {/* Right Output Results & Full Analytics (macOS Sticky Canvas) */}
-        <div className="lg:col-span-7 space-y-5 lg:sticky lg:top-20 self-start">
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {/* Downhill High Speed & Thermal Warning */}
           {grade < 0 && (
             <div className={`p-4 rounded-2xl border transition-all shadow-ios-sm ${

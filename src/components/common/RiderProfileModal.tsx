@@ -1016,7 +1016,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               /* UNCONNECTED: BYOK Connect Form */
               <div className="space-y-4">
                 {/* Intro Card */}
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
+                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-ios-card space-y-4">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-[#FC4C02]/15 text-[#FC4C02] flex items-center justify-center font-bold shrink-0">
                       <Cloud className="w-5 h-5" />
