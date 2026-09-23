@@ -33,6 +33,7 @@ export interface PmcPoint {
   ctl: number; // Fitness (42-day EWMA)
   atl: number; // Fatigue (7-day EWMA)
   tsb: number; // Form (CTL - ATL)
+  isProjection?: boolean;
 }
 
 export interface StatusDiagnosis {
@@ -145,6 +146,63 @@ export interface MilestoneItem {
   targetValue?: number | string;
   progressPct?: number;
   achievedDate?: string;
+}
+
+export interface WeeklyVolumePoint {
+  weekKey: string;
+  label: string;
+  startDate: string;
+  endDate: string;
+  tss: number;
+  distanceKm: number;
+  elevationM: number;
+  movingTimeMin: number;
+  rides: number;
+  isPeakTss?: boolean;
+  isPeakDistance?: boolean;
+}
+
+export interface WeeklyVolumeResult {
+  weeks: WeeklyVolumePoint[];
+  peakTssWeek: WeeklyVolumePoint | null;
+  peakDistanceWeek: WeeklyVolumePoint | null;
+  avgWeeklyTss: number;
+  avgWeeklyDistanceKm: number;
+  totalVolumeTss: number;
+  totalVolumeDistanceKm: number;
+}
+
+export interface AnnualGoalProgress {
+  year: number;
+  targetKm: number;
+  currentKm: number;
+  progressPct: number;
+  remainingKm: number;
+  daysPassed: number;
+  daysRemaining: number;
+  totalDaysInYear: number;
+  expectedPaceKm: number;
+  paceDeltaKm: number;
+  isAheadOfPace: boolean;
+  monthlyRateKm: number;
+  requiredDailyKm: number;
+  projectedYearEndKm: number;
+  projectedCompletionDate: string | null;
+  monthlyBreakdown: {
+    month: number;
+    label: string;
+    actualKm: number;
+    targetPaceKm: number;
+  }[];
+}
+
+export interface OptimalRaceWindow {
+  peakDate: string | null;
+  peakShortDate: string | null;
+  peakTsb: number;
+  daysUntilPeak: number;
+  inOptimalFormToday: boolean;
+  optimalDateRange: string | null;
 }
 
 // -----------------------------------------------------------------------------
@@ -261,7 +319,8 @@ export function computeKpiMetrics(activities: StravaActivityRecord[]): KpiMetric
 export function computePmcTimeline(
   activities: StravaActivityRecord[],
   riderFtp: number = 240,
-  daysBack: number = 90
+  daysBack: number = 90,
+  daysForward: number = 0
 ): PmcPoint[] {
   const ftp = Math.max(80, riderFtp);
   const LAMBDA_CTL = 2 / (42 + 1);
@@ -313,8 +372,36 @@ export function computePmcTimeline(
       tss: dayTss,
       ctl: parseFloat(ctl.toFixed(1)),
       atl: parseFloat(atl.toFixed(1)),
-      tsb: parseFloat(tsb.toFixed(1))
+      tsb: parseFloat(tsb.toFixed(1)),
+      isProjection: false
     });
+  }
+
+  // Generate forward projection under tapering / rest conditions (0 TSS)
+  if (daysForward > 0) {
+    for (let f = 1; f <= daysForward; f++) {
+      const targetDate = new Date(now.getTime() + f * 24 * 3600 * 1000);
+      const yyyy = targetDate.getFullYear();
+      const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(targetDate.getDate()).padStart(2, '0');
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+      const shortDate = `${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
+
+      const dayTss = 0;
+      ctl = ctl * (1 - LAMBDA_CTL) + dayTss * LAMBDA_CTL;
+      atl = atl * (1 - LAMBDA_ATL) + dayTss * LAMBDA_ATL;
+      const tsb = ctl - atl;
+
+      result.push({
+        date: dateStr,
+        shortDate,
+        tss: dayTss,
+        ctl: parseFloat(ctl.toFixed(1)),
+        atl: parseFloat(atl.toFixed(1)),
+        tsb: parseFloat(tsb.toFixed(1)),
+        isProjection: true
+      });
+    }
   }
 
   return result;
@@ -324,11 +411,12 @@ export function diagnoseAthleteStatus(
   latestTsb: number,
   pmcTimeline: PmcPoint[]
 ): StatusDiagnosis {
-  // Compute weekly ramp rate: difference between this week's CTL and last week's CTL
+  // Compute weekly ramp rate using historical non-projected days
   let weeklyRampRate = 0;
-  if (pmcTimeline.length >= 8) {
-    const todayCtl = pmcTimeline[pmcTimeline.length - 1].ctl;
-    const weekAgoCtl = pmcTimeline[pmcTimeline.length - 8].ctl;
+  const historyPoints = pmcTimeline.filter(p => !p.isProjection);
+  if (historyPoints.length >= 8) {
+    const todayCtl = historyPoints[historyPoints.length - 1].ctl;
+    const weekAgoCtl = historyPoints[historyPoints.length - 8].ctl;
     weeklyRampRate = parseFloat((todayCtl - weekAgoCtl).toFixed(1));
   }
 
@@ -383,6 +471,64 @@ export function diagnoseAthleteStatus(
     advice: '深度疲劳超标！免疫力与受伤风险显著增加，请立即安排彻底休息日或补充高碳睡眠。',
     weeklyRampRate,
     rampRateWarning
+  };
+}
+
+export function findOptimalRaceWindow(pmcTimeline: PmcPoint[]): OptimalRaceWindow {
+  if (!pmcTimeline || pmcTimeline.length === 0) {
+    return {
+      peakDate: null,
+      peakShortDate: null,
+      peakTsb: 0,
+      daysUntilPeak: 0,
+      inOptimalFormToday: false,
+      optimalDateRange: null
+    };
+  }
+
+  const projectionPoints = pmcTimeline.filter(p => p.isProjection);
+  const historyPoints = pmcTimeline.filter(p => !p.isProjection);
+  const todayPoint = historyPoints.length > 0 ? historyPoints[historyPoints.length - 1] : pmcTimeline[0];
+  const inOptimalFormToday = todayPoint.tsb >= 5 && todayPoint.tsb <= 25;
+
+  if (projectionPoints.length === 0) {
+    return {
+      peakDate: todayPoint.date,
+      peakShortDate: todayPoint.shortDate,
+      peakTsb: todayPoint.tsb,
+      daysUntilPeak: 0,
+      inOptimalFormToday,
+      optimalDateRange: inOptimalFormToday ? todayPoint.shortDate : null
+    };
+  }
+
+  // Golden race window is TSB between +8 and +22
+  const optimalPoints = projectionPoints.filter(p => p.tsb >= 8 && p.tsb <= 22);
+  let bestPoint = projectionPoints[0];
+  let bestScore = -999;
+
+  for (const p of projectionPoints) {
+    // Score based on ideal form window (TSB +10 to +20) while preserving chronic fitness CTL
+    const formBonus = p.tsb >= 8 && p.tsb <= 22 ? 30 - Math.abs(p.tsb - 14) : -Math.abs(p.tsb - 14);
+    const score = p.ctl * 0.6 + formBonus * 1.5;
+    if (score > bestScore) {
+      bestScore = score;
+      bestPoint = p;
+    }
+  }
+
+  const daysUntilPeak = projectionPoints.indexOf(bestPoint) + 1;
+  const optimalDateRange = optimalPoints.length > 0
+    ? `${optimalPoints[0].shortDate} ~ ${optimalPoints[optimalPoints.length - 1].shortDate}`
+    : null;
+
+  return {
+    peakDate: bestPoint.date,
+    peakShortDate: bestPoint.shortDate,
+    peakTsb: bestPoint.tsb,
+    daysUntilPeak: Math.max(1, daysUntilPeak),
+    inOptimalFormToday,
+    optimalDateRange
   };
 }
 
@@ -1009,3 +1155,229 @@ export function generateDemoStravaActivities(): StravaActivityRecord[] {
 
   return list;
 }
+
+// -----------------------------------------------------------------------------
+// 11. Weekly Training Volume Breakdown (Intervals.icu Model)
+// -----------------------------------------------------------------------------
+export function computeWeeklyVolume(
+  activities: StravaActivityRecord[],
+  riderFtp: number = 240,
+  weeksBack: number = 52
+): WeeklyVolumeResult {
+  const ftp = Math.max(80, riderFtp);
+  const now = new Date();
+
+  // Find Monday of current week
+  const dayOfWeek = now.getDay();
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const currentMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+  currentMonday.setHours(0, 0, 0, 0);
+
+  const weeks: WeeklyVolumePoint[] = [];
+
+  for (let w = weeksBack - 1; w >= 0; w--) {
+    const startOfWeek = new Date(currentMonday.getTime() - w * 7 * 24 * 3600 * 1000);
+    const endOfWeek = new Date(startOfWeek.getTime() + 7 * 24 * 3600 * 1000 - 1);
+
+    const startY = startOfWeek.getFullYear();
+    const startM = String(startOfWeek.getMonth() + 1).padStart(2, '0');
+    const startD = String(startOfWeek.getDate()).padStart(2, '0');
+    const startDateStr = `${startY}-${startM}-${startD}`;
+
+    const endY = endOfWeek.getFullYear();
+    const endM = String(endOfWeek.getMonth() + 1).padStart(2, '0');
+    const endD = String(endOfWeek.getDate()).padStart(2, '0');
+    const endDateStr = `${endY}-${endM}-${endD}`;
+
+    const label = `${startOfWeek.getMonth() + 1}/${startOfWeek.getDate()}`;
+    const weekKey = `${startY}-W${Math.ceil((startOfWeek.getDate() + 6) / 7)}_${label}`;
+
+    let weekTss = 0;
+    let weekDistM = 0;
+    let weekElevM = 0;
+    let weekMovingSec = 0;
+    let weekRides = 0;
+
+    for (const a of activities) {
+      if (!a.start_date) continue;
+      const aTime = new Date(a.start_date).getTime();
+      if (aTime >= startOfWeek.getTime() && aTime <= endOfWeek.getTime()) {
+        weekRides++;
+        weekDistM += (a.distance || 0);
+        weekElevM += (a.total_elevation_gain || 0);
+        const movingSec = a.moving_time || 0;
+        weekMovingSec += movingSec;
+
+        let actTss = a.tss;
+        if (actTss === undefined || actTss === null) {
+          const np = a.weighted_average_watts || a.average_watts || 0;
+          if (np > 0) {
+            const ifVal = np / ftp;
+            actTss = Math.round(((movingSec * np * ifVal) / (ftp * 3600)) * 100);
+          } else if (a.suffer_score && a.suffer_score > 0) {
+            actTss = Math.round(a.suffer_score * 0.95);
+          } else {
+            actTss = Math.round((movingSec / 3600) * 50);
+          }
+        }
+        weekTss += actTss;
+      }
+    }
+
+    weeks.push({
+      weekKey,
+      label,
+      startDate: startDateStr,
+      endDate: endDateStr,
+      tss: weekTss,
+      distanceKm: parseFloat((weekDistM / 1000).toFixed(1)),
+      elevationM: Math.round(weekElevM),
+      movingTimeMin: Math.round(weekMovingSec / 60),
+      rides: weekRides
+    });
+  }
+
+  let maxTss = 0;
+  let maxDist = 0;
+  let peakTssIdx = -1;
+  let peakDistIdx = -1;
+
+  for (let i = 0; i < weeks.length; i++) {
+    if (weeks[i].tss > maxTss) {
+      maxTss = weeks[i].tss;
+      peakTssIdx = i;
+    }
+    if (weeks[i].distanceKm > maxDist) {
+      maxDist = weeks[i].distanceKm;
+      peakDistIdx = i;
+    }
+  }
+
+  if (peakTssIdx >= 0 && maxTss > 0) {
+    weeks[peakTssIdx].isPeakTss = true;
+  }
+  if (peakDistIdx >= 0 && maxDist > 0) {
+    weeks[peakDistIdx].isPeakDistance = true;
+  }
+
+  const activeWeeks = weeks.filter(w => w.rides > 0);
+  const totalVolumeTss = weeks.reduce((sum, w) => sum + w.tss, 0);
+  const totalVolumeDistanceKm = parseFloat(weeks.reduce((sum, w) => sum + w.distanceKm, 0).toFixed(1));
+  const activeCount = Math.max(1, activeWeeks.length);
+
+  return {
+    weeks,
+    peakTssWeek: peakTssIdx >= 0 && maxTss > 0 ? weeks[peakTssIdx] : null,
+    peakDistanceWeek: peakDistIdx >= 0 && maxDist > 0 ? weeks[peakDistIdx] : null,
+    avgWeeklyTss: Math.round(totalVolumeTss / activeCount),
+    avgWeeklyDistanceKm: parseFloat((totalVolumeDistanceKm / activeCount).toFixed(1)),
+    totalVolumeTss,
+    totalVolumeDistanceKm
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 12. Annual Goal Progress & Pace Forecast (Strava Model)
+// -----------------------------------------------------------------------------
+export function computeAnnualGoalProgress(
+  activities: StravaActivityRecord[],
+  targetKm: number = 5000,
+  year?: number
+): AnnualGoalProgress {
+  const now = new Date();
+  const targetYear = year ?? now.getFullYear();
+  const currentYear = now.getFullYear();
+
+  const isLeapYear = (targetYear % 4 === 0 && targetYear % 100 !== 0) || (targetYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+
+  let daysPassed: number;
+  let daysRemaining: number;
+
+  if (targetYear < currentYear) {
+    daysPassed = totalDaysInYear;
+    daysRemaining = 0;
+  } else if (targetYear > currentYear) {
+    daysPassed = 1;
+    daysRemaining = totalDaysInYear - 1;
+  } else {
+    const startOfYear = new Date(targetYear, 0, 1);
+    daysPassed = Math.max(1, Math.min(totalDaysInYear, Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 3600 * 1000)) + 1));
+    daysRemaining = Math.max(0, totalDaysInYear - daysPassed);
+  }
+
+  // Monthly buckets: 1 to 12
+  const monthDistances = new Array(12).fill(0);
+  let totalDistM = 0;
+
+  for (const a of activities) {
+    if (!a.start_date) continue;
+    const aDate = new Date(a.start_date);
+    if (isNaN(aDate.getTime())) continue;
+
+    if (aDate.getFullYear() === targetYear) {
+      const dist = a.distance || 0;
+      totalDistM += dist;
+      const mIdx = aDate.getMonth();
+      if (mIdx >= 0 && mIdx < 12) {
+        monthDistances[mIdx] += dist;
+      }
+    }
+  }
+
+  const currentKm = parseFloat((totalDistM / 1000).toFixed(1));
+  const safeTargetKm = Math.max(100, targetKm);
+  const progressPct = parseFloat(((currentKm / safeTargetKm) * 100).toFixed(1));
+  const remainingKm = Math.max(0, parseFloat((safeTargetKm - currentKm).toFixed(1)));
+
+  const expectedPaceKm = parseFloat((safeTargetKm * (daysPassed / totalDaysInYear)).toFixed(1));
+  const paceDeltaKm = parseFloat((currentKm - expectedPaceKm).toFixed(1));
+  const isAheadOfPace = paceDeltaKm >= 0;
+
+  const currentDailyRate = currentKm / Math.max(1, daysPassed);
+  const monthlyRateKm = parseFloat((currentDailyRate * 30.4).toFixed(1));
+  const requiredDailyKm = daysRemaining > 0 ? parseFloat((remainingKm / daysRemaining).toFixed(1)) : 0;
+  const projectedYearEndKm = Math.round(currentDailyRate * totalDaysInYear);
+
+  let projectedCompletionDate: string | null = null;
+  if (currentKm >= safeTargetKm) {
+    projectedCompletionDate = '已达成';
+  } else if (currentDailyRate > 0 && remainingKm > 0) {
+    const daysNeeded = Math.ceil(remainingKm / currentDailyRate);
+    if (daysNeeded <= 365 * 2) {
+      const completionTime = new Date(now.getTime() + daysNeeded * 24 * 3600 * 1000);
+      const cY = completionTime.getFullYear();
+      const cM = String(completionTime.getMonth() + 1).padStart(2, '0');
+      const cD = String(completionTime.getDate()).padStart(2, '0');
+      projectedCompletionDate = `${cY}-${cM}-${cD}`;
+    }
+  }
+
+  const monthlyTargetPaceKm = parseFloat((safeTargetKm / 12).toFixed(1));
+  const monthlyBreakdown = monthDistances.map((distM, idx) => ({
+    month: idx + 1,
+    label: `${idx + 1}月`,
+    actualKm: parseFloat((distM / 1000).toFixed(1)),
+    targetPaceKm: monthlyTargetPaceKm
+  }));
+
+  return {
+    year: targetYear,
+    targetKm: safeTargetKm,
+    currentKm,
+    progressPct,
+    remainingKm,
+    daysPassed,
+    daysRemaining,
+    totalDaysInYear,
+    expectedPaceKm,
+    paceDeltaKm,
+    isAheadOfPace,
+    monthlyRateKm,
+    requiredDailyKm,
+    projectedYearEndKm,
+    projectedCompletionDate,
+    monthlyBreakdown
+  };
+}
+

@@ -1,21 +1,18 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   LayoutDashboard,
   RefreshCw,
-  Share2,
   Route,
   Mountain,
   Clock,
   Flame,
   Calendar,
   Zap,
-  CheckCircle2,
   AlertTriangle,
   ChevronRight,
   Sparkles,
   Bike,
   Activity,
-  Heart,
   TrendingUp,
   Award,
   Trophy,
@@ -23,8 +20,9 @@ import {
   Disc,
   Sliders,
   Sun,
-  Moon,
-  Info
+  Target,
+  BarChart2,
+  Flag
 } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
@@ -57,6 +55,9 @@ import {
   computeKpiMetrics,
   computePmcTimeline,
   diagnoseAthleteStatus,
+  findOptimalRaceWindow,
+  computeWeeklyVolume,
+  computeAnnualGoalProgress,
   computeEddingtonNumber,
   buildHeatmapGrid,
   computeActivityRings,
@@ -85,18 +86,23 @@ interface StravaDataCockpitProps {
   onNavigateTool?: (toolId: string) => void;
 }
 
+type CockpitTab = 'overview' | 'fitness' | 'fleet';
+
 export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigateTool }) => {
   const { isConnected, athlete, activities: realActivities, isSyncing, syncActivities } = useStrava();
   const { profile, bikes: userBikes } = useRiderProfile();
-  const { language, unitSystem, convertDistance, convertElevation } = useLanguageAndUnit();
+  const { language, convertDistance, convertElevation } = useLanguageAndUnit();
   const { showToast } = useToast();
+
+  // Tab State: Overview vs Fitness vs Fleet
+  const [activeTab, setActiveTab] = useState<CockpitTab>('overview');
 
   // Mode: Use Demo Data vs Live Data
   const [useDemoMode, setUseDemoMode] = useState<boolean>(() => {
     return !isConnected || realActivities.length === 0;
   });
 
-  // Selected Time Period
+  // Selected Time Period for Global Overview
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('all-time');
 
   // MMP Curve Unit: Watts vs W/kg
@@ -109,7 +115,13 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
   const [selectedBikeIdx, setSelectedBikeIdx] = useState<number>(0);
 
   // Activity Ring Targets
-  const [ringTargets, setRingTargets] = useState({ distanceKm: 150, elevationM: 1500, tss: 350 });
+  const [ringTargets] = useState({ distanceKm: 150, elevationM: 1500, tss: 350 });
+
+  // PMC Forward 14-day Projection Toggle
+  const [showPmcProjection, setShowPmcProjection] = useState<boolean>(true);
+
+  // Weekly Volume Span: 52 weeks or 26 weeks
+  const [volumeWeeksSpan, setVolumeWeeksSpan] = useState<26 | 52>(52);
 
   // Share Poster Modal State
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -136,40 +148,59 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     return computeKpiMetrics(periodFilteredActivities);
   }, [periodFilteredActivities]);
 
-  // 2. PMC Fitness & Freshness Timeline
+  // 2. PMC Fitness & Freshness Timeline with Forward Projection
   const ftpWatts = profile.ftpWatts || athlete?.ftp || 240;
   const weightKg = profile.weightKg || athlete?.weight || 68;
 
   const pmcTimeline = useMemo(() => {
-    return computePmcTimeline(effectiveActivities, ftpWatts, 90);
-  }, [effectiveActivities, ftpWatts]);
+    return computePmcTimeline(effectiveActivities, ftpWatts, 90, showPmcProjection ? 14 : 0);
+  }, [effectiveActivities, ftpWatts, showPmcProjection]);
 
-  const latestPmc = pmcTimeline[pmcTimeline.length - 1] || { ctl: 65, atl: 68, tsb: -3 };
+  const historyPmcPoints = useMemo(() => {
+    return pmcTimeline.filter(p => !p.isProjection);
+  }, [pmcTimeline]);
+
+  const latestPmc = historyPmcPoints[historyPmcPoints.length - 1] || { ctl: 65, atl: 68, tsb: -3 };
   const athleteDiagnosis = useMemo(() => {
     return diagnoseAthleteStatus(latestPmc.tsb, pmcTimeline);
   }, [latestPmc.tsb, pmcTimeline]);
 
-  // 3. Eddington Number
+  const optimalRaceWindow = useMemo(() => {
+    return findOptimalRaceWindow(pmcTimeline);
+  }, [pmcTimeline]);
+
+  // 3. Annual Goal Progress
+  const annualGoalKm = profile.annualGoalKm || 5000;
+  const annualProgress = useMemo(() => {
+    return computeAnnualGoalProgress(effectiveActivities, annualGoalKm);
+  }, [effectiveActivities, annualGoalKm]);
+
+  // 4. Weekly Training Volume Breakdown (Intervals.icu Model)
+  const weeklyVolume = useMemo(() => {
+    return computeWeeklyVolume(effectiveActivities, ftpWatts, volumeWeeksSpan);
+  }, [effectiveActivities, ftpWatts, volumeWeeksSpan]);
+
+  // 5. Eddington Number
   const eddington = useMemo(() => {
     return computeEddingtonNumber(effectiveActivities);
   }, [effectiveActivities]);
 
-  // 4. Heatmap & Streaks (91-day / 13-week)
+  // 6. Heatmap & Streaks (91-day / 13-week)
   const { grid: heatmapGrid, stats: streakStats } = useMemo(() => {
     return buildHeatmapGrid(effectiveActivities, 13);
   }, [effectiveActivities]);
 
-  // 5. Activity Rings
+  // 7. Activity Rings
   const ringData = useMemo(() => {
     return computeActivityRings(effectiveActivities, ringTargets);
   }, [effectiveActivities, ringTargets]);
 
-  // 6. Bioclock & Habit Insights
+  // 8. Bioclock & Habit Insights
   const bioclock = useMemo(() => {
     return computeBioclock(periodFilteredActivities);
   }, [periodFilteredActivities]);
 
-  // 7. eFTP & MMP Peak Powers
+  // 9. eFTP & MMP Peak Powers
   const eftp = useMemo(() => {
     let p5s = 980;
     let p1m = 520;
@@ -188,7 +219,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     return estimateEFTP(p5s, p1m, p5m, p20m, weightKg);
   }, [effectiveActivities, ftpWatts, weightKg]);
 
-  // 8. Gear Fleet
+  // 10. Gear Fleet
   const combinedBikes = useMemo(() => {
     if (athlete?.bikes && athlete.bikes.length > 0) {
       return athlete.bikes;
@@ -210,12 +241,12 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
 
   const activeBike = fleet[selectedBikeIdx] || fleet[0];
 
-  // 9. Milestones & PRs
+  // 11. Milestones & PRs
   const milestones = useMemo(() => {
     return computeMilestones(effectiveActivities);
   }, [effectiveActivities]);
 
-  // 10. Recent Activities & Latest Ride Spotlight
+  // 12. Recent Activities
   const recentActivities = useMemo(() => {
     return [...effectiveActivities]
       .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime())
@@ -233,8 +264,9 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       const res = await syncActivities(false);
       setUseDemoMode(false);
       showToast(`同步完成，成功刷新 ${res.count} 场骑行记录！`, 'success');
-    } catch (err: any) {
-      showToast(`同步失败: ${err.message || '网络异常'}`, 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '网络异常';
+      showToast(`同步失败: ${message}`, 'error');
     }
   };
 
@@ -264,14 +296,13 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       });
       setSharePosterUrl(posterUrl);
       setIsShareModalOpen(true);
-    } catch (err) {
-      console.error(err);
+    } catch {
       showToast('海报生成失败', 'error');
     }
   };
 
   // Charts Options & Data
-  // 1. PMC Chart
+  // 1. PMC Chart with projection
   const pmcChartData = useMemo(() => {
     const labels = pmcTimeline.map(p => p.shortDate);
     const ctlData = pmcTimeline.map(p => p.ctl);
@@ -289,7 +320,10 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           fill: true,
           tension: 0.35,
           borderWidth: 2,
-          pointRadius: 0
+          pointRadius: 0,
+          segment: {
+            borderDash: (ctx: { p1DataIndex: number }) => (pmcTimeline[ctx.p1DataIndex]?.isProjection ? [4, 4] : undefined)
+          }
         },
         {
           label: 'ATL (急性疲劳)',
@@ -299,17 +333,22 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           fill: true,
           tension: 0.35,
           borderWidth: 2,
-          pointRadius: 0
+          pointRadius: 0,
+          segment: {
+            borderDash: (ctx: { p1DataIndex: number }) => (pmcTimeline[ctx.p1DataIndex]?.isProjection ? [4, 4] : undefined)
+          }
         },
         {
           label: 'TSB (竞技状态)',
           data: tsbData,
           borderColor: '#34C759',
           borderWidth: 1.5,
-          borderDash: [4, 4],
           fill: false,
           tension: 0.3,
-          pointRadius: 0
+          pointRadius: 0,
+          segment: {
+            borderDash: (ctx: { p1DataIndex: number }) => (pmcTimeline[ctx.p1DataIndex]?.isProjection ? [4, 4] : undefined)
+          }
         }
       ]
     };
@@ -329,13 +368,20 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         tooltip: {
           backgroundColor: 'rgba(28, 28, 30, 0.95)',
           titleFont: { size: 12 },
-          bodyFont: { size: 11 }
+          bodyFont: { size: 11 },
+          callbacks: {
+            label: (context: { dataset: { label?: string }; raw: unknown; dataIndex: number }) => {
+              const isProj = pmcTimeline[context.dataIndex]?.isProjection;
+              const prefix = isProj ? '[预测] ' : '';
+              return `${prefix}${context.dataset.label}: ${context.raw}`;
+            }
+          }
         }
       },
       scales: {
         x: {
           grid: { display: false },
-          ticks: { maxTicksLimit: 8, font: { size: 10 } }
+          ticks: { maxTicksLimit: 10, font: { size: 10 } }
         },
         y: {
           grid: { color: 'rgba(120, 120, 128, 0.12)' },
@@ -343,9 +389,127 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         }
       }
     };
+  }, [pmcTimeline]);
+
+  // 2. Annual Goal Monthly Breakdown Chart
+  const annualGoalMonthlyChartData = useMemo(() => {
+    return {
+      labels: annualProgress.monthlyBreakdown.map(m => m.label),
+      datasets: [
+        {
+          type: 'bar' as const,
+          label: '实际完成里程 (km)',
+          data: annualProgress.monthlyBreakdown.map(m => m.actualKm),
+          backgroundColor: '#007AFF',
+          borderRadius: 4
+        },
+        {
+          type: 'line' as const,
+          label: '目标月均基准线',
+          data: annualProgress.monthlyBreakdown.map(m => m.targetPaceKm),
+          borderColor: '#FF9500',
+          borderWidth: 1.5,
+          borderDash: [4, 4],
+          pointRadius: 0,
+          fill: false
+        }
+      ]
+    };
+  }, [annualProgress]);
+
+  const annualGoalMonthlyChartOptions = useMemo(() => {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top' as const,
+          labels: { boxWidth: 10, font: { size: 11 } }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(28, 28, 30, 0.95)',
+          titleFont: { size: 12 },
+          bodyFont: { size: 11 }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 10 } } }
+      }
+    };
   }, []);
 
-  // 2. Eddington Histogram Chart
+  // 3. Weekly Volume Dual-Y Axis Chart
+  const weeklyVolumeChartData = useMemo(() => {
+    return {
+      labels: weeklyVolume.weeks.map(w => w.label),
+      datasets: [
+        {
+          type: 'bar' as const,
+          label: '周度负荷 (TSS)',
+          data: weeklyVolume.weeks.map(w => w.tss),
+          backgroundColor: weeklyVolume.weeks.map(w => w.isPeakTss ? '#FF9500' : '#007AFF'),
+          borderRadius: 4,
+          yAxisID: 'y'
+        },
+        {
+          type: 'line' as const,
+          label: '周度里程 (km)',
+          data: weeklyVolume.weeks.map(w => w.distanceKm),
+          borderColor: '#34C759',
+          backgroundColor: 'rgba(52, 199, 89, 0.1)',
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: weeklyVolume.weeks.map(w => w.isPeakDistance ? 4 : 0),
+          pointBackgroundColor: '#34C759',
+          yAxisID: 'y1'
+        }
+      ]
+    };
+  }, [weeklyVolume]);
+
+  const weeklyVolumeChartOptions = useMemo(() => {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index' as const, intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top' as const,
+          labels: { boxWidth: 10, font: { size: 11 } }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(28, 28, 30, 0.95)',
+          titleFont: { size: 12 },
+          bodyFont: { size: 11 }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { maxTicksLimit: 12, font: { size: 10 } }
+        },
+        y: {
+          type: 'linear' as const,
+          display: true,
+          position: 'left' as const,
+          grid: { color: 'rgba(120, 120, 128, 0.12)' },
+          ticks: { font: { size: 10 } }
+        },
+        y1: {
+          type: 'linear' as const,
+          display: true,
+          position: 'right' as const,
+          grid: { display: false },
+          ticks: { font: { size: 10 } }
+        }
+      }
+    };
+  }, []);
+
+  // 4. Eddington Histogram Chart
   const eddingtonChartData = useMemo(() => {
     const labels = eddington.histogramData.map(h => `${h.distanceKm}k`);
     const counts = eddington.histogramData.map(h => h.cumulativeCount);
@@ -375,7 +539,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [eddington]);
 
-  // 3. Bioclock Time Doughnut Data
+  // 5. Bioclock Time Doughnut Data
   const bioclockDoughnutData = useMemo(() => {
     return {
       labels: bioclock.byTimeSlot.map(s => s.label),
@@ -389,7 +553,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [bioclock]);
 
-  // 4. Bioclock Day Bar Data
+  // 6. Bioclock Day Bar Data
   const bioclockDayBarData = useMemo(() => {
     return {
       labels: bioclock.byDayOfWeek.map(d => d.label),
@@ -404,7 +568,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [bioclock]);
 
-  // 5. MMP Curve Data
+  // 7. MMP Curve Data
   const mmpCurveData = useMemo(() => {
     const points = [
       { sec: 5, label: '5s 冲刺', w: eftp.p5s },
@@ -549,629 +713,834 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         />
       </div>
 
-      {/* 3. 6 Key Metric Tiles Array */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        <IOSMetricTile
-          label="总骑行里程"
-          value={convertDistance(kpi.totalDistanceKm).formatted}
-          subtext={`已绕地球 ${kpi.earthCircumferencePct}%`}
-          icon={<Route className="w-3.5 h-3.5 text-ios-blue" />}
-          accentColor="blue"
-        />
-        <IOSMetricTile
-          label="累计总爬升"
-          value={convertElevation(kpi.totalElevationM).formatted}
-          subtext={`相当于 ${kpi.everestRatio} 座珠峰攀升`}
-          icon={<Mountain className="w-3.5 h-3.5 text-ios-green" />}
-          accentColor="green"
-        />
-        <IOSMetricTile
-          label="鞍上总时长"
-          value={`${Math.floor(kpi.totalMovingTimeMin / 60)}h ${kpi.totalMovingTimeMin % 60}m`}
-          subtext={`场均 ${(kpi.totalMovingTimeMin / Math.max(1, kpi.totalRides) / 60).toFixed(1)} 小时`}
-          icon={<Clock className="w-3.5 h-3.5 text-ios-orange" />}
-          accentColor="orange"
-        />
-        <IOSMetricTile
-          label="活跃卡路里"
-          value={`${kpi.totalCaloriesKcal.toLocaleString()}`}
-          unit="kcal"
-          subtext={`约 ${kpi.bananasBurned} 根香蕉等效能量`}
-          icon={<Flame className="w-3.5 h-3.5 text-ios-red" />}
-          accentColor="red"
-        />
-        <IOSMetricTile
-          label="出勤总场次"
-          value={`${kpi.totalRides}`}
-          unit="次"
-          subtext={`月度活跃 ${streakStats.thisMonthActiveDays} 天`}
-          icon={<Calendar className="w-3.5 h-3.5 text-ios-purple" />}
-          accentColor="purple"
-        />
-        <IOSMetricTile
-          label="加权平均功率"
-          value={kpi.avgNpWatts > 0 ? `${kpi.avgNpWatts}` : '--'}
-          unit="W NP"
-          subtext={`均速 ${kpi.avgSpeedKmh} km/h`}
-          icon={<Zap className="w-3.5 h-3.5 text-ios-mint" />}
-          accentColor="mint"
+      {/* 2.5 Cockpit Category Navigation Tabs */}
+      <div className="flex items-center justify-start sm:justify-center">
+        <IOSSegmentedControl
+          value={activeTab}
+          onChange={(val) => setActiveTab(val as CockpitTab)}
+          options={[
+            { value: 'overview', label: '综合总览' },
+            { value: 'fitness', label: '体能与周期' },
+            { value: 'fleet', label: '机队与勋章' }
+          ]}
+          className="w-full sm:w-auto"
         />
       </div>
 
-      {/* 4. Intelligent Contextual Recommendation Banner */}
-      {athleteDiagnosis.rampRateWarning && (
-        <div className="p-3.5 rounded-2xl bg-ios-orange/10 border border-ios-orange/20 text-xs text-slate-800 dark:text-slate-200 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-ios-orange shrink-0" />
-            <span>{athleteDiagnosis.rampRateWarning}</span>
+      {/* TAB 1: 综合总览 (OVERVIEW) */}
+      {activeTab === 'overview' && (
+        <div className="space-y-4 sm:space-y-5">
+          {/* 6 Key Metric Tiles Array */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            <IOSMetricTile
+              label="总骑行里程"
+              value={convertDistance(kpi.totalDistanceKm).formatted}
+              subtext={`已绕地球 ${kpi.earthCircumferencePct}%`}
+              icon={<Route className="w-3.5 h-3.5 text-ios-blue" />}
+              accentColor="blue"
+            />
+            <IOSMetricTile
+              label="累计总爬升"
+              value={convertElevation(kpi.totalElevationM).formatted}
+              subtext={`相当于 ${kpi.everestRatio} 座珠峰攀升`}
+              icon={<Mountain className="w-3.5 h-3.5 text-ios-green" />}
+              accentColor="green"
+            />
+            <IOSMetricTile
+              label="鞍上总时长"
+              value={`${Math.floor(kpi.totalMovingTimeMin / 60)}h ${kpi.totalMovingTimeMin % 60}m`}
+              subtext={`场均 ${(kpi.totalMovingTimeMin / Math.max(1, kpi.totalRides) / 60).toFixed(1)} 小时`}
+              icon={<Clock className="w-3.5 h-3.5 text-ios-orange" />}
+              accentColor="orange"
+            />
+            <IOSMetricTile
+              label="活跃卡路里"
+              value={`${kpi.totalCaloriesKcal.toLocaleString()}`}
+              unit="kcal"
+              subtext={`约 ${kpi.bananasBurned} 根香蕉等效能量`}
+              icon={<Flame className="w-3.5 h-3.5 text-ios-red" />}
+              accentColor="red"
+            />
+            <IOSMetricTile
+              label="出勤总场次"
+              value={`${kpi.totalRides}`}
+              unit="次"
+              subtext={`月度活跃 ${streakStats.thisMonthActiveDays} 天`}
+              icon={<Calendar className="w-3.5 h-3.5 text-ios-purple" />}
+              accentColor="purple"
+            />
+            <IOSMetricTile
+              label="加权平均功率"
+              value={kpi.avgNpWatts > 0 ? `${kpi.avgNpWatts}` : '--'}
+              unit="W NP"
+              subtext={`均速 ${kpi.avgSpeedKmh} km/h`}
+              icon={<Zap className="w-3.5 h-3.5 text-ios-mint" />}
+              accentColor="mint"
+            />
           </div>
-          {onNavigateTool && (
-            <button
-              onClick={() => onNavigateTool('workout-builder')}
-              className="shrink-0 h-8 px-2.5 rounded-lg bg-ios-orange text-white font-medium hover:bg-ios-orange/90 apple-touch text-[11px] flex items-center gap-1"
-            >
-              <span>生成排酸课表</span>
-              <ChevronRight className="w-3 h-3" />
-            </button>
-          )}
+
+          {/* Row 1: Annual Goal Progress (Strava Model) + Activity Rings */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+            {/* Left 7 cols: Annual Goal Card */}
+            <IOSCard className="lg:col-span-7 space-y-3.5">
+              <IOSCardHeader
+                title="年度里程目标与进度追踪 (Strava 模型)"
+                subtitle={`${annualProgress.year} 年度目标 ${annualProgress.targetKm} km · 已完成 ${annualProgress.currentKm} km (${annualProgress.progressPct}%)`}
+                icon={Target}
+                iconColor="text-ios-blue bg-ios-blue/10"
+                action={
+                  <div
+                    className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+                      annualProgress.isAheadOfPace
+                        ? 'bg-ios-green/10 text-ios-green'
+                        : 'bg-ios-orange/10 text-ios-orange'
+                    }`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    <span>
+                      {annualProgress.isAheadOfPace
+                        ? `超前配速 +${annualProgress.paceDeltaKm} km`
+                        : `落后配速 ${annualProgress.paceDeltaKm} km`}
+                    </span>
+                  </div>
+                }
+              />
+
+              {/* Goal Readout Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+                <div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">已达目标</div>
+                  <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{annualProgress.progressPct}%</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">剩余 {annualProgress.remainingKm} km</div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">预估达成日</div>
+                  <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums pt-0.5">
+                    {annualProgress.projectedCompletionDate || '计算中'}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">年终预估 {annualProgress.projectedYearEndKm} km</div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">达成需日均</div>
+                  <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">{annualProgress.requiredDailyKm}</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 剩余日</div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">当期月均量</div>
+                  <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">{annualProgress.monthlyRateKm}</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 月</div>
+                </div>
+              </div>
+
+              {/* Annual Progress Bar */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500 dark:text-slate-400">当前累积完成率</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 tabular-nums">
+                    {annualProgress.currentKm} / {annualProgress.targetKm} km
+                  </span>
+                </div>
+                <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden relative">
+                  {/* Expected pace tick marker */}
+                  <div
+                    className="absolute top-0 bottom-0 w-0.5 bg-slate-900/60 dark:bg-white/70 z-10"
+                    style={{ left: `${Math.min(100, (annualProgress.expectedPaceKm / annualProgress.targetKm) * 100)}%` }}
+                    title={`标准进度线: ${annualProgress.expectedPaceKm} km`}
+                  />
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      annualProgress.isAheadOfPace ? 'bg-ios-green' : 'bg-ios-blue'
+                    }`}
+                    style={{ width: `${Math.min(100, annualProgress.progressPct)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Monthly Breakdown Bar Chart */}
+              <div className="h-44 sm:h-48 w-full pt-1">
+                <Bar data={annualGoalMonthlyChartData as any} options={annualGoalMonthlyChartOptions} />
+              </div>
+            </IOSCard>
+
+            {/* Right 5 cols: Apple Fitness Style Activity Rings */}
+            <IOSCard className="lg:col-span-5 space-y-3.5">
+              <IOSCardHeader
+                title="周度运动目标三环"
+                subtitle="Apple Fitness 风格同心圆环"
+                icon={Activity}
+                iconColor="text-ios-red bg-ios-red/10"
+              />
+
+              <div className="flex items-center justify-center py-2">
+                {/* SVG Concentric Rings */}
+                <div className="relative w-40 h-40 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+                    {/* Outer Ring: Distance (Red #FF2D55) */}
+                    <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-red/15" />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      stroke="#FF2D55"
+                      strokeWidth="7"
+                      strokeDasharray={`${2 * Math.PI * 42}`}
+                      strokeDashoffset={`${2 * Math.PI * 42 * (1 - Math.min(1, ringData.distance.pct))}`}
+                      strokeLinecap="round"
+                      fill="transparent"
+                      className="transition-all duration-1000 ease-out"
+                    />
+
+                    {/* Middle Ring: Elevation (Green #34C759) */}
+                    <circle cx="50" cy="50" r="32" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-green/15" />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="32"
+                      stroke="#34C759"
+                      strokeWidth="7"
+                      strokeDasharray={`${2 * Math.PI * 32}`}
+                      strokeDashoffset={`${2 * Math.PI * 32 * (1 - Math.min(1, ringData.elevation.pct))}`}
+                      strokeLinecap="round"
+                      fill="transparent"
+                      className="transition-all duration-1000 ease-out"
+                    />
+
+                    {/* Inner Ring: TSS (Blue #007AFF) */}
+                    <circle cx="50" cy="50" r="22" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-blue/15" />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="22"
+                      stroke="#007AFF"
+                      strokeWidth="7"
+                      strokeDasharray={`${2 * Math.PI * 22}`}
+                      strokeDashoffset={`${2 * Math.PI * 22 * (1 - Math.min(1, ringData.tss.pct))}`}
+                      strokeLinecap="round"
+                      fill="transparent"
+                      className="transition-all duration-1000 ease-out"
+                    />
+                  </svg>
+
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">周综合</span>
+                    <span className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
+                      {Math.round(((ringData.distance.pct + ringData.elevation.pct + ringData.tss.pct) / 3) * 100)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Legends */}
+              <div className="space-y-1.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-ios-pink font-medium">
+                    <div className="w-2.5 h-2.5 rounded-full bg-ios-pink" />
+                    <span>里程</span>
+                  </div>
+                  <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
+                    {ringData.distance.current} / {ringData.distance.target} km ({Math.round(ringData.distance.pct * 100)}%)
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-ios-green font-medium">
+                    <div className="w-2.5 h-2.5 rounded-full bg-ios-green" />
+                    <span>爬升</span>
+                  </div>
+                  <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
+                    +{ringData.elevation.current} / +{ringData.elevation.target} m ({Math.round(ringData.elevation.pct * 100)}%)
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-ios-blue font-medium">
+                    <div className="w-2.5 h-2.5 rounded-full bg-ios-blue" />
+                    <span>负荷</span>
+                  </div>
+                  <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
+                    {ringData.tss.current} / {ringData.tss.target} TSS ({Math.round(ringData.tss.pct * 100)}%)
+                  </span>
+                </div>
+              </div>
+            </IOSCard>
+          </div>
+
+          {/* Row 2: Heatmap + Bioclock */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+            {/* Left 7 cols: 91-Day Heatmap Grid */}
+            <IOSCard className="lg:col-span-7 space-y-3.5">
+              <IOSCardHeader
+                title="出勤打卡热力墙 (91天历史)"
+                subtitle="每日里程热力阶梯 · 连击打卡记录"
+                icon={Calendar}
+                iconColor="text-ios-green bg-ios-green/10"
+                action={
+                  <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                    <span>当前连击: <strong className="text-ios-blue font-mono">{streakStats.currentStreak} 天</strong></span>
+                    <span>最长连击: <strong className="text-ios-green font-mono">{streakStats.longestStreak} 天</strong></span>
+                  </div>
+                }
+              />
+
+              {/* Grid Container */}
+              <div className="overflow-x-auto pb-2">
+                <div className="inline-flex flex-col gap-1 min-w-[580px]">
+                  <div className="flex gap-1">
+                    {heatmapGrid.map((week, wIdx) => (
+                      <div key={wIdx} className="flex flex-col gap-1">
+                        {week.map((cell) => {
+                          const colorClass =
+                            cell.level === 4
+                              ? 'bg-ios-blue dark:bg-ios-blue'
+                              : cell.level === 3
+                              ? 'bg-ios-blue/70 dark:bg-ios-blue/65'
+                              : cell.level === 2
+                              ? 'bg-ios-blue/45 dark:bg-ios-blue/40'
+                              : cell.level === 1
+                              ? 'bg-ios-blue/20 dark:bg-ios-blue/20'
+                              : 'bg-slate-100 dark:bg-[#2C2C2E]/60';
+
+                          return (
+                            <div
+                              key={cell.date}
+                              className={`w-3.5 h-3.5 rounded-[3px] ${colorClass} transition-all hover:scale-125 cursor-pointer`}
+                              title={`${cell.date}: ${cell.distanceKm} km, +${cell.elevationM} m (${cell.rides} 场)`}
+                            />
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Legend row */}
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+                    <span>13 周前</span>
+                    <div className="flex items-center gap-1.5">
+                      <span>休整</span>
+                      <div className="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-[#2C2C2E]" />
+                      <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue/20" />
+                      <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue/45" />
+                      <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue/70" />
+                      <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue" />
+                      <span>破百大强度</span>
+                    </div>
+                    <span>本周</span>
+                  </div>
+                </div>
+              </div>
+            </IOSCard>
+
+            {/* Right 5 cols: Bioclock & Habit Insights */}
+            <IOSCard className="lg:col-span-5 space-y-3.5">
+              <IOSCardHeader
+                title="生物钟与周内出勤画像"
+                subtitle={`判定车手类型: ${bioclock.riderPattern}`}
+                icon={Sun}
+                iconColor="text-ios-orange bg-ios-orange/10"
+                action={
+                  <IOSSegmentedControl
+                    value={bioclockTab}
+                    onChange={(v) => setBioclockTab(v as 'time' | 'day')}
+                    options={[
+                      { value: 'time', label: '时段分布' },
+                      { value: 'day', label: '周度规律' }
+                    ]}
+                    size="sm"
+                    mobileFullWidth={false}
+                    className="shrink-0"
+                  />
+                }
+              />
+
+              <div className="h-56 w-full flex items-center justify-center">
+                {bioclockTab === 'time' ? (
+                  <Doughnut
+                    data={bioclockDoughnutData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: { position: 'right' as const, labels: { boxWidth: 10, font: { size: 11 } } }
+                      }
+                    }}
+                  />
+                ) : (
+                  <Bar
+                    data={bioclockDayBarData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: { legend: { display: false } },
+                      scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 10 } } }
+                      }
+                    }}
+                  />
+                )}
+              </div>
+            </IOSCard>
+          </div>
         </div>
       )}
 
-      {/* 5. Two Big Cards: PMC Matrix + Eddington Number */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-        {/* Left 7 cols: PMC Matrix (Intervals.icu Model) */}
-        <IOSCard className="lg:col-span-7 space-y-3.5">
-          <IOSCardHeader
-            title="PMC 体能状态动力学 (Intervals.icu 模型)"
-            subtitle="90天体能 (CTL) · 急性疲劳 (ATL) · 竞技状态 (TSB)"
-            icon={TrendingUp}
-            iconColor="text-ios-blue bg-ios-blue/10"
-            action={
-              <div className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${athleteDiagnosis.badgeBg} ${athleteDiagnosis.badgeText}`}>
-                <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                <span>{athleteDiagnosis.label}</span>
+      {/* TAB 2: 体能与周期 (FITNESS & FORM) */}
+      {activeTab === 'fitness' && (
+        <div className="space-y-4 sm:space-y-5">
+          {/* Contextual Warning Banner */}
+          {athleteDiagnosis.rampRateWarning && (
+            <div className="p-3.5 rounded-2xl bg-ios-orange/10 border border-ios-orange/20 text-xs text-slate-800 dark:text-slate-200 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-ios-orange shrink-0" />
+                <span>{athleteDiagnosis.rampRateWarning}</span>
               </div>
-            }
-          />
-
-          {/* Tri-metrics readout */}
-          <div className="grid grid-cols-3 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
-            <div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">CTL 长期体能</div>
-              <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{latestPmc.ctl}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">42天 EWMA 积淀</div>
+              {onNavigateTool && (
+                <button
+                  onClick={() => onNavigateTool('workout-builder')}
+                  className="shrink-0 h-8 px-2.5 rounded-lg bg-ios-orange text-white font-medium hover:bg-ios-orange/90 apple-touch text-[11px] flex items-center gap-1"
+                >
+                  <span>生成排酸课表</span>
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              )}
             </div>
-            <div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">ATL 急性疲劳</div>
-              <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">{latestPmc.atl}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">7天负荷累加</div>
-            </div>
-            <div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">TSB 竞技状态</div>
-              <div className={`text-xl sm:text-2xl font-bold tabular-nums ${latestPmc.tsb >= 0 ? 'text-ios-green' : 'text-ios-red'}`}>
-                {latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">CTL - ATL</div>
-            </div>
-          </div>
+          )}
 
-          <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-ios-blue/5 p-2.5 rounded-xl border border-ios-blue/10 flex items-start gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-ios-blue shrink-0 mt-0.5" />
-            <div>
-              <strong>运动生理诊断:</strong> {athleteDiagnosis.advice}
-            </div>
-          </div>
-
-          {/* PMC Chart */}
-          <div className="h-56 sm:h-64 w-full">
-            <Line data={pmcChartData} options={pmcChartOptions} />
-          </div>
-        </IOSCard>
-
-        {/* Right 5 cols: Eddington Number Hero */}
-        <IOSCard className="lg:col-span-5 space-y-3.5">
-          <IOSCardHeader
-            title="爱丁顿骑行数 (Eddington Number)"
-            subtitle="全球严肃骑行者耐力终极勋章"
-            icon={Award}
-            iconColor="text-ios-blue bg-ios-blue/10"
-          />
-
-          {/* Hero E readout */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-ios-blue/10 via-transparent to-ios-purple/10 border border-ios-blue/20 text-center space-y-1">
-            <div className="text-xs font-semibold text-ios-blue tracking-wide uppercase">当前耐力爱丁顿数</div>
-            <div className="text-5xl sm:text-6xl font-bold text-slate-900 dark:text-white tabular-nums tracking-tight">
-              E = {eddington.E}
-            </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              代表车手一生中至少有 <strong className="text-ios-blue">{eddington.E}</strong> 天，单日骑行突破了 <strong className="text-ios-blue">{eddington.E} km</strong>。
-            </p>
-          </div>
-
-          {/* Next E+1 Target Countdown */}
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-slate-700 dark:text-slate-200">
-                冲级至 <strong className="text-ios-blue">E = {eddington.nextE}</strong>
-              </span>
-              <span className="text-slate-500 dark:text-slate-400 font-mono">
-                差 <strong>{eddington.ridesNeededForNextE}</strong> 场 ≥ {eddington.nextE}km 骑行
-              </span>
-            </div>
-            <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
-              <div
-                className="h-full bg-ios-blue rounded-full transition-all duration-500"
-                style={{ width: `${Math.min(100, (eddington.qualifyingRidesForNext / Math.max(1, eddington.nextE)) * 100)}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Eddington Histogram */}
-          <div className="h-44 w-full">
-            <Bar
-              data={eddingtonChartData as any}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { display: false },
-                  tooltip: { backgroundColor: 'rgba(28, 28, 30, 0.95)' }
-                },
-                scales: {
-                  x: { grid: { display: false }, ticks: { font: { size: 9 }, maxTicksLimit: 10 } },
-                  y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 9 } } }
-                }
-              }}
-            />
-          </div>
-        </IOSCard>
-      </div>
-
-      {/* 6. Heatmap Grid & Activity Rings Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-        {/* Left 8 cols: 91-Day Heatmap Grid */}
-        <IOSCard className="lg:col-span-8 space-y-3.5">
-          <IOSCardHeader
-            title="出勤打卡热力墙 (91天历史)"
-            subtitle="每日里程热力阶梯 · 连击打卡记录"
-            icon={Calendar}
-            iconColor="text-ios-green bg-ios-green/10"
-            action={
-              <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                <span>当前连击: <strong className="text-ios-blue font-mono">{streakStats.currentStreak} 天</strong></span>
-                <span>最长连击: <strong className="text-ios-green font-mono">{streakStats.longestStreak} 天</strong></span>
-              </div>
-            }
-          />
-
-          {/* Grid Container */}
-          <div className="overflow-x-auto pb-2">
-            <div className="inline-flex flex-col gap-1 min-w-[580px]">
-              <div className="flex gap-1">
-                {heatmapGrid.map((week, wIdx) => (
-                  <div key={wIdx} className="flex flex-col gap-1">
-                    {week.map((cell) => {
-                      const colorClass =
-                        cell.level === 4
-                          ? 'bg-ios-blue dark:bg-ios-blue'
-                          : cell.level === 3
-                          ? 'bg-ios-blue/70 dark:bg-ios-blue/65'
-                          : cell.level === 2
-                          ? 'bg-ios-blue/45 dark:bg-ios-blue/40'
-                          : cell.level === 1
-                          ? 'bg-ios-blue/20 dark:bg-ios-blue/20'
-                          : 'bg-slate-100 dark:bg-[#2C2C2E]/60';
-
-                      return (
-                        <div
-                          key={cell.date}
-                          className={`w-3.5 h-3.5 rounded-[3px] ${colorClass} transition-all hover:scale-125 cursor-pointer`}
-                          title={`${cell.date}: ${cell.distanceKm} km, +${cell.elevationM} m (${cell.rides} 场)`}
-                        />
-                      );
-                    })}
+          {/* 1. PMC Matrix (Intervals.icu Model) */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="PMC 体能状态动力学 (Intervals.icu 模型)"
+              subtitle="90天体能 (CTL) · 急性疲劳 (ATL) · 竞技状态 (TSB) 及未来 14 天减量推演"
+              icon={TrendingUp}
+              iconColor="text-ios-blue bg-ios-blue/10"
+              action={
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPmcProjection(!showPmcProjection)}
+                    className={`h-7 px-2.5 rounded-lg text-xs font-medium transition apple-touch flex items-center gap-1 ${
+                      showPmcProjection
+                        ? 'bg-ios-blue text-white shadow-2xs'
+                        : 'bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300'
+                    }`}
+                    title="推演未来14天减量排酸状态"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>+14天减量推演</span>
+                  </button>
+                  <div className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${athleteDiagnosis.badgeBg} ${athleteDiagnosis.badgeText}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                    <span>{athleteDiagnosis.label}</span>
                   </div>
-                ))}
-              </div>
-
-              {/* Legend row */}
-              <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-2">
-                <span>13 周前</span>
-                <div className="flex items-center gap-1.5">
-                  <span>休整</span>
-                  <div className="w-2.5 h-2.5 rounded-sm bg-slate-100 dark:bg-[#2C2C2E]" />
-                  <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue/20" />
-                  <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue/45" />
-                  <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue/70" />
-                  <div className="w-2.5 h-2.5 rounded-sm bg-ios-blue" />
-                  <span>破百大强度</span>
                 </div>
-                <span>本周</span>
+              }
+            />
+
+            {/* Tri-metrics readout */}
+            <div className="grid grid-cols-3 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">CTL 长期体能</div>
+                <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{latestPmc.ctl}</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">42天 EWMA 积淀</div>
+              </div>
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">ATL 急性疲劳</div>
+                <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">{latestPmc.atl}</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">7天负荷累加</div>
+              </div>
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">TSB 竞技状态</div>
+                <div className={`text-xl sm:text-2xl font-bold tabular-nums ${latestPmc.tsb >= 0 ? 'text-ios-green' : 'text-ios-red'}`}>
+                  {latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb}
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">CTL - ATL</div>
               </div>
             </div>
-          </div>
-        </IOSCard>
 
-        {/* Right 4 cols: Apple Fitness Style Activity Rings */}
-        <IOSCard className="lg:col-span-4 space-y-3.5">
-          <IOSCardHeader
-            title="周度运动目标三环"
-            subtitle="Apple Fitness 风格同心圆环"
-            icon={Activity}
-            iconColor="text-ios-red bg-ios-red/10"
-          />
+            {/* Race Window Indicator Banner */}
+            {showPmcProjection && (
+              <div className="text-xs text-ios-green dark:text-ios-green-dark bg-ios-green/10 p-2.5 rounded-xl border border-ios-green/20 flex items-start justify-between gap-2">
+                <div className="flex items-start gap-1.5">
+                  <Flag className="w-3.5 h-3.5 text-ios-green shrink-0 mt-0.5" />
+                  <div>
+                    <strong>黄金竞技窗口预测:</strong>{' '}
+                    {optimalRaceWindow.inOptimalFormToday
+                      ? `今日已处于黄金竞技状态 (TSB ${latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb})！`
+                      : `若保持合理排酸减量，预计 ${optimalRaceWindow.daysUntilPeak} 天后 (${optimalRaceWindow.peakShortDate}) TSB 回弹至 +${optimalRaceWindow.peakTsb} 竞技巅峰！`}
+                    {optimalRaceWindow.optimalDateRange && ` 适宜出赛区间: ${optimalRaceWindow.optimalDateRange}。`}
+                  </div>
+                </div>
+              </div>
+            )}
 
-          <div className="flex items-center justify-center py-2">
-            {/* SVG Concentric Rings */}
-            <div className="relative w-40 h-40 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-                {/* Outer Ring: Distance (Red #FF2D55) */}
-                <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-red/15" />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  stroke="#FF2D55"
-                  strokeWidth="7"
-                  strokeDasharray={`${2 * Math.PI * 42}`}
-                  strokeDashoffset={`${2 * Math.PI * 42 * (1 - Math.min(1, ringData.distance.pct))}`}
-                  strokeLinecap="round"
-                  fill="transparent"
-                  className="transition-all duration-1000 ease-out"
+            <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-ios-blue/5 p-2.5 rounded-xl border border-ios-blue/10 flex items-start gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-ios-blue shrink-0 mt-0.5" />
+              <div>
+                <strong>运动生理诊断:</strong> {athleteDiagnosis.advice}
+              </div>
+            </div>
+
+            {/* PMC Chart */}
+            <div className="h-60 sm:h-68 w-full">
+              <Line data={pmcChartData} options={pmcChartOptions} />
+            </div>
+          </IOSCard>
+
+          {/* 2. Weekly Training Volume Breakdown (Intervals.icu Model) */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="周度训练量与负荷周期 (Intervals.icu 模型)"
+              subtitle="周训练负荷 (TSS 柱状) 与骑行里程 (折线) 双轴走势"
+              icon={BarChart2}
+              iconColor="text-ios-blue bg-ios-blue/10"
+              action={
+                <div className="flex items-center gap-2">
+                  {weeklyVolume.peakTssWeek && (
+                    <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-ios-yellow/10 text-ios-yellow border border-ios-yellow/20">
+                      <Trophy className="w-3 h-3" />
+                      <span>年度峰值周: {weeklyVolume.peakTssWeek.label} ({weeklyVolume.peakTssWeek.tss} TSS)</span>
+                    </div>
+                  )}
+                  <IOSSegmentedControl
+                    value={volumeWeeksSpan === 52 ? '52' : '26'}
+                    onChange={(v) => setVolumeWeeksSpan(v === '52' ? 52 : 26)}
+                    options={[
+                      { value: '52', label: '52 周' },
+                      { value: '26', label: '26 周' }
+                    ]}
+                    size="sm"
+                    mobileFullWidth={false}
+                    className="shrink-0"
+                  />
+                </div>
+              }
+            />
+
+            {/* Metrics summary */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">周均训练负荷</div>
+                <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{weeklyVolume.avgWeeklyTss}</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">TSS / 周</div>
+              </div>
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">周均骑行里程</div>
+                <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">{weeklyVolume.avgWeeklyDistanceKm}</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 周</div>
+              </div>
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">历史峰值负荷周</div>
+                <div className="text-xl sm:text-2xl font-bold text-ios-yellow tabular-nums">
+                  {weeklyVolume.peakTssWeek ? weeklyVolume.peakTssWeek.tss : '--'}
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {weeklyVolume.peakTssWeek ? `${weeklyVolume.peakTssWeek.label} 周` : '无数据'}
+                </div>
+              </div>
+              <div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">总周期负荷</div>
+                <div className="text-xl sm:text-2xl font-bold text-ios-purple tabular-nums">{weeklyVolume.totalVolumeTss.toLocaleString()}</div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">近 {volumeWeeksSpan} 周累加</div>
+              </div>
+            </div>
+
+            {/* Dual-Y Axis Chart */}
+            <div className="h-60 sm:h-64 w-full">
+              <Line data={weeklyVolumeChartData as any} options={weeklyVolumeChartOptions} />
+            </div>
+          </IOSCard>
+
+          {/* 3. MMP Power Curve & eFTP */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="全域功率持续曲线 & eFTP"
+              subtitle={`估算 FTP: ${eftp.eFTP}W (${eftp.eFTPWkg} W/kg) · W' ${eftp.wPrimeKj} kJ`}
+              icon={Zap}
+              iconColor="text-ios-blue bg-ios-blue/10"
+              action={
+                <IOSSegmentedControl
+                  value={mmpUnit}
+                  onChange={(v) => setMmpUnit(v as 'watts' | 'wkg')}
+                  options={[
+                    { value: 'watts', label: '瓦特' },
+                    { value: 'wkg', label: 'W/kg' }
+                  ]}
+                  size="sm"
+                  mobileFullWidth={false}
+                  className="shrink-0"
                 />
+              }
+            />
 
-                {/* Middle Ring: Elevation (Green #34C759) */}
-                <circle cx="50" cy="50" r="32" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-green/15" />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="32"
-                  stroke="#34C759"
-                  strokeWidth="7"
-                  strokeDasharray={`${2 * Math.PI * 32}`}
-                  strokeDashoffset={`${2 * Math.PI * 32 * (1 - Math.min(1, ringData.elevation.pct))}`}
-                  strokeLinecap="round"
-                  fill="transparent"
-                  className="transition-all duration-1000 ease-out"
-                />
-
-                {/* Inner Ring: TSS (Blue #007AFF) */}
-                <circle cx="50" cy="50" r="22" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-blue/15" />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="22"
-                  stroke="#007AFF"
-                  strokeWidth="7"
-                  strokeDasharray={`${2 * Math.PI * 22}`}
-                  strokeDashoffset={`${2 * Math.PI * 22 * (1 - Math.min(1, ringData.tss.pct))}`}
-                  strokeLinecap="round"
-                  fill="transparent"
-                  className="transition-all duration-1000 ease-out"
-                />
-              </svg>
-
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">周综合</span>
-                <span className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
-                  {Math.round(((ringData.distance.pct + ringData.elevation.pct + ringData.tss.pct) / 3) * 100)}%
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Legends */}
-          <div className="space-y-1.5 text-xs">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-ios-pink font-medium">
-                <div className="w-2.5 h-2.5 rounded-full bg-ios-pink" />
-                <span>里程</span>
-              </div>
-              <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
-                {ringData.distance.current} / {ringData.distance.target} km ({Math.round(ringData.distance.pct * 100)}%)
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-ios-green font-medium">
-                <div className="w-2.5 h-2.5 rounded-full bg-ios-green" />
-                <span>爬升</span>
-              </div>
-              <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
-                +{ringData.elevation.current} / +{ringData.elevation.target} m ({Math.round(ringData.elevation.pct * 100)}%)
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-ios-blue font-medium">
-                <div className="w-2.5 h-2.5 rounded-full bg-ios-blue" />
-                <span>负荷</span>
-              </div>
-              <span className="font-mono tabular-nums text-slate-700 dark:text-slate-300">
-                {ringData.tss.current} / {ringData.tss.target} TSS ({Math.round(ringData.tss.pct * 100)}%)
-              </span>
-            </div>
-          </div>
-        </IOSCard>
-      </div>
-
-      {/* 7. Bioclock & MMP Power Duration Curve Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-        {/* Left 6 cols: Bioclock & Habit Insights */}
-        <IOSCard className="lg:col-span-6 space-y-3.5">
-          <IOSCardHeader
-            title="生物钟与周内出勤画像"
-            subtitle={`判定车手类型: ${bioclock.riderPattern}`}
-            icon={Sun}
-            iconColor="text-ios-orange bg-ios-orange/10"
-            action={
-              <IOSSegmentedControl
-                value={bioclockTab}
-                onChange={(v) => setBioclockTab(v as 'time' | 'day')}
-                options={[
-                  { value: 'time', label: '时段分布' },
-                  { value: 'day', label: '周度规律' }
-                ]}
-                size="sm"
-                mobileFullWidth={false}
-                className="shrink-0"
-              />
-            }
-          />
-
-          <div className="h-56 w-full flex items-center justify-center">
-            {bioclockTab === 'time' ? (
-              <Doughnut
-                data={bioclockDoughnutData}
+            <div className="h-56 sm:h-64 w-full">
+              <Line
+                data={mmpCurveData}
                 options={{
                   responsive: true,
                   maintainAspectRatio: false,
                   plugins: {
-                    legend: { position: 'right' as const, labels: { boxWidth: 10, font: { size: 11 } } }
-                  }
-                }}
-              />
-            ) : (
-              <Bar
-                data={bioclockDayBarData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: { legend: { display: false } },
+                    legend: { display: true, position: 'top' as const, labels: { boxWidth: 10, font: { size: 11 } } }
+                  },
                   scales: {
                     x: { grid: { display: false }, ticks: { font: { size: 10 } } },
                     y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 10 } } }
                   }
                 }}
               />
-            )}
-          </div>
-        </IOSCard>
-
-        {/* Right 6 cols: MMP Power Curve & eFTP */}
-        <IOSCard className="lg:col-span-6 space-y-3.5">
-          <IOSCardHeader
-            title="全域功率持续曲线 & eFTP"
-            subtitle={`估算 FTP: ${eftp.eFTP}W (${eftp.eFTPWkg} W/kg) · W' ${eftp.wPrimeKj} kJ`}
-            icon={Zap}
-            iconColor="text-ios-blue bg-ios-blue/10"
-            action={
-              <IOSSegmentedControl
-                value={mmpUnit}
-                onChange={(v) => setMmpUnit(v as 'watts' | 'wkg')}
-                options={[
-                  { value: 'watts', label: '瓦特' },
-                  { value: 'wkg', label: 'W/kg' }
-                ]}
-                size="sm"
-                mobileFullWidth={false}
-                className="shrink-0"
-              />
-            }
-          />
-
-          <div className="h-56 w-full">
-            <Line
-              data={mmpCurveData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { display: true, position: 'top' as const, labels: { boxWidth: 10, font: { size: 11 } } }
-                },
-                scales: {
-                  x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-                  y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 10 } } }
-                }
-              }}
-            />
-          </div>
-        </IOSCard>
-      </div>
-
-      {/* 8. Fleet Management & Component Health */}
-      <IOSCard className="space-y-3.5">
-        <IOSCardHeader
-          title="战车机队全景与零部件损耗管家"
-          subtitle="各车出勤里程统计 · 链条/外胎/刹车健康度寿命预警"
-          icon={Bike}
-          iconColor="text-ios-blue bg-ios-blue/10"
-        />
-
-        {/* Bike Selector Pills - horizontal scrolling on mobile, flexible on desktop */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-          {fleet.map((b, idx) => (
-            <button
-              key={b.id}
-              onClick={() => setSelectedBikeIdx(idx)}
-              className={`h-8 px-3.5 rounded-xl text-xs font-semibold whitespace-nowrap transition apple-touch shrink-0 flex items-center gap-1.5 ${
-                selectedBikeIdx === idx
-                  ? 'bg-ios-blue text-white shadow-ios-sm ring-1.5 ring-ios-blue/35'
-                  : 'bg-slate-100/90 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300'
-              }`}
-            >
-              <Bike className="w-3.5 h-3.5 shrink-0" />
-              <span>{b.name.split(' ')[0]}</span>
-            </button>
-          ))}
-        </div>
-
-        {activeBike && (
-          <div className="space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-ios-blue/10 flex items-center justify-center text-ios-blue">
-                  <Bike className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-sm font-bold text-slate-900 dark:text-white">{activeBike.name}</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
-                    最后出勤: {activeBike.lastRideDate} · 共出勤 {activeBike.totalRides} 场
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
-                  {activeBike.totalDistanceKm.toLocaleString()} km
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">占全队总里程 {activeBike.distancePct}%</div>
-              </div>
             </div>
+          </IOSCard>
+        </div>
+      )}
 
-            {/* Components Wear Bars */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {activeBike.components.map((comp) => (
-                <div
-                  key={comp.name}
-                  className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2"
+      {/* TAB 3: 机队与勋章 (FLEET & HONOURS) */}
+      {activeTab === 'fleet' && (
+        <div className="space-y-4 sm:space-y-5">
+          {/* 1. Fleet Management & Component Health */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="战车机队全景与零部件损耗管家"
+              subtitle="各车出勤里程统计 · 链条/外胎/刹车健康度寿命预警"
+              icon={Bike}
+              iconColor="text-ios-blue bg-ios-blue/10"
+            />
+
+            {/* Bike Selector Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+              {fleet.map((b, idx) => (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedBikeIdx(idx)}
+                  className={`h-8 px-3.5 rounded-xl text-xs font-semibold whitespace-nowrap transition apple-touch shrink-0 flex items-center gap-1.5 ${
+                    selectedBikeIdx === idx
+                      ? 'bg-ios-blue text-white shadow-ios-sm ring-1.5 ring-ios-blue/35'
+                      : 'bg-slate-100/90 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-600 dark:text-slate-300'
+                  }`}
                 >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-1.5 font-medium text-slate-800 dark:text-slate-200">
-                      {renderComponentIcon(comp.componentKey)}
-                      <span>{comp.name}</span>
-                    </span>
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
-                        comp.status === 'critical'
-                          ? 'bg-ios-red/10 text-ios-red'
-                          : comp.status === 'warn'
-                          ? 'bg-ios-orange/10 text-ios-orange'
-                          : 'bg-ios-green/10 text-ios-green'
-                      }`}
-                    >
-                      {comp.status === 'critical' ? '超期预警' : comp.status === 'warn' ? '接近保养' : '健康'}
-                    </span>
-                  </div>
-
-                  <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        comp.status === 'critical' ? 'bg-ios-red' : comp.status === 'warn' ? 'bg-ios-orange' : 'bg-ios-green'
-                      }`}
-                      style={{ width: `${Math.min(100, (comp.currentKm / comp.criticalKm) * 100)}%` }}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
-                    <span>已骑 {comp.currentKm} km</span>
-                    <span>上限 {comp.criticalKm} km</span>
-                  </div>
-                </div>
+                  <Bike className="w-3.5 h-3.5 shrink-0" />
+                  <span>{b.name.split(' ')[0]}</span>
+                </button>
               ))}
             </div>
-          </div>
-        )}
-      </IOSCard>
 
-      {/* 9. Milestones & Trophy Cabinet */}
-      <IOSCard className="space-y-4">
-        <IOSCardHeader
-          title="车手里程碑与荣誉殿堂"
-          subtitle="破百勋章 · 珠峰攀登 · 生涯最高战力记录"
-          icon={Award}
-          iconColor="text-ios-yellow bg-ios-yellow/10"
-        />
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {milestones.map((m) => (
-            <div
-              key={m.id}
-              className={`p-3.5 rounded-xl border transition-all ${
-                m.achieved
-                  ? 'bg-white dark:bg-[#2C2C2E] border-black/[0.06] dark:border-white/10 shadow-2xs'
-                  : 'bg-slate-50/60 dark:bg-white/[0.02] border-dashed border-black/[0.08] dark:border-white/[0.08] opacity-60'
-              }`}
-            >
-              {renderMilestoneIcon(m.id, m.achieved)}
-              <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{m.title}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{m.subtitle}</div>
-              {m.count !== undefined && (
-                <div className="mt-2 text-xs font-bold text-ios-blue tabular-nums">达成 {m.count} 次</div>
-              )}
-            </div>
-          ))}
-        </div>
-      </IOSCard>
-
-      {/* 10. Recent Activities List & Drilldown to FitActivityAnalyzer */}
-      <IOSCard className="space-y-3.5">
-        <IOSCardHeader
-          title="近期 Strava 骑行活动流"
-          subtitle="点击「深度解析」可直接联动 FitActivityAnalyzer 逐秒回放"
-          icon={Route}
-          iconColor="text-ios-blue bg-ios-blue/10"
-        />
-
-        <div className="divide-y divide-black/[0.04] dark:divide-white/[0.06]">
-          {recentActivities.map((act) => {
-            const distKm = parseFloat(((act.distance || 0) / 1000).toFixed(1));
-            const eleM = Math.round(act.total_elevation_gain || 0);
-            const hrs = Math.floor((act.moving_time || 0) / 3600);
-            const mins = Math.round(((act.moving_time || 0) % 3600) / 60);
-
-            return (
-              <div
-                key={act.id}
-                className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-black/[0.01] dark:hover:bg-white/[0.02] -mx-2 px-2 rounded-xl transition"
-              >
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">{act.name}</span>
-                    {act.gear_id && (
-                      <span className="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
-                        {act.sport_type || 'Ride'}
-                      </span>
-                    )}
+            {activeBike && (
+              <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-ios-blue/10 flex items-center justify-center text-ios-blue">
+                      <Bike className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white">{activeBike.name}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        最后出勤: {activeBike.lastRideDate} · 共出勤 {activeBike.totalRides} 场
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2.5 tabular-nums">
-                    <span>{act.start_date.split('T')[0]}</span>
-                    <span>·</span>
-                    <span>{distKm} km</span>
-                    <span>·</span>
-                    <span>+{eleM} m</span>
-                    <span>·</span>
-                    <span>{hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`}</span>
-                    {act.weighted_average_watts && (
-                      <>
-                        <span>·</span>
-                        <span className="text-ios-blue font-medium">{act.weighted_average_watts}W NP</span>
-                      </>
-                    )}
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
+                      {activeBike.totalDistanceKm.toLocaleString()} km
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">占全队总里程 {activeBike.distancePct}%</div>
                   </div>
                 </div>
 
-                {onNavigateTool && (
-                  <button
-                    onClick={() => onNavigateTool('activity-analyzer')}
-                    className="self-start sm:self-auto h-8 px-3 rounded-lg bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue text-xs font-medium apple-touch transition flex items-center gap-1 shrink-0"
-                  >
-                    <span>深度分析</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                )}
+                {/* Components Wear Bars */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {activeBike.components.map((comp) => (
+                    <div
+                      key={comp.name}
+                      className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2"
+                    >
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="flex items-center gap-1.5 font-medium text-slate-800 dark:text-slate-200">
+                          {renderComponentIcon(comp.componentKey)}
+                          <span>{comp.name}</span>
+                        </span>
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
+                            comp.status === 'critical'
+                              ? 'bg-ios-red/10 text-ios-red'
+                              : comp.status === 'warn'
+                              ? 'bg-ios-orange/10 text-ios-orange'
+                              : 'bg-ios-green/10 text-ios-green'
+                          }`}
+                        >
+                          {comp.status === 'critical' ? '超期预警' : comp.status === 'warn' ? '接近保养' : '健康'}
+                        </span>
+                      </div>
+
+                      <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            comp.status === 'critical' ? 'bg-ios-red' : comp.status === 'warn' ? 'bg-ios-orange' : 'bg-ios-green'
+                          }`}
+                          style={{ width: `${Math.min(100, (comp.currentKm / comp.criticalKm) * 100)}%` }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
+                        <span>已骑 {comp.currentKm} km</span>
+                        <span>上限 {comp.criticalKm} km</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            );
-          })}
+            )}
+          </IOSCard>
+
+          {/* 2. Two Columns: Eddington Number Hero + Milestones Cabinet */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+            {/* Left 5 cols: Eddington Number Hero */}
+            <IOSCard className="lg:col-span-5 space-y-3.5">
+              <IOSCardHeader
+                title="爱丁顿骑行数 (Eddington)"
+                subtitle="全球严肃骑行者耐力终极勋章"
+                icon={Award}
+                iconColor="text-ios-blue bg-ios-blue/10"
+              />
+
+              {/* Hero E readout */}
+              <div className="p-4 rounded-xl bg-gradient-to-br from-ios-blue/10 via-transparent to-ios-purple/10 border border-ios-blue/20 text-center space-y-1">
+                <div className="text-xs font-semibold text-ios-blue tracking-wide uppercase">当前耐力爱丁顿数</div>
+                <div className="text-5xl sm:text-6xl font-bold text-slate-900 dark:text-white tabular-nums tracking-tight">
+                  E = {eddington.E}
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-300">
+                  代表车手一生中至少有 <strong className="text-ios-blue">{eddington.E}</strong> 天，单日骑行突破了 <strong className="text-ios-blue">{eddington.E} km</strong>。
+                </p>
+              </div>
+
+              {/* Next E+1 Target Countdown */}
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-medium text-slate-700 dark:text-slate-200">
+                    冲级至 <strong className="text-ios-blue">E = {eddington.nextE}</strong>
+                  </span>
+                  <span className="text-slate-500 dark:text-slate-400 font-mono">
+                    差 <strong>{eddington.ridesNeededForNextE}</strong> 场 ≥ {eddington.nextE}km 骑行
+                  </span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
+                  <div
+                    className="h-full bg-ios-blue rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(100, (eddington.qualifyingRidesForNext / Math.max(1, eddington.nextE)) * 100)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Eddington Histogram */}
+              <div className="h-44 w-full">
+                <Bar
+                  data={eddingtonChartData as any}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: { backgroundColor: 'rgba(28, 28, 30, 0.95)' }
+                    },
+                    scales: {
+                      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxTicksLimit: 10 } },
+                      y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 9 } } }
+                    }
+                  }}
+                />
+              </div>
+            </IOSCard>
+
+            {/* Right 7 cols: Milestones & Trophy Cabinet */}
+            <IOSCard className="lg:col-span-7 space-y-4">
+              <IOSCardHeader
+                title="车手里程碑与荣誉殿堂"
+                subtitle="破百勋章 · 珠峰攀登 · 生涯最高战力记录"
+                icon={Award}
+                iconColor="text-ios-yellow bg-ios-yellow/10"
+              />
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {milestones.map((m) => (
+                  <div
+                    key={m.id}
+                    className={`p-3.5 rounded-xl border transition-all ${
+                      m.achieved
+                        ? 'bg-white dark:bg-[#2C2C2E] border-black/[0.06] dark:border-white/10 shadow-2xs'
+                        : 'bg-slate-50/60 dark:bg-white/[0.02] border-dashed border-black/[0.08] dark:border-white/[0.08] opacity-60'
+                    }`}
+                  >
+                    {renderMilestoneIcon(m.id, m.achieved)}
+                    <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{m.title}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{m.subtitle}</div>
+                    {m.count !== undefined && (
+                      <div className="mt-2 text-xs font-bold text-ios-blue tabular-nums">达成 {m.count} 次</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </IOSCard>
+          </div>
+
+          {/* 3. Recent Activities List & Drilldown to FitActivityAnalyzer */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="近期 Strava 骑行活动流"
+              subtitle="点击「深度解析」可直接联动 FitActivityAnalyzer 逐秒回放"
+              icon={Route}
+              iconColor="text-ios-blue bg-ios-blue/10"
+            />
+
+            <div className="divide-y divide-black/[0.04] dark:divide-white/[0.06]">
+              {recentActivities.map((act) => {
+                const distKm = parseFloat(((act.distance || 0) / 1000).toFixed(1));
+                const eleM = Math.round(act.total_elevation_gain || 0);
+                const hrs = Math.floor((act.moving_time || 0) / 3600);
+                const mins = Math.round(((act.moving_time || 0) % 3600) / 60);
+
+                return (
+                  <div
+                    key={act.id}
+                    className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-black/[0.01] dark:hover:bg-white/[0.02] -mx-2 px-2 rounded-xl transition"
+                  >
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white">{act.name}</span>
+                        {act.gear_id && (
+                          <span className="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
+                            {act.sport_type || 'Ride'}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2.5 tabular-nums">
+                        <span>{act.start_date.split('T')[0]}</span>
+                        <span>·</span>
+                        <span>{distKm} km</span>
+                        <span>·</span>
+                        <span>+{eleM} m</span>
+                        <span>·</span>
+                        <span>{hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`}</span>
+                        {act.weighted_average_watts && (
+                          <>
+                            <span>·</span>
+                            <span className="text-ios-blue font-medium">{act.weighted_average_watts}W NP</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {onNavigateTool && (
+                      <button
+                        onClick={() => onNavigateTool('activity-analyzer')}
+                        className="self-start sm:self-auto h-8 px-3 rounded-lg bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue text-xs font-medium apple-touch transition flex items-center gap-1 shrink-0"
+                      >
+                        <span>深度分析</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </IOSCard>
         </div>
-      </IOSCard>
+      )}
 
       {/* Share Poster Modal */}
       <ShareCardModal

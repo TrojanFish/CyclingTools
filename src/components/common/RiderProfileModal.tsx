@@ -417,6 +417,20 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     unit="岁"
                   />
                 </div>
+
+                <div>
+                  <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block mb-1">
+                    {language === 'zh-TW' ? '年度目標里程' : '年度目标里程'}
+                  </label>
+                  <NumberStepper
+                    value={profile.annualGoalKm ?? 5000}
+                    onChange={(v) => updateProfile({ annualGoalKm: v })}
+                    step={500}
+                    min={500}
+                    max={50000}
+                    unit="km"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -447,6 +461,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     maxHr: 190,
                     gender: 'male',
                     age: 24,
+                    annualGoalKm: 5000,
                   });
                   showToast('已创建并载入新车手档案', 'success');
                 }}
