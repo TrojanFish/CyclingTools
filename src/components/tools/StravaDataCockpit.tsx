@@ -103,7 +103,7 @@ interface StravaDataCockpitProps {
 type CockpitTab = 'overview' | 'fitness' | 'segments' | 'fleet';
 
 export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigateTool }) => {
-  const { isConnected, athlete, activities: realActivities, isSyncing, syncActivities, getStarredSegments } = useStrava();
+  const { isConnected, athlete, activities: realActivities, isSyncing, syncActivities, getStarredSegments, syncProgress } = useStrava();
   const { profile, bikes: userBikes } = useRiderProfile();
   const { language, convertDistance, convertElevation } = useLanguageAndUnit();
   const { showToast } = useToast();
@@ -1035,7 +1035,11 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                 className="h-9 px-3 rounded-xl text-xs font-medium bg-ios-blue text-white hover:bg-ios-blue/90 disabled:opacity-50 apple-touch transition flex items-center gap-1.5 shadow-ios-sm"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-                <span>{isSyncing ? (language === 'zh-TW' ? '同步中' : '同步中') : (language === 'zh-TW' ? '同步' : '同步')}</span>
+                <span className="tabular-nums">
+                  {isSyncing
+                    ? (syncProgress ? `${language === 'zh-TW' ? '同步中' : '同步中'} ${syncProgress.current}%` : (language === 'zh-TW' ? '同步中' : '同步中'))
+                    : (language === 'zh-TW' ? '同步' : '同步')}
+                </span>
               </button>
             )}
           </div>
@@ -1062,6 +1066,51 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           ]}
         />
       </div>
+
+      {/* 2.2 Live Sync Progress Bar Banner (Collapsible Apple HIG HUD) */}
+      {syncProgress && (
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-white/90 dark:bg-[#1C1C1E]/90 backdrop-blur-md border border-ios-blue/20 dark:border-ios-blue/30 shadow-ios-card space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <div
+                className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                  syncProgress.stage === 'done'
+                    ? 'bg-ios-green/15 text-ios-green'
+                    : 'bg-ios-blue/15 text-ios-blue'
+                }`}
+              >
+                {syncProgress.stage === 'done' ? (
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                ) : (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                )}
+              </div>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
+                {syncProgress.message}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0 pl-2">
+              <span
+                className={`font-mono font-bold tabular-nums text-xs ${
+                  syncProgress.stage === 'done' ? 'text-ios-green' : 'text-ios-blue'
+                }`}
+              >
+                {syncProgress.current}%
+              </span>
+            </div>
+          </div>
+
+          {/* Progress Track */}
+          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-300 ease-out ${
+                syncProgress.stage === 'done' ? 'bg-ios-green' : 'bg-ios-blue'
+              }`}
+              style={{ width: `${Math.min(100, Math.max(0, syncProgress.current))}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* 2.5 Cockpit Category Navigation Tabs */}
       <div className="flex items-center justify-start sm:justify-center">
