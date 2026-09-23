@@ -234,3 +234,78 @@ export const clearStravaDb = async (): Promise<void> => {
     tx.onerror = () => reject(tx.error);
   });
 };
+
+export interface StravaStorageInfo {
+  activityCount: number;
+  streamCount: number;
+  routeCount: number;
+  approxDbSizeBytes: number;
+  browserQuotaBytes: number;
+  browserUsageBytes: number;
+}
+
+/**
+ * Get storage usage metrics for Strava IndexedDB and browser storage quota
+ */
+export const getStravaStorageInfo = async (): Promise<StravaStorageInfo> => {
+  try {
+    const db = await getDb();
+
+    const countStore = (storeName: string): Promise<number> => {
+      return new Promise((resolve) => {
+        try {
+          if (!db.objectStoreNames.contains(storeName)) {
+            resolve(0);
+            return;
+          }
+          const tx = db.transaction(storeName, 'readonly');
+          const req = tx.objectStore(storeName).count();
+          req.onsuccess = () => resolve(req.result || 0);
+          req.onerror = () => resolve(0);
+        } catch {
+          resolve(0);
+        }
+      });
+    };
+
+    const [activityCount, streamCount, routeCount] = await Promise.all([
+      countStore('activities'),
+      countStore('streams'),
+      countStore('routes')
+    ]);
+
+    let browserQuotaBytes = 0;
+    let browserUsageBytes = 0;
+    if (typeof navigator !== 'undefined' && navigator.storage && navigator.storage.estimate) {
+      try {
+        const estimate = await navigator.storage.estimate();
+        browserQuotaBytes = estimate.quota || 0;
+        browserUsageBytes = estimate.usage || 0;
+      } catch {
+        // Fallback for environments without storage.estimate
+      }
+    }
+
+    // Summary ~2KB, stream ~200KB, route ~15KB
+    const approxDbSizeBytes = (activityCount * 2048) + (streamCount * 204800) + (routeCount * 15360);
+
+    return {
+      activityCount,
+      streamCount,
+      routeCount,
+      approxDbSizeBytes,
+      browserQuotaBytes,
+      browserUsageBytes
+    };
+  } catch {
+    return {
+      activityCount: 0,
+      streamCount: 0,
+      routeCount: 0,
+      approxDbSizeBytes: 0,
+      browserQuotaBytes: 0,
+      browserUsageBytes: 0
+    };
+  }
+};
+
