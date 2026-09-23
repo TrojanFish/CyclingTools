@@ -78,23 +78,25 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
   return (
     <div className="space-y-4">
       {/* ── 1. Top Status Row (Strictly 1 single horizontal row on mobile and desktop) ── */}
-      <div className="flex items-center justify-between gap-1.5 min-w-0">
+      <div className="flex items-center justify-between gap-1.5 min-w-0 h-7">
         {/* Left: Readiness Score Tag */}
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold tracking-wide shrink-0 ${
-          data ? TINT_BADGE[data.readinessTint] : 'bg-ios-mint/10 text-ios-mint border-ios-mint/20'
-        }`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${
-            data ? TINT_DOT[data.readinessTint] : 'bg-ios-mint'
-          }`} />
-          <span>
-            {data ? (
-              <>
-                <span className="sm:hidden">{data.readinessScore}分 · {data.readinessLabel.replace('出骑时机', '').replace('骑行', '')}</span>
-                <span className="hidden sm:inline">{data.readinessScore}分 · {data.readinessLabel}</span>
-              </>
-            ) : (isTw ? '適宜度計算中' : '适宜度计算中')}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold tracking-wide shrink-0 ${
+            data ? TINT_BADGE[data.readinessTint] : 'bg-ios-mint/10 text-ios-mint border-ios-mint/20'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${
+              data ? TINT_DOT[data.readinessTint] : 'bg-ios-mint'
+            }`} />
+            <span>
+              {data ? (
+                <>
+                  <span className="sm:hidden">{data.readinessScore}分 · {data.readinessLabel.replace('出骑时机', '').replace('骑行', '')}</span>
+                  <span className="hidden sm:inline">{data.readinessScore}分 · {data.readinessLabel}</span>
+                </>
+              ) : (isTw ? '適宜度計算中' : '适宜度计算中')}
+            </span>
           </span>
-        </span>
+        </div>
 
         {/* Right: Location Search Pill + Quick GPS Re-center + Refresh (Shrink-proof single row) */}
         <div className="flex items-center gap-1 shrink-0 min-w-0">

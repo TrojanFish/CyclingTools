@@ -345,7 +345,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {heroMode === 'post-ride' && (
             <div className="space-y-4">
               {/* Top Tag & Context Metadata */}
-              <div className="flex items-center justify-between gap-1.5 min-w-0">
+              <div className="flex items-center justify-between gap-1.5 min-w-0 h-7">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-bold tracking-wide shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-ios-blue" />
