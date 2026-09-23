@@ -1137,8 +1137,8 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               <IOSCardHeader
                 title={
                   annualGoalMetric === 'distance'
-                    ? (language === 'zh-TW' ? '年度里程目標與進度追蹤 (Strava 模型)' : '年度里程目标与进度追踪 (Strava 模型)')
-                    : (language === 'zh-TW' ? '年度爬升目標與進度追蹤 (Strava 模型)' : '年度爬升目标与进度追踪 (Strava 模型)')
+                    ? (language === 'zh-TW' ? '年度里程目標' : '年度里程目标')
+                    : (language === 'zh-TW' ? '年度爬升目標' : '年度爬升目标')
                 }
                 subtitle={
                   annualGoalMetric === 'distance'
@@ -1288,7 +1288,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             {/* Right 5 cols: Apple Fitness Style Activity Rings */}
             <IOSCard className="lg:col-span-5 space-y-3.5">
               <IOSCardHeader
-                title="周度运动目标三环"
+                title={language === 'zh-TW' ? '運動三環' : '运动三环'}
                 subtitle="Apple Fitness 风格同心圆环"
                 icon={Activity}
                 iconColor="text-ios-red bg-ios-red/10"
@@ -1387,7 +1387,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             {/* Left 7 cols: 91-Day Heatmap Grid */}
             <IOSCard className="lg:col-span-7 space-y-3.5">
               <IOSCardHeader
-                title="出勤打卡热力墙 (91天历史)"
+                title={language === 'zh-TW' ? '出勤熱力牆' : '出勤热力墙'}
                 subtitle="每日里程热力阶梯 · 连击打卡记录"
                 icon={Calendar}
                 iconColor="text-ios-green bg-ios-green/10"
@@ -1448,7 +1448,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             {/* Right 5 cols: Bioclock & Habit Insights */}
             <IOSCard className="lg:col-span-5 space-y-3.5">
               <IOSCardHeader
-                title="生物钟与周内出勤画像"
+                title={language === 'zh-TW' ? '生理時鐘畫像' : '生物钟画像'}
                 subtitle={`判定车手类型: ${bioclock.riderPattern}`}
                 icon={Sun}
                 iconColor="text-ios-orange bg-ios-orange/10"
@@ -1524,7 +1524,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 1. PMC Matrix (Intervals.icu Model) */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="PMC 体能状态动力学 (Intervals.icu 模型)"
+              title={language === 'zh-TW' ? '體能動力學 (PMC)' : '体能动力学 (PMC)'}
               subtitle="90天体能 (CTL) · 急性疲劳 (ATL) · 竞技状态 (TSB) 及未来 14 天减量推演"
               icon={TrendingUp}
               iconColor="text-ios-blue bg-ios-blue/10"
@@ -1604,7 +1604,11 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 2. Weekly Training Volume & CTL Ramp Rate History (Unified View) */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title={volumeSubView === 'volume' ? '周度训练量与负荷周期 (Intervals.icu 模型)' : '每周 CTL 爬升率与安全窗口 (Ramp Rate)'}
+              title={
+                volumeSubView === 'volume'
+                  ? (language === 'zh-TW' ? '週訓練負荷' : '周训练负荷')
+                  : 'CTL 爬升率'
+              }
               subtitle={
                 volumeSubView === 'volume'
                   ? '周训练负荷 (TSS 柱状) 与骑行里程 (折线) 双轴走势'
@@ -1708,7 +1712,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 3. Coggan Classic 7-Zone Power Distribution Card */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="Coggan 经典 7 区功率时间分布"
+              title={language === 'zh-TW' ? 'Coggan 7 區分佈' : 'Coggan 7 区分布'}
               subtitle={`总计有效骑行 ${Math.floor(powerZones.totalMovingSec / 3600)} 小时 · ${powerZones.patternLabel}`}
               icon={Activity}
               iconColor="text-ios-blue bg-ios-blue/10"
@@ -1768,7 +1772,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 4. FTP History & eFTP Breakthrough Milestones */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="FTP 历史成长轨迹与突破里程碑"
+              title={language === 'zh-TW' ? 'FTP 成長軌跡' : 'FTP 成长轨迹'}
               subtitle={`当前 FTP: ${ftpHistory.currentFtp}W (${ftpHistory.currentWkg} W/kg) · 赛季净增长: +${ftpHistory.gainWatts}W (+${ftpHistory.gainPct}%)`}
               icon={TrendingUp}
               iconColor="text-ios-blue bg-ios-blue/10"
@@ -1787,7 +1791,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 5. MMP Power Duration Curve & eFTP */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="全域功率持续曲线 & eFTP"
+              title={language === 'zh-TW' ? '功率持續曲線 (MMP)' : '功率持续曲线 (MMP)'}
               subtitle={`估算 FTP: ${eftp.eFTP}W (${eftp.eFTPWkg} W/kg) · W' ${eftp.wPrimeKj} kJ`}
               icon={Zap}
               iconColor="text-ios-blue bg-ios-blue/10"
@@ -1832,7 +1836,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 1. Top Segments Summary KPI Grid (4 Tiles) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             <IOSMetricTile
-              label="星标名山路段"
+              label={language === 'zh-TW' ? '標星賽段' : '标星赛段'}
               value={`${segmentStats.totalSegments}`}
               unit="个"
               subtext={`覆盖 ${segmentStats.totalDistanceKm} km 经典赛线`}
@@ -1840,7 +1844,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               accentColor="blue"
             />
             <IOSMetricTile
-              label="斩获战绩勋章"
+              label={language === 'zh-TW' ? '榮譽勳章' : '荣誉勋章'}
               value={`${segmentStats.komCount > 0 ? `${segmentStats.komCount} 👑 · ` : ''}${segmentStats.prCount}`}
               unit="PR 🥇"
               subtext="个人赛段最佳战绩记录"
@@ -1856,7 +1860,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               accentColor="green"
             />
             <IOSMetricTile
-              label="攻段挑战总次数"
+              label={language === 'zh-TW' ? '攻段總次數' : '攻段总次数'}
               value={`${segmentStats.totalAttempts}`}
               unit="次"
               subtext="高负荷推重比实测数据"
@@ -1991,7 +1995,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       <div className="p-2.5 rounded-xl bg-ios-blue/5 dark:bg-ios-blue/10 border border-ios-blue/15 space-y-1.5">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold text-ios-blue flex items-center gap-1">
-                            <span>🥇 个人 PR 战绩</span>
+                            <span>🥇 {language === 'zh-TW' ? '個人最佳 (PR)' : '个人最佳 (PR)'}</span>
                           </span>
                           {seg.athlete_attempts && (
                             <span className="text-[10px] text-slate-500 dark:text-slate-400">
@@ -2039,7 +2043,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       <div className="p-2.5 rounded-xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-1.5">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                            <span>👑 全网 KOM 纪录</span>
+                            <span>👑 {language === 'zh-TW' ? '全網紀錄 (KOM)' : '全网纪录 (KOM)'}</span>
                           </span>
                           {seg.kom_athlete && (
                             <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[80px]" title={seg.kom_athlete}>
@@ -2137,7 +2141,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                         className="h-8 px-3 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white text-xs font-semibold flex items-center gap-1.5 transition apple-touch shadow-ios-sm shrink-0"
                       >
                         <Zap className="w-3.5 h-3.5 fill-current" />
-                        <span>{language === 'zh-TW' ? '攻堅配速規劃' : '攻坚配速规划'}</span>
+                        <span>{language === 'zh-TW' ? '配速規劃' : '配速规划'}</span>
                       </button>
                     )}
                   </div>
@@ -2154,7 +2158,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 1. Fleet Management & Component Health */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="战车机队全景与零部件损耗管家"
+              title={language === 'zh-TW' ? '戰車機隊與損耗' : '战车机队与损耗'}
               subtitle="各车出勤里程统计 · 链条/外胎/刹车健康度寿命预警"
               icon={Bike}
               iconColor="text-ios-blue bg-ios-blue/10"
@@ -2250,7 +2254,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             {/* Left 5 cols: Eddington Number Hero */}
             <IOSCard className="lg:col-span-5 space-y-3.5">
               <IOSCardHeader
-                title="爱丁顿骑行数 (Eddington)"
+                title={language === 'zh-TW' ? '愛丁頓數 (E)' : '爱丁顿数 (E)'}
                 subtitle="全球严肃骑行者耐力终极勋章"
                 icon={Award}
                 iconColor="text-ios-blue bg-ios-blue/10"
@@ -2308,7 +2312,11 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             {/* Right 7 cols: Milestones & PR Progression Timeline */}
             <IOSCard className="lg:col-span-7 space-y-3.5">
               <IOSCardHeader
-                title={trophyTab === 'trophies' ? '车手里程碑与荣誉殿堂' : '个人记录 (PR) 突破轨迹'}
+                title={
+                  trophyTab === 'trophies'
+                    ? (language === 'zh-TW' ? '榮譽里程碑' : '荣誉里程碑')
+                    : (language === 'zh-TW' ? 'PR 突破史' : 'PR 突破史')
+                }
                 subtitle={trophyTab === 'trophies' ? '破百勋章 · 珠峰攀登 · 生涯最高战力记录' : '里程、爬升、加权功率与极速历史跃升记录'}
                 icon={trophyTab === 'trophies' ? Trophy : History}
                 iconColor="text-ios-yellow bg-ios-yellow/10"
@@ -2387,7 +2395,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 3. Recent Activities List with Export Actions */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="近期 Strava 骑行活动流"
+              title={language === 'zh-TW' ? '近期活動流' : '近期活动流'}
               subtitle="点击「深度解析」可直接联动 FitActivityAnalyzer 逐秒回放"
               icon={Route}
               iconColor="text-ios-blue bg-ios-blue/10"
