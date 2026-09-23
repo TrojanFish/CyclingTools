@@ -248,7 +248,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '技師級編輪幾何學' : '技师级编轮几何学'}
         categoryIcon={Disc}
-        title={language === 'zh-TW' ? '單車編輪與輻條長度計算器' : '自行车编轮与辐条长度计算器'}
+        title={language === 'zh-TW' ? '輻條長度' : '辐条长度'}
         description={
           language === 'zh-TW'
             ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'

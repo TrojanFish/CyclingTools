@@ -16,7 +16,7 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 export const GearSpeedCadenceCalculator: React.FC = () => {
   const { showToast } = useToast();
   const { activeBike, updateActiveBikeDrivetrain } = useRiderProfile();
-  const { unitSystem } = useLanguageAndUnit();
+  const { unitSystem, language } = useLanguageAndUnit();
   const isImperial = unitSystem === 'imperial';
 
   const [chainringType, setChainringType] = useState<'double' | 'single'>(
@@ -227,7 +227,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
       <IOSToolHeader
         category="传动比与踏频动力学"
         categoryIcon={Cog}
-        title="齿比-速度-踏频多功能计算器"
+        title={language === 'zh-TW' ? '齒比與踏頻' : '齿比与踏频'}
         description="全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。"
         tint="blue"
         onShare={handleGeneratePoster}

@@ -205,7 +205,7 @@ export const TubelessSealantCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '無內胎系統工程與養護' : '真空胎系统工程与养护'}
         categoryIcon={Droplets}
-        title={language === 'zh-TW' ? '無內胎自補液加注量與週期計算器' : '真空胎自补液加注量与补液周期计算器'}
+        title={language === 'zh-TW' ? '自補液用量' : '自补液用量'}
         description={
           language === 'zh-TW'
             ? '基於外胎環面 (Torus) 幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'

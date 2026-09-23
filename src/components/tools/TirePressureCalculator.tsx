@@ -199,7 +199,7 @@ export const TirePressureCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '滾阻與形變算法' : '滚阻与形变算法'}
         categoryIcon={Gauge}
-        title={language === 'zh-TW' ? '公路/全地形智能胎壓計算器' : '公路/全地形智能胎压计算器'}
+        title={language === 'zh-TW' ? '智能胎壓' : '智能胎压'}
         description={
           language === 'zh-TW'
             ? '綜合車手體重、無內胎結構、實測胎寬與路面狀況，精準計算前後輪差異化最佳胎壓。'

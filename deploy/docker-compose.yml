@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # ─── LaBao App (Nginx serving built SPA) ───────────────────
+  labao:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: labao_app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # SSL certificates from Certbot
+      - certbot_certs:/etc/letsencrypt:ro
+      # Certbot webroot for ACME challenges
+      - certbot_www:/var/www/certbot:ro
+    networks:
+      - labao_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/robots.txt"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ─── Certbot (Let's Encrypt SSL auto-renewal) ───────────────
+  certbot:
+    image: certbot/certbot:latest
+    container_name: labao_certbot
+    restart: unless-stopped
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    # Run renewal check every 12 hours
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot --quiet;
+               sleep 43200 & wait $${!};
+             done"
+    networks:
+      - labao_net
+
+volumes:
+  certbot_certs:
+    driver: local
+  certbot_www:
+    driver: local
+
+networks:
+  labao_net:
+    driver: bridge

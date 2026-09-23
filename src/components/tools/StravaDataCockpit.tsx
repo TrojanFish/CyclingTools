@@ -494,7 +494,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     <div className="space-y-4 sm:space-y-5 pb-12">
       {/* 1. Header with Actions & Live/Demo Indicator */}
       <IOSToolHeader
-        title={language === 'zh-TW' ? 'Strava 單車數據羅盤' : 'Strava 骑行数据罗盘'}
+        title={language === 'zh-TW' ? 'Strava 羅盤' : 'Strava 罗盘'}
         description={language === 'zh-TW' ? '宏觀數據看板 · 運動生理診斷 · 愛丁頓數 · 戰車管家' : '宏观数据看板 · 运动生理诊断 · 爱丁顿数 · 战车管家'}
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={LayoutDashboard}

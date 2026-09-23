@@ -332,8 +332,8 @@ export const MtbSuspensionTuner: React.FC = () => {
         categoryIcon={Sliders}
         title={
           language === 'zh-TW'
-            ? '山地車避震與 SAG 智能調校顧問'
-            : '山地车避震与 SAG 智能调校顾问'
+            ? '避震與 SAG'
+            : '避震与 SAG'
         }
         description={
           language === 'zh-TW'
@@ -1061,7 +1061,10 @@ export const MtbSuspensionTuner: React.FC = () => {
 
       {/* Pro Dynamic SAG Graphic Ruler (SVG) */}
       <IOSCard>
-        <IOSCardHeader title={language === 'zh-TW' ? '動態視覺化避震行程標尺與 O 圈狀態' : '动态可视化避震行程标尺与 O 圈状态'} />
+        <IOSCardHeader
+          title={language === 'zh-TW' ? '行程標尺與 O 圈' : '行程标尺与 O 圈'}
+          subtitle={language === 'zh-TW' ? '動態視覺化避震行程狀態' : '动态可视化避震行程状态'}
+        />
         <div className="space-y-4 pt-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
             {/* Fork SVG */}
@@ -1143,7 +1146,10 @@ export const MtbSuspensionTuner: React.FC = () => {
 
       {/* Pro Trailside Tuning & Diagnostics Playbook */}
       <IOSCard>
-        <IOSCardHeader title={language === 'zh-TW' ? '車隊技師調校疑難排解指南' : '车队技师调校疑难排解指南'} />
+        <IOSCardHeader
+          title={language === 'zh-TW' ? '技師疑難排解' : '技师疑难排解'}
+          subtitle={language === 'zh-TW' ? '車隊級避震調校疑難排解指南' : '车队级避震调校疑难排解指南'}
+        />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-3">
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-amber-600 dark:text-amber-400">

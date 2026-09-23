@@ -612,7 +612,7 @@ export const ClimbPacingPlanner: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '爬坡體能分配與動力學模擬' : '爬坡体能分配与动力学仿真'}
         categoryIcon={Mountain}
-        title={language === 'zh-TW' ? '爬坡路段分段配速與功率規劃器' : '爬坡路段分段配速与功率规划器'}
+        title={language === 'zh-TW' ? '爬坡配速' : '爬坡配速'}
         description={
           language === 'zh-TW'
             ? '分段拆解爬坡路段坡度，結合 FTP 與推重比科學規劃各分段目標功率，預估登頂耗時與體能負荷。'
@@ -875,10 +875,11 @@ export const ClimbPacingPlanner: React.FC = () => {
           {/* Visual Chart: Elevation Profile & Target Watts */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '各分段坡度與目標配速功率階梯曲線' : '各分段坡度与目标配速功率阶梯曲线'}
+              title={language === 'zh-TW' ? '分段配速階梯' : '分段配速阶梯'}
+              subtitle={language === 'zh-TW' ? '各分段坡度與目標功率動態擬合' : '各分段坡度与目标功率动态拟合'}
               icon={TrendingUp}
               iconColor="blue"
-              action={<span className="text-slate-400 dark:text-slate-500 text-[11px]">*双坐标轴动态拟合</span>}
+              action={<span className="text-slate-400 dark:text-slate-500 text-[11px] hidden sm:inline">*双坐标轴动态拟合</span>}
             />
 
             <div className="h-52">
@@ -932,7 +933,8 @@ export const ClimbPacingPlanner: React.FC = () => {
           {/* Segment Details Table */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '各路段功率執行方案與預計耗時明細表' : '各路段功率执行方案与预计耗时明细表'}
+              title={language === 'zh-TW' ? '功率執行方案' : '功率执行方案'}
+              subtitle={language === 'zh-TW' ? '各路段功率目標與預計耗時明細' : '各路段功率目标与预计耗时明细'}
               icon={Activity}
               iconColor="blue"
             />

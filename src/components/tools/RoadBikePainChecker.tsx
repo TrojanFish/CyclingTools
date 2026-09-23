@@ -98,7 +98,7 @@ export const RoadBikePainChecker: React.FC = () => {
       <IOSToolHeader
         category="骑行运动医学与 Fitting 诊断"
         categoryIcon={Activity}
-        title="公路车骑行疼痛排查与自诊指南"
+        title="骑行痛点诊断"
         description="覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。"
         tint="purple"
         onShare={handleGeneratePoster}

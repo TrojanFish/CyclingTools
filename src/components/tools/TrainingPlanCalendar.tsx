@@ -399,7 +399,7 @@ END:VEVENT
       <IOSToolHeader
         category="生理与代谢 / 训练科学"
         categoryIcon={CalendarIcon}
-        title="年度周期训练赛历与巅峰规划器"
+        title="训练赛历 (ATP)"
         description="基于 Tudor Bompa 周期化模型，以目标 A 级赛事为锚点反推体能负荷，排布结构化课表并前瞻推演未来 60 天 PMC 竞技巅峰。"
         tint="blue"
         onShare={handleGeneratePoster}

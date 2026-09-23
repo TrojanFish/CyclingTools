@@ -326,7 +326,7 @@ export const CyclePowerCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '經典動力學推導引擎' : '经典动力学推导引擎'}
         categoryIcon={Zap}
-        title={language === 'zh-TW' ? '單車功率與速度動態計算器' : '骑行功率与速度动力学计算器'}
+        title={language === 'zh-TW' ? '功率與速度' : '功率与速度'}
         description={
           language === 'zh-TW'
             ? '高精度空氣阻力、滾阻、重力分量與海拔密度推算，支援功速互推、Coggan 7 區間劃分與 VAM 爬坡耗時求解。'

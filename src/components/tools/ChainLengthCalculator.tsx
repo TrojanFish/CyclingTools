@@ -170,7 +170,7 @@ export const ChainLengthCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '傳動幾何與鏈條物理' : '传动几何与链条物理'}
         categoryIcon={Link}
-        title={language === 'zh-TW' ? '鏈條長度與齒容量計算器' : '链条长度与齿容量计算器'}
+        title={language === 'zh-TW' ? '鏈條長度' : '链条长度'}
         description={
           language === 'zh-TW'
             ? '換大飛輪或大盤必備！根據後下叉 RC 長度、齒數與大導輪補償，精準計算最佳截鏈節數，並校驗後撥總齒容量。'

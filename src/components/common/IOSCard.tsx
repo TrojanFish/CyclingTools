@@ -174,30 +174,35 @@ export const IOSMetricTile: React.FC<IOSMetricTileProps> = ({
 
   return (
     <div
-      className={`group relative p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.3)] transition-all duration-200 ${accentStyles.glow} ${className}`}
+      className={`group relative p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-[0_2px_8px_rgba(0,0,0,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.3)] transition-all duration-200 flex flex-col justify-between min-h-[76px] sm:min-h-[92px] ${accentStyles.glow} ${className}`}
     >
-      <div className="flex items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2">
-        <span className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
-          {label}
-        </span>
-        {icon && (
-          <div className={`w-5 h-5 sm:w-7 sm:h-7 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 ${accentStyles.icon}`}>
-            {renderIcon()}
-          </div>
-        )}
-      </div>
-      <div className="flex items-baseline gap-1 sm:gap-1.5 font-mono">
-        <span className="text-xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
-          {displayValue}
-        </span>
-        {displayUnit && (
-          <span className="text-[11px] sm:text-xs font-normal text-slate-500 dark:text-slate-400">
-            {displayUnit}
+      <div>
+        <div className="flex items-center justify-between gap-1 sm:gap-2 mb-1 sm:mb-2 min-w-0">
+          <span
+            className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate"
+            title={typeof label === 'string' ? label : undefined}
+          >
+            {label}
           </span>
-        )}
+          {icon && (
+            <div className={`w-5 h-5 sm:w-7 sm:h-7 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 ${accentStyles.icon}`}>
+              {renderIcon()}
+            </div>
+          )}
+        </div>
+        <div className="flex items-baseline gap-1 sm:gap-1.5 font-mono min-w-0">
+          <span className="text-xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums truncate">
+            {displayValue}
+          </span>
+          {displayUnit && (
+            <span className="text-[11px] sm:text-xs font-normal text-slate-500 dark:text-slate-400 shrink-0">
+              {displayUnit}
+            </span>
+          )}
+        </div>
       </div>
       {displaySubtext && (
-        <div className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-tight line-clamp-2">
+        <div className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-tight line-clamp-2 min-w-0">
           {displaySubtext}
         </div>
       )}

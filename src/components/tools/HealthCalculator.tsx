@@ -214,7 +214,7 @@ export const HealthCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '運動生理學與能量代謝' : '运动生理学与能量代谢'}
         categoryIcon={HeartPulse}
-        title={language === 'zh-TW' ? '騎行與運動健康綜合計算器' : '骑行与运动健康综合计算器'}
+        title={language === 'zh-TW' ? '健康與能耗' : '健康与能耗'}
         description={
           language === 'zh-TW'
             ? '一站式計算騎行能量補給、Karvonen 靶心率區間、BMR 基礎代謝、TDEE 每日總能耗及體脂率(BFP)。'

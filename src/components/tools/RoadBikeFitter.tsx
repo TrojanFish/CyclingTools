@@ -236,7 +236,7 @@ export const RoadBikeFitter: React.FC = () => {
       <IOSToolHeader
         category="生物力学与几何拟合"
         categoryIcon={Ruler}
-        title="专业公路车 Fitting 尺寸拟合器"
+        title="Bike Fit"
         description="根据人体解剖学多维测量，科学推导有效上管 ETT、坐高、座舱落差、Stack/Reach、把立及锁片安装方案。"
         tint="purple"
         onShare={handleGeneratePoster}
@@ -552,7 +552,8 @@ export const RoadBikeFitter: React.FC = () => {
           {/* Stack & Reach + Body Proportion Analysis */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '車架堆高與前伸量 (Stack & Reach) 與身材特徵推斷' : '车架堆高与前伸量 (Stack & Reach) 与身材特征推断'}
+              title="Stack & Reach 建议"
+              subtitle={language === 'zh-TW' ? '車架幾何與身材特徵推斷' : '车架几何与身材特征推断'}
               icon={Activity}
               iconColor="purple"
             />
@@ -589,7 +590,8 @@ export const RoadBikeFitter: React.FC = () => {
           {/* Cleat & Cockpit Advice Card */}
           <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
             <IOSCardHeader
-              title={language === 'zh-TW' ? 'KOPS 膝關節鉛垂線檢測與鎖片生物力學' : 'KOPS 膝关节铅垂线检测与锁片生物力学'}
+              title="KOPS 铅垂线与锁片"
+              subtitle={language === 'zh-TW' ? '膝關節垂線與踩踏生物力學' : '膝关节垂线与踩踏生物力学'}
               icon={Footprints}
               iconColor="purple"
             />

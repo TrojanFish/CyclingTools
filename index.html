@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
@@ -7,7 +7,10 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    
+
+    <!-- Canonical & SEO -->
+    <link rel="canonical" href="https://labao.app/" />
+
     <!-- Primary Meta Tags -->
     <title>LaBao 拉爆 - 现代公路车运动科学与性能平台</title>
     <meta name="title" content="LaBao 拉爆 - 现代公路车运动科学与性能平台" />
@@ -15,12 +18,13 @@
     <meta name="keywords" content="LaBao, 拉爆, 辣堡, 骑行计算器, bike fit calculator, tire pressure, 功率计算, 爬坡配速, 齿比计算, gpx路书, watts per kg, cycling science" />
     <meta name="author" content="LaBao Scientific Team" />
     <meta name="theme-color" content="#FF3B30" />
+    <meta name="robots" content="index, follow" />
 
     <!-- WebApp & PWA Specifications -->
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="LaBao" />
-    
+
     <!-- iOS Safari WebApp Optimization -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -28,16 +32,59 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://labao.app/" />
     <meta property="og:title" content="LaBao 拉爆 - 现代公路车运动科学与性能平台" />
-    <meta property="og:description" content="别问，问就是拉爆！以空气动力学、经典力学与运动生理学为底层的专业公路车科学计算平台。" />
-    <meta property="og:site_name" content="LaBao" />
+    <meta property="og:description" content="别问，问就是拉爆！以空气动力学、经典力学与运动生理学为底层的专业公路车科学计算平台。21款高精度骑行计算器与仿真引擎，免费使用。" />
+    <meta property="og:image" content="https://labao.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="LaBao 拉爆 - 骑行科学工坊" />
+    <meta property="og:site_name" content="LaBao 拉爆" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="zh_TW" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="LaBao 拉爆 - 现代公路车运动科学与性能平台" />
-    <meta property="twitter:description" content="别问，问就是拉爆！21款专业公路车科学计算器与仿真引擎。" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://labao.app/" />
+    <meta name="twitter:title" content="LaBao 拉爆 - 现代公路车运动科学与性能平台" />
+    <meta name="twitter:description" content="别问，问就是拉爆！21款专业公路车科学计算器与仿真引擎，空气动力学·经典力学·运动生理学。" />
+    <meta name="twitter:image" content="https://labao.app/og-image.png" />
 
-    <!-- Fonts -->
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "LaBao 拉爆",
+      "alternateName": ["拉爆", "LaBao Cycling", "辣堡"],
+      "url": "https://labao.app",
+      "description": "以空气动力学、经典力学与运动生理学为底层的专业公路车科学计算平台，提供21款高精度骑行计算器与仿真模拟引擎。",
+      "applicationCategory": "SportsApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "CNY"
+      },
+      "featureList": [
+        "功率与速度",
+        "智能胎压",
+        "齿比与踏频",
+        "爬坡配速",
+        "Bike Fit",
+        "GPX 路线规划",
+        "训练赛历与PMC",
+        "天气与风向"
+      ],
+      "inLanguage": ["zh-CN", "zh-TW", "en"],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Cycling enthusiasts, road cyclists, triathletes"
+      }
+    }
+    </script>
+
+    <!-- Fonts (with system fallback for CN users) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">

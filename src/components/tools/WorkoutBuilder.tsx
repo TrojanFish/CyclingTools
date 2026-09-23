@@ -510,7 +510,7 @@ export const WorkoutBuilder: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '結構化間歇課表工坊' : '结构化间歇课表工坊'}
         categoryIcon={Dumbbell}
-        title={language === 'zh-TW' ? '科學間歇訓練課表工坊' : '科学间歇训练课表工坊'}
+        title={language === 'zh-TW' ? '間歇課表工坊' : '间歇课表工坊'}
         description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
         tint="red"
         onShare={handleGeneratePoster}

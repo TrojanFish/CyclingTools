@@ -425,8 +425,8 @@ export const GroupRideSimulator: React.FC = () => {
         categoryIcon={Users}
         title={
           mode === 'ttt'
-            ? (language === 'zh-TW' ? 'TTT 車隊計時賽秒級推演與戰術模擬器' : 'TTT 车队计时赛秒级推演与战术模拟器')
-            : (language === 'zh-TW' ? '公路車團騎/跟騎阻力與戰術模擬器' : '公路车团骑/跟骑阻力与战术模拟器')
+            ? (language === 'zh-TW' ? 'TTT 計時戰術' : 'TTT 计时战术')
+            : (language === 'zh-TW' ? '團騎破風戰術' : '团骑破风战术')
         }
         description={
           mode === 'ttt'

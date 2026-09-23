@@ -1427,7 +1427,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       <IOSToolHeader
         category="数据复盘与运动生理学"
         categoryIcon={LineChartIcon}
-        title="码表活动与 FIT 航迹深度解析器"
+        title="活动深度解析"
         description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
         tint="red"
         onShare={handleGeneratePoster}

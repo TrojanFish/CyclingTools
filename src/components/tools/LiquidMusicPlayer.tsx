@@ -171,9 +171,9 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
       <div className="space-y-4 sm:space-y-5">
         {/* Standard Apple HIG Tool Header */}
         <IOSToolHeader
-          category="骑行踏频节奏电台"
+          category="踏频节奏电台"
           categoryIcon={Music}
-          title="骑行节奏与动感音乐播放器"
+          title="踏频节奏电台"
           description="匹配 85~105 BPM 黄金踏频节奏曲目，支持在训练与巡航中保持专注力。"
           tint="red"
         />

@@ -364,7 +364,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
       <IOSToolHeader
         category="高精度气象与风向研判"
         categoryIcon={CloudSun}
-        title="骑行天气与路线气象顾问"
+        title="天气与风向"
         description="结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。"
         tint="mint"
         actions={
