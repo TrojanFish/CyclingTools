@@ -4,7 +4,14 @@ import {
   computeAnnualGoalProgress,
   computePmcTimeline,
   findOptimalRaceWindow,
-  generateDemoStravaActivities
+  generateDemoStravaActivities,
+  computePowerZoneDistribution,
+  computeRampRateHistory,
+  computeFtpHistory,
+  computePersonalRecordsTimeline,
+  computeAerobicEfficiency,
+  exportActivitiesToCsv,
+  exportActivitiesToJson
 } from '../stravaCockpitAnalytics';
 import { StravaActivityRecord } from '../indexedDb';
 
@@ -153,12 +160,10 @@ describe('StravaCockpitAnalytics - Sports Science Calculations', () => {
       expect(projection.every(p => p.isProjection === true)).toBe(true);
       expect(projection.every(p => p.tss === 0)).toBe(true);
 
-      // Under rest/taper (0 TSS), fatigue (ATL) must decrease faster than fitness (CTL)
       const firstProj = projection[0];
       const lastProj = projection[projection.length - 1];
       expect(lastProj.atl).toBeLessThan(firstProj.atl);
       expect(lastProj.ctl).toBeLessThan(firstProj.ctl);
-      // Freshness (TSB = CTL - ATL) should improve
       expect(lastProj.tsb).toBeGreaterThan(firstProj.tsb);
     });
 
@@ -170,6 +175,130 @@ describe('StravaCockpitAnalytics - Sports Science Calculations', () => {
       expect(raceWindow.daysUntilPeak).toBeGreaterThanOrEqual(1);
       expect(raceWindow.daysUntilPeak).toBeLessThanOrEqual(14);
       expect(typeof raceWindow.peakTsb).toBe('number');
+    });
+  });
+
+  describe('computePowerZoneDistribution (Phase 2)', () => {
+    it('calculates all 7 Coggan zones summing to 100%', () => {
+      const result = computePowerZoneDistribution(demoActivities, 250);
+      expect(result.zones).toHaveLength(7);
+      expect(result.totalMovingSec).toBeGreaterThan(0);
+
+      const sumPct = result.zones.reduce((sum, z) => sum + z.pct, 0);
+      expect(Math.round(sumPct)).toBeGreaterThanOrEqual(99);
+      expect(Math.round(sumPct)).toBeLessThanOrEqual(101);
+
+      expect(result.zones[0].zone).toBe('Z1');
+      expect(result.zones[1].zone).toBe('Z2');
+      expect(result.zones[6].zone).toBe('Z7');
+      expect(result.pattern).toBeDefined();
+      expect(result.patternLabel).toBeDefined();
+    });
+
+    it('handles empty activities safely', () => {
+      const result = computePowerZoneDistribution([], 250);
+      expect(result.zones).toHaveLength(7);
+      expect(result.totalMovingSec).toBe(1); // guarded safe minimum
+      expect(result.pattern).toBe('unstructured');
+    });
+  });
+
+  describe('computeRampRateHistory (Phase 2)', () => {
+    it('computes weekly CTL differences and classifies safety', () => {
+      const timeline = computePmcTimeline(demoActivities, 250, 90, 0);
+      const rampResult = computeRampRateHistory(timeline, 10);
+
+      expect(rampResult.weeks.length).toBeGreaterThan(0);
+      expect(typeof rampResult.maxRamp).toBe('number');
+      expect(typeof rampResult.avgRamp).toBe('number');
+
+      for (const w of rampResult.weeks) {
+        expect(['recovery', 'safe', 'aggressive', 'danger']).toContain(w.status);
+        expect(w.colorHex).toBeDefined();
+      }
+    });
+  });
+
+  describe('computeFtpHistory (Phase 2)', () => {
+    it('generates chronological progression and breakthrough markers', () => {
+      const history = computeFtpHistory(demoActivities, 260, 68);
+      expect(history.timeline.length).toBeGreaterThanOrEqual(2);
+      expect(history.currentFtp).toBe(260);
+      expect(history.currentWkg).toBe(parseFloat((260 / 68).toFixed(2)));
+      expect(history.gainWatts).toBeGreaterThanOrEqual(0);
+      expect(history.peakFtp).toBeGreaterThanOrEqual(260);
+    });
+  });
+
+  describe('computePersonalRecordsTimeline (Phase 3)', () => {
+    it('extracts progressive PR breakthroughs chronologically', () => {
+      const prs = computePersonalRecordsTimeline(demoActivities);
+      expect(prs.length).toBeGreaterThan(0);
+
+      // Verify that every PR has label, formattedValue, and activity details
+      const firstPr = prs[0];
+      expect(firstPr.type).toBeDefined();
+      expect(firstPr.label).toBeDefined();
+      expect(firstPr.formattedValue).toBeDefined();
+      expect(firstPr.date).toBeDefined();
+    });
+
+    it('handles empty activities without crashing', () => {
+      const prs = computePersonalRecordsTimeline([]);
+      expect(prs).toEqual([]);
+    });
+  });
+
+  describe('computeAerobicEfficiency (Phase 3)', () => {
+    it('computes EF (NP/HR) and detects trend for eligible rides', () => {
+      const result = computeAerobicEfficiency(demoActivities);
+      expect(result.avgEf).toBeGreaterThan(0);
+      expect(result.ridesWithEfCount).toBeGreaterThan(0);
+      expect(['improving', 'stable', 'declining']).toContain(result.trend);
+      expect(result.recentEf.length).toBeGreaterThan(0);
+    });
+
+    it('handles activities with missing heart rate cleanly', () => {
+      const activitiesWithoutHr: StravaActivityRecord[] = [
+        {
+          id: 999,
+          name: 'No HR Ride',
+          distance: 50000,
+          moving_time: 3600,
+          elapsed_time: 3600,
+          total_elevation_gain: 100,
+          type: 'Ride',
+          start_date: '2026-05-01T08:00:00Z',
+          start_date_local: '2026-05-01T08:00:00Z',
+          average_speed: 10.0,
+          max_speed: 15.0,
+          weighted_average_watts: 200
+        }
+      ];
+      const result = computeAerobicEfficiency(activitiesWithoutHr);
+      expect(result.avgEf).toBe(0);
+      expect(result.ridesWithEfCount).toBe(0);
+      expect(result.trend).toBe('stable');
+    });
+  });
+
+  describe('Client-side Data Export (Phase 3)', () => {
+    it('generates valid UTF-8 BOM CSV string with escaped fields', () => {
+      const csv = exportActivitiesToCsv(demoActivities.slice(0, 3));
+      expect(csv.startsWith('\uFEFF')).toBe(true);
+      expect(csv).toContain('活动ID');
+      expect(csv).toContain('加权功率(W NP)');
+
+      const lines = csv.split('\n');
+      expect(lines.length).toBe(4); // 1 header + 3 data lines
+    });
+
+    it('generates valid parseable JSON string', () => {
+      const jsonStr = exportActivitiesToJson(demoActivities.slice(0, 2));
+      const parsed = JSON.parse(jsonStr);
+      expect(Array.isArray(parsed)).toBe(true);
+      expect(parsed).toHaveLength(2);
+      expect(parsed[0].id).toBe(demoActivities[0].id);
     });
   });
 });

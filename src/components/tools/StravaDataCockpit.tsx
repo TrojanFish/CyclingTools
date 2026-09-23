@@ -22,7 +22,10 @@ import {
   Sun,
   Target,
   BarChart2,
-  Flag
+  Flag,
+  Download,
+  History,
+  CheckCircle2
 } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
@@ -65,7 +68,14 @@ import {
   estimateEFTP,
   computeGearFleet,
   computeMilestones,
-  generateDemoStravaActivities
+  generateDemoStravaActivities,
+  computePowerZoneDistribution,
+  computeRampRateHistory,
+  computeFtpHistory,
+  computePersonalRecordsTimeline,
+  computeAerobicEfficiency,
+  exportActivitiesToCsv,
+  exportActivitiesToJson
 } from '../../utils/stravaCockpitAnalytics';
 import { generateStravaCockpitPoster } from '../../utils/shareCardGenerators';
 
@@ -123,6 +133,15 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
   // Weekly Volume Span: 52 weeks or 26 weeks
   const [volumeWeeksSpan, setVolumeWeeksSpan] = useState<26 | 52>(52);
 
+  // Weekly Volume Card Sub-view: 'volume' vs 'ramp'
+  const [volumeSubView, setVolumeSubView] = useState<'volume' | 'ramp'>('volume');
+
+  // Power Zone Period filter
+  const [powerZonePeriod, setPowerZonePeriod] = useState<TimePeriod>('all-time');
+
+  // Trophy Cabinet Sub-view: 'trophies' vs 'prs'
+  const [trophyTab, setTrophyTab] = useState<'trophies' | 'prs'>('trophies');
+
   // Share Poster Modal State
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
@@ -175,32 +194,60 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     return computeAnnualGoalProgress(effectiveActivities, annualGoalKm);
   }, [effectiveActivities, annualGoalKm]);
 
-  // 4. Weekly Training Volume Breakdown (Intervals.icu Model)
+  // 4. Weekly Training Volume Breakdown & Ramp Rate History
   const weeklyVolume = useMemo(() => {
     return computeWeeklyVolume(effectiveActivities, ftpWatts, volumeWeeksSpan);
   }, [effectiveActivities, ftpWatts, volumeWeeksSpan]);
 
-  // 5. Eddington Number
+  const rampRateHistory = useMemo(() => {
+    return computeRampRateHistory(pmcTimeline, volumeWeeksSpan === 52 ? 26 : 14);
+  }, [pmcTimeline, volumeWeeksSpan]);
+
+  // 5. Coggan 7-Zone Power Distribution
+  const powerZoneActivities = useMemo(() => {
+    return filterByPeriod(effectiveActivities, powerZonePeriod);
+  }, [effectiveActivities, powerZonePeriod]);
+
+  const powerZones = useMemo(() => {
+    return computePowerZoneDistribution(powerZoneActivities, ftpWatts);
+  }, [powerZoneActivities, ftpWatts]);
+
+  // 6. FTP History & eFTP Breakthrough Milestones
+  const ftpHistory = useMemo(() => {
+    return computeFtpHistory(effectiveActivities, ftpWatts, weightKg);
+  }, [effectiveActivities, ftpWatts, weightKg]);
+
+  // 7. Personal Records (PR) Progressive Timeline
+  const prTimeline = useMemo(() => {
+    return computePersonalRecordsTimeline(effectiveActivities);
+  }, [effectiveActivities]);
+
+  // 8. Aerobic Efficiency Factor (EF)
+  const aerobicEfficiency = useMemo(() => {
+    return computeAerobicEfficiency(periodFilteredActivities);
+  }, [periodFilteredActivities]);
+
+  // 9. Eddington Number
   const eddington = useMemo(() => {
     return computeEddingtonNumber(effectiveActivities);
   }, [effectiveActivities]);
 
-  // 6. Heatmap & Streaks (91-day / 13-week)
+  // 10. Heatmap & Streaks (91-day / 13-week)
   const { grid: heatmapGrid, stats: streakStats } = useMemo(() => {
     return buildHeatmapGrid(effectiveActivities, 13);
   }, [effectiveActivities]);
 
-  // 7. Activity Rings
+  // 11. Activity Rings
   const ringData = useMemo(() => {
     return computeActivityRings(effectiveActivities, ringTargets);
   }, [effectiveActivities, ringTargets]);
 
-  // 8. Bioclock & Habit Insights
+  // 12. Bioclock & Habit Insights
   const bioclock = useMemo(() => {
     return computeBioclock(periodFilteredActivities);
   }, [periodFilteredActivities]);
 
-  // 9. eFTP & MMP Peak Powers
+  // 13. eFTP & MMP Peak Powers
   const eftp = useMemo(() => {
     let p5s = 980;
     let p1m = 520;
@@ -219,7 +266,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     return estimateEFTP(p5s, p1m, p5m, p20m, weightKg);
   }, [effectiveActivities, ftpWatts, weightKg]);
 
-  // 10. Gear Fleet
+  // 14. Gear Fleet
   const combinedBikes = useMemo(() => {
     if (athlete?.bikes && athlete.bikes.length > 0) {
       return athlete.bikes;
@@ -241,12 +288,12 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
 
   const activeBike = fleet[selectedBikeIdx] || fleet[0];
 
-  // 11. Milestones & PRs
+  // 15. Milestones & PRs
   const milestones = useMemo(() => {
     return computeMilestones(effectiveActivities);
   }, [effectiveActivities]);
 
-  // 12. Recent Activities
+  // 16. Recent Activities
   const recentActivities = useMemo(() => {
     return [...effectiveActivities]
       .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime())
@@ -298,6 +345,44 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       setIsShareModalOpen(true);
     } catch {
       showToast('海报生成失败', 'error');
+    }
+  };
+
+  // CSV Export Trigger
+  const handleExportCsv = () => {
+    try {
+      const csvContent = exportActivitiesToCsv(periodFilteredActivities);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `YoloCycling_Activities_${selectedPeriod}_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('CSV 骑行战报已生成并开始下载', 'success');
+    } catch {
+      showToast('导出 CSV 失败', 'error');
+    }
+  };
+
+  // JSON Export Trigger
+  const handleExportJson = () => {
+    try {
+      const jsonContent = exportActivitiesToJson(periodFilteredActivities);
+      const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `YoloCycling_Activities_${selectedPeriod}_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('JSON 骑行数据已生成并开始下载', 'success');
+    } catch {
+      showToast('导出 JSON 失败', 'error');
     }
   };
 
@@ -509,7 +594,117 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, []);
 
-  // 4. Eddington Histogram Chart
+  // 4. Ramp Rate History Bar Chart
+  const rampRateChartData = useMemo(() => {
+    return {
+      labels: rampRateHistory.weeks.map(w => w.label),
+      datasets: [
+        {
+          type: 'bar' as const,
+          label: '周 CTL 净变动 (TSS/周)',
+          data: rampRateHistory.weeks.map(w => w.rampRate),
+          backgroundColor: rampRateHistory.weeks.map(w => w.colorHex),
+          borderRadius: 4
+        }
+      ]
+    };
+  }, [rampRateHistory]);
+
+  const rampRateChartOptions = useMemo(() => {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(28, 28, 30, 0.95)',
+          callbacks: {
+            label: (ctx: { raw: unknown }) => `本周 CTL 变动: ${ctx.raw} TSS/周`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: {
+          grid: { color: 'rgba(120, 120, 128, 0.12)' },
+          ticks: { font: { size: 10 } }
+        }
+      }
+    };
+  }, []);
+
+  // 5. FTP History Chart Data
+  const ftpHistoryChartData = useMemo(() => {
+    return {
+      labels: ftpHistory.timeline.map(p => p.shortDate),
+      datasets: [
+        {
+          type: 'line' as const,
+          label: 'FTP 阈值功率 (W)',
+          data: ftpHistory.timeline.map(p => p.ftpWatts),
+          borderColor: '#007AFF',
+          backgroundColor: 'rgba(0, 122, 255, 0.12)',
+          fill: true,
+          tension: 0.3,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: ftpHistory.timeline.map(p => p.source === 'breakthrough' ? '#FF9500' : '#007AFF'),
+          yAxisID: 'y'
+        },
+        {
+          type: 'line' as const,
+          label: '推重比 (W/kg)',
+          data: ftpHistory.timeline.map(p => p.wkg),
+          borderColor: '#34C759',
+          borderWidth: 1.5,
+          borderDash: [3, 3],
+          tension: 0.3,
+          pointRadius: 0,
+          fill: false,
+          yAxisID: 'y1'
+        }
+      ]
+    };
+  }, [ftpHistory]);
+
+  const ftpHistoryChartOptions = useMemo(() => {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index' as const, intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top' as const,
+          labels: { boxWidth: 10, font: { size: 11 } }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(28, 28, 30, 0.95)',
+          titleFont: { size: 12 },
+          bodyFont: { size: 11 }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: {
+          type: 'linear' as const,
+          display: true,
+          position: 'left' as const,
+          grid: { color: 'rgba(120, 120, 128, 0.12)' },
+          ticks: { font: { size: 10 } }
+        },
+        y1: {
+          type: 'linear' as const,
+          display: true,
+          position: 'right' as const,
+          grid: { display: false },
+          ticks: { font: { size: 10 } }
+        }
+      }
+    };
+  }, []);
+
+  // 6. Eddington Histogram Chart
   const eddingtonChartData = useMemo(() => {
     const labels = eddington.histogramData.map(h => `${h.distanceKm}k`);
     const counts = eddington.histogramData.map(h => h.cumulativeCount);
@@ -539,7 +734,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [eddington]);
 
-  // 5. Bioclock Time Doughnut Data
+  // 7. Bioclock Time Doughnut Data
   const bioclockDoughnutData = useMemo(() => {
     return {
       labels: bioclock.byTimeSlot.map(s => s.label),
@@ -553,7 +748,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [bioclock]);
 
-  // 6. Bioclock Day Bar Data
+  // 8. Bioclock Day Bar Data
   const bioclockDayBarData = useMemo(() => {
     return {
       labels: bioclock.byDayOfWeek.map(d => d.label),
@@ -568,7 +763,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [bioclock]);
 
-  // 7. MMP Curve Data
+  // 9. MMP Curve Data
   const mmpCurveData = useMemo(() => {
     const points = [
       { sec: 5, label: '5s 冲刺', w: eftp.p5s },
@@ -773,7 +968,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               label="加权平均功率"
               value={kpi.avgNpWatts > 0 ? `${kpi.avgNpWatts}` : '--'}
               unit="W NP"
-              subtext={`均速 ${kpi.avgSpeedKmh} km/h`}
+              subtext={`EF ${aerobicEfficiency.avgEf > 0 ? aerobicEfficiency.avgEf : '--'} · 均速 ${kpi.avgSpeedKmh}km/h`}
               icon={<Zap className="w-3.5 h-3.5 text-ios-mint" />}
               accentColor="mint"
             />
@@ -841,7 +1036,6 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                   </span>
                 </div>
                 <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden relative">
-                  {/* Expected pace tick marker */}
                   <div
                     className="absolute top-0 bottom-0 w-0.5 bg-slate-900/60 dark:bg-white/70 z-10"
                     style={{ left: `${Math.min(100, (annualProgress.expectedPaceKm / annualProgress.targetKm) * 100)}%` }}
@@ -872,10 +1066,8 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               />
 
               <div className="flex items-center justify-center py-2">
-                {/* SVG Concentric Rings */}
                 <div className="relative w-40 h-40 flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
-                    {/* Outer Ring: Distance (Red #FF2D55) */}
                     <circle cx="50" cy="50" r="42" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-red/15" />
                     <circle
                       cx="50"
@@ -890,7 +1082,6 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       className="transition-all duration-1000 ease-out"
                     />
 
-                    {/* Middle Ring: Elevation (Green #34C759) */}
                     <circle cx="50" cy="50" r="32" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-green/15" />
                     <circle
                       cx="50"
@@ -905,7 +1096,6 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       className="transition-all duration-1000 ease-out"
                     />
 
-                    {/* Inner Ring: TSS (Blue #007AFF) */}
                     <circle cx="50" cy="50" r="22" stroke="currentColor" strokeWidth="7" fill="transparent" className="text-ios-blue/15" />
                     <circle
                       cx="50"
@@ -980,7 +1170,6 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                 }
               />
 
-              {/* Grid Container */}
               <div className="overflow-x-auto pb-2">
                 <div className="inline-flex flex-col gap-1 min-w-[580px]">
                   <div className="flex gap-1">
@@ -1010,7 +1199,6 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                     ))}
                   </div>
 
-                  {/* Legend row */}
                   <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-2">
                     <span>13 周前</span>
                     <div className="flex items-center gap-1.5">
@@ -1184,21 +1372,30 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             </div>
           </IOSCard>
 
-          {/* 2. Weekly Training Volume Breakdown (Intervals.icu Model) */}
+          {/* 2. Weekly Training Volume & CTL Ramp Rate History (Unified View) */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title="周度训练量与负荷周期 (Intervals.icu 模型)"
-              subtitle="周训练负荷 (TSS 柱状) 与骑行里程 (折线) 双轴走势"
+              title={volumeSubView === 'volume' ? '周度训练量与负荷周期 (Intervals.icu 模型)' : '每周 CTL 爬升率与安全窗口 (Ramp Rate)'}
+              subtitle={
+                volumeSubView === 'volume'
+                  ? '周训练负荷 (TSS 柱状) 与骑行里程 (折线) 双轴走势'
+                  : '监控每周 CTL 爬升斜率，避免激增超速 (>8 TSS/周) 引发慢性损伤'
+              }
               icon={BarChart2}
               iconColor="text-ios-blue bg-ios-blue/10"
               action={
                 <div className="flex items-center gap-2">
-                  {weeklyVolume.peakTssWeek && (
-                    <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-ios-yellow/10 text-ios-yellow border border-ios-yellow/20">
-                      <Trophy className="w-3 h-3" />
-                      <span>年度峰值周: {weeklyVolume.peakTssWeek.label} ({weeklyVolume.peakTssWeek.tss} TSS)</span>
-                    </div>
-                  )}
+                  <IOSSegmentedControl
+                    value={volumeSubView}
+                    onChange={(v) => setVolumeSubView(v as 'volume' | 'ramp')}
+                    options={[
+                      { value: 'volume', label: '周负荷走势' },
+                      { value: 'ramp', label: 'CTL 爬升率' }
+                    ]}
+                    size="sm"
+                    mobileFullWidth={false}
+                    className="shrink-0"
+                  />
                   <IOSSegmentedControl
                     value={volumeWeeksSpan === 52 ? '52' : '26'}
                     onChange={(v) => setVolumeWeeksSpan(v === '52' ? 52 : 26)}
@@ -1214,41 +1411,151 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               }
             />
 
-            {/* Metrics summary */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
-              <div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">周均训练负荷</div>
-                <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{weeklyVolume.avgWeeklyTss}</div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">TSS / 周</div>
-              </div>
-              <div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">周均骑行里程</div>
-                <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">{weeklyVolume.avgWeeklyDistanceKm}</div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 周</div>
-              </div>
-              <div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">历史峰值负荷周</div>
-                <div className="text-xl sm:text-2xl font-bold text-ios-yellow tabular-nums">
-                  {weeklyVolume.peakTssWeek ? weeklyVolume.peakTssWeek.tss : '--'}
+            {volumeSubView === 'volume' ? (
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">周均训练负荷</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{weeklyVolume.avgWeeklyTss}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">TSS / 周</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">周均骑行里程</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">{weeklyVolume.avgWeeklyDistanceKm}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 周</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">历史峰值负荷周</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-yellow tabular-nums">
+                      {weeklyVolume.peakTssWeek ? weeklyVolume.peakTssWeek.tss : '--'}
+                    </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      {weeklyVolume.peakTssWeek ? `${weeklyVolume.peakTssWeek.label} 周` : '无数据'}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">总周期负荷</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-purple tabular-nums">{weeklyVolume.totalVolumeTss.toLocaleString()}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">近 {volumeWeeksSpan} 周累加</div>
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  {weeklyVolume.peakTssWeek ? `${weeklyVolume.peakTssWeek.label} 周` : '无数据'}
+
+                <div className="h-60 sm:h-64 w-full">
+                  <Line data={weeklyVolumeChartData as any} options={weeklyVolumeChartOptions} />
                 </div>
-              </div>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">平均周爬升率</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{rampRateHistory.avgRamp}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">ΔCTL / 周</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">最大单周激增</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">+{rampRateHistory.maxRamp}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">ΔCTL 最大值</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">过负荷警戒周</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-red tabular-nums">{rampRateHistory.cautionWeeksCount}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">&gt; 8 TSS/周 风险</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">安全增长区间</div>
+                    <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">0 ~ 5</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">黄金耐力积淀</div>
+                  </div>
+                </div>
+
+                <div className="h-60 sm:h-64 w-full">
+                  <Bar data={rampRateChartData as any} options={rampRateChartOptions} />
+                </div>
+              </>
+            )}
+          </IOSCard>
+
+          {/* 3. Coggan Classic 7-Zone Power Distribution Card */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="Coggan 经典 7 区功率时间分布"
+              subtitle={`总计有效骑行 ${Math.floor(powerZones.totalMovingSec / 3600)} 小时 · ${powerZones.patternLabel}`}
+              icon={Activity}
+              iconColor="text-ios-blue bg-ios-blue/10"
+              action={
+                <IOSSegmentedControl
+                  value={powerZonePeriod}
+                  onChange={(v) => setPowerZonePeriod(v as TimePeriod)}
+                  options={[
+                    { value: 'all-time', label: '全生涯' },
+                    { value: 'ytd', label: '本年' },
+                    { value: '30d', label: '30天' }
+                  ]}
+                  size="sm"
+                  mobileFullWidth={false}
+                  className="shrink-0"
+                />
+              }
+            />
+
+            {/* Pattern Diagnosis Box */}
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] flex items-start gap-2 text-xs">
+              <Sparkles className="w-4 h-4 text-ios-blue shrink-0 mt-0.5" />
               <div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">总周期负荷</div>
-                <div className="text-xl sm:text-2xl font-bold text-ios-purple tabular-nums">{weeklyVolume.totalVolumeTss.toLocaleString()}</div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">近 {volumeWeeksSpan} 周累加</div>
+                <strong className="text-slate-900 dark:text-white">{powerZones.patternLabel}：</strong>
+                <span className="text-slate-600 dark:text-slate-300 leading-relaxed">{powerZones.patternDescription}</span>
               </div>
             </div>
 
-            {/* Dual-Y Axis Chart */}
-            <div className="h-60 sm:h-64 w-full">
-              <Line data={weeklyVolumeChartData as any} options={weeklyVolumeChartOptions} />
+            {/* 7 Zone Progress Meters */}
+            <div className="space-y-2.5">
+              {powerZones.zones.map((z) => (
+                <div key={z.zone} className="space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold ${z.badgeBg} ${z.badgeText}`}>
+                        {z.zone}
+                      </span>
+                      <span className="font-medium text-slate-800 dark:text-slate-200">{z.name}</span>
+                      <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">({z.rangeWatts})</span>
+                    </div>
+                    <div className="flex items-center gap-2 font-mono tabular-nums text-slate-700 dark:text-slate-300">
+                      <span>{z.hours}h</span>
+                      <span className="w-12 text-right font-bold text-slate-900 dark:text-white">{z.pct}%</span>
+                    </div>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, z.pct)}%`, backgroundColor: z.colorHex }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </IOSCard>
 
-          {/* 3. MMP Power Curve & eFTP */}
+          {/* 4. FTP History & eFTP Breakthrough Milestones */}
+          <IOSCard className="space-y-3.5">
+            <IOSCardHeader
+              title="FTP 历史成长轨迹与突破里程碑"
+              subtitle={`当前 FTP: ${ftpHistory.currentFtp}W (${ftpHistory.currentWkg} W/kg) · 赛季净增长: +${ftpHistory.gainWatts}W (+${ftpHistory.gainPct}%)`}
+              icon={TrendingUp}
+              iconColor="text-ios-blue bg-ios-blue/10"
+              action={
+                <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-ios-green/10 text-ios-green border border-ios-green/20">
+                  <span>峰值: {ftpHistory.peakFtp}W</span>
+                </div>
+              }
+            />
+
+            <div className="h-56 sm:h-64 w-full">
+              <Line data={ftpHistoryChartData as any} options={ftpHistoryChartOptions} />
+            </div>
+          </IOSCard>
+
+          {/* 5. MMP Power Duration Curve & eFTP */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
               title="全域功率持续曲线 & eFTP"
@@ -1387,7 +1694,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             )}
           </IOSCard>
 
-          {/* 2. Two Columns: Eddington Number Hero + Milestones Cabinet */}
+          {/* 2. Two Columns: Eddington Number Hero + Milestones & PR Timeline */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
             {/* Left 5 cols: Eddington Number Hero */}
             <IOSCard className="lg:col-span-5 space-y-3.5">
@@ -1447,44 +1754,112 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               </div>
             </IOSCard>
 
-            {/* Right 7 cols: Milestones & Trophy Cabinet */}
-            <IOSCard className="lg:col-span-7 space-y-4">
+            {/* Right 7 cols: Milestones & PR Progression Timeline */}
+            <IOSCard className="lg:col-span-7 space-y-3.5">
               <IOSCardHeader
-                title="车手里程碑与荣誉殿堂"
-                subtitle="破百勋章 · 珠峰攀登 · 生涯最高战力记录"
-                icon={Award}
+                title={trophyTab === 'trophies' ? '车手里程碑与荣誉殿堂' : '个人记录 (PR) 突破轨迹'}
+                subtitle={trophyTab === 'trophies' ? '破百勋章 · 珠峰攀登 · 生涯最高战力记录' : '里程、爬升、加权功率与极速历史跃升记录'}
+                icon={trophyTab === 'trophies' ? Trophy : History}
                 iconColor="text-ios-yellow bg-ios-yellow/10"
+                action={
+                  <IOSSegmentedControl
+                    value={trophyTab}
+                    onChange={(v) => setTrophyTab(v as 'trophies' | 'prs')}
+                    options={[
+                      { value: 'trophies', label: '勋章殿堂' },
+                      { value: 'prs', label: 'PR 突破史' }
+                    ]}
+                    size="sm"
+                    mobileFullWidth={false}
+                    className="shrink-0"
+                  />
+                }
               />
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {milestones.map((m) => (
-                  <div
-                    key={m.id}
-                    className={`p-3.5 rounded-xl border transition-all ${
-                      m.achieved
-                        ? 'bg-white dark:bg-[#2C2C2E] border-black/[0.06] dark:border-white/10 shadow-2xs'
-                        : 'bg-slate-50/60 dark:bg-white/[0.02] border-dashed border-black/[0.08] dark:border-white/[0.08] opacity-60'
-                    }`}
-                  >
-                    {renderMilestoneIcon(m.id, m.achieved)}
-                    <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{m.title}</div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{m.subtitle}</div>
-                    {m.count !== undefined && (
-                      <div className="mt-2 text-xs font-bold text-ios-blue tabular-nums">达成 {m.count} 次</div>
-                    )}
-                  </div>
-                ))}
-              </div>
+              {trophyTab === 'trophies' ? (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {milestones.map((m) => (
+                    <div
+                      key={m.id}
+                      className={`p-3.5 rounded-xl border transition-all ${
+                        m.achieved
+                          ? 'bg-white dark:bg-[#2C2C2E] border-black/[0.06] dark:border-white/10 shadow-2xs'
+                          : 'bg-slate-50/60 dark:bg-white/[0.02] border-dashed border-black/[0.08] dark:border-white/[0.08] opacity-60'
+                      }`}
+                    >
+                      {renderMilestoneIcon(m.id, m.achieved)}
+                      <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{m.title}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{m.subtitle}</div>
+                      {m.count !== undefined && (
+                        <div className="mt-2 text-xs font-bold text-ios-blue tabular-nums">达成 {m.count} 次</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+                  {prTimeline.length > 0 ? (
+                    prTimeline.slice(0, 8).map((pr) => (
+                      <div
+                        key={pr.id}
+                        className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] flex items-center justify-between gap-3 text-xs"
+                      >
+                        <div className="space-y-0.5 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-semibold text-slate-900 dark:text-white truncate">{pr.label}</span>
+                            {pr.improvementPct !== undefined && pr.improvementPct > 0 && (
+                              <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-ios-green/10 text-ios-green">
+                                +{pr.improvementPct}%
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                            {pr.date} · {pr.activityName}
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="text-sm font-bold text-ios-blue tabular-nums">{pr.formattedValue}</div>
+                          {pr.previousValue !== undefined && (
+                            <div className="text-[10px] text-slate-400 dark:text-slate-500">前纪录: {pr.previousValue}</div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-8 text-center text-xs text-slate-400">暂无检测到突破纪录</div>
+                  )}
+                </div>
+              )}
             </IOSCard>
           </div>
 
-          {/* 3. Recent Activities List & Drilldown to FitActivityAnalyzer */}
+          {/* 3. Recent Activities List with Export Actions */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
               title="近期 Strava 骑行活动流"
               subtitle="点击「深度解析」可直接联动 FitActivityAnalyzer 逐秒回放"
               icon={Route}
               iconColor="text-ios-blue bg-ios-blue/10"
+              action={
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={handleExportCsv}
+                    className="h-8 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium apple-touch transition flex items-center gap-1"
+                    title="导出全部筛选活动为 CSV 格式表格"
+                  >
+                    <Download className="w-3.5 h-3.5 text-ios-blue" />
+                    <span>导出 CSV</span>
+                  </button>
+                  <button
+                    onClick={handleExportJson}
+                    className="h-8 px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-medium apple-touch transition flex items-center gap-1"
+                    title="导出全部筛选活动为原始 JSON 格式"
+                  >
+                    <Download className="w-3.5 h-3.5 text-ios-purple" />
+                    <span>导出 JSON</span>
+                  </button>
+                </div>
+              }
             />
 
             <div className="divide-y divide-black/[0.04] dark:divide-white/[0.06]">

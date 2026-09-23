@@ -205,6 +205,93 @@ export interface OptimalRaceWindow {
   optimalDateRange: string | null;
 }
 
+export interface PowerZoneItem {
+  zone: 'Z1' | 'Z2' | 'Z3' | 'Z4' | 'Z5' | 'Z6' | 'Z7';
+  name: string;
+  rangeWatts: string;
+  seconds: number;
+  hours: number;
+  pct: number;
+  colorHex: string;
+  badgeBg: string;
+  badgeText: string;
+}
+
+export interface PowerZoneDistributionResult {
+  zones: PowerZoneItem[];
+  totalMovingSec: number;
+  pattern: 'pyramidal' | 'polarized' | 'threshold' | 'unstructured';
+  patternLabel: string;
+  patternDescription: string;
+}
+
+export interface RampRateWeekItem {
+  weekKey: string;
+  label: string;
+  rampRate: number;
+  endCtl: number;
+  status: 'recovery' | 'safe' | 'aggressive' | 'danger';
+  colorHex: string;
+  bgToken: string;
+  textToken: string;
+}
+
+export interface RampRateHistoryResult {
+  weeks: RampRateWeekItem[];
+  maxRamp: number;
+  avgRamp: number;
+  cautionWeeksCount: number;
+}
+
+export interface FtpHistoryPoint {
+  id: string;
+  date: string;
+  shortDate: string;
+  ftpWatts: number;
+  wkg: number;
+  source: 'manual' | 'breakthrough' | 'initial';
+  note?: string;
+}
+
+export interface FtpHistoryResult {
+  timeline: FtpHistoryPoint[];
+  currentFtp: number;
+  currentWkg: number;
+  startFtp: number;
+  gainWatts: number;
+  gainPct: number;
+  peakFtp: number;
+}
+
+export interface PersonalRecordItem {
+  id: string;
+  type: 'distance' | 'elevation' | 'duration' | 'power' | 'speed';
+  label: string;
+  value: number;
+  formattedValue: string;
+  unit: string;
+  date: string;
+  shortDate: string;
+  activityId?: number;
+  activityName: string;
+  previousValue?: number;
+  improvementPct?: number;
+}
+
+export interface AerobicEfficiencyResult {
+  avgEf: number;
+  ridesWithEfCount: number;
+  trend: 'improving' | 'stable' | 'declining';
+  trendPct: number;
+  recentEf: {
+    date: string;
+    activityName: string;
+    ef: number;
+    np: number;
+    hr: number;
+  }[];
+}
+
 // -----------------------------------------------------------------------------
 // 1. Period Filtering
 // -----------------------------------------------------------------------------
@@ -1380,4 +1467,635 @@ export function computeAnnualGoalProgress(
     monthlyBreakdown
   };
 }
+
+// -----------------------------------------------------------------------------
+// 13. Coggan Classic 7-Zone Power Distribution & Training Pattern
+// -----------------------------------------------------------------------------
+export function computePowerZoneDistribution(
+  activities: StravaActivityRecord[],
+  riderFtp: number = 240
+): PowerZoneDistributionResult {
+  const ftp = Math.max(80, riderFtp);
+
+  // Coggan 7 zones definitions
+  const z1Upper = Math.round(ftp * 0.55);
+  const z2Upper = Math.round(ftp * 0.75);
+  const z3Upper = Math.round(ftp * 0.90);
+  const z4Upper = Math.round(ftp * 1.05);
+  const z5Upper = Math.round(ftp * 1.20);
+  const z6Upper = Math.round(ftp * 1.50);
+
+  let z1Sec = 0;
+  let z2Sec = 0;
+  let z3Sec = 0;
+  let z4Sec = 0;
+  let z5Sec = 0;
+  let z6Sec = 0;
+  let z7Sec = 0;
+
+  for (const a of activities) {
+    const movingSec = a.moving_time || 0;
+    if (movingSec <= 0) continue;
+
+    const np = a.weighted_average_watts || a.average_watts || 0;
+    const avgW = a.average_watts || np || 0;
+
+    if (np <= 0) {
+      z1Sec += movingSec * 0.7;
+      z2Sec += movingSec * 0.3;
+      continue;
+    }
+
+    const ifVal = np / ftp;
+    const vi = avgW > 0 ? np / avgW : 1.05;
+
+    // Distribute time based on continuous intensity kernel
+    if (ifVal <= 0.60) {
+      z1Sec += movingSec * 0.65;
+      z2Sec += movingSec * 0.30;
+      z3Sec += movingSec * 0.05;
+    } else if (ifVal <= 0.75) {
+      z1Sec += movingSec * 0.20;
+      z2Sec += movingSec * 0.60;
+      z3Sec += movingSec * 0.15;
+      z4Sec += movingSec * 0.05;
+    } else if (ifVal <= 0.88) {
+      z1Sec += movingSec * 0.12;
+      z2Sec += movingSec * 0.38;
+      z3Sec += movingSec * 0.38;
+      z4Sec += movingSec * 0.09;
+      z5Sec += movingSec * 0.03;
+    } else if (ifVal <= 0.98) {
+      z1Sec += movingSec * 0.10;
+      z2Sec += movingSec * 0.22;
+      z3Sec += movingSec * 0.35;
+      z4Sec += movingSec * 0.23;
+      z5Sec += movingSec * 0.08;
+      z6Sec += movingSec * 0.02;
+    } else {
+      z1Sec += movingSec * 0.12;
+      z2Sec += movingSec * 0.16;
+      z3Sec += movingSec * 0.22;
+      z4Sec += movingSec * 0.26;
+      z5Sec += movingSec * 0.14;
+      z6Sec += movingSec * 0.07;
+      z7Sec += movingSec * 0.03;
+    }
+
+    // Punchy rides (high VI) shift 4% into high zones
+    if (vi > 1.15) {
+      const punchShift = movingSec * 0.04;
+      z2Sec = Math.max(0, z2Sec - punchShift);
+      z5Sec += punchShift * 0.5;
+      z6Sec += punchShift * 0.3;
+      z7Sec += punchShift * 0.2;
+    }
+  }
+
+  const totalSec = Math.max(1, z1Sec + z2Sec + z3Sec + z4Sec + z5Sec + z6Sec + z7Sec);
+
+  const zones: PowerZoneItem[] = [
+    {
+      zone: 'Z1',
+      name: '积极恢复 (Recovery)',
+      rangeWatts: `< ${z1Upper}W`,
+      seconds: Math.round(z1Sec),
+      hours: parseFloat((z1Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z1Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#8E8E93',
+      badgeBg: 'bg-slate-500/10 dark:bg-slate-400/20',
+      badgeText: 'text-slate-600 dark:text-slate-400'
+    },
+    {
+      zone: 'Z2',
+      name: '基础有氧 (Endurance)',
+      rangeWatts: `${z1Upper + 1}-${z2Upper}W`,
+      seconds: Math.round(z2Sec),
+      hours: parseFloat((z2Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z2Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#007AFF',
+      badgeBg: 'bg-ios-blue/10 dark:bg-ios-blue/20',
+      badgeText: 'text-ios-blue dark:text-ios-blue-dark'
+    },
+    {
+      zone: 'Z3',
+      name: '节奏骑行 (Tempo)',
+      rangeWatts: `${z2Upper + 1}-${z3Upper}W`,
+      seconds: Math.round(z3Sec),
+      hours: parseFloat((z3Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z3Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#34C759',
+      badgeBg: 'bg-ios-green/10 dark:bg-ios-green/20',
+      badgeText: 'text-ios-green dark:text-ios-green-dark'
+    },
+    {
+      zone: 'Z4',
+      name: '乳酸阈值 (Threshold)',
+      rangeWatts: `${z3Upper + 1}-${z4Upper}W`,
+      seconds: Math.round(z4Sec),
+      hours: parseFloat((z4Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z4Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#FFCC00',
+      badgeBg: 'bg-ios-yellow/10 dark:bg-ios-yellow/20',
+      badgeText: 'text-ios-yellow dark:text-ios-yellow-dark'
+    },
+    {
+      zone: 'Z5',
+      name: '最大摄氧 (VO2 Max)',
+      rangeWatts: `${z4Upper + 1}-${z5Upper}W`,
+      seconds: Math.round(z5Sec),
+      hours: parseFloat((z5Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z5Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#FF9500',
+      badgeBg: 'bg-ios-orange/10 dark:bg-ios-orange/20',
+      badgeText: 'text-ios-orange dark:text-ios-orange-dark'
+    },
+    {
+      zone: 'Z6',
+      name: '无氧耐力 (Anaerobic)',
+      rangeWatts: `${z5Upper + 1}-${z6Upper}W`,
+      seconds: Math.round(z6Sec),
+      hours: parseFloat((z6Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z6Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#FF3B30',
+      badgeBg: 'bg-ios-red/10 dark:bg-ios-red/20',
+      badgeText: 'text-ios-red dark:text-ios-red-dark'
+    },
+    {
+      zone: 'Z7',
+      name: '神经肌肉冲刺 (Sprint)',
+      rangeWatts: `> ${z6Upper}W`,
+      seconds: Math.round(z7Sec),
+      hours: parseFloat((z7Sec / 3600).toFixed(1)),
+      pct: parseFloat(((z7Sec / totalSec) * 100).toFixed(1)),
+      colorHex: '#AF52DE',
+      badgeBg: 'bg-ios-purple/10 dark:bg-ios-purple/20',
+      badgeText: 'text-ios-purple dark:text-ios-purple-dark'
+    }
+  ];
+
+  // Determine Pattern
+  const basePct = zones[0].pct + zones[1].pct;
+  const midPct = zones[2].pct + zones[3].pct;
+  const highPct = zones[4].pct + zones[5].pct + zones[6].pct;
+
+  let pattern: 'pyramidal' | 'polarized' | 'threshold' | 'unstructured' = 'unstructured';
+  let patternLabel = '混合型训练结构';
+  let patternDescription = '中低高各强度均匀分布，适合全地形自由出勤与日常骑聚。';
+
+  if (basePct >= 68 && midPct >= 18 && highPct <= 14) {
+    pattern = 'pyramidal';
+    patternLabel = '金字塔型结构 (Pyramidal)';
+    patternDescription = '经典耐力赛季模型！低强度地基扎实，中高强度逐级递减，极其稳健防伤病。';
+  } else if (basePct >= 72 && midPct <= 14 && highPct >= 12) {
+    pattern = 'polarized';
+    patternLabel = '两极化训练模型 (Polarized 80/20)';
+    patternDescription = '严格落实强弱分明法则！80% 极低心率排酸打底，20% 顶峰冲刺，极高效拉升摄氧量。';
+  } else if (midPct >= 35) {
+    pattern = 'threshold';
+    patternLabel = '甜区/阈值集中型 (Threshold-Heavy)';
+    patternDescription = '中高负荷占比偏高，易在短期内快速拉升 FTP，但需密切关注深层疲劳堆积与防爆缸。';
+  }
+
+  return {
+    zones,
+    totalMovingSec: Math.round(totalSec),
+    pattern,
+    patternLabel,
+    patternDescription
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 14. Weekly CTL Ramp Rate History & Safe Progression Window
+// -----------------------------------------------------------------------------
+export function computeRampRateHistory(
+  pmcTimeline: PmcPoint[],
+  weeksBack: number = 26
+): RampRateHistoryResult {
+  const historyPoints = pmcTimeline.filter(p => !p.isProjection);
+  const weeks: RampRateWeekItem[] = [];
+
+  const totalDays = historyPoints.length;
+  let cautionWeeksCount = 0;
+  let sumRamp = 0;
+  let maxRamp = 0;
+
+  for (let w = 0; w < weeksBack; w++) {
+    const endIdx = totalDays - 1 - w * 7;
+    const startIdx = endIdx - 7;
+    if (startIdx < 0 || endIdx < 0) break;
+
+    const endPoint = historyPoints[endIdx];
+    const startPoint = historyPoints[startIdx];
+    const deltaCtl = parseFloat((endPoint.ctl - startPoint.ctl).toFixed(1));
+    sumRamp += deltaCtl;
+    if (deltaCtl > maxRamp) maxRamp = deltaCtl;
+
+    let status: 'recovery' | 'safe' | 'aggressive' | 'danger' = 'safe';
+    let colorHex = '#007AFF';
+    let bgToken = 'bg-ios-blue/10';
+    let textToken = 'text-ios-blue';
+
+    if (deltaCtl <= 0) {
+      status = 'recovery';
+      colorHex = '#34C759';
+      bgToken = 'bg-ios-green/10';
+      textToken = 'text-ios-green';
+    } else if (deltaCtl <= 5) {
+      status = 'safe';
+      colorHex = '#007AFF';
+      bgToken = 'bg-ios-blue/10';
+      textToken = 'text-ios-blue';
+    } else if (deltaCtl <= 8) {
+      status = 'aggressive';
+      colorHex = '#FF9500';
+      bgToken = 'bg-ios-orange/10';
+      textToken = 'text-ios-orange';
+    } else {
+      status = 'danger';
+      colorHex = '#FF3B30';
+      bgToken = 'bg-ios-red/10';
+      textToken = 'text-ios-red';
+      cautionWeeksCount++;
+    }
+
+    weeks.unshift({
+      weekKey: `W${weeksBack - w}`,
+      label: endPoint.shortDate,
+      rampRate: deltaCtl,
+      endCtl: endPoint.ctl,
+      status,
+      colorHex,
+      bgToken,
+      textToken
+    });
+  }
+
+  const avgRamp = weeks.length > 0 ? parseFloat((sumRamp / weeks.length).toFixed(1)) : 0;
+
+  return {
+    weeks,
+    maxRamp,
+    avgRamp,
+    cautionWeeksCount
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 15. FTP History Tracking & eFTP Breakthrough Milestones
+// -----------------------------------------------------------------------------
+export function computeFtpHistory(
+  activities: StravaActivityRecord[],
+  currentFtp: number = 240,
+  currentWeight: number = 68
+): FtpHistoryResult {
+  const safeFtp = Math.max(80, currentFtp);
+  const safeWeight = Math.max(35, currentWeight);
+
+  let savedList: FtpHistoryPoint[] = [];
+  try {
+    const raw = localStorage.getItem('yolo_cycling_ftp_history');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        savedList = parsed;
+      }
+    }
+  } catch {
+    // Fallback on memory
+  }
+
+  // If saved list is empty or single point, auto-backfill from historical activities
+  if (savedList.length < 2 && activities.length > 0) {
+    const sorted = [...activities]
+      .filter(a => a.start_date)
+      .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+
+    const monthlyBests = new Map<string, { date: string; bestW: number }>();
+    for (const a of sorted) {
+      const ym = a.start_date.substring(0, 7);
+      const np = a.weighted_average_watts || a.average_watts || 0;
+      if (np > 100) {
+        const prev = monthlyBests.get(ym);
+        if (!prev || np > prev.bestW) {
+          monthlyBests.set(ym, { date: a.start_date.split('T')[0], bestW: np });
+        }
+      }
+    }
+
+    const points: FtpHistoryPoint[] = [];
+    let runningFtp = Math.max(140, Math.round(safeFtp * 0.88));
+
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const startYm = oneYearAgo.toISOString().split('T')[0];
+
+    points.push({
+      id: 'ftp-seed',
+      date: startYm,
+      shortDate: `${oneYearAgo.getMonth() + 1}/${oneYearAgo.getDate()}`,
+      ftpWatts: runningFtp,
+      wkg: parseFloat((runningFtp / safeWeight).toFixed(2)),
+      source: 'initial',
+      note: '赛季基准起点'
+    });
+
+    for (const [_, item] of monthlyBests) {
+      if (item.bestW > runningFtp) {
+        runningFtp = Math.min(safeFtp, Math.round(item.bestW));
+        const dt = new Date(item.date);
+        points.push({
+          id: `ftp-bt-${item.date}`,
+          date: item.date,
+          shortDate: `${dt.getMonth() + 1}/${dt.getDate()}`,
+          ftpWatts: runningFtp,
+          wkg: parseFloat((runningFtp / safeWeight).toFixed(2)),
+          source: 'breakthrough',
+          note: '大负荷骑行 eFTP 自动突破'
+        });
+      }
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    if (points[points.length - 1].ftpWatts !== safeFtp || points[points.length - 1].date !== todayStr) {
+      points.push({
+        id: 'ftp-now',
+        date: todayStr,
+        shortDate: `${today.getMonth() + 1}/${today.getDate()}`,
+        ftpWatts: safeFtp,
+        wkg: parseFloat((safeFtp / safeWeight).toFixed(2)),
+        source: 'manual',
+        note: '当前设定值'
+      });
+    }
+
+    savedList = points;
+  }
+
+  const startFtp = savedList[0]?.ftpWatts || safeFtp;
+  const peakFtp = Math.max(...savedList.map(p => p.ftpWatts), safeFtp);
+  const gainWatts = safeFtp - startFtp;
+  const gainPct = parseFloat(((gainWatts / Math.max(1, startFtp)) * 100).toFixed(1));
+
+  return {
+    timeline: savedList,
+    currentFtp: safeFtp,
+    currentWkg: parseFloat((safeFtp / safeWeight).toFixed(2)),
+    startFtp,
+    gainWatts,
+    gainPct,
+    peakFtp
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 16. Personal Records (PR) Progression Timeline
+// -----------------------------------------------------------------------------
+export function computePersonalRecordsTimeline(
+  activities: StravaActivityRecord[]
+): PersonalRecordItem[] {
+  if (!activities || activities.length === 0) return [];
+
+  const sorted = [...activities]
+    .filter(a => a.start_date)
+    .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+
+  const prs: PersonalRecordItem[] = [];
+
+  let maxDistM = 30000;      // Initial threshold: 30 km
+  let maxElevM = 200;        // Initial threshold: 200 m
+  let maxDurationSec = 3600; // Initial threshold: 1 hour
+  let maxNpWatts = 180;      // Initial threshold: 180W NP
+  let maxSpeedKmh = 40.0;    // Initial threshold: 40 km/h
+
+  for (const a of sorted) {
+    const actDate = a.start_date.split('T')[0];
+    const dt = new Date(a.start_date);
+    const shortDate = `${dt.getMonth() + 1}/${dt.getDate()}`;
+    const actName = a.name || '骑行活动';
+
+    // 1. Distance PR
+    if (a.distance && a.distance > maxDistM) {
+      const prevKm = parseFloat((maxDistM / 1000).toFixed(1));
+      const newKm = parseFloat((a.distance / 1000).toFixed(1));
+      const impPct = Math.round(((newKm - prevKm) / prevKm) * 100);
+      maxDistM = a.distance;
+      prs.push({
+        id: `pr-dist-${a.id}`,
+        type: 'distance',
+        label: '单次最长里程突破',
+        value: newKm,
+        formattedValue: `${newKm} km`,
+        unit: 'km',
+        date: actDate,
+        shortDate,
+        activityId: a.id,
+        activityName: actName,
+        previousValue: prevKm,
+        improvementPct: impPct
+      });
+    }
+
+    // 2. Elevation PR
+    if (a.total_elevation_gain && a.total_elevation_gain > maxElevM) {
+      const prevM = maxElevM;
+      const newM = Math.round(a.total_elevation_gain);
+      const impPct = Math.round(((newM - prevM) / prevM) * 100);
+      maxElevM = a.total_elevation_gain;
+      prs.push({
+        id: `pr-ele-${a.id}`,
+        type: 'elevation',
+        label: '单日爬升新记录',
+        value: newM,
+        formattedValue: `+${newM} m`,
+        unit: 'm',
+        date: actDate,
+        shortDate,
+        activityId: a.id,
+        activityName: actName,
+        previousValue: prevM,
+        improvementPct: impPct
+      });
+    }
+
+    // 3. Duration PR
+    if (a.moving_time && a.moving_time > maxDurationSec) {
+      const prevHrs = parseFloat((maxDurationSec / 3600).toFixed(1));
+      const newHrs = parseFloat((a.moving_time / 3600).toFixed(1));
+      const impPct = Math.round(((newHrs - prevHrs) / prevHrs) * 100);
+      maxDurationSec = a.moving_time;
+      prs.push({
+        id: `pr-dur-${a.id}`,
+        type: 'duration',
+        label: '鞍上最长续航突破',
+        value: newHrs,
+        formattedValue: `${newHrs} 小时`,
+        unit: '小时',
+        date: actDate,
+        shortDate,
+        activityId: a.id,
+        activityName: actName,
+        previousValue: prevHrs,
+        improvementPct: impPct
+      });
+    }
+
+    // 4. Power PR (NP)
+    const np = a.weighted_average_watts || 0;
+    if (np > maxNpWatts && (a.moving_time || 0) >= 1200) {
+      const prevW = maxNpWatts;
+      const impPct = Math.round(((np - prevW) / prevW) * 100);
+      maxNpWatts = np;
+      prs.push({
+        id: `pr-pow-${a.id}`,
+        type: 'power',
+        label: '最高加权功率 (NP) 突破',
+        value: np,
+        formattedValue: `${np} W NP`,
+        unit: 'W',
+        date: actDate,
+        shortDate,
+        activityId: a.id,
+        activityName: actName,
+        previousValue: prevW,
+        improvementPct: impPct
+      });
+    }
+
+    // 5. Max Speed PR
+    const currentSpeed = parseFloat(((a.max_speed || 0) * 3.6).toFixed(1));
+    if (currentSpeed > maxSpeedKmh && currentSpeed < 125) {
+      const prevSpd = maxSpeedKmh;
+      const impPct = Math.round(((currentSpeed - prevSpd) / prevSpd) * 100);
+      maxSpeedKmh = currentSpeed;
+      prs.push({
+        id: `pr-spd-${a.id}`,
+        type: 'speed',
+        label: '下坡/冲刺最高极速',
+        value: currentSpeed,
+        formattedValue: `${currentSpeed} km/h`,
+        unit: 'km/h',
+        date: actDate,
+        shortDate,
+        activityId: a.id,
+        activityName: actName,
+        previousValue: prevSpd,
+        improvementPct: impPct
+      });
+    }
+  }
+
+  return prs.reverse();
+}
+
+// -----------------------------------------------------------------------------
+// 17. Aerobic Efficiency Factor (EF = NP / HR)
+// -----------------------------------------------------------------------------
+export function computeAerobicEfficiency(
+  activities: StravaActivityRecord[]
+): AerobicEfficiencyResult {
+  const eligibleRides: { date: string; activityName: string; ef: number; np: number; hr: number }[] = [];
+
+  for (const a of activities) {
+    const np = a.weighted_average_watts || a.average_watts || 0;
+    const hr = a.average_heartrate || 0;
+    const movingSec = a.moving_time || 0;
+
+    if (np >= 80 && hr >= 50 && movingSec >= 1200) {
+      const ef = parseFloat((np / hr).toFixed(2));
+      eligibleRides.push({
+        date: a.start_date.split('T')[0],
+        activityName: a.name || '骑行活动',
+        ef,
+        np,
+        hr
+      });
+    }
+  }
+
+  if (eligibleRides.length === 0) {
+    return {
+      avgEf: 0,
+      ridesWithEfCount: 0,
+      trend: 'stable',
+      trendPct: 0,
+      recentEf: []
+    };
+  }
+
+  const sumEf = eligibleRides.reduce((acc, r) => acc + r.ef, 0);
+  const avgEf = parseFloat((sumEf / eligibleRides.length).toFixed(2));
+
+  let trend: 'improving' | 'stable' | 'declining' = 'stable';
+  let trendPct = 0;
+
+  if (eligibleRides.length >= 6) {
+    const half = Math.floor(eligibleRides.length / 2);
+    const olderRides = eligibleRides.slice(0, half);
+    const newerRides = eligibleRides.slice(half);
+
+    const oldAvg = olderRides.reduce((acc, r) => acc + r.ef, 0) / olderRides.length;
+    const newAvg = newerRides.reduce((acc, r) => acc + r.ef, 0) / newerRides.length;
+
+    trendPct = parseFloat((((newAvg - oldAvg) / Math.max(0.1, oldAvg)) * 100).toFixed(1));
+    if (trendPct >= 3.0) trend = 'improving';
+    else if (trendPct <= -3.0) trend = 'declining';
+  }
+
+  return {
+    avgEf,
+    ridesWithEfCount: eligibleRides.length,
+    trend,
+    trendPct,
+    recentEf: eligibleRides.slice(-8).reverse()
+  };
+}
+
+// -----------------------------------------------------------------------------
+// 18. Client-side Data Export (CSV with UTF-8 BOM & JSON)
+// -----------------------------------------------------------------------------
+export function exportActivitiesToCsv(activities: StravaActivityRecord[]): string {
+  const headers = [
+    '活动ID', '活动名称', '日期', '类型', '骑行距离(km)', '累计爬升(m)',
+    '移动用时(分)', '平均速度(km/h)', '最高速度(km/h)', '平均功率(W)',
+    '加权功率(W NP)', '训练负荷(TSS)', '强度系数(IF)', '平均心率(BPM)', '最高心率(BPM)', '消耗热量(kcal)'
+  ];
+
+  const rows = activities.map(a => {
+    const distKm = parseFloat(((a.distance || 0) / 1000).toFixed(2));
+    const movingMin = Math.round((a.moving_time || 0) / 60);
+    const avgSpeedKmh = parseFloat(((a.average_speed || 0) * 3.6).toFixed(1));
+    const maxSpeedKmh = parseFloat(((a.max_speed || 0) * 3.6).toFixed(1));
+    const dateStr = a.start_date ? a.start_date.split('T')[0] : '';
+    const safeName = `"${(a.name || '骑行活动').replace(/"/g, '""')}"`;
+
+    return [
+      a.id,
+      safeName,
+      dateStr,
+      a.sport_type || a.type || 'Ride',
+      distKm,
+      Math.round(a.total_elevation_gain || 0),
+      movingMin,
+      avgSpeedKmh,
+      maxSpeedKmh,
+      a.average_watts || '',
+      a.weighted_average_watts || '',
+      a.tss || '',
+      a.intensityFactor || '',
+      a.average_heartrate || '',
+      a.max_heartrate || '',
+      a.kilojoules ? Math.round(a.kilojoules * 1.05) : ''
+    ].join(',');
+  });
+
+  return '\uFEFF' + [headers.join(','), ...rows].join('\n');
+}
+
+export function exportActivitiesToJson(activities: StravaActivityRecord[]): string {
+  return JSON.stringify(activities, null, 2);
+}
+
 
