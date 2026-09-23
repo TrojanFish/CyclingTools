@@ -45,7 +45,7 @@ export interface TeamRider extends RiderProfile {
 export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
   {
     id: 'rider-gc',
-    name: '车手 1 (主将 GC Leader)',
+    name: '车手 1',
     role: 'gc',
     heightCm: 176,
     inseamCm: 81.5,
@@ -61,7 +61,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
   },
   {
     id: 'rider-sprinter',
-    name: '车手 2 (冲刺手 Sprinter)',
+    name: '车手 2',
     role: 'sprinter',
     heightCm: 181,
     inseamCm: 83.5,
@@ -77,7 +77,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
   },
   {
     id: 'rider-climber',
-    name: '车手 3 (纯爬坡手 Climber)',
+    name: '车手 3',
     role: 'climber',
     heightCm: 173,
     inseamCm: 80.5,
@@ -93,7 +93,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
   },
   {
     id: 'rider-tt',
-    name: '车手 4 (计时突围手 TT Specialist)',
+    name: '车手 4',
     role: 'rouleur',
     heightCm: 193,
     inseamCm: 91.0,
@@ -154,7 +154,15 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const saved = localStorage.getItem('yolo_cycling_team_roster');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((r: TeamRider) => {
+            if (r.name === '车手 1 (主将 GC Leader)') return { ...r, name: '车手 1' };
+            if (r.name === '车手 2 (冲刺手 Sprinter)') return { ...r, name: '车手 2' };
+            if (r.name === '车手 3 (纯爬坡手 Climber)') return { ...r, name: '车手 3' };
+            if (r.name === '车手 4 (计时突围手 TT Specialist)') return { ...r, name: '车手 4' };
+            return r;
+          });
+        }
       }
     } catch (e) {
       console.warn('Failed to load roster from localStorage', e);

@@ -197,12 +197,12 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
   const heightInches = Math.round((profile.heightCm % 30.48) / 2.54);
 
   const roleLabelMap: Record<string, { label: string; labelTw: string; color: string }> = {
-    gc: { label: '总成绩主将 GC', labelTw: '總成績主將 GC', color: 'bg-amber-500/15 text-amber-600 border-amber-500/30' },
-    sprinter: { label: '终点冲刺手 Sprinter', labelTw: '終點衝刺手 Sprinter', color: 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30' },
-    climber: { label: '纯血爬坡手 Climber', labelTw: '純血爬坡手 Climber', color: 'bg-rose-500/15 text-rose-600 border-rose-500/30' },
-    rouleur: { label: '计时突围手 TT Specialist', labelTw: '計時突圍手 TT Specialist', color: 'bg-blue-500/15 text-blue-600 border-blue-500/30' },
-    domestique: { label: '勤务破风副将 Domestique', labelTw: '勤務破風副將 Domestique', color: 'bg-slate-500/15 text-slate-600 border-slate-500/30' },
-    custom: { label: '自定义车手', labelTw: '自訂車手', color: 'bg-purple-500/15 text-purple-600 border-purple-500/30' }
+    gc: { label: 'GC 主将', labelTw: 'GC 主將', color: 'bg-amber-500/15 text-amber-600 border-amber-500/30' },
+    sprinter: { label: '冲刺手', labelTw: '衝刺手', color: 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30' },
+    climber: { label: '爬坡手', labelTw: '爬坡手', color: 'bg-rose-500/15 text-rose-600 border-rose-500/30' },
+    rouleur: { label: '计时突围', labelTw: '計時突圍', color: 'bg-blue-500/15 text-blue-600 border-blue-500/30' },
+    domestique: { label: '破风副将', labelTw: '破風副將', color: 'bg-slate-500/15 text-slate-600 border-slate-500/30' },
+    custom: { label: '自定义', labelTw: '自訂', color: 'bg-purple-500/15 text-purple-600 border-purple-500/30' }
   };
 
   return (
@@ -274,36 +274,50 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
         {modalTab === 'profile' && (
           <div className="space-y-4">
             {/* Active Rider & Bike Hero Card */}
-            <div className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] flex items-center justify-between shadow-xs">
-              <div className="space-y-0.5 min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-2.5">
+              {/* Row 1: Active Rider Identity & Quick Action Buttons */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
                     {activeRider.name}
                   </span>
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full border font-semibold ${roleLabelMap[activeRider.role || 'custom']?.color}`}>
+                  <span className={`text-[11px] px-2 py-0.5 rounded-full border font-semibold whitespace-nowrap shrink-0 ${roleLabelMap[activeRider.role || 'custom']?.color}`}>
                     {language === 'zh-TW' ? roleLabelMap[activeRider.role || 'custom']?.labelTw : roleLabelMap[activeRider.role || 'custom']?.label}
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-2">
-                  <span>推重比: <strong className="text-ios-blue font-bold">{(activeRider.weightKg > 0 ? (activeRider.ftpWatts / activeRider.weightKg).toFixed(2) : '--')} W/kg</strong></span>
-                  <span>•</span>
-                  <span>战车: <strong className="text-slate-700 dark:text-slate-300 font-semibold">{activeBike.name.split('/')[0]}</strong> ({activeBike.weightKg}kg)</span>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => setModalTab('roster')}
+                    className="h-7 px-2.5 rounded-xl text-[11px] font-semibold text-ios-blue bg-ios-blue/10 hover:bg-ios-blue/15 transition apple-touch"
+                  >
+                    {language === 'zh-TW' ? '換車手' : '换车手'}
+                  </button>
+                  <button
+                    onClick={() => setModalTab('garage')}
+                    className="h-7 px-2.5 rounded-xl text-[11px] font-semibold text-ios-blue bg-ios-blue/10 hover:bg-ios-blue/15 transition apple-touch"
+                  >
+                    {language === 'zh-TW' ? '換戰車' : '换战车'}
+                  </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  onClick={() => setModalTab('roster')}
-                  className="px-2.5 py-1 text-[11px] font-semibold text-ios-blue bg-ios-blue/10 hover:bg-ios-blue/15 rounded-xl transition apple-touch"
-                >
-                  换车手
-                </button>
-                <button
-                  onClick={() => setModalTab('garage')}
-                  className="px-2.5 py-1 text-[11px] font-semibold text-ios-blue bg-ios-blue/10 hover:bg-ios-blue/15 rounded-xl transition apple-touch"
-                >
-                  换车
-                </button>
+              {/* Row 2: Clean 2-Column Metrics Tiles */}
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-black/[0.04] dark:border-white/[0.06] text-[11px] font-mono">
+                <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.03] dark:border-white/[0.05]">
+                  <span className="text-slate-500 dark:text-slate-400 font-sans">{language === 'zh-TW' ? '推重比' : '推重比'}</span>
+                  <span className="font-bold text-ios-blue tabular-nums">
+                    {(activeRider.weightKg > 0 ? (activeRider.ftpWatts / activeRider.weightKg).toFixed(2) : '--')}{' '}
+                    <span className="font-normal text-[10px] text-slate-400">W/kg</span>
+                  </span>
+                </div>
+                <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.03] dark:border-white/[0.05] min-w-0">
+                  <span className="text-slate-500 dark:text-slate-400 font-sans shrink-0">{language === 'zh-TW' ? '戰車' : '战车'}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 truncate ml-1 text-right" title={activeBike.name}>
+                    {activeBike.name.split('/')[0]}{' '}
+                    <span className="font-normal text-[10px] text-slate-400 tabular-nums">({activeBike.weightKg}kg)</span>
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -563,7 +577,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         <span className={`text-xs font-bold ${isActive ? 'text-ios-blue' : 'text-slate-900 dark:text-white'}`}>
                           {rider.name}
                         </span>
-                        <span className={`text-[11px] px-2 py-0.5 rounded-full border font-semibold shrink-0 ${roleMeta?.color}`}>
+                        <span className={`text-[11px] px-2 py-0.5 rounded-full border font-semibold whitespace-nowrap shrink-0 ${roleMeta?.color}`}>
                           {language === 'zh-TW' ? roleMeta?.labelTw : roleMeta?.label}
                         </span>
                         {isActive && (
