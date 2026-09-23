@@ -76,7 +76,7 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
   const aq = data?.airQuality;
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-4">
       {/* ── 1. Top Status Row (Strictly 1 single horizontal row on mobile and desktop) ── */}
       <div className="flex items-center justify-between gap-1.5 min-w-0">
         {/* Left: Readiness Score Tag */}
@@ -143,7 +143,7 @@ export const PreRideCockpit: React.FC<PreRideCockpitProps> = ({ onNavigateTool }
 
       {/* ── 2. Headline & Dynamic Advice (Mirrors Title & Vehicle Info) ── */}
       <div className="min-w-0">
-        <h1 className="text-lg sm:text-xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display flex items-center gap-1.5 flex-wrap min-w-0">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display flex items-center gap-1.5 flex-wrap min-w-0">
           <span className="truncate max-w-[220px] sm:max-w-none">{selectedLocation.name} · {cur?.weatherLabel || (isTw ? '環境研判' : '环境研判')}</span>
           {selectedLocation.isGps && (
             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-mint/15 text-ios-mint font-semibold border border-ios-mint/30 shrink-0">

@@ -302,7 +302,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           heroMode === 'pre-ride' ? 'bg-ios-mint/10 dark:bg-ios-mint/8' : 'bg-ios-purple/10 dark:bg-ios-purple/10'
         }`} />
 
-        <div className="relative z-10 space-y-3 sm:space-y-4">
+        <div className="relative z-10 space-y-4">
           {/* Dual-mode segmented toggle — sits at the very top of Hero */}
           <div className="flex items-center justify-between gap-3">
             <IOSSegmentedControl
@@ -343,26 +343,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* ── POST-RIDE MODE: Tactical Debrief (existing content) ──────── */}
           {heroMode === 'post-ride' && (
-            <>
+            <div className="space-y-4">
               {/* Top Tag & Context Metadata */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-bold tracking-wide">
+              <div className="flex items-center justify-between gap-1.5 min-w-0">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ios-blue/10 border border-ios-blue/20 text-ios-blue text-[11px] font-bold tracking-wide shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-ios-blue" />
-                    <span>{language === 'zh-TW' ? '最新騎行極客深度戰報' : '最新骑行极客深度战报'}</span>
+                    <span className="sm:hidden">{language === 'zh-TW' ? '極客戰報' : '极客战报'}</span>
+                    <span className="hidden sm:inline">{language === 'zh-TW' ? '最新騎行極客深度戰報' : '最新骑行极客深度战报'}</span>
                   </span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                  <span className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-mono truncate">
                     {latestStats?.dateStr}
                   </span>
                   {!latestStats?.isRealData && (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium">
-                      {language === 'zh-TW' ? '演示樣本' : '演示样本'}
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-ios-orange/10 text-ios-orange font-medium shrink-0">
+                      {language === 'zh-TW' ? '演示' : '演示样本'}
                     </span>
                   )}
                 </div>
 
-                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  <span>{language === 'zh-TW' ? '戰術屬性: ' : '战术属性: '}</span>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium shrink-0 flex items-center gap-1">
+                  <span className="hidden sm:inline">{language === 'zh-TW' ? '戰術屬性: ' : '战术属性: '}</span>
                   <strong className={latestStats?.tacticalTextColor}>{latestStats?.tacticalPace}</strong>
                 </div>
               </div>
@@ -372,7 +373,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white font-display">
                   {latestStats?.name}
                 </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                   {latestStats?.sportType} · {language === 'zh-TW' ? '主力戰車: ' : '主力战车: '}{activeBike?.name || '公路战车'}
                 </p>
               </div>
@@ -473,7 +474,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <Share2 className={`w-4 h-4 ${isGeneratingPoster ? 'animate-spin text-ios-blue' : ''}`} />
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
