@@ -45,7 +45,7 @@ import {
 import { PoweredByStravaBadge } from './PoweredByStravaBadge';
 import { NumberStepper } from './NumberStepper';
 import { IOSSegmentedControl } from './IOSSegmentedControl';
-import { getStravaStorageInfo, StravaStorageInfo } from '../../utils/indexedDb';
+import { getStravaStorageInfo, getAllActivitiesFromDb, StravaStorageInfo } from '../../utils/indexedDb';
 import { exportActivitiesToJson } from '../../utils/stravaCockpitAnalytics';
 import {
   ALL_NAV_TOOLS,
@@ -132,18 +132,25 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
   const [storageInfo, setStorageInfo] = useState<StravaStorageInfo | null>(null);
 
   React.useEffect(() => {
-    if (modalTab === 'strava' && isStravaConnected) {
+    if (modalTab === 'strava') {
       getStravaStorageInfo().then(setStorageInfo);
     }
   }, [modalTab, isStravaConnected, stravaActivities.length]);
 
-  const handleExportBackup = () => {
+  const handleExportBackup = async () => {
     try {
-      if (!stravaActivities || stravaActivities.length === 0) {
+      let activitiesToExport = stravaActivities;
+      if (!activitiesToExport || activitiesToExport.length === 0) {
+        const dbActivities = await getAllActivitiesFromDb();
+        if (dbActivities && dbActivities.length > 0) {
+          activitiesToExport = dbActivities as any;
+        }
+      }
+      if (!activitiesToExport || activitiesToExport.length === 0) {
         showToast(language === 'zh-TW' ? '暫無可匯出的騎行資料' : '暂无可导出的骑行数据', 'info');
         return;
       }
-      const jsonStr = exportActivitiesToJson(stravaActivities);
+      const jsonStr = exportActivitiesToJson(activitiesToExport);
       const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1382,123 +1389,126 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   </div>
                 )}
 
-                {/* Offline Cache & Storage Health Card */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-ios-blue/10 flex items-center justify-center text-ios-blue shrink-0">
-                        <Database className="w-4 h-4" />
-                      </div>
-                      <span className="text-xs font-bold text-slate-900 dark:text-white">
-                        {language === 'zh-TW' ? '存儲與健康度' : '存储与健康度'}
-                      </span>
-                    </div>
-                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      <span>{language === 'zh-TW' ? '離線就緒' : '离线就绪'}</span>
-                    </span>
-                  </div>
-
-                  {/* 3 Metric Tiles with concise names */}
-                  <div className="grid grid-cols-3 gap-2">
-                    {/* Tile 1: Saved Rides */}
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center space-y-0.5">
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block truncate">
-                        {language === 'zh-TW' ? '已存騎行' : '已存骑行'}
-                      </span>
-                      <span className="text-sm font-bold font-mono text-slate-900 dark:text-white block tabular-nums">
-                        {storageInfo?.activityCount ?? stravaActivities.length}
-                      </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block truncate">
-                        {storageInfo && storageInfo.streamCount > 0 ? `${storageInfo.streamCount} 流` : (language === 'zh-TW' ? '斷網可用' : '断网可用')}
-                      </span>
-                    </div>
-
-                    {/* Tile 2: Local Storage */}
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center space-y-0.5">
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block truncate">
-                        {language === 'zh-TW' ? '本地占用' : '本地占用'}
-                      </span>
-                      <span className="text-sm font-bold font-mono text-ios-blue block tabular-nums">
-                        {storageInfo
-                          ? storageInfo.approxDbSizeBytes < 1024 * 1024
-                            ? `${Math.round(storageInfo.approxDbSizeBytes / 1024)} KB`
-                            : `${(storageInfo.approxDbSizeBytes / (1024 * 1024)).toFixed(1)} MB`
-                          : `${(stravaActivities.length * 2.5).toFixed(0)} KB`}
-                      </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block truncate">
-                        IndexedDB
-                      </span>
-                    </div>
-
-                    {/* Tile 3: Free Quota */}
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center space-y-0.5">
-                      <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block truncate">
-                        {language === 'zh-TW' ? '可用配額' : '可用配额'}
-                      </span>
-                      <span className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400 block tabular-nums">
-                        {storageInfo && storageInfo.browserQuotaBytes > 0
-                          ? `>${Math.round(storageInfo.browserQuotaBytes / (1024 * 1024 * 1024))}G`
-                          : '>10G'}
-                      </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block truncate">
-                        {language === 'zh-TW' ? '極度充裕' : '极度充裕'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Micro Storage Bar */}
-                  <div className="space-y-1 pt-0.5">
-                    <div className="h-1.5 w-full bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden flex">
-                      <div className="h-full bg-ios-blue rounded-full w-[2%] min-w-[6px]" />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                      <span>{language === 'zh-TW' ? '存儲餘量充足 · 支援全量離線' : '存储余量充足 · 支持全量离线'}</span>
-                      <span className="font-mono text-ios-blue tabular-nums">&lt;0.01%</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons with Concise Names */}
-                  <div className="grid grid-cols-3 gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06]">
-                    <button
-                      type="button"
-                      onClick={handleExportBackup}
-                      className="apple-touch flex items-center justify-center gap-1 h-9 px-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold transition shrink-0"
-                      title={language === 'zh-TW' ? '匯出 JSON 備份' : '导出 JSON 备份'}
-                    >
-                      <Download className="w-3.5 h-3.5 text-ios-blue shrink-0" />
-                      <span className="truncate">{language === 'zh-TW' ? '匯出備份' : '导出备份'}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleClearCacheWithRefresh}
-                      className="apple-touch flex items-center justify-center gap-1 h-9 px-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold transition shrink-0"
-                      title={language === 'zh-TW' ? '清空本地離線快取' : '清空本地离线缓存'}
-                    >
-                      <RotateCcw className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                      <span className="truncate">{language === 'zh-TW' ? '清空快取' : '清空缓存'}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={disconnectStrava}
-                      className="apple-touch flex items-center justify-center gap-1 h-9 px-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-semibold transition shrink-0"
-                      title={language === 'zh-TW' ? '解除綁定 Strava 帳戶' : '解除绑定 Strava 账户'}
-                    >
-                      <LogOut className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">{language === 'zh-TW' ? '解除綁定' : '解除绑定'}</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Brand Compliance Footer */}
-                <div className="pt-2 flex flex-col items-center justify-center gap-1 text-center">
-                  <PoweredByStravaBadge />
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    本应用遵循 Strava API 开发者准则与品牌官方规范。
-                  </p>
-                </div>
               </div>
             )}
+
+            {/* Offline Cache & Storage Health Card - ALWAYS VISIBLE */}
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/[0.05] dark:border-white/[0.08] shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-ios-blue/10 flex items-center justify-center text-ios-blue shrink-0">
+                    <Database className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">
+                    {language === 'zh-TW' ? '存儲與健康度' : '存储与健康度'}
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>{language === 'zh-TW' ? '離線就緒' : '离线就绪'}</span>
+                </span>
+              </div>
+
+              {/* 3 Metric Tiles with concise names */}
+              <div className="grid grid-cols-3 gap-2">
+                {/* Tile 1: Saved Rides */}
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center space-y-0.5">
+                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block truncate">
+                    {language === 'zh-TW' ? '已存騎行' : '已存骑行'}
+                  </span>
+                  <span className="text-sm font-bold font-mono text-slate-900 dark:text-white block tabular-nums">
+                    {storageInfo?.activityCount ?? stravaActivities.length}
+                  </span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block truncate">
+                    {storageInfo && storageInfo.streamCount > 0 ? `${storageInfo.streamCount} 流` : (language === 'zh-TW' ? '斷網可用' : '断网可用')}
+                  </span>
+                </div>
+
+                {/* Tile 2: Local Storage */}
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center space-y-0.5">
+                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block truncate">
+                    {language === 'zh-TW' ? '本地占用' : '本地占用'}
+                  </span>
+                  <span className="text-sm font-bold font-mono text-ios-blue block tabular-nums">
+                    {storageInfo
+                      ? storageInfo.approxDbSizeBytes < 1024 * 1024
+                        ? `${Math.round(storageInfo.approxDbSizeBytes / 1024)} KB`
+                        : `${(storageInfo.approxDbSizeBytes / (1024 * 1024)).toFixed(1)} MB`
+                      : `${(stravaActivities.length * 2.5).toFixed(0)} KB`}
+                  </span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block truncate">
+                    IndexedDB
+                  </span>
+                </div>
+
+                {/* Tile 3: Free Quota */}
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-center space-y-0.5">
+                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block truncate">
+                    {language === 'zh-TW' ? '可用配額' : '可用配额'}
+                  </span>
+                  <span className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400 block tabular-nums">
+                    {storageInfo && storageInfo.browserQuotaBytes > 0
+                      ? `>${Math.round(storageInfo.browserQuotaBytes / (1024 * 1024 * 1024))}G`
+                      : '>10G'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block truncate">
+                    {language === 'zh-TW' ? '極度充裕' : '极度充裕'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Micro Storage Bar */}
+              <div className="space-y-1 pt-0.5">
+                <div className="h-1.5 w-full bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden flex">
+                  <div className="h-full bg-ios-blue rounded-full w-[2%] min-w-[6px]" />
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                  <span>{language === 'zh-TW' ? '存儲餘量充足 · 支援全量離線' : '存储余量充足 · 支持全量离线'}</span>
+                  <span className="font-mono text-ios-blue tabular-nums">&lt;0.01%</span>
+                </div>
+              </div>
+
+              {/* Action Buttons with Concise Names */}
+              <div className={`grid ${isStravaConnected ? 'grid-cols-3' : 'grid-cols-2'} gap-2 pt-1 border-t border-black/[0.04] dark:border-white/[0.06]`}>
+                <button
+                  type="button"
+                  onClick={handleExportBackup}
+                  className="apple-touch flex items-center justify-center gap-1 h-9 px-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold transition shrink-0"
+                  title={language === 'zh-TW' ? '匯出 JSON 備份' : '导出 JSON 备份'}
+                >
+                  <Download className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+                  <span className="truncate">{language === 'zh-TW' ? '匯出備份' : '导出备份'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClearCacheWithRefresh}
+                  className="apple-touch flex items-center justify-center gap-1 h-9 px-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold transition shrink-0"
+                  title={language === 'zh-TW' ? '清空本地離線快取' : '清空本地离线缓存'}
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  <span className="truncate">{language === 'zh-TW' ? '清空快取' : '清空缓存'}</span>
+                </button>
+                {isStravaConnected && (
+                  <button
+                    type="button"
+                    onClick={disconnectStrava}
+                    className="apple-touch flex items-center justify-center gap-1 h-9 px-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/15 border border-rose-500/20 text-rose-500 text-xs font-semibold transition shrink-0"
+                    title={language === 'zh-TW' ? '解除綁定 Strava 帳戶' : '解除绑定 Strava 账户'}
+                  >
+                    <LogOut className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{language === 'zh-TW' ? '解除綁定' : '解除绑定'}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Brand Compliance Footer */}
+            <div className="pt-2 flex flex-col items-center justify-center gap-1 text-center">
+              <PoweredByStravaBadge />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                本应用遵循 Strava API 开发者准则与品牌官方规范。
+              </p>
+            </div>
           </div>
         )}
 
