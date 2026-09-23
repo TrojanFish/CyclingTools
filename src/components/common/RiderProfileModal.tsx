@@ -24,6 +24,8 @@ import {
   Trash2,
   CheckCircle2,
   Zap,
+  Sparkles,
+  MapPin,
   Flame,
   Award,
   Cloud,
@@ -1397,15 +1399,15 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
             <div className="bg-white dark:bg-[#1C1C1E] rounded-2xl border border-black/[0.05] dark:border-white/[0.08] divide-y divide-black/[0.04] dark:divide-white/[0.06] overflow-hidden shadow-xs">
               {/* Language Selector */}
               <div className="p-3 sm:p-3.5 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-ios-blue/10 flex items-center justify-center text-ios-blue dark:text-ios-blue-dark">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="w-7 h-7 rounded-lg bg-ios-blue/10 flex items-center justify-center text-ios-blue dark:text-ios-blue-dark shrink-0">
                     <Globe className="w-4 h-4" />
                   </div>
-                  <div>
-                    <span className="text-xs font-semibold text-slate-900 dark:text-white block">
+                  <div className="min-w-0">
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white block truncate">
                       {language === 'zh-TW' ? '語言' : '语言'}
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">
                       {language === 'zh-TW' ? '繁體中文' : '简体中文'}
                     </span>
                   </div>
@@ -1418,21 +1420,23 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   value={language}
                   onChange={(val) => setLanguage(val as 'zh' | 'zh-TW')}
                   size="sm"
+                  mobileFullWidth={false}
+                  className="shrink-0"
                 />
               </div>
 
               {/* Unit System */}
               <div className="p-3 sm:p-3.5 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-ios-green/10 flex items-center justify-center text-ios-green dark:text-ios-green-dark">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="w-7 h-7 rounded-lg bg-ios-green/10 flex items-center justify-center text-ios-green dark:text-ios-green-dark shrink-0">
                     <Gauge className="w-4 h-4" />
                   </div>
-                  <div>
-                    <span className="text-xs font-semibold text-slate-900 dark:text-white block">
-                      {language === 'zh-TW' ? '度量衡制式' : '度量衡制式'}
+                  <div className="min-w-0">
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white block truncate">
+                      {language === 'zh-TW' ? '單位' : '单位'}
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                      {isImperial ? 'Imperial (lbs, in, psi)' : 'Metric (kg, cm, bar)'}
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">
+                      {isImperial ? '英制 (lbs, mi)' : '公制 (kg, km)'}
                     </span>
                   </div>
                 </div>
@@ -1444,14 +1448,16 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                   value={unitSystem}
                   onChange={(val) => setUnitSystem(val as 'metric' | 'imperial')}
                   size="sm"
+                  mobileFullWidth={false}
+                  className="shrink-0"
                 />
               </div>
 
               {/* Appearance Mode */}
               {themeMode && setThemeMode && (
                 <div className="p-3 sm:p-3.5 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-ios-orange/10 flex items-center justify-center text-ios-orange dark:text-ios-orange-dark">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="w-7 h-7 rounded-lg bg-ios-orange/10 flex items-center justify-center text-ios-orange dark:text-ios-orange-dark shrink-0">
                       {themeMode === 'system' ? (
                         <Smartphone className="w-4 h-4" />
                       ) : themeMode === 'dark' ? (
@@ -1460,12 +1466,12 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         <Sun className="w-4 h-4" />
                       )}
                     </div>
-                    <div>
-                      <span className="text-xs font-semibold text-slate-900 dark:text-white block">
-                        {language === 'zh-TW' ? '外觀主題' : '外观主题'}
+                    <div className="min-w-0">
+                      <span className="text-xs font-semibold text-slate-900 dark:text-white block truncate">
+                        {language === 'zh-TW' ? '外觀' : '外观'}
                       </span>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                        {themeMode === 'system' ? '自动跟随系统' : themeMode === 'dark' ? '深色模式' : '浅色模式'}
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">
+                        {themeMode === 'system' ? (language === 'zh-TW' ? '跟隨系統' : '跟随系统') : themeMode === 'dark' ? (language === 'zh-TW' ? '深色模式' : '深色模式') : (language === 'zh-TW' ? '淺色模式' : '浅色模式')}
                       </span>
                     </div>
                   </div>
@@ -1478,6 +1484,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                     value={themeMode}
                     onChange={(val) => setThemeMode(val as 'system' | 'light' | 'dark')}
                     size="sm"
+                    mobileFullWidth={false}
+                    className="shrink-0"
                   />
                 </div>
               )}
@@ -1538,8 +1546,11 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                             : 'bg-slate-50 dark:bg-white/[0.04] border-black/[0.05] dark:border-white/[0.06] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.08]'
                         }`}
                       >
-                        <span>{preset.icon}</span>
-                        <span>{language === 'zh-TW' ? preset.nameTw : preset.name}</span>
+                        {preset.id === 'default' && <Sparkles className="w-3.5 h-3.5 shrink-0" />}
+                        {preset.id === 'racing' && <Zap className="w-3.5 h-3.5 shrink-0" />}
+                        {preset.id === 'touring' && <MapPin className="w-3.5 h-3.5 shrink-0" />}
+                        {preset.id === 'mechanic' && <Wrench className="w-3.5 h-3.5 shrink-0" />}
+                        <span className="truncate">{language === 'zh-TW' ? preset.nameTw : preset.name}</span>
                       </button>
                     );
                   })}
