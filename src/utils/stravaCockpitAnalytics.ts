@@ -5,7 +5,7 @@
  */
 
 import { StravaActivityRecord } from './indexedDb';
-import { StravaBike } from '../services/stravaService';
+import { StravaBike, StravaSegmentItem } from '../services/stravaService';
 
 export type TimePeriod = 'all-time' | 'ytd' | '30d' | '7d';
 export type AthleteStatus = 'peak' | 'productive' | 'overstress' | 'overreach';
@@ -2256,6 +2256,64 @@ export function exportActivitiesToCsv(activities: StravaActivityRecord[]): strin
 
 export function exportActivitiesToJson(activities: StravaActivityRecord[]): string {
   return JSON.stringify(activities, null, 2);
+}
+
+// -----------------------------------------------------------------------------
+// 19. Strava Segments & Efforts Analytics
+// -----------------------------------------------------------------------------
+export interface SegmentSummaryStats {
+  totalSegments: number;
+  komCount: number;
+  prCount: number;
+  totalGainM: number;
+  totalDistanceKm: number;
+  totalAttempts: number;
+  avgGradePct: number;
+}
+
+export function computeSegmentSummaryStats(segments: StravaSegmentItem[]): SegmentSummaryStats {
+  if (!segments || segments.length === 0) {
+    return {
+      totalSegments: 0,
+      komCount: 0,
+      prCount: 0,
+      totalGainM: 0,
+      totalDistanceKm: 0,
+      totalAttempts: 0,
+      avgGradePct: 0
+    };
+  }
+
+  let totalDistM = 0;
+  let totalGainM = 0;
+  let totalGrade = 0;
+  let komCount = 0;
+  let prCount = 0;
+  let totalAttempts = 0;
+
+  for (const s of segments) {
+    totalDistM += s.distance || 0;
+    totalGainM += s.total_elevation_gain || 0;
+    totalGrade += s.average_grade || 0;
+    totalAttempts += s.athlete_attempts || 0;
+
+    if (s.athlete_pr_effort) {
+      prCount++;
+      if (s.kom_time && s.athlete_pr_effort.elapsed_time <= s.kom_time) {
+        komCount++;
+      }
+    }
+  }
+
+  return {
+    totalSegments: segments.length,
+    komCount,
+    prCount,
+    totalGainM: Math.round(totalGainM),
+    totalDistanceKm: parseFloat((totalDistM / 1000).toFixed(1)),
+    totalAttempts,
+    avgGradePct: parseFloat((totalGrade / segments.length).toFixed(1))
+  };
 }
 
 

@@ -12,9 +12,11 @@ import {
   computePersonalRecordsTimeline,
   computeAerobicEfficiency,
   exportActivitiesToCsv,
-  exportActivitiesToJson
+  exportActivitiesToJson,
+  computeSegmentSummaryStats
 } from '../stravaCockpitAnalytics';
 import { StravaActivityRecord } from '../indexedDb';
+import { CURATED_STRAVA_SEGMENTS } from '../../services/stravaService';
 
 describe('StravaCockpitAnalytics - Sports Science Calculations', () => {
   const demoActivities = generateDemoStravaActivities();
@@ -358,6 +360,26 @@ describe('StravaCockpitAnalytics - Sports Science Calculations', () => {
       expect(Array.isArray(parsed)).toBe(true);
       expect(parsed).toHaveLength(2);
       expect(parsed[0].id).toBe(demoActivities[0].id);
+    });
+  });
+
+  describe('computeSegmentSummaryStats', () => {
+    it('handles empty segments gracefully', () => {
+      const stats = computeSegmentSummaryStats([]);
+      expect(stats.totalSegments).toBe(0);
+      expect(stats.totalGainM).toBe(0);
+      expect(stats.prCount).toBe(0);
+      expect(stats.komCount).toBe(0);
+      expect(stats.totalAttempts).toBe(0);
+    });
+
+    it('correctly calculates summary stats for curated segments', () => {
+      const stats = computeSegmentSummaryStats(CURATED_STRAVA_SEGMENTS);
+      expect(stats.totalSegments).toBe(8);
+      expect(stats.prCount).toBe(8);
+      expect(stats.totalGainM).toBeGreaterThan(8000);
+      expect(stats.totalAttempts).toBeGreaterThan(50);
+      expect(stats.avgGradePct).toBeGreaterThan(5.0);
     });
   });
 });

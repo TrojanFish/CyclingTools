@@ -440,6 +440,19 @@ export interface StravaSegmentItem {
   country?: string;
   starred?: boolean;
   climbSegments?: { name: string; distanceKm: number; gradePct: number }[];
+  // Segment performance & efforts
+  kom_time?: number; // seconds
+  kom_athlete?: string;
+  athlete_pr_effort?: {
+    elapsed_time: number; // seconds
+    moving_time?: number; // seconds
+    start_date?: string; // ISO date
+    average_watts?: number;
+    average_heartrate?: number;
+    pr_rank?: number; // 1 = 🥇, 2 = 🥈, 3 = 🥉
+    vam?: number; // vertical ascent speed m/h
+  };
+  athlete_attempts?: number;
 }
 
 export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
@@ -454,6 +467,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     total_elevation_gain: 1118,
     climb_category: 5,
     country: "France",
+    starred: true,
+    kom_time: 2255, // 37:35
+    kom_athlete: "T. Pogačar",
+    athlete_pr_effort: {
+      elapsed_time: 3080, // 51:20
+      moving_time: 3075,
+      start_date: "2025-07-14T09:20:00Z",
+      average_watts: 305,
+      average_heartrate: 174,
+      pr_rank: 1,
+      vam: 1308
+    },
+    athlete_attempts: 5,
     climbSegments: [
       { name: "拐角 21-16: 启程极陡攻坚壁", distanceKm: 2.5, gradePct: 10.4 },
       { name: "拐角 15-11: La Garde 盘山段", distanceKm: 3.5, gradePct: 8.6 },
@@ -473,6 +499,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     total_elevation_gain: 1803,
     climb_category: 5,
     country: "Italy",
+    starred: true,
+    kom_time: 4060, // 1:07:40
+    kom_athlete: "V. Nibali",
+    athlete_pr_effort: {
+      elapsed_time: 5355, // 1:29:15
+      moving_time: 5340,
+      start_date: "2025-08-22T10:15:00Z",
+      average_watts: 286,
+      average_heartrate: 168,
+      pr_rank: 1,
+      vam: 1212
+    },
+    athlete_attempts: 3,
     climbSegments: [
       { name: "第 1 段: 谷底针叶林起步过渡", distanceKm: 5.5, gradePct: 5.8 },
       { name: "第 2 段: 盘山中段持续推重比测试", distanceKm: 6.8, gradePct: 8.2 },
@@ -491,6 +530,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     total_elevation_gain: 1609,
     climb_category: 5,
     country: "France",
+    starred: true,
+    kom_time: 3351, // 55:51
+    kom_athlete: "M. Pantani",
+    athlete_pr_effort: {
+      elapsed_time: 4720, // 1:18:40
+      moving_time: 4710,
+      start_date: "2024-09-08T08:30:00Z",
+      average_watts: 290,
+      average_heartrate: 172,
+      pr_rank: 1,
+      vam: 1227
+    },
+    athlete_attempts: 2,
     climbSegments: [
       { name: "第 1 段: 葡萄园出城缓坡热身", distanceKm: 5.8, gradePct: 4.2 },
       { name: "第 2 段: 森林地狱严酷陡坡段", distanceKm: 9.2, gradePct: 9.5 },
@@ -509,6 +561,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     total_elevation_gain: 663,
     climb_category: 4,
     country: "Spain",
+    starred: true,
+    kom_time: 1378, // 22:58
+    kom_athlete: "T. Pidcock",
+    athlete_pr_effort: {
+      elapsed_time: 1785, // 29:45
+      moving_time: 1780,
+      start_date: "2025-04-18T14:10:00Z",
+      average_watts: 320,
+      average_heartrate: 178,
+      pr_rank: 1,
+      vam: 1337
+    },
+    athlete_attempts: 6,
     climbSegments: [
       { name: "第 1 段: 峡谷岩壁盘旋段", distanceKm: 3.0, gradePct: 6.8 },
       { name: "第 2 段: 核心发卡弯连续攻坚", distanceKm: 3.8, gradePct: 7.8 },
@@ -526,6 +591,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     total_elevation_gain: 1272,
     climb_category: 5,
     country: "France",
+    starred: true,
+    kom_time: 2832, // 47:12
+    kom_athlete: "J. Vingegaard",
+    athlete_pr_effort: {
+      elapsed_time: 3930, // 1:05:30
+      moving_time: 3920,
+      start_date: "2024-07-20T11:00:00Z",
+      average_watts: 295,
+      average_heartrate: 170,
+      pr_rank: 1,
+      vam: 1165
+    },
+    athlete_attempts: 4,
     climbSegments: [
       { name: "第 1 段: 河谷缓坡预热段", distanceKm: 4.5, gradePct: 5.0 },
       { name: "第 2 段: Gripp 峡谷深处核心陡坡", distanceKm: 5.5, gradePct: 8.5 },
@@ -545,6 +623,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     climb_category: 4,
     city: "Beijing",
     country: "China",
+    starred: true,
+    kom_time: 2658, // 44:18
+    kom_athlete: "车友 极速狂飙",
+    athlete_pr_effort: {
+      elapsed_time: 3272, // 54:32
+      moving_time: 3260,
+      start_date: "2026-05-02T07:45:00Z",
+      average_watts: 275,
+      average_heartrate: 165,
+      pr_rank: 1,
+      vam: 964
+    },
+    athlete_attempts: 14,
     climbSegments: [
       { name: "第 1 段: 牌坊起步涧沟村过渡段", distanceKm: 7.0, gradePct: 3.5 },
       { name: "第 2 段: 桃园村连续盘山爬升", distanceKm: 6.5, gradePct: 4.8 },
@@ -564,6 +655,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     climb_category: 2,
     city: "Hangzhou",
     country: "China",
+    starred: true,
+    kom_time: 402, // 6:42
+    kom_athlete: "龙井霸榜车队",
+    athlete_pr_effort: {
+      elapsed_time: 475, // 7:55
+      moving_time: 475,
+      start_date: "2026-06-12T06:20:00Z",
+      average_watts: 360,
+      average_heartrate: 182,
+      pr_rank: 1,
+      vam: 1236
+    },
+    athlete_attempts: 28,
     climbSegments: [
       { name: "第 1 段: 绿茶餐厅起步缓坡", distanceKm: 1.0, gradePct: 3.8 },
       { name: "第 2 段: 狮峰茶园核心连续陡弯", distanceKm: 1.5, gradePct: 6.5 },
@@ -582,6 +686,19 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
     climb_category: 4,
     city: "Anji",
     country: "China",
+    starred: true,
+    kom_time: 2535, // 42:15
+    kom_athlete: "浙北爬坡王",
+    athlete_pr_effort: {
+      elapsed_time: 3068, // 51:08
+      moving_time: 3060,
+      start_date: "2026-08-15T07:10:00Z",
+      average_watts: 292,
+      average_heartrate: 169,
+      pr_rank: 1,
+      vam: 1171
+    },
+    athlete_attempts: 8,
     climbSegments: [
       { name: "第 1 段: 山脚竹海缓坡穿行", distanceKm: 5.0, gradePct: 4.2 },
       { name: "第 2 段: 大溪村连续发卡陡坡攻坚", distanceKm: 6.5, gradePct: 6.8 },
