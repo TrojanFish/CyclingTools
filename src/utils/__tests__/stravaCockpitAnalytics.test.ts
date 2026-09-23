@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   computeWeeklyVolume,
   computeAnnualGoalProgress,
+  computeAnnualElevationGoalProgress,
   computePmcTimeline,
   findOptimalRaceWindow,
   generateDemoStravaActivities,
@@ -145,6 +146,61 @@ describe('StravaCockpitAnalytics - Sports Science Calculations', () => {
       expect(goal.totalDaysInYear).toBeGreaterThanOrEqual(365);
       expect(typeof goal.isAheadOfPace).toBe('boolean');
       expect(typeof goal.requiredDailyKm).toBe('number');
+    });
+  });
+
+  describe('computeAnnualElevationGoalProgress', () => {
+    const currentYear = new Date().getFullYear();
+
+    it('handles empty activities with zero elevation progress and 0 Everesting count', () => {
+      const goal = computeAnnualElevationGoalProgress([], 50000, currentYear);
+      expect(goal.year).toBe(currentYear);
+      expect(goal.targetElevationM).toBe(50000);
+      expect(goal.currentElevationM).toBe(0);
+      expect(goal.progressPct).toBe(0);
+      expect(goal.remainingElevationM).toBe(50000);
+      expect(goal.monthlyBreakdown).toHaveLength(12);
+      expect(goal.isAheadOfPace).toBe(false);
+      expect(goal.everestingCount).toBe(0);
+      expect(goal.projectedCompletionDate).toBeNull();
+    });
+
+    it('correctly calculates completed elevation goal and Everesting equivalents', () => {
+      const mockActivities: StravaActivityRecord[] = [
+        {
+          id: 201,
+          name: 'Everesting Challenge',
+          distance: 250000,
+          moving_time: 43200,
+          elapsed_time: 50000,
+          total_elevation_gain: 53088, // 6 x 8848m
+          type: 'Ride',
+          start_date: `${currentYear}-03-20T06:00:00Z`,
+          start_date_local: `${currentYear}-03-20T06:00:00Z`,
+          average_speed: 5.7,
+          max_speed: 18.0
+        }
+      ];
+
+      const goal = computeAnnualElevationGoalProgress(mockActivities, 50000, currentYear);
+      expect(goal.currentElevationM).toBe(53088);
+      expect(goal.progressPct).toBe(106.2);
+      expect(goal.remainingElevationM).toBe(0);
+      expect(goal.isAheadOfPace).toBe(true);
+      expect(goal.projectedCompletionDate).toBe('已达成');
+      expect(goal.everestingCount).toBe(6.0); // 53088 / 8848 = 6.0
+      expect(goal.monthlyBreakdown[2].actualElevationM).toBe(53088); // March is index 2
+    });
+
+    it('calculates elevation pace delta and monthly breakdown for demo activities', () => {
+      const goal = computeAnnualElevationGoalProgress(demoActivities, 60000, currentYear);
+      expect(goal.monthlyBreakdown).toHaveLength(12);
+      expect(goal.daysPassed).toBeGreaterThan(0);
+      expect(typeof goal.paceDeltaElevationM).toBe('number');
+      expect(typeof goal.isAheadOfPace).toBe('boolean');
+      expect(typeof goal.monthlyRateElevationM).toBe('number');
+      expect(typeof goal.requiredDailyElevationM).toBe('number');
+      expect(goal.everestingCount).toBeGreaterThanOrEqual(0);
     });
   });
 

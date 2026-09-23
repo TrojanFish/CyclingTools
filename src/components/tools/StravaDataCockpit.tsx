@@ -61,6 +61,7 @@ import {
   findOptimalRaceWindow,
   computeWeeklyVolume,
   computeAnnualGoalProgress,
+  computeAnnualElevationGoalProgress,
   computeEddingtonNumber,
   buildHeatmapGrid,
   computeActivityRings,
@@ -136,6 +137,9 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
   // Weekly Volume Card Sub-view: 'volume' vs 'ramp'
   const [volumeSubView, setVolumeSubView] = useState<'volume' | 'ramp'>('volume');
 
+  // Annual Goal Card Metric Mode: 'distance' vs 'elevation'
+  const [annualGoalMetric, setAnnualGoalMetric] = useState<'distance' | 'elevation'>('distance');
+
   // Power Zone Period filter
   const [powerZonePeriod, setPowerZonePeriod] = useState<TimePeriod>('all-time');
 
@@ -188,11 +192,16 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     return findOptimalRaceWindow(pmcTimeline);
   }, [pmcTimeline]);
 
-  // 3. Annual Goal Progress
+  // 3. Annual Goal Progress (Distance & Elevation)
   const annualGoalKm = profile.annualGoalKm || 5000;
   const annualProgress = useMemo(() => {
     return computeAnnualGoalProgress(effectiveActivities, annualGoalKm);
   }, [effectiveActivities, annualGoalKm]);
+
+  const annualGoalElevationM = profile.annualGoalElevationM || 50000;
+  const annualElevationProgress = useMemo(() => {
+    return computeAnnualElevationGoalProgress(effectiveActivities, annualGoalElevationM);
+  }, [effectiveActivities, annualGoalElevationM]);
 
   // 4. Weekly Training Volume Breakdown & Ramp Rate History
   const weeklyVolume = useMemo(() => {
@@ -477,21 +486,47 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     };
   }, [pmcTimeline]);
 
-  // 2. Annual Goal Monthly Breakdown Chart
+  // 2. Annual Goal Monthly Breakdown Chart (Distance vs Elevation)
   const annualGoalMonthlyChartData = useMemo(() => {
+    const isElevation = annualGoalMetric === 'elevation';
+    if (isElevation) {
+      return {
+        labels: annualElevationProgress.monthlyBreakdown.map(m => m.label),
+        datasets: [
+          {
+            type: 'bar' as const,
+            label: language === 'zh-TW' ? '實際累計爬升 (m)' : '实际累计爬升 (m)',
+            data: annualElevationProgress.monthlyBreakdown.map(m => m.actualElevationM),
+            backgroundColor: '#34C759',
+            borderRadius: 4
+          },
+          {
+            type: 'line' as const,
+            label: language === 'zh-TW' ? '目標月均基準線 (m)' : '目标月均基准线 (m)',
+            data: annualElevationProgress.monthlyBreakdown.map(m => m.targetPaceElevationM),
+            borderColor: '#AF52DE',
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            pointRadius: 0,
+            fill: false
+          }
+        ]
+      };
+    }
+
     return {
       labels: annualProgress.monthlyBreakdown.map(m => m.label),
       datasets: [
         {
           type: 'bar' as const,
-          label: '实际完成里程 (km)',
+          label: language === 'zh-TW' ? '實際完成里程 (km)' : '实际完成里程 (km)',
           data: annualProgress.monthlyBreakdown.map(m => m.actualKm),
           backgroundColor: '#007AFF',
           borderRadius: 4
         },
         {
           type: 'line' as const,
-          label: '目标月均基准线',
+          label: language === 'zh-TW' ? '目標月均基準線 (km)' : '目标月均基准线 (km)',
           data: annualProgress.monthlyBreakdown.map(m => m.targetPaceKm),
           borderColor: '#FF9500',
           borderWidth: 1.5,
@@ -501,9 +536,10 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         }
       ]
     };
-  }, [annualProgress]);
+  }, [annualGoalMetric, annualElevationProgress, annualProgress, language]);
 
   const annualGoalMonthlyChartOptions = useMemo(() => {
+    const isElevation = annualGoalMetric === 'elevation';
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -516,15 +552,27 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         tooltip: {
           backgroundColor: 'rgba(28, 28, 30, 0.95)',
           titleFont: { size: 12 },
-          bodyFont: { size: 11 }
+          bodyFont: { size: 11 },
+          callbacks: {
+            label: (context: any) => {
+              const val = context.parsed.y;
+              return ` ${context.dataset.label}: ${val.toLocaleString()} ${isElevation ? 'm' : 'km'}`;
+            }
+          }
         }
       },
       scales: {
         x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-        y: { grid: { color: 'rgba(120, 120, 128, 0.12)' }, ticks: { font: { size: 10 } } }
+        y: {
+          grid: { color: 'rgba(120, 120, 128, 0.12)' },
+          ticks: {
+            font: { size: 10 },
+            callback: (v: any) => `${v.toLocaleString()} ${isElevation ? 'm' : 'km'}`
+          }
+        }
       }
     };
-  }, []);
+  }, [annualGoalMetric]);
 
   // 3. Weekly Volume Dual-Y Axis Chart
   const weeklyVolumeChartData = useMemo(() => {
@@ -977,27 +1025,52 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
 
           {/* Row 1: Annual Goal Progress (Strava Model) + Activity Rings */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-            {/* Left 7 cols: Annual Goal Card */}
+            {/* Left 7 cols: Annual Goal Card (Distance ↔ Elevation Dual-Mode) */}
             <IOSCard className="lg:col-span-7 space-y-3.5">
               <IOSCardHeader
-                title="年度里程目标与进度追踪 (Strava 模型)"
-                subtitle={`${annualProgress.year} 年度目标 ${annualProgress.targetKm} km · 已完成 ${annualProgress.currentKm} km (${annualProgress.progressPct}%)`}
-                icon={Target}
-                iconColor="text-ios-blue bg-ios-blue/10"
+                title={
+                  annualGoalMetric === 'distance'
+                    ? (language === 'zh-TW' ? '年度里程目標與進度追蹤 (Strava 模型)' : '年度里程目标与进度追踪 (Strava 模型)')
+                    : (language === 'zh-TW' ? '年度爬升目標與進度追蹤 (Strava 模型)' : '年度爬升目标与进度追踪 (Strava 模型)')
+                }
+                subtitle={
+                  annualGoalMetric === 'distance'
+                    ? `${annualProgress.year} 年度目标 ${annualProgress.targetKm.toLocaleString()} km · 已完成 ${annualProgress.currentKm.toLocaleString()} km (${annualProgress.progressPct}%)`
+                    : `${annualElevationProgress.year} 年度目标 ${annualElevationProgress.targetElevationM.toLocaleString()} m · 已完成 ${annualElevationProgress.currentElevationM.toLocaleString()} m (${annualElevationProgress.progressPct}%) · 相当于 ${annualElevationProgress.everestingCount} 座珠峰 ⛰️`
+                }
+                icon={annualGoalMetric === 'distance' ? Target : Mountain}
+                iconColor={annualGoalMetric === 'distance' ? 'text-ios-blue bg-ios-blue/10' : 'text-ios-green bg-ios-green/10'}
                 action={
-                  <div
-                    className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
-                      annualProgress.isAheadOfPace
-                        ? 'bg-ios-green/10 text-ios-green'
-                        : 'bg-ios-orange/10 text-ios-orange'
-                    }`}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                    <span>
-                      {annualProgress.isAheadOfPace
-                        ? `超前配速 +${annualProgress.paceDeltaKm} km`
-                        : `落后配速 ${annualProgress.paceDeltaKm} km`}
-                    </span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap justify-end">
+                    <IOSSegmentedControl
+                      value={annualGoalMetric}
+                      onChange={(v) => setAnnualGoalMetric(v as 'distance' | 'elevation')}
+                      options={[
+                        { value: 'distance', label: language === 'zh-TW' ? '里程' : '里程' },
+                        { value: 'elevation', label: language === 'zh-TW' ? '爬升' : '爬升' }
+                      ]}
+                      size="sm"
+                      mobileFullWidth={false}
+                      className="shrink-0"
+                    />
+                    <div
+                      className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 ${
+                        (annualGoalMetric === 'distance' ? annualProgress.isAheadOfPace : annualElevationProgress.isAheadOfPace)
+                          ? 'bg-ios-green/10 text-ios-green'
+                          : 'bg-ios-orange/10 text-ios-orange'
+                      }`}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                      <span>
+                        {annualGoalMetric === 'distance'
+                          ? (annualProgress.isAheadOfPace
+                              ? `超前 +${annualProgress.paceDeltaKm} km`
+                              : `落后 ${annualProgress.paceDeltaKm} km`)
+                          : (annualElevationProgress.isAheadOfPace
+                              ? `超前 +${annualElevationProgress.paceDeltaElevationM.toLocaleString()} m`
+                              : `落后 ${annualElevationProgress.paceDeltaElevationM.toLocaleString()} m`)}
+                      </span>
+                    </div>
                   </div>
                 }
               />
@@ -1005,48 +1078,96 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               {/* Goal Readout Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] text-center">
                 <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400">已达目标</div>
-                  <div className="text-xl sm:text-2xl font-bold text-ios-blue tabular-nums">{annualProgress.progressPct}%</div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">剩余 {annualProgress.remainingKm} km</div>
-                </div>
-                <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400">预估达成日</div>
-                  <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums pt-0.5">
-                    {annualProgress.projectedCompletionDate || '计算中'}
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '已達目標' : '已达目标'}</div>
+                  <div className={`text-xl sm:text-2xl font-bold tabular-nums ${annualGoalMetric === 'distance' ? 'text-ios-blue' : 'text-ios-green'}`}>
+                    {annualGoalMetric === 'distance' ? annualProgress.progressPct : annualElevationProgress.progressPct}%
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">年终预估 {annualProgress.projectedYearEndKm} km</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {language === 'zh-TW' ? '剩餘 ' : '剩余 '}
+                    {annualGoalMetric === 'distance'
+                      ? `${annualProgress.remainingKm.toLocaleString()} km`
+                      : `${annualElevationProgress.remainingElevationM.toLocaleString()} m`}
+                  </div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400">达成需日均</div>
-                  <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">{annualProgress.requiredDailyKm}</div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 剩余日</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '預估達成日' : '预估达成日'}</div>
+                  <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tabular-nums pt-0.5">
+                    {(annualGoalMetric === 'distance' ? annualProgress.projectedCompletionDate : annualElevationProgress.projectedCompletionDate) || (language === 'zh-TW' ? '計算中' : '计算中')}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {language === 'zh-TW' ? '年終預估 ' : '年终预估 '}
+                    {annualGoalMetric === 'distance'
+                      ? `${annualProgress.projectedYearEndKm.toLocaleString()} km`
+                      : `${annualElevationProgress.projectedYearEndElevationM.toLocaleString()} m`}
+                  </div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400">当期月均量</div>
-                  <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">{annualProgress.monthlyRateKm}</div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">km / 月</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '達成需日均' : '达成需日均'}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-ios-orange tabular-nums">
+                    {annualGoalMetric === 'distance'
+                      ? annualProgress.requiredDailyKm
+                      : annualElevationProgress.requiredDailyElevationM.toLocaleString()}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {annualGoalMetric === 'distance' ? (language === 'zh-TW' ? 'km / 剩餘日' : 'km / 剩余日') : (language === 'zh-TW' ? 'm / 剩餘日' : 'm / 剩余日')}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '當期月均量' : '当期月均量'}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-ios-green tabular-nums">
+                    {annualGoalMetric === 'distance'
+                      ? annualProgress.monthlyRateKm.toLocaleString()
+                      : annualElevationProgress.monthlyRateElevationM.toLocaleString()}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {annualGoalMetric === 'distance' ? (language === 'zh-TW' ? 'km / 月' : 'km / 月') : (language === 'zh-TW' ? 'm / 月' : 'm / 月')}
+                  </div>
                 </div>
               </div>
 
               {/* Annual Progress Bar */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500 dark:text-slate-400">当前累积完成率</span>
+                  <span className="text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '當前累積完成率' : '当前累积完成率'}</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200 tabular-nums">
-                    {annualProgress.currentKm} / {annualProgress.targetKm} km
+                    {annualGoalMetric === 'distance'
+                      ? `${annualProgress.currentKm.toLocaleString()} / ${annualProgress.targetKm.toLocaleString()} km`
+                      : `${annualElevationProgress.currentElevationM.toLocaleString()} / ${annualElevationProgress.targetElevationM.toLocaleString()} m`}
                   </span>
                 </div>
                 <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden relative">
                   <div
                     className="absolute top-0 bottom-0 w-0.5 bg-slate-900/60 dark:bg-white/70 z-10"
-                    style={{ left: `${Math.min(100, (annualProgress.expectedPaceKm / annualProgress.targetKm) * 100)}%` }}
-                    title={`标准进度线: ${annualProgress.expectedPaceKm} km`}
+                    style={{
+                      left: `${Math.min(
+                        100,
+                        annualGoalMetric === 'distance'
+                          ? (annualProgress.expectedPaceKm / annualProgress.targetKm) * 100
+                          : (annualElevationProgress.expectedPaceElevationM / annualElevationProgress.targetElevationM) * 100
+                      )}%`
+                    }}
+                    title={`${language === 'zh-TW' ? '標準進度線: ' : '标准进度线: '}${
+                      annualGoalMetric === 'distance'
+                        ? `${annualProgress.expectedPaceKm} km`
+                        : `${annualElevationProgress.expectedPaceElevationM.toLocaleString()} m`
+                    }`}
                   />
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
-                      annualProgress.isAheadOfPace ? 'bg-ios-green' : 'bg-ios-blue'
+                      (annualGoalMetric === 'distance' ? annualProgress.isAheadOfPace : annualElevationProgress.isAheadOfPace)
+                        ? 'bg-ios-green'
+                        : annualGoalMetric === 'distance'
+                        ? 'bg-ios-blue'
+                        : 'bg-ios-mint'
                     }`}
-                    style={{ width: `${Math.min(100, annualProgress.progressPct)}%` }}
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        annualGoalMetric === 'distance'
+                          ? annualProgress.progressPct
+                          : annualElevationProgress.progressPct
+                      )}%`
+                    }}
                   />
                 </div>
               </div>

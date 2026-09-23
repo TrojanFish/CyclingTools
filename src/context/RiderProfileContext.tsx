@@ -33,6 +33,7 @@ export interface RiderProfile {
   gender: 'male' | 'female';
   age: number;
   annualGoalKm?: number;
+  annualGoalElevationM?: number;
 }
 
 export interface TeamRider extends RiderProfile {
@@ -56,6 +57,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
     gender: 'male',
     age: 26,
     annualGoalKm: 8000,
+    annualGoalElevationM: 80000,
   },
   {
     id: 'rider-sprinter',
@@ -71,6 +73,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
     gender: 'male',
     age: 28,
     annualGoalKm: 7000,
+    annualGoalElevationM: 50000,
   },
   {
     id: 'rider-climber',
@@ -86,6 +89,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
     gender: 'male',
     age: 25,
     annualGoalKm: 6000,
+    annualGoalElevationM: 90000,
   },
   {
     id: 'rider-tt',
@@ -101,6 +105,7 @@ export const DEFAULT_TEAM_ROSTER: TeamRider[] = [
     gender: 'male',
     age: 27,
     annualGoalKm: 7500,
+    annualGoalElevationM: 40000,
   }
 ];
 

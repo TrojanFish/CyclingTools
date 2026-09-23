@@ -196,6 +196,31 @@ export interface AnnualGoalProgress {
   }[];
 }
 
+export interface AnnualElevationGoalProgress {
+  year: number;
+  targetElevationM: number;
+  currentElevationM: number;
+  progressPct: number;
+  remainingElevationM: number;
+  daysPassed: number;
+  daysRemaining: number;
+  totalDaysInYear: number;
+  expectedPaceElevationM: number;
+  paceDeltaElevationM: number;
+  isAheadOfPace: boolean;
+  monthlyRateElevationM: number;
+  requiredDailyElevationM: number;
+  projectedYearEndElevationM: number;
+  projectedCompletionDate: string | null;
+  everestingCount: number;
+  monthlyBreakdown: {
+    month: number;
+    label: string;
+    actualElevationM: number;
+    targetPaceElevationM: number;
+  }[];
+}
+
 export interface OptimalRaceWindow {
   peakDate: string | null;
   peakShortDate: string | null;
@@ -1464,6 +1489,111 @@ export function computeAnnualGoalProgress(
     requiredDailyKm,
     projectedYearEndKm,
     projectedCompletionDate,
+    monthlyBreakdown
+  };
+}
+
+export function computeAnnualElevationGoalProgress(
+  activities: StravaActivityRecord[],
+  targetElevationM: number = 50000,
+  year?: number
+): AnnualElevationGoalProgress {
+  const now = new Date();
+  const targetYear = year ?? now.getFullYear();
+  const currentYear = now.getFullYear();
+
+  const isLeapYear = (targetYear % 4 === 0 && targetYear % 100 !== 0) || (targetYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+
+  let daysPassed: number;
+  let daysRemaining: number;
+
+  if (targetYear < currentYear) {
+    daysPassed = totalDaysInYear;
+    daysRemaining = 0;
+  } else if (targetYear > currentYear) {
+    daysPassed = 1;
+    daysRemaining = totalDaysInYear - 1;
+  } else {
+    const startOfYear = new Date(targetYear, 0, 1);
+    daysPassed = Math.max(1, Math.min(totalDaysInYear, Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 3600 * 1000)) + 1));
+    daysRemaining = Math.max(0, totalDaysInYear - daysPassed);
+  }
+
+  // Monthly buckets: 1 to 12
+  const monthElevations = new Array(12).fill(0);
+  let totalEleM = 0;
+
+  for (const a of activities) {
+    if (!a.start_date) continue;
+    const aDate = new Date(a.start_date);
+    if (isNaN(aDate.getTime())) continue;
+
+    if (aDate.getFullYear() === targetYear) {
+      const ele = a.total_elevation_gain || 0;
+      totalEleM += ele;
+      const mIdx = aDate.getMonth();
+      if (mIdx >= 0 && mIdx < 12) {
+        monthElevations[mIdx] += ele;
+      }
+    }
+  }
+
+  const currentElevationM = Math.round(totalEleM);
+  const safeTargetElevationM = Math.max(100, targetElevationM);
+  const progressPct = parseFloat(((currentElevationM / safeTargetElevationM) * 100).toFixed(1));
+  const remainingElevationM = Math.max(0, safeTargetElevationM - currentElevationM);
+
+  const expectedPaceElevationM = Math.round(safeTargetElevationM * (daysPassed / totalDaysInYear));
+  const paceDeltaElevationM = currentElevationM - expectedPaceElevationM;
+  const isAheadOfPace = paceDeltaElevationM >= 0;
+
+  const currentDailyRate = currentElevationM / Math.max(1, daysPassed);
+  const monthlyRateElevationM = Math.round(currentDailyRate * 30.4);
+  const requiredDailyElevationM = daysRemaining > 0 ? Math.round(remainingElevationM / daysRemaining) : 0;
+  const projectedYearEndElevationM = Math.round(currentDailyRate * totalDaysInYear);
+
+  let projectedCompletionDate: string | null = null;
+  if (currentElevationM >= safeTargetElevationM) {
+    projectedCompletionDate = '已达成';
+  } else if (currentDailyRate > 0 && remainingElevationM > 0) {
+    const daysNeeded = Math.ceil(remainingElevationM / currentDailyRate);
+    if (daysNeeded <= 365 * 2) {
+      const completionTime = new Date(now.getTime() + daysNeeded * 24 * 3600 * 1000);
+      const cY = completionTime.getFullYear();
+      const cM = String(completionTime.getMonth() + 1).padStart(2, '0');
+      const cD = String(completionTime.getDate()).padStart(2, '0');
+      projectedCompletionDate = `${cY}-${cM}-${cD}`;
+    }
+  }
+
+  const monthlyTargetPaceElevationM = Math.round(safeTargetElevationM / 12);
+  const monthlyBreakdown = monthElevations.map((eleM, idx) => ({
+    month: idx + 1,
+    label: `${idx + 1}月`,
+    actualElevationM: Math.round(eleM),
+    targetPaceElevationM: monthlyTargetPaceElevationM
+  }));
+
+  const everestingCount = parseFloat((currentElevationM / 8848).toFixed(1));
+
+  return {
+    year: targetYear,
+    targetElevationM: safeTargetElevationM,
+    currentElevationM,
+    progressPct,
+    remainingElevationM,
+    daysPassed,
+    daysRemaining,
+    totalDaysInYear,
+    expectedPaceElevationM,
+    paceDeltaElevationM,
+    isAheadOfPace,
+    monthlyRateElevationM,
+    requiredDailyElevationM,
+    projectedYearEndElevationM,
+    projectedCompletionDate,
+    everestingCount,
     monthlyBreakdown
   };
 }
