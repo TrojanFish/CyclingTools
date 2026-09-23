@@ -200,8 +200,9 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
   }, [effectiveActivities, ftpWatts, volumeWeeksSpan]);
 
   const rampRateHistory = useMemo(() => {
-    return computeRampRateHistory(pmcTimeline, volumeWeeksSpan === 52 ? 26 : 14);
-  }, [pmcTimeline, volumeWeeksSpan]);
+    const fullPmc = computePmcTimeline(effectiveActivities, ftpWatts, volumeWeeksSpan === 52 ? 189 : 105, 0);
+    return computeRampRateHistory(fullPmc, volumeWeeksSpan === 52 ? 26 : 14);
+  }, [effectiveActivities, ftpWatts, volumeWeeksSpan]);
 
   // 5. Coggan 7-Zone Power Distribution
   const powerZoneActivities = useMemo(() => {
@@ -914,9 +915,9 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           value={activeTab}
           onChange={(val) => setActiveTab(val as CockpitTab)}
           options={[
-            { value: 'overview', label: '综合总览' },
-            { value: 'fitness', label: '体能与周期' },
-            { value: 'fleet', label: '机队与勋章' }
+            { value: 'overview', label: language === 'zh-TW' ? '綜合總覽' : '综合总览' },
+            { value: 'fitness', label: language === 'zh-TW' ? '體能與週期' : '体能与周期' },
+            { value: 'fleet', label: language === 'zh-TW' ? '機隊與勳章' : '机队与勋章' }
           ]}
           className="w-full sm:w-auto"
         />
@@ -1389,8 +1390,8 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                     value={volumeSubView}
                     onChange={(v) => setVolumeSubView(v as 'volume' | 'ramp')}
                     options={[
-                      { value: 'volume', label: '周负荷走势' },
-                      { value: 'ramp', label: 'CTL 爬升率' }
+                      { value: 'volume', label: language === 'zh-TW' ? '週負荷走勢' : '周负荷走势' },
+                      { value: 'ramp', label: language === 'zh-TW' ? 'CTL 爬升率' : 'CTL 爬升率' }
                     ]}
                     size="sm"
                     mobileFullWidth={false}
@@ -1766,8 +1767,8 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                     value={trophyTab}
                     onChange={(v) => setTrophyTab(v as 'trophies' | 'prs')}
                     options={[
-                      { value: 'trophies', label: '勋章殿堂' },
-                      { value: 'prs', label: 'PR 突破史' }
+                      { value: 'trophies', label: language === 'zh-TW' ? '勳章殿堂' : '勋章殿堂' },
+                      { value: 'prs', label: language === 'zh-TW' ? 'PR 突破史' : 'PR 突破史' }
                     ]}
                     size="sm"
                     mobileFullWidth={false}
@@ -1848,7 +1849,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                     title="导出全部筛选活动为 CSV 格式表格"
                   >
                     <Download className="w-3.5 h-3.5 text-ios-blue" />
-                    <span>导出 CSV</span>
+                    <span>{language === 'zh-TW' ? '導出 CSV' : '导出 CSV'}</span>
                   </button>
                   <button
                     onClick={handleExportJson}
@@ -1856,7 +1857,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                     title="导出全部筛选活动为原始 JSON 格式"
                   >
                     <Download className="w-3.5 h-3.5 text-ios-purple" />
-                    <span>导出 JSON</span>
+                    <span>{language === 'zh-TW' ? '導出 JSON' : '导出 JSON'}</span>
                   </button>
                 </div>
               }

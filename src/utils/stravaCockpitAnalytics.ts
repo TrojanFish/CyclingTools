@@ -1832,6 +1832,36 @@ export function computeFtpHistory(
     }
 
     savedList = points;
+    try {
+      localStorage.setItem('yolo_cycling_ftp_history', JSON.stringify(savedList));
+    } catch {
+      // storage guard
+    }
+  } else if (savedList.length > 0) {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const lastPoint = savedList[savedList.length - 1];
+    if (lastPoint.ftpWatts !== safeFtp) {
+      if (lastPoint.date === todayStr) {
+        lastPoint.ftpWatts = safeFtp;
+        lastPoint.wkg = parseFloat((safeFtp / safeWeight).toFixed(2));
+      } else {
+        savedList.push({
+          id: `ftp-${Date.now()}`,
+          date: todayStr,
+          shortDate: `${today.getMonth() + 1}/${today.getDate()}`,
+          ftpWatts: safeFtp,
+          wkg: parseFloat((safeFtp / safeWeight).toFixed(2)),
+          source: 'manual',
+          note: '当前设定值'
+        });
+      }
+      try {
+        localStorage.setItem('yolo_cycling_ftp_history', JSON.stringify(savedList));
+      } catch {
+        // storage guard
+      }
+    }
   }
 
   const startFtp = savedList[0]?.ftpWatts || safeFtp;
