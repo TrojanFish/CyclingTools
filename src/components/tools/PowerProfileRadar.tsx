@@ -362,7 +362,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={Target}
-        title={language === 'zh-TW' ? '功率畫像 (MMP)' : '功率画像 (MMP)'}
+        title={language === 'zh-TW' ? '功率畫像' : '功率画像'}
         description={
           language === 'zh-TW'
             ? '基於 5s 衝刺、1min 無氧、5min VO₂ 與 20min 閾值構建六維能力雷達，智能判定車手類型並生成 Seiler 80/20 極化與甜點訓練靶心。'

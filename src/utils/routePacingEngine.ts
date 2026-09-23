@@ -188,23 +188,23 @@ export function decomposeWind(bearingDeg: number, windDirectionFromDeg: number, 
   const crosswindComponentMs = parseFloat((windMs * Math.sin((relativeAngle * Math.PI) / 180)).toFixed(2));
 
   let windRelation: WindRelation = 'headwind';
-  let windRelationLabel = '强烈顶风';
+  let windRelationLabel = '强顶风';
 
   if (relativeAngle <= 45) {
     windRelation = 'headwind';
-    windRelationLabel = '强烈顶风 (Headwind)';
+    windRelationLabel = '强顶风';
   } else if (relativeAngle <= 80) {
     windRelation = 'cross_headwind';
-    windRelationLabel = '侧顶风 (Cross-Headwind)';
+    windRelationLabel = '侧顶风';
   } else if (relativeAngle <= 100) {
     windRelation = 'crosswind';
-    windRelationLabel = '垂直侧风 (Crosswind)';
+    windRelationLabel = '纯侧风';
   } else if (relativeAngle <= 135) {
     windRelation = 'cross_tailwind';
-    windRelationLabel = '侧顺风 (Cross-Tailwind)';
+    windRelationLabel = '侧顺风';
   } else {
     windRelation = 'tailwind';
-    windRelationLabel = '顺风推进 (Tailwind)';
+    windRelationLabel = '顺风推进';
   }
 
   return {

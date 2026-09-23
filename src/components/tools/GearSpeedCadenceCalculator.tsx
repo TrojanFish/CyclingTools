@@ -225,7 +225,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Cog}
         title={language === 'zh-TW' ? '齒比與踏頻' : '齿比与踏频'}
         description="全档位齿比矩阵、多踏频速度分布、相邻跳齿百分比（Step %）与极限斜链位智能预警。"

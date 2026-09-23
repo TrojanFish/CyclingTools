@@ -168,7 +168,7 @@ export const ChainLengthCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Link}
         title={language === 'zh-TW' ? '鏈條長度' : '链条长度'}
         description={

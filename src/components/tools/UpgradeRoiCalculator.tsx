@@ -52,7 +52,7 @@ export interface UpgradeItem {
 const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   {
     id: '1',
-    name: '骑行服 / 连体服升级',
+    name: '骑行服 / 连体服',
     category: 'aero',
     weightSaveG: 0,
     powerSaveWatts: 7.5,
@@ -67,7 +67,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '2',
-    name: '内胎与滚阻系统升级',
+    name: '内胎与轮胎系统',
     category: 'rolling',
     weightSaveG: 140,
     powerSaveWatts: 3.2,
@@ -82,7 +82,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '3',
-    name: '头盔气动升级',
+    name: '气动头盔',
     category: 'aero',
     weightSaveG: 0,
     powerSaveWatts: 4.5,
@@ -97,7 +97,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '4',
-    name: '碳纤维气动轮组升级',
+    name: '碳纤气动轮组',
     category: 'aero',
     weightSaveG: 280,
     powerSaveWatts: 6.0,
@@ -112,7 +112,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '5',
-    name: '车把与全内走线升级',
+    name: '一体把与内走线',
     category: 'aero',
     weightSaveG: 90,
     powerSaveWatts: 3.5,
@@ -126,7 +126,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
   },
   {
     id: '6',
-    name: '锁鞋与脚部系统升级',
+    name: '锁鞋与脚部系统',
     category: 'weight',
     weightSaveG: 160,
     powerSaveWatts: 1.5,
@@ -373,9 +373,9 @@ export const UpgradeRoiCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Scale}
-        title="改装省瓦 ROI"
+        title={language === 'zh-TW' ? '改裝省瓦' : '改装省瓦'}
         description="精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，科学量化改装边际效益与每瓦克重投入产出比。"
         tint="blue"
         onShare={handleGeneratePoster}

@@ -70,7 +70,7 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
               </span>
             </div>
             <h1 className="text-xs font-bold text-slate-900 tracking-tight">
-              公路车生物力学拟合设定工程工单
+              公路车 Fitting 设定工单
             </h1>
           </div>
         </div>
@@ -476,7 +476,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                  专业 Fitting 装车工程工单
+                  公路车 Fitting 设定工单
                 </h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   A4 国际标准单页蓝图 · 适合车店专业施工与车手留档

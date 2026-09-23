@@ -234,7 +234,7 @@ export const RoadBikeFitter: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="Fitting与工效"
+        category={language === 'zh-TW' ? '人車工效' : '人车工效'}
         categoryIcon={Ruler}
         title="Bike Fit"
         description="根据人体解剖学多维测量，科学推导有效上管 ETT、坐高、座舱落差、Stack/Reach、把立及锁片安装方案。"

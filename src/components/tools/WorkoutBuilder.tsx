@@ -77,14 +77,14 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     descriptionTw: 'Bent R. Rønnestad 博士經典微間歇。3 組 x 13 次 (30s @ 125% FTP + 15s @ 50% FTP)，組間 3 分鐘巡航。相比傳統長間歇，微間歇能在積累極高 VO₂max 刺激時間的同時，大幅降低乳酸與神經系統破壞。',
     targetAdaptation: 'VO₂max 最大摄氧量拓展 · 神经肌肉快速抗乳酸恢复',
     segments: [
-      { id: '1', type: 'warmup', name: '渐进热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
-      { id: '2', type: 'steady', name: '准备踩踏 (Prep)', durationSec: 120, powerStartPct: 0.60, powerEndPct: 0.60, cadenceRpm: 90 },
+      { id: '1', type: 'warmup', name: '渐进热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
+      { id: '2', type: 'steady', name: '准备踩踏', durationSec: 120, powerStartPct: 0.60, powerEndPct: 0.60, cadenceRpm: 90 },
       { id: '3', type: 'interval', name: '第 1 组 30/15s (13次)', durationSec: 585, powerStartPct: 1.25, powerEndPct: 1.25, repeatCount: 13, onDurationSec: 30, onPowerPct: 1.25, offDurationSec: 15, offPowerPct: 0.50, cadenceRpm: 100 },
-      { id: '4', type: 'steady', name: '组间积极恢复 (Rest 1)', durationSec: 180, powerStartPct: 0.50, powerEndPct: 0.50, cadenceRpm: 85 },
+      { id: '4', type: 'steady', name: '积极恢复 1', durationSec: 180, powerStartPct: 0.50, powerEndPct: 0.50, cadenceRpm: 85 },
       { id: '5', type: 'interval', name: '第 2 组 30/15s (13次)', durationSec: 585, powerStartPct: 1.25, powerEndPct: 1.25, repeatCount: 13, onDurationSec: 30, onPowerPct: 1.25, offDurationSec: 15, offPowerPct: 0.50, cadenceRpm: 100 },
-      { id: '6', type: 'steady', name: '组间积极恢复 (Rest 2)', durationSec: 180, powerStartPct: 0.50, powerEndPct: 0.50, cadenceRpm: 85 },
+      { id: '6', type: 'steady', name: '积极恢复 2', durationSec: 180, powerStartPct: 0.50, powerEndPct: 0.50, cadenceRpm: 85 },
       { id: '7', type: 'interval', name: '第 3 组 30/15s (13次)', durationSec: 585, powerStartPct: 1.25, powerEndPct: 1.25, repeatCount: 13, onDurationSec: 30, onPowerPct: 1.25, offDurationSec: 15, offPowerPct: 0.50, cadenceRpm: 100 },
-      { id: '8', type: 'cooldown', name: '冷身排酸 (Cooldown)', durationSec: 600, powerStartPct: 0.65, powerEndPct: 0.45, cadenceRpm: 85 }
+      { id: '8', type: 'cooldown', name: '冷身排酸', durationSec: 600, powerStartPct: 0.65, powerEndPct: 0.45, cadenceRpm: 85 }
     ]
   },
   {
@@ -99,15 +99,15 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     descriptionTw: '挪威科技大學 Helgerud & Hoff 實驗室金牌課表。4 組 4 分鐘 @ 110% FTP (逼近 90-95% HRmax)，組間 3 分鐘積極恢復。被運動醫學界證實為單位時間內提升左心室每搏輸出量與攝氧量效率最高的手法之一。',
     targetAdaptation: '心肌收缩力增强 · 最大心输出量 · 爬坡爆发力',
     segments: [
-      { id: '1', type: 'warmup', name: '渐进热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
+      { id: '1', type: 'warmup', name: '渐进热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
       { id: '2', type: 'steady', name: '第 1 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
-      { id: '3', type: 'steady', name: '恢复巡航 (Rest 1)', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
+      { id: '3', type: 'steady', name: '积极恢复 1', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
       { id: '4', type: 'steady', name: '第 2 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
-      { id: '5', type: 'steady', name: '恢复巡航 (Rest 2)', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
+      { id: '5', type: 'steady', name: '积极恢复 2', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
       { id: '6', type: 'steady', name: '第 3 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
-      { id: '7', type: 'steady', name: '恢复巡航 (Rest 3)', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
+      { id: '7', type: 'steady', name: '积极恢复 3', durationSec: 180, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
       { id: '8', type: 'steady', name: '第 4 组 4min VO₂max', durationSec: 240, powerStartPct: 1.10, powerEndPct: 1.10, cadenceRpm: 95 },
-      { id: '9', type: 'cooldown', name: '冷身排酸 (Cooldown)', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
+      { id: '9', type: 'cooldown', name: '冷身排酸', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
     ]
   },
   {
@@ -122,11 +122,11 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     descriptionTw: '所有耐力車手的奠基經典。2 組 20 分鐘 @ 98% FTP（組間 5 分鐘輕度巡航）。極強的心智毅力與肌肉耐酸磨練，直接拓展乳酸拐點下的維持功率（TTE），是計時賽與名山大坡的絕對制勝王牌。',
     targetAdaptation: '功能阈值功率 TTE 延展 · 抗疲劳耐受力 · 心理坚韧度',
     segments: [
-      { id: '1', type: 'warmup', name: '系统热身 (Warmup)', durationSec: 900, powerStartPct: 0.50, powerEndPct: 0.80, cadenceRpm: 90 },
+      { id: '1', type: 'warmup', name: '渐进热身', durationSec: 900, powerStartPct: 0.50, powerEndPct: 0.80, cadenceRpm: 90 },
       { id: '2', type: 'steady', name: '第 1 组 20min 阈值', durationSec: 1200, powerStartPct: 0.98, powerEndPct: 0.98, cadenceRpm: 92 },
-      { id: '3', type: 'steady', name: '间歇恢复 (Rest)', durationSec: 300, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
+      { id: '3', type: 'steady', name: '间歇恢复', durationSec: 300, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
       { id: '4', type: 'steady', name: '第 2 组 20min 阈值', durationSec: 1200, powerStartPct: 0.98, powerEndPct: 0.98, cadenceRpm: 92 },
-      { id: '5', type: 'cooldown', name: '冷身排酸 (Cooldown)', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
+      { id: '5', type: 'cooldown', name: '冷身排酸', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
     ]
   },
   {
@@ -141,13 +141,13 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     descriptionTw: '模擬大組賽中突圍進攻與跟騎拉扯的黃金課表。在門檻下 90% FTP 與門檻上 108% FTP 之間週期性交替，強制機體在疲勞狀態下調動慢肌纖維快速吸收並氧化快肌纖維產生的多餘乳酸。',
     targetAdaptation: '乳酸穿梭循环能力 · 变速拉扯耐受 · 动态负荷恢复',
     segments: [
-      { id: '1', type: 'warmup', name: '系统热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
+      { id: '1', type: 'warmup', name: '渐进热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
       { id: '2', type: 'interval', name: '第 1 组 Over-Under (3波)', durationSec: 540, powerStartPct: 0.90, powerEndPct: 1.08, repeatCount: 3, onDurationSec: 60, onPowerPct: 1.08, offDurationSec: 120, offPowerPct: 0.90, cadenceRpm: 95 },
-      { id: '3', type: 'steady', name: '组间恢复 (Rest 1)', durationSec: 300, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
+      { id: '3', type: 'steady', name: '积极恢复 1', durationSec: 300, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
       { id: '4', type: 'interval', name: '第 2 组 Over-Under (3波)', durationSec: 540, powerStartPct: 0.90, powerEndPct: 1.08, repeatCount: 3, onDurationSec: 60, onPowerPct: 1.08, offDurationSec: 120, offPowerPct: 0.90, cadenceRpm: 95 },
-      { id: '5', type: 'steady', name: '组间恢复 (Rest 2)', durationSec: 300, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
+      { id: '5', type: 'steady', name: '积极恢复 2', durationSec: 300, powerStartPct: 0.55, powerEndPct: 0.55, cadenceRpm: 85 },
       { id: '6', type: 'interval', name: '第 3 组 Over-Under (3波)', durationSec: 540, powerStartPct: 0.90, powerEndPct: 1.08, repeatCount: 3, onDurationSec: 60, onPowerPct: 1.08, offDurationSec: 120, offPowerPct: 0.90, cadenceRpm: 95 },
-      { id: '7', type: 'cooldown', name: '冷身排酸 (Cooldown)', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
+      { id: '7', type: 'cooldown', name: '冷身排酸', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.40, cadenceRpm: 85 }
     ]
   },
   {
@@ -162,11 +162,11 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     descriptionTw: 'Tabata 經典高強度無氧間歇。20 秒全力 @ 160% FTP + 10 秒極短喘息，連續 8 輪。極短時間內將 W\' 無氧電量池徹底榨乾，對心肺、無氧糖酵解與末段衝刺抗酸耐受產生劇烈刺激。',
     targetAdaptation: 'W\' 无氧能量池扩容 · 终点爆发冲刺 · 短时间极限耐受',
     segments: [
-      { id: '1', type: 'warmup', name: '充分热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.80, cadenceRpm: 95 },
-      { id: '2', type: 'steady', name: '定速开脚 (Prep)', durationSec: 180, powerStartPct: 0.65, powerEndPct: 0.65, cadenceRpm: 100 },
+      { id: '1', type: 'warmup', name: '充分热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.80, cadenceRpm: 95 },
+      { id: '2', type: 'steady', name: '定速开脚', durationSec: 180, powerStartPct: 0.65, powerEndPct: 0.65, cadenceRpm: 100 },
       { id: '3', type: 'interval', name: 'Tabata 20/10s (8次全开)', durationSec: 240, powerStartPct: 1.60, powerEndPct: 0.40, repeatCount: 8, onDurationSec: 20, onPowerPct: 1.60, offDurationSec: 10, offPowerPct: 0.40, cadenceRpm: 110 },
-      { id: '4', type: 'steady', name: '平缓恢复 (Recovery)', durationSec: 300, powerStartPct: 0.50, powerEndPct: 0.50, cadenceRpm: 85 },
-      { id: '5', type: 'cooldown', name: '冷身放松 (Cooldown)', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.35, cadenceRpm: 85 }
+      { id: '4', type: 'steady', name: '平缓恢复', durationSec: 300, powerStartPct: 0.50, powerEndPct: 0.50, cadenceRpm: 85 },
+      { id: '5', type: 'cooldown', name: '冷身放松', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.35, cadenceRpm: 85 }
     ]
   },
   {
@@ -181,9 +181,9 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     descriptionTw: '職業車手訓練計劃中佔比 75% 以上的真正基石。90 分鐘穩定輸出在 65% FTP (Zone 2)。在此區間脂肪氧化率達到峰值 (FatMax)，刺激骨骼肌慢肌纖維與細胞線粒體大量增生。',
     targetAdaptation: '线粒体密度增生 · 脂肪氧化利用率 · 有氧底功筑基',
     segments: [
-      { id: '1', type: 'warmup', name: '平缓热身 (Warmup)', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.65, cadenceRpm: 90 },
-      { id: '2', type: 'steady', name: 'Z2 有氧核心巡航 (Endurance)', durationSec: 4200, powerStartPct: 0.65, powerEndPct: 0.65, cadenceRpm: 90 },
-      { id: '3', type: 'cooldown', name: '平稳冷身 (Cooldown)', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.45, cadenceRpm: 85 }
+      { id: '1', type: 'warmup', name: '平缓热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.65, cadenceRpm: 90 },
+      { id: '2', type: 'steady', name: 'Z2 有氧核心巡航', durationSec: 4200, powerStartPct: 0.65, powerEndPct: 0.65, cadenceRpm: 90 },
+      { id: '3', type: 'cooldown', name: '平稳冷身', durationSec: 600, powerStartPct: 0.60, powerEndPct: 0.45, cadenceRpm: 85 }
     ]
   }
 ];
@@ -510,7 +510,7 @@ export const WorkoutBuilder: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={Dumbbell}
-        title={language === 'zh-TW' ? '間歇課表工坊' : '间歇课表工坊'}
+        title={language === 'zh-TW' ? '間歇課表' : '间歇课表'}
         description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
         tint="red"
         onShare={handleGeneratePoster}

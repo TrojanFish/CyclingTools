@@ -8,6 +8,7 @@ import { Line } from 'react-chartjs-2';
 import L from 'leaflet';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { IOSCard, IOSCardHeader, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
@@ -43,6 +44,7 @@ const WIND_COMPASS_PRESETS = [
 export const GpxRouteCreator: React.FC = () => {
   const { showToast } = useToast();
   const { profile, activeBike } = useRiderProfile();
+  const { language } = useLanguageAndUnit();
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -550,9 +552,9 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="路线战术气象"
+        category={language === 'zh-TW' ? '路線與氣象' : '路线与气象'}
         categoryIcon={Navigation}
-        title="GPX 路线规划"
+        title={language === 'zh-TW' ? '路線規劃' : '路线规划'}
         description="地名智能搜索、航点编辑、气动风阻矢量推演与 Best Bike Split 式分段体能策略解算。"
         tint="mint"
         onShare={handleGeneratePoster}

@@ -1427,7 +1427,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={LineChartIcon}
-        title="活动深度解析"
+        title={language === 'zh-TW' ? '活動解析' : '活动解析'}
         description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
         tint="red"
         onShare={handleGeneratePoster}
@@ -1441,7 +1441,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               title="查看已持久化的本地活动时序库"
             >
               <FolderArchive className="w-3.5 h-3.5" />
-              <span>战队档案库 ({localActivities.length})</span>
+              <span>{language === 'zh-TW' ? '本地檔案庫' : '本地档案库'} ({localActivities.length})</span>
             </button>
 
             <label className="apple-touch h-9 px-3 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer">

@@ -401,7 +401,7 @@ END:VEVENT
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={CalendarIcon}
-        title="训练赛历 (ATP)"
+        title={language === 'zh-TW' ? '訓練賽歷' : '训练赛历'}
         description="基于 Tudor Bompa 周期化模型，以目标 A 级赛事为锚点反推体能负荷，排布结构化课表并前瞻推演未来 60 天 PMC 竞技巅峰。"
         tint="blue"
         onShare={handleGeneratePoster}
@@ -413,7 +413,7 @@ END:VEVENT
               className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 shadow-xs transition flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5 text-ios-blue shrink-0" />
-              <span>ATP 规划向导</span>
+              <span>{language === 'zh-TW' ? '規劃向導' : '规划向导'}</span>
             </button>
             <button
               onClick={handleExportICal}

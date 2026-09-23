@@ -610,7 +610,7 @@ export const ClimbPacingPlanner: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Mountain}
         title={language === 'zh-TW' ? '爬坡配速' : '爬坡配速'}
         description={
@@ -754,7 +754,7 @@ export const ClimbPacingPlanner: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '車手淨重' : '车手净重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '車手體重' : '车手体重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}

@@ -737,9 +737,9 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '路線戰術氣象' : '路线战术气象'}
+        category={language === 'zh-TW' ? '路線與氣象' : '路线与气象'}
         categoryIcon={Compass}
-        title={language === 'zh-TW' ? '路書航跡庫' : '路书航迹库'}
+        title={language === 'zh-TW' ? '精選路書' : '精选路书'}
         description={
           language === 'zh-TW'
             ? '匯聚歐洲環法環義傳奇天路與經典實測單車路書，支援互動式地圖漫遊、高程起伏剖面、一鍵匯出 GPX 及與天氣/爬坡工具連動。'

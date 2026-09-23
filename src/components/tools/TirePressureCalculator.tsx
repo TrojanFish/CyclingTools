@@ -197,7 +197,7 @@ export const TirePressureCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Gauge}
         title={language === 'zh-TW' ? '智能胎壓' : '智能胎压'}
         description={
@@ -259,7 +259,7 @@ export const TirePressureCalculator: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                    {language === 'zh-TW' ? '車手淨體重' : '车手净体重'}
+                    {language === 'zh-TW' ? '車手體重' : '车手体重'}
                     {profile.weightKg ? (
                       <span className="text-[11px] text-ios-blue font-normal">
                         {language === 'zh-TW' ? '已同步檔案' : '已同步档案'}
@@ -305,7 +305,7 @@ export const TirePressureCalculator: React.FC = () => {
             <div>
               <div className="flex justify-between items-center mb-1">
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center">
-                  前后轮重量分配 (Front / Rear Distribution)
+                  {language === 'zh-TW' ? '前後軸重分配' : '前后轴重分配'}
                   <Tooltip content="公路车上体前倾常见比例为前轮 42%~45%，后轮 55%~58%" />
                 </label>
                 <span className="text-ios-blue font-mono font-semibold text-xs">前 {weightDistFront}% / 后 {weightDistRear}%</span>
@@ -328,7 +328,7 @@ export const TirePressureCalculator: React.FC = () => {
                   <Package className="w-4 h-4 text-amber-500 shrink-0" />
                   <div>
                     <span className="text-xs font-bold text-slate-900 dark:text-white block">
-                      长途重装 / Bikepacking 驮包模式
+                      {language === 'zh-TW' ? '長途馱包載荷' : '长途驮包载荷'}
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">
                       附加行囊载荷、重心重构与防砸圈胎压补偿
@@ -347,7 +347,7 @@ export const TirePressureCalculator: React.FC = () => {
                 <div className="pt-2 border-t border-amber-500/15 space-y-3 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                      行李行囊净重 (Luggage Weight)
+                      {language === 'zh-TW' ? '行囊負重' : '行囊负重'}
                     </span>
                     <span className="text-amber-600 dark:text-amber-400 font-mono font-bold text-xs">
                       +{luggageKg} kg ({Math.round(luggageKg * 2.20462)} lbs)

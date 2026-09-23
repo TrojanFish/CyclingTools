@@ -95,7 +95,7 @@ export const TargetRaceWizardModal: React.FC<TargetRaceWizardModalProps> = ({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                年度周期规划与目标赛事向导
+                赛事与周期规划
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 第 {step} / 3 步 · {step === 1 ? '选定目标赛事' : step === 2 ? '设定巅峰体能' : '每周训练时间'}

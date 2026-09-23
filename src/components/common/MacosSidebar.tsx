@@ -76,10 +76,10 @@ export const MacosSidebar: React.FC<MacosSidebarProps> = ({
 
   // Category definitions matching macOS Finder / Notes / Settings style
   const categories = useMemo(() => [
-    { id: 'dynamics', label: language === 'zh-TW' ? '動力傳動' : '动力传动', icon: Zap, color: 'text-ios-blue' },
-    { id: 'fitting', label: 'Fitting & 姿態', icon: Ruler, color: 'text-ios-purple' },
-    { id: 'route', label: language === 'zh-TW' ? '路線氣象' : '路线气象', icon: MapPin, color: 'text-ios-mint' },
-    { id: 'health', label: language === 'zh-TW' ? '生理健康' : '生理健康', icon: HeartPulse, color: 'text-ios-red' }
+    { id: 'dynamics', label: language === 'zh-TW' ? '動力與傳動' : '动力与传动', icon: Zap, color: 'text-ios-blue' },
+    { id: 'fitting', label: language === 'zh-TW' ? '人車工效' : '人车工效', icon: Ruler, color: 'text-ios-purple' },
+    { id: 'route', label: language === 'zh-TW' ? '路線與氣象' : '路线与气象', icon: MapPin, color: 'text-ios-mint' },
+    { id: 'health', label: language === 'zh-TW' ? '生理與代謝' : '生理与代谢', icon: HeartPulse, color: 'text-ios-red' }
   ], [language]);
 
   // Filter tools based on search input

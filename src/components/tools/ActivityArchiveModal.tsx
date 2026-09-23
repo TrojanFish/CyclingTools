@@ -189,14 +189,14 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  战队档案库 · Local-First 时序时空站
+                  本地活动档案库
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-ios-blue/10 text-ios-blue border border-ios-blue/20 tabular-nums">
                   {activities.length} 场骑行
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                100% 离线隐私保护 · 秒级时序与 MMP 矩阵永久驻留本地
+                离线安全存储 · 时序与 MMP 功率矩阵本地持久化
               </p>
             </div>
           </div>
@@ -235,7 +235,7 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
               <option value="date_asc">按时间 (最早优先)</option>
               <option value="tss_desc">按 TSS 训练负荷</option>
               <option value="dist_desc">按骑行总里程</option>
-              <option value="np_desc">按 NP 归一化功率</option>
+              <option value="np_desc">按 NP 加权平均功率</option>
             </select>
 
             {/* Filter by Format */}
@@ -262,7 +262,7 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
               </div>
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                  {searchQuery ? '未找到符合条件的活动记录' : '战队档案库暂无活动'}
+                  {searchQuery ? '未找到符合条件的活动记录' : '本地档案库暂无活动'}
                 </h4>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
                   {searchQuery

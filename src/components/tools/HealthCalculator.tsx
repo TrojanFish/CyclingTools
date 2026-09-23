@@ -86,31 +86,31 @@ export const HealthCalculator: React.FC = () => {
     const hrr = Math.max(20, maxHr - restingHr); // Heart Rate Reserve
     const zones = [
       {
-        zone: 'Zone 1 恢复区 (Active Recovery)',
+        zone: 'Z1 积极恢复',
         range: `${Math.round(restingHr + hrr * 0.50)} - ${Math.round(restingHr + hrr * 0.60)} bpm`,
         pct: '50% - 60% HRR',
         desc: '极低强度轻松骑行，促进血液循环与乳酸代谢，适合排酸日。'
       },
       {
-        zone: 'Zone 2 有氧燃脂 (Aerobic Endurance)',
+        zone: 'Z2 基础有氧',
         range: `${Math.round(restingHr + hrr * 0.60)} - ${Math.round(restingHr + hrr * 0.70)} bpm`,
         pct: '60% - 70% HRR',
         desc: '线粒体与毛细血管生长核心区间，以脂肪氧化为主要能量供给，长距离骑行基石。'
       },
       {
-        zone: 'Zone 3 节奏区间 (Tempo Zone)',
+        zone: 'Z3 节奏巡航',
         range: `${Math.round(restingHr + hrr * 0.70)} - ${Math.round(restingHr + hrr * 0.80)} bpm`,
         pct: '70% - 80% HRR',
         desc: '有氧与糖原氧化混合供能，接近马拉松/长距离爬坡配速。'
       },
       {
-        zone: 'Zone 4 乳酸阈值 (Lactate Threshold)',
+        zone: 'Z4 乳酸阈值',
         range: `${Math.round(restingHr + hrr * 0.80)} - ${Math.round(restingHr + hrr * 0.90)} bpm`,
         pct: '80% - 90% HRR',
         desc: '临界功率区间，乳酸产生与清除处于动态平衡，提升 FTP 的关键区间。'
       },
       {
-        zone: 'Zone 5 无氧耐力与冲刺 (Anaerobic / VO2max)',
+        zone: 'Z5 无氧与最大摄氧',
         range: `${Math.round(restingHr + hrr * 0.90)} - ${maxHr} bpm`,
         pct: '90% - 100% HRR',
         desc: '高心率极限刺激，极度依赖无氧糖酵解，快速产生乳酸，用于短坡突围与冲刺。'
@@ -214,7 +214,7 @@ export const HealthCalculator: React.FC = () => {
       <IOSToolHeader
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={HeartPulse}
-        title={language === 'zh-TW' ? '健康與能耗' : '健康与能耗'}
+        title={language === 'zh-TW' ? '代謝與能耗' : '代谢与能耗'}
         description={
           language === 'zh-TW'
             ? '一站式計算騎行能量補給、Karvonen 靶心率區間、BMR 基礎代謝、TDEE 每日總能耗及體脂率(BFP)。'

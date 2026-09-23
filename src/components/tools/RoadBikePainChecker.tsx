@@ -98,9 +98,9 @@ export const RoadBikePainChecker: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category="Fitting与工效"
+        category={language === 'zh-TW' ? '人車工效' : '人车工效'}
         categoryIcon={Activity}
-        title="骑行痛点诊断"
+        title={language === 'zh-TW' ? '痛點診斷' : '痛点诊断'}
         description="覆盖膝盖、腰背、颈肩、手腕、臀部及足底 6 大核心部位，科学排查车辆设定成因并提供调车指引。"
         tint="purple"
         onShare={handleGeneratePoster}

@@ -32,7 +32,7 @@ interface SegmentWeather {
 
 export const CyclingWeatherAdvisor: React.FC = () => {
   const { showToast } = useToast();
-  const { unitSystem } = useLanguageAndUnit();
+  const { unitSystem, language } = useLanguageAndUnit();
   const isImperial = unitSystem === 'imperial';
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -131,11 +131,11 @@ export const CyclingWeatherAdvisor: React.FC = () => {
   const getWindRelation = (ridingBearing: number, windFromDeg: number) => {
     const diff = Math.abs(ridingBearing - windFromDeg) % 360;
     const angle = diff > 180 ? 360 - diff : diff;
-    if (angle <= 45) return '强烈顶风 (Headwind)';
-    if (angle <= 80) return '侧顶风 (Cross-Headwind)';
-    if (angle <= 100) return '垂直侧风 (Crosswind)';
-    if (angle <= 135) return '侧顺风 (Cross-Tailwind)';
-    return '顺风推进 (Tailwind)';
+    if (angle <= 45) return '强顶风';
+    if (angle <= 80) return '侧顶风';
+    if (angle <= 100) return '纯侧风';
+    if (angle <= 135) return '侧顺风';
+    return '顺风推进';
   };
 
   // Handle Manual GPX / TCX Route File Upload
@@ -362,9 +362,9 @@ export const CyclingWeatherAdvisor: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="路线战术气象"
+        category={language === 'zh-TW' ? '路線與氣象' : '路线与气象'}
         categoryIcon={CloudSun}
-        title="天气与风向"
+        title={language === 'zh-TW' ? '天氣與風向' : '天气与风向'}
         description="结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。"
         tint="mint"
         actions={

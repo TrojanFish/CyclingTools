@@ -417,12 +417,12 @@ export const GroupRideSimulator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '路線戰術氣象' : '路线战术气象'}
+        category={language === 'zh-TW' ? '路線與氣象' : '路线与气象'}
         categoryIcon={Users}
         title={
           mode === 'ttt'
-            ? (language === 'zh-TW' ? 'TTT 計時戰術' : 'TTT 计时战术')
-            : (language === 'zh-TW' ? '團騎破風戰術' : '团骑破风战术')
+            ? (language === 'zh-TW' ? '車隊計時 (TTT)' : '车队计时 (TTT)')
+            : (language === 'zh-TW' ? '車隊戰術' : '车队战术')
         }
         description={
           mode === 'ttt'
@@ -436,7 +436,7 @@ export const GroupRideSimulator: React.FC = () => {
             className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            {language === 'zh-TW' ? '求解最高不破產均速' : '求解最高不破产均速'}
+            {language === 'zh-TW' ? '求解臨界均速' : '求解临界均速'}
           </button>
         }
       >
@@ -449,8 +449,8 @@ export const GroupRideSimulator: React.FC = () => {
                   value: 'peloton',
                   label: (
                     <>
-                      <span className="sm:hidden">{language === 'zh-TW' ? '公路大組' : '公路大组'}</span>
-                      <span className="hidden sm:inline">{language === 'zh-TW' ? '公路大組團騎' : '公路大组团骑'}</span>
+                      <span className="sm:hidden">{language === 'zh-TW' ? '大組' : '大组'}</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? '大組巡航' : '大组巡航'}</span>
                     </>
                   )
                 },
@@ -458,8 +458,8 @@ export const GroupRideSimulator: React.FC = () => {
                   value: 'ttt',
                   label: (
                     <>
-                      <span className="sm:hidden">{language === 'zh-TW' ? '車隊 TTT' : '车队 TTT'}</span>
-                      <span className="hidden sm:inline">{language === 'zh-TW' ? 'TTT 車隊計時賽' : 'TTT 车队计时赛'}</span>
+                      <span className="sm:hidden">TTT</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? '車隊計時 (TTT)' : '车队计时 (TTT)'}</span>
                     </>
                   )
                 }

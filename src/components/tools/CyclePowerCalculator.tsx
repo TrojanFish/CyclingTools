@@ -324,7 +324,7 @@ export const CyclePowerCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Zap}
         title={language === 'zh-TW' ? '功率與速度' : '功率与速度'}
         description={
@@ -433,7 +433,7 @@ export const CyclePowerCalculator: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '騎士體重' : '骑士体重'} ({isImperial ? 'lbs' : 'kg'})
+                  {language === 'zh-TW' ? '車手體重' : '车手体重'} ({isImperial ? 'lbs' : 'kg'})
                 </label>
                 <NumberStepper
                   value={isImperial ? parseFloat((riderWeight * 2.20462).toFixed(1)) : riderWeight}
@@ -558,7 +558,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
-                      {language === 'zh-TW' ? '頭部下潛姿態 (Head Shrug / 烏龜縮頭)' : '头部下潜姿态 (Head Shrug / 乌龟缩头)'}
+                      {language === 'zh-TW' ? '頭部下潛 (Head Shrug)' : '头部下潜 (Head Shrug)'}
                     </span>
                     <Tooltip content="世界巡回赛 TT 计时赛核心控风技巧：头部下沉嵌于双肩之间，压平后背高速气流湍流。风洞实测平均降低 CdA 约 0.015 m²（40km/h 下省约 12~18W）。" />
                   </div>
@@ -587,7 +587,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
                   <Wind className="w-3.5 h-3.5 text-ios-blue" />
-                  {language === 'zh-TW' ? '側風偏航角 (Yaw Angle ψ)' : '侧风偏航角 (Yaw Angle ψ)'}
+                  {language === 'zh-TW' ? '側風偏航角 (Yaw)' : '侧风偏航角 (Yaw)'}
                   <Tooltip content="偏航角为车手行进方向与合成风矢量的夹角（0°为正迎风，5°~12°为典型公路侧风，20°为强横风）。偏航角增加时身体侧向受风投影面积增大，气动阻力相应上升。" />
                 </span>
                 <span className="font-mono font-bold text-xs text-ios-blue">

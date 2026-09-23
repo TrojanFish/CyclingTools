@@ -328,12 +328,12 @@ export const MtbSuspensionTuner: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
+        category={language === 'zh-TW' ? '動力與傳動' : '动力与传动'}
         categoryIcon={Sliders}
         title={
           language === 'zh-TW'
-            ? '避震與 SAG'
-            : '避震与 SAG'
+            ? '避震設定'
+            : '避震设定'
         }
         description={
           language === 'zh-TW'
@@ -473,8 +473,8 @@ export const MtbSuspensionTuner: React.FC = () => {
                     value: 'plush',
                     label: (
                       <>
-                        <span className="sm:hidden">{language === 'zh-TW' ? '柔軟' : '软糯'}</span>
-                        <span className="hidden sm:inline">{language === 'zh-TW' ? '柔軟吸震' : '软糯吸震'}</span>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '柔順' : '柔顺'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '柔順吸震' : '柔顺吸震'}</span>
                       </>
                     )
                   },
@@ -491,8 +491,8 @@ export const MtbSuspensionTuner: React.FC = () => {
                     value: 'firm',
                     label: (
                       <>
-                        <span className="sm:hidden">{language === 'zh-TW' ? '支撐' : '硬朗'}</span>
-                        <span className="hidden sm:inline">{language === 'zh-TW' ? '支撐競速' : '硬朗支撑'}</span>
+                        <span className="sm:hidden">{language === 'zh-TW' ? '堅挺' : '坚挺'}</span>
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '堅挺支撐' : '坚挺支撑'}</span>
                       </>
                     )
                   }
