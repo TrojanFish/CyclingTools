@@ -362,7 +362,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="高精度气象与风向研判"
+        category="路线战术气象"
         categoryIcon={CloudSun}
         title="天气与风向"
         description="结合实时气象与顺逆风判定，精准计算沿途各路段到达时刻的气温、降雨概率、风阻及出行穿衣建议。"

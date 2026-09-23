@@ -550,7 +550,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="GIS 地理拓扑与路线工坊"
+        category="路线战术气象"
         categoryIcon={Navigation}
         title="GPX 路线规划"
         description="地名智能搜索、航点编辑、气动风阻矢量推演与 Best Bike Split 式分段体能策略解算。"

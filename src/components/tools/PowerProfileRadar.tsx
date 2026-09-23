@@ -360,7 +360,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '生理動力學畫像與現代極化訓練' : '生理动力学画像与现代极化训练'}
+        category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={Target}
         title={language === 'zh-TW' ? '功率畫像 (MMP)' : '功率画像 (MMP)'}
         description={

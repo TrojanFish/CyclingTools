@@ -104,36 +104,6 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
       : currentToolMeta.title;
   }, [currentToolMeta, language]);
 
-  const mobileTitle = useMemo(() => {
-    if (!currentToolId) return '';
-    const titles: Record<string, { zh: string; tw: string }> = {
-      'power-calc': { zh: '功率与速度计算', tw: '功率與速度計算' },
-      'tire-pressure': { zh: '智能胎压计算器', tw: '智能胎壓計算器' },
-      'gear-calculator': { zh: '齿比-速度-踏频', tw: '齒比-速度-踏頻' },
-      'chain-calculator': { zh: '链长与齿容量', tw: '鏈長與齒容量' },
-      'climb-pacing': { zh: '爬坡路段配速规划', tw: '爬坡路段配速規劃' },
-      'upgrade-roi': { zh: '零件升级省瓦ROI', tw: '零件升級省瓦ROI' },
-      'tubeless-sealant': { zh: '真空胎自补液计算', tw: '無內胎補液計算' },
-      'spoke-calculator': { zh: '编轮与辐条长度', tw: '編輪與輻條長度' },
-      'mtb-suspension': { zh: '山地避震与 SAG', tw: '山地避震與 SAG' },
-      'bike-fitter': { zh: '公路车 Fitting', tw: '公路車 Fitting' },
-      'pain-checker': { zh: '骑行疼痛自诊排查', tw: '騎乘疼痛自診排查' },
-      'roadbook-library': { zh: '经典路书精选库', tw: '經典路書精選庫' },
-      'gpx-creator': { zh: 'GPX 路线工坊', tw: 'GPX 路線工坊' },
-      'group-ride': { zh: '团骑阻力与战术', tw: '團騎阻力與戰術' },
-      'weather-advisor': { zh: '骑行天气顾问', tw: '騎乘天氣顧問' },
-      'power-radar': { zh: '功率能力雷达', tw: '功率能力雷達' },
-      'health-calculator': { zh: '运动健康计算', tw: '運動健康計算' },
-      'activity-analyzer': { zh: 'FIT 航迹深度解析', tw: 'FIT 航跡深度解析' },
-      'workout-builder': { zh: '科学间歇课表工坊', tw: '科學間歇課表工坊' },
-    };
-    const m = titles[currentToolId];
-    if (m) {
-      return language === 'zh-TW' ? m.tw : m.zh;
-    }
-    return currentTitle;
-  }, [currentToolId, language, currentTitle]);
-
   const CurrentIcon = currentToolMeta ? (ICONS_MAP[currentToolMeta.icon] || Zap) : Zap;
 
   // Group tools by domain category
@@ -170,8 +140,7 @@ export const CustomToolSelect: React.FC<CustomToolSelectProps> = ({
       >
         <div className="flex items-center gap-1.5 truncate min-w-0">
           <CurrentIcon className="w-3.5 h-3.5 text-ios-blue shrink-0" />
-          <span className="truncate hidden sm:inline">{currentTitle}</span>
-          <span className="truncate sm:hidden">{mobileTitle}</span>
+          <span className="truncate">{currentTitle}</span>
         </div>
         <div className="flex items-center gap-1 shrink-0 ml-1">
           {currentToolMeta?.hasStravaIntegration && (

@@ -373,7 +373,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category="风洞实测基准与改装边际效益测算"
+        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
         categoryIcon={Scale}
         title="改装省瓦 ROI"
         description="精确测算各部件风阻省瓦、旋转质量与轻量化时间收益，科学量化改装边际效益与每瓦克重投入产出比。"

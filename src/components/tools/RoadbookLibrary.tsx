@@ -737,7 +737,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '精選世界與全國經典單車路書工坊' : '行者实测·全国及世界经典骑行路书精选工坊'}
+        category={language === 'zh-TW' ? '路線戰術氣象' : '路线战术气象'}
         categoryIcon={Compass}
         title={language === 'zh-TW' ? '路書航跡庫' : '路书航迹库'}
         description={

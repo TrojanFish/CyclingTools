@@ -212,7 +212,7 @@ export const HealthCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '運動生理學與能量代謝' : '运动生理学与能量代谢'}
+        category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={HeartPulse}
         title={language === 'zh-TW' ? '健康與能耗' : '健康与能耗'}
         description={

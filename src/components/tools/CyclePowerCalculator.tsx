@@ -324,7 +324,7 @@ export const CyclePowerCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '經典動力學推導引擎' : '经典动力学推导引擎'}
+        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
         categoryIcon={Zap}
         title={language === 'zh-TW' ? '功率與速度' : '功率与速度'}
         description={

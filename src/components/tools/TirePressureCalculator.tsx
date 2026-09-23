@@ -197,7 +197,7 @@ export const TirePressureCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '滾阻與形變算法' : '滚阻与形变算法'}
+        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
         categoryIcon={Gauge}
         title={language === 'zh-TW' ? '智能胎壓' : '智能胎压'}
         description={

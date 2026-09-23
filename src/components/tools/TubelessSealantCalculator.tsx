@@ -203,7 +203,7 @@ export const TubelessSealantCalculator: React.FC = () => {
     <div className="space-y-4 sm:space-y-5">
       {/* Unified Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '無內胎系統工程與養護' : '真空胎系统工程与养护'}
+        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
         categoryIcon={Droplets}
         title={language === 'zh-TW' ? '自補液用量' : '自补液用量'}
         description={

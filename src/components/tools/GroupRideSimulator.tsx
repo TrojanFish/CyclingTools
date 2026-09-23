@@ -417,11 +417,7 @@ export const GroupRideSimulator: React.FC = () => {
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={
-          mode === 'ttt'
-            ? (language === 'zh-TW' ? 'TTT 車隊計時賽極限輪轉' : 'TTT 车队计时赛极限轮转')
-            : (language === 'zh-TW' ? '公路大組團騎氣動仿真' : '公路大组团骑气动仿真')
-        }
+        category={language === 'zh-TW' ? '路線戰術氣象' : '路线战术气象'}
         categoryIcon={Users}
         title={
           mode === 'ttt'

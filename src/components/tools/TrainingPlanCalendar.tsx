@@ -35,6 +35,7 @@ import {
 } from 'chart.js';
 import { useToast } from '../../context/ToastContext';
 import { useRiderProfile } from '../../context/RiderProfileContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
@@ -71,6 +72,7 @@ ChartJS.register(
 );
 
 export const TrainingPlanCalendar: React.FC = () => {
+  const { language } = useLanguageAndUnit();
   const { showToast } = useToast();
   const { profile } = useRiderProfile();
 
@@ -397,7 +399,7 @@ END:VEVENT
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category="生理与代谢 / 训练科学"
+        category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={CalendarIcon}
         title="训练赛历 (ATP)"
         description="基于 Tudor Bompa 周期化模型，以目标 A 级赛事为锚点反推体能负荷，排布结构化课表并前瞻推演未来 60 天 PMC 竞技巅峰。"

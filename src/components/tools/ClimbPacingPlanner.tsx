@@ -610,7 +610,7 @@ export const ClimbPacingPlanner: React.FC = () => {
     <div className="space-y-5">
       {/* Standard Apple HIG Tool Header */}
       <IOSToolHeader
-        category={language === 'zh-TW' ? '爬坡體能分配與動力學模擬' : '爬坡体能分配与动力学仿真'}
+        category={language === 'zh-TW' ? '動力學與傳動' : '动力学与传动'}
         categoryIcon={Mountain}
         title={language === 'zh-TW' ? '爬坡配速' : '爬坡配速'}
         description={
