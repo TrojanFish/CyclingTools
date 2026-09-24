@@ -106,8 +106,8 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           setActivities(cached);
           if (syncMeta) setLastSyncTime(syncMeta);
         }
-      } catch (err) {
-        console.warn('Could not load Strava cache from IndexedDB:', err);
+      } catch {
+        // IndexedDB cache unavailable on initial mount
       }
     })();
     return () => {
@@ -148,8 +148,8 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setLastSyncTime(null);
     try {
       await clearStravaDb();
-    } catch (err) {
-      console.warn('Failed to clear Strava IndexedDB:', err);
+    } catch {
+      // Ignore IndexedDB deletion failure
     }
     showToast('已断开与 Strava 的连接并清理本地缓存', 'info');
   }, [showToast]);
@@ -161,8 +161,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setActivities([]);
       setLastSyncTime(null);
       showToast('已清空 Strava 本地离线活动及流数据缓存', 'success');
-    } catch (err) {
-      console.warn('Failed to clear Strava IndexedDB cache:', err);
+    } catch {
       showToast('清理本地离线缓存失败', 'error');
     }
   }, [showToast]);
@@ -320,7 +319,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       showToast(`Strava 骑行数据同步成功！共更新 ${processed.length} 条活动`, 'success');
       return { count: processed.length };
     } catch (err: any) {
-      console.error('Strava sync error:', err);
       setSyncProgress(null);
       showToast(`Strava 同步失败: ${err.message || '网络异常'}`, 'error');
       return { count: 0 };
@@ -344,8 +342,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
       const streams = await fetchActivityStreams(token, activityId);
       return streams;
-    } catch (err) {
-      console.warn(`Failed to fetch streams for activity ${activityId}:`, err);
+    } catch {
       return null;
     }
   }, []);
@@ -359,8 +356,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return freshRoutes;
       }
       return await getAllRoutesFromDb();
-    } catch (err) {
-      console.warn('Failed to fetch Strava routes:', err);
+    } catch {
       return await getAllRoutesFromDb();
     }
   }, []);
@@ -383,8 +379,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       }
       return CURATED_STRAVA_SEGMENTS;
-    } catch (err) {
-      console.warn('Failed to fetch Strava starred segments, falling back to curated KOMs:', err);
+    } catch {
       return CURATED_STRAVA_SEGMENTS;
     }
   }, []);
@@ -399,8 +394,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return { ...curated, ...details };
       }
       return curated || null;
-    } catch (err) {
-      console.warn(`Failed to fetch segment ${segmentId} details:`, err);
+    } catch {
       return CURATED_STRAVA_SEGMENTS.find(s => s.id === segmentId) || null;
     }
   }, []);
@@ -433,7 +427,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const result = await extractBestMmpFromActivities(activityList, getActivityStreams, 8);
       return result;
     } catch (err: any) {
-      console.error('Failed to extract best power peaks:', err);
       showToast(`提取 Strava 峰值功率失败: ${err.message}`, 'error');
       return null;
     }
@@ -479,7 +472,6 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             syncActivities(true);
           }, 600);
         } catch (err: any) {
-          console.error('Strava token exchange failed:', err);
           showToast(`Strava 授权失败: ${err.message}`, 'error');
         }
       })();

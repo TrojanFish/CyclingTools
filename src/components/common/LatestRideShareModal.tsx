@@ -77,8 +77,7 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
       try {
         const url = await generateLatestRideSocialPoster(data, theme);
         setThemePosters(prev => ({ ...prev, [theme]: url }));
-      } catch (e) {
-        console.error('Failed to generate themed poster:', e);
+      } catch {
         showToast(language === 'zh-TW' ? '海報渲染失敗' : '海报渲染失败', 'error');
       } finally {
         setIsGenerating(false);

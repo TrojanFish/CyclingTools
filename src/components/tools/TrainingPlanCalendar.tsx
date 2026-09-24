@@ -108,8 +108,8 @@ export const TrainingPlanCalendar: React.FC = () => {
         setIsLoadingActivities(true);
         const acts = await getAllLocalActivities();
         if (isMounted) setActivities(acts);
-      } catch (err) {
-        console.warn('Failed to load local activities for calendar:', err);
+      } catch {
+        // Fallback gracefully when IndexedDB is unavailable
       } finally {
         if (isMounted) setIsLoadingActivities(false);
       }

@@ -24,6 +24,7 @@ import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useStrava } from '../../context/StravaContext';
 import { StravaSegmentItem } from '../../services/stravaService';
+import { consumePendingTransfer } from '../../hooks/useToolDraftState';
 
 ChartJS.register(
   CategoryScale,
@@ -156,8 +157,8 @@ export const ClimbPacingPlanner: React.FC = () => {
     try {
       const segs = await getStarredSegments();
       setStravaSegments(segs);
-    } catch (err) {
-      console.warn('Failed to load Strava segments:', err);
+    } catch {
+      showToast('获取 Strava 赛段失败，请检查网络或授权状态', 'error');
     } finally {
       setIsLoadingSegments(false);
     }
@@ -265,34 +266,26 @@ export const ClimbPacingPlanner: React.FC = () => {
 
   // Check for route transferred from RoadbookLibrary
   useEffect(() => {
-    try {
-      const pendingRaw = localStorage.getItem('solorider_pending_climb_route');
-      if (pendingRaw) {
-        const pending = JSON.parse(pendingRaw);
-        if (pending && Array.isArray(pending.waypoints) && pending.waypoints.length >= 2) {
-          const rawPts = pending.waypoints.map((wp: any) => ({
-            lat: wp.lat,
-            lon: wp.lng,
-            ele: wp.elevation || 20
-          }));
-          const segs = segmentizePoints(rawPts);
-          if (segs.length > 0) {
-            setSegments(segs);
-            if (pending.name) {
-              setClimbName(pending.name);
-            }
-            showToast(
-              language === 'zh-TW'
-                ? `已根據路書「${pending.name}」智能拆解為 ${segs.length} 個爬坡配速分段！`
-                : `已根据路书「${pending.name}」智能拆解为 ${segs.length} 个爬坡配速分段！`,
-              'success'
-            );
-          }
+    const pending = consumePendingTransfer<{ name?: string; waypoints?: any[] }>('solorider_pending_climb_route');
+    if (pending && Array.isArray(pending.waypoints) && pending.waypoints.length >= 2) {
+      const rawPts = pending.waypoints.map((wp: any) => ({
+        lat: wp.lat,
+        lon: wp.lng,
+        ele: wp.elevation || 20
+      }));
+      const segs = segmentizePoints(rawPts);
+      if (segs.length > 0) {
+        setSegments(segs);
+        if (pending.name) {
+          setClimbName(pending.name);
         }
-        localStorage.removeItem('solorider_pending_climb_route');
+        showToast(
+          language === 'zh-TW'
+            ? `已根據路書「${pending.name || '外部路線'}」智能拆解為 ${segs.length} 個爬坡配速分段！`
+            : `已根据路书「${pending.name || '外部路线'}」智能拆解为 ${segs.length} 个爬坡配速分段！`,
+          'success'
+        );
       }
-    } catch (e) {
-      console.warn('Failed to parse incoming route to ClimbPacing:', e);
     }
   }, [showToast, language]);
 
@@ -524,6 +517,32 @@ export const ClimbPacingPlanner: React.FC = () => {
     const avgGrade = accumulatedDistanceKm > 0 ? parseFloat(((accumulatedElevationM / (accumulatedDistanceKm * 1000)) * 100).toFixed(1)) : 0;
     const hasSteepTorqueHazard = segmentOutputs.some(s => s.isSteepTorqueHazard);
 
+    // Physiological Sustainability & Blowout (Critical Power / Exhaustion) Risk Calculation
+    const intensityFactor = ftpWatts > 0 ? parseFloat((avgWatts / ftpWatts).toFixed(2)) : 1.0;
+    const anaerobicWorkJoules = segmentOutputs
+      .filter(s => s.targetWatts > ftpWatts)
+      .reduce((sum, s) => sum + (s.targetWatts - ftpWatts) * s.segSeconds, 0);
+    const anaerobicWorkKj = parseFloat((anaerobicWorkJoules / 1000).toFixed(1));
+
+    let feasibilityStatus: 'safe' | 'challenging' | 'high_risk' = 'safe';
+    let feasibilityTitle = '稳健可行 (有氧主导巡航)';
+    let feasibilityAdvice = '全程目标功率维持在阈值以内或接近甜蜜区，糖原消耗可控，属于健康可持续的配速方案。';
+
+    if (totalSeconds > 1800 && intensityFactor > 1.02) {
+      // Climbing for > 30 minutes at > 102% FTP is physiologically impossible or extreme high blowout risk
+      feasibilityStatus = 'high_risk';
+      feasibilityTitle = '高危爆缸风险 (超人类持续极限)';
+      feasibilityAdvice = `预计爬坡总耗时 ${overallTimeStr}，而全程规划均瓦达 ${Math.round(intensityFactor * 100)}% FTP (IF: ${intensityFactor})。根据临界功率生理模型，人类在 >100% FTP 的持续做功极限仅约 30~50 分钟。极易在后半程心率飙升爆表、双腿乳酸衰竭弃赛，强烈建议将配速策略下调至「均衡」或「稳健」！`;
+    } else if (totalSeconds > 3600 && intensityFactor > 0.95) {
+      feasibilityStatus = 'high_risk';
+      feasibilityTitle = '超高负荷 (极难持续到底)';
+      feasibilityAdvice = `持续 1 小时以上的长坡若设定均瓦超过 95% FTP，对糖原储备与耐乳酸要求极高，极难按计划执行到底，建议留出 5%~10% 的体能余量。`;
+    } else if (intensityFactor > 0.98 || anaerobicWorkKj > 15) {
+      feasibilityStatus = 'challenging';
+      feasibilityTitle = '极限挑战 (考验无氧储备)';
+      feasibilityAdvice = `超阈值分段累计做功达 ${anaerobicWorkKj} kJ（约耗费大部分 W' 无氧储备）。需依赖陡坡后的平缓段迅速排酸与深呼吸恢复，必须严格按照目标瓦数控制节奏。`;
+    }
+
     return {
       totalDistanceKm: parseFloat(accumulatedDistanceKm.toFixed(1)),
       totalElevationM: Math.round(accumulatedElevationM),
@@ -533,6 +552,11 @@ export const ClimbPacingPlanner: React.FC = () => {
       avgWkg,
       overallVam,
       hasSteepTorqueHazard,
+      intensityFactor,
+      anaerobicWorkKj,
+      feasibilityStatus,
+      feasibilityTitle,
+      feasibilityAdvice,
       segmentOutputs
     };
   }, [segments, riderWeight, bikeWeight, ftpWatts, baseStrategyFactor]);
@@ -909,6 +933,34 @@ export const ClimbPacingPlanner: React.FC = () => {
               />
             </div>
           </IOSCard>
+
+          {/* Pacing Feasibility & Critical Power Blowout Risk Alert */}
+          {planResults.feasibilityStatus !== 'safe' && (
+            <div className={`ios-card p-4 rounded-2xl border flex items-start gap-3 shadow-ios-card ${
+              planResults.feasibilityStatus === 'high_risk'
+                ? 'border-ios-red/40 bg-ios-red/10'
+                : 'border-amber-500/40 bg-amber-500/10'
+            }`}>
+              <ShieldAlert className={`w-5 h-5 shrink-0 mt-0.5 ${
+                planResults.feasibilityStatus === 'high_risk' ? 'text-ios-red' : 'text-amber-500'
+              }`} />
+              <div className="space-y-1 text-xs">
+                <div className="font-bold text-slate-900 dark:text-white flex flex-wrap items-center gap-2">
+                  <span>{planResults.feasibilityTitle}</span>
+                  <span className={`font-mono px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    planResults.feasibilityStatus === 'high_risk'
+                      ? 'bg-ios-red/20 text-ios-red'
+                      : 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
+                  }`}>
+                    IF: {planResults.intensityFactor} · 超阈做功 {planResults.anaerobicWorkKj} kJ
+                  </span>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {planResults.feasibilityAdvice}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Steep Slope Low-Cadence Torque Alert */}
           {planResults.hasSteepTorqueHazard && (

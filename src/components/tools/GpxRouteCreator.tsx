@@ -21,6 +21,7 @@ import {
   CoursePacingSummary
 } from '../../utils/routePacingEngine';
 import { ZHEJIANG_XINGZHE_ROUTES } from '../../data/zhejiangRoutes';
+import { consumePendingTransfer } from '../../hooks/useToolDraftState';
 
 interface Waypoint {
   id: string;
@@ -76,29 +77,21 @@ export const GpxRouteCreator: React.FC = () => {
 
   // Check for route transferred from RoadbookLibrary
   useEffect(() => {
-    try {
-      const pendingRaw = localStorage.getItem('solorider_pending_gpx_route');
-      if (pendingRaw) {
-        const pending = JSON.parse(pendingRaw);
-        if (pending && Array.isArray(pending.waypoints) && pending.waypoints.length > 0) {
-          const mapped: Waypoint[] = pending.waypoints.map((wp: any, idx: number) => ({
-            id: 'wp-' + Date.now() + '-' + idx,
-            lat: wp.lat,
-            lng: wp.lng,
-            elevation: wp.elevation || 20,
-            name: wp.name || `航点 #${idx + 1}`
-          }));
-          setWaypoints(mapped);
-          if (pending.name) {
-            setRouteName(pending.name);
-          }
-          setSelectedPresetId('custom');
-          showToast(`已成功载入路书「${pending.name}」共 ${mapped.length} 个航点，可自由编辑与测算！`, 'success');
-        }
-        localStorage.removeItem('solorider_pending_gpx_route');
+    const pending = consumePendingTransfer<{ name?: string; waypoints?: any[] }>('solorider_pending_gpx_route');
+    if (pending && Array.isArray(pending.waypoints) && pending.waypoints.length > 0) {
+      const mapped: Waypoint[] = pending.waypoints.map((wp: any, idx: number) => ({
+        id: 'wp-' + Date.now() + '-' + idx,
+        lat: wp.lat,
+        lng: wp.lng,
+        elevation: wp.elevation || 20,
+        name: wp.name || `航点 #${idx + 1}`
+      }));
+      setWaypoints(mapped);
+      if (pending.name) {
+        setRouteName(pending.name);
       }
-    } catch (e) {
-      console.warn('Failed to parse incoming route from RoadbookLibrary:', e);
+      setSelectedPresetId('custom');
+      showToast(`已成功载入路书「${pending.name || '外部路线'}」共 ${mapped.length} 个航点，可自由编辑与测算！`, 'success');
     }
   }, [showToast]);
 

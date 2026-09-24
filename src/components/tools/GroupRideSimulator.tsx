@@ -191,40 +191,41 @@ export const GroupRideSimulator: React.FC = () => {
   };
 
   // Main Simulation Engine
+  // Main Simulation Engine: High-resolution (1-second dt) ODE Integration
   const simulationResult = useMemo(() => {
     const totalMinutes = (distanceKm / Math.max(5, avgSpeedKmh)) * 60;
-    const totalSeconds = totalMinutes * 60;
-    const timeSteps = 60;
-    const stepDurationMinutes = totalMinutes / timeSteps;
-    const stepDurationSeconds = stepDurationMinutes * 60;
+    const totalSeconds = Math.max(1, Math.round(totalMinutes * 60));
+
+    // High-resolution 1-second physical simulation step to accurately capture
+    // short micro-rotations (e.g. 15-25s TTT pulls) without aliasing.
+    const dt = 1;
+    const targetChartSamples = 60;
+    const sampleInterval = Math.max(1, Math.floor(totalSeconds / targetChartSamples));
 
     const timeLabels: string[] = [];
     const riderWPrimePercent: Record<number, number[]> = {};
     const riderPowers: Record<number, number[]> = {};
     const currentWPrimeBalance: Record<number, number> = {};
     const riderDroppedAtSec: Record<number, number | null> = {};
+    const riderPowerAccum: Record<number, { sum: number; count: number }> = {};
 
     riders.forEach((r, idx) => {
       riderWPrimePercent[idx] = [];
       riderPowers[idx] = [];
       currentWPrimeBalance[idx] = r.wPrime * 1000;
       riderDroppedAtSec[idx] = null;
+      riderPowerAccum[idx] = { sum: 0, count: 0 };
     });
 
     // Total cycle duration for TTT rotation in seconds
     const activeRidersInRotation = riders.filter(r => !r.followOnly);
     const tttCycleSeconds = activeRidersInRotation.reduce((sum, r) => sum + (r.pullSeconds || 20), 0) || 60;
 
-    for (let step = 0; step <= timeSteps; step++) {
-      const curMinute = step * stepDurationMinutes;
-      const curSecond = curMinute * 60;
-      timeLabels.push(`${curMinute.toFixed(1)}m`);
-
-      // Determine who is leading at this moment
+    for (let t = 0; t <= totalSeconds; t += dt) {
+      // Determine who is leading at second t
       let leadRiderIndex = 0;
       if (mode === 'ttt') {
-        // Find which rider is pulling based on cumulative seconds in the cycle
-        const secondInCycle = curSecond % tttCycleSeconds;
+        const secondInCycle = t % tttCycleSeconds;
         let accum = 0;
         for (let i = 0; i < activeRidersInRotation.length; i++) {
           accum += activeRidersInRotation[i].pullSeconds || 20;
@@ -234,7 +235,7 @@ export const GroupRideSimulator: React.FC = () => {
           }
         }
       } else {
-        // Peloton mode: minutes per rotation
+        const curMinute = t / 60;
         const activeIdx = Math.floor(curMinute / rotationMinutes) % (activeRidersInRotation.length || 1);
         const leadR = activeRidersInRotation[activeIdx];
         leadRiderIndex = leadR ? riders.findIndex(r => r.id === leadR.id) : 0;
@@ -242,61 +243,72 @@ export const GroupRideSimulator: React.FC = () => {
 
       // Check how many riders are still surviving in the paceline
       const survivingCount = riders.filter((_, idx) => riderDroppedAtSec[idx] === null).length;
+      const isSampleTime = (t % sampleInterval === 0) || (t === totalSeconds);
+
+      if (isSampleTime) {
+        timeLabels.push(`${(t / 60).toFixed(1)}m`);
+      }
 
       riders.forEach((r, idx) => {
         // If already dropped out
         if (riderDroppedAtSec[idx] !== null) {
-          riderPowers[idx].push(0);
-          riderWPrimePercent[idx].push(0);
+          if (isSampleTime) {
+            riderPowers[idx].push(0);
+            riderWPrimePercent[idx].push(0);
+          }
           return;
         }
 
         const isLeading = idx === leadRiderIndex && !r.followOnly;
         // In TTT, check if peeling off
-        const isPeeling = mode === 'ttt' && !isLeading && ((curSecond % (r.pullSeconds || 20)) < 4);
+        const isPeeling = mode === 'ttt' && !isLeading && ((t % (r.pullSeconds || 20)) < 4);
         const posInLine = isLeading ? 1 : 2 + (idx % Math.max(1, survivingCount - 1));
         const draftBenefit = getDraftingBenefit(posInLine, survivingCount, isPeeling);
 
         const powerRequired = calculatePower(avgSpeedKmh, r.weight, draftBenefit, mode === 'ttt' ? 9.0 : 8.5);
-        riderPowers[idx].push(Math.round(powerRequired));
+        riderPowerAccum[idx].sum += powerRequired;
+        riderPowerAccum[idx].count += 1;
 
-        // W' anaerobic energy depletion or recovery
+        // W' anaerobic energy depletion or recovery (Skiba continuous model)
         if (powerRequired > r.ftp) {
-          const expendedJ = (powerRequired - r.ftp) * stepDurationSeconds;
+          const expendedJ = (powerRequired - r.ftp) * dt;
           currentWPrimeBalance[idx] = Math.max(0, currentWPrimeBalance[idx] - expendedJ);
         } else {
-          // Recovery formula
           const diff = r.ftp - powerRequired;
           const tau = 546 * Math.exp(-0.01 * diff) + 316;
           const maxW = r.wPrime * 1000;
           const currentW = currentWPrimeBalance[idx];
-          currentWPrimeBalance[idx] = maxW - (maxW - currentW) * Math.exp(-stepDurationSeconds / tau);
+          currentWPrimeBalance[idx] = maxW - (maxW - currentW) * Math.exp(-dt / tau);
         }
 
         const pct = Math.round((currentWPrimeBalance[idx] / (r.wPrime * 1000)) * 100);
-        riderWPrimePercent[idx].push(Math.max(0, Math.min(100, pct)));
 
         // Sacrificial domestique drop condition
-        if (pct <= 0) {
-          riderDroppedAtSec[idx] = curSecond;
+        if (pct <= 0 && riderDroppedAtSec[idx] === null) {
+          riderDroppedAtSec[idx] = t;
+        }
+
+        if (isSampleTime) {
+          riderPowers[idx].push(Math.round(powerRequired));
+          riderWPrimePercent[idx].push(Math.max(0, Math.min(100, pct)));
         }
       });
     }
 
     // Dropped riders analysis
     const droppedRiders = riders.map((r, idx) => {
-      const minW = Math.min(...riderWPrimePercent[idx]);
+      const minW = Math.min(...(riderWPrimePercent[idx].length > 0 ? riderWPrimePercent[idx] : [100]));
       const droppedSec = riderDroppedAtSec[idx];
       const droppedKm = droppedSec !== null ? Math.round((droppedSec / 3600) * avgSpeedKmh * 10) / 10 : null;
-      const validPowers = riderPowers[idx].filter(p => p > 0);
-      const avgPower = validPowers.length > 0 ? Math.round(validPowers.reduce((a, b) => a + b, 0) / validPowers.length) : 0;
+      const { sum, count } = riderPowerAccum[idx];
+      const avgPower = count > 0 ? Math.round(sum / count) : 0;
 
       return {
         id: r.id,
         name: r.name,
         role: r.role || 'rouleur',
         isSacrificial: r.isSacrificial || false,
-        isDropped: minW <= 0,
+        isDropped: droppedSec !== null,
         droppedKm,
         minWPrimePct: minW,
         avgPowerW: avgPower

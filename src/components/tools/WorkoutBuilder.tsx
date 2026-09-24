@@ -28,6 +28,7 @@ import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { NumberStepper } from '../common/NumberStepper';
+import { consumePendingTransfer } from '../../hooks/useToolDraftState';
 import { Tooltip } from '../common/Tooltip';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateWorkoutPoster } from '../../utils/shareCardGenerators';
@@ -216,25 +217,17 @@ export const WorkoutBuilder: React.FC = () => {
 
   // Auto-load pending workout generated from FitActivityAnalyzer
   useEffect(() => {
-    try {
-      const pendingRaw = localStorage.getItem('solorider_pending_workout');
-      if (pendingRaw) {
-        const pending = JSON.parse(pendingRaw);
-        if (pending && pending.segments && Array.isArray(pending.segments)) {
-          setWorkoutTitle(pending.title || '智能靶向补强训练课表');
-          setSegments(pending.segments);
-          setSelectedTemplateId(pending.templateId || 'custom_smart');
-          showToast(
-            pending.reason
-              ? `已为您载入针对「${pending.reason}」的靶向补强课表！`
-              : '已为您自动载入定制的靶向强化课表！',
-            'success'
-          );
-          localStorage.removeItem('solorider_pending_workout');
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load pending workout:', err);
+    const pending = consumePendingTransfer<any>('solorider_pending_workout');
+    if (pending && pending.segments && Array.isArray(pending.segments)) {
+      setWorkoutTitle(pending.title || '智能靶向补强训练课表');
+      setSegments(pending.segments);
+      setSelectedTemplateId(pending.templateId || 'custom_smart');
+      showToast(
+        pending.reason
+          ? `已为您载入针对「${pending.reason}」的靶向补强课表！`
+          : '已为您自动载入定制的靶向强化课表！',
+        'success'
+      );
     }
   }, [showToast]);
 

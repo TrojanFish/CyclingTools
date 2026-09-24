@@ -4,6 +4,8 @@ import {
   setToolDraft,
   clearToolDraft,
   hasToolDraft,
+  setPendingTransfer,
+  consumePendingTransfer,
 } from '../../hooks/useToolDraftState';
 
 class MockLocalStorage implements Storage {
@@ -99,5 +101,39 @@ describe('Tool Draft Persistence Engine', () => {
     expect(getToolDraft('no-storage', fallback)).toEqual(fallback);
     expect(setToolDraft('no-storage', { a: 1 })).toBe(false);
     expect(hasToolDraft('no-storage')).toBe(false);
+  });
+
+  describe('Cross-Tool Pending Transfer', () => {
+    it('sets and consumes pending payload safely', () => {
+      const payload = { name: 'Dragon Climb', distanceKm: 12.5 };
+      const ok = setPendingTransfer('solorider_pending_climb_route', payload);
+      expect(ok).toBe(true);
+
+      const received = consumePendingTransfer<typeof payload>('solorider_pending_climb_route');
+      expect(received).toEqual(payload);
+
+      // Consumed data is immediately removed from storage
+      const secondAttempt = consumePendingTransfer('solorider_pending_climb_route');
+      expect(secondAttempt).toBeNull();
+    });
+
+    it('rejects stale pending transfers older than TTL', () => {
+      const payload = { title: 'Old Workout' };
+      setPendingTransfer('stale_test', payload);
+
+      // Advance time beyond 15-minute TTL
+      const future = Date.now() + 20 * 60 * 1000;
+      vi.spyOn(Date, 'now').mockReturnValue(future);
+
+      const received = consumePendingTransfer('stale_test');
+      expect(received).toBeNull();
+    });
+
+    it('gracefully consumes legacy unenveloped raw JSON payloads', () => {
+      mockStorage.setItem('legacy_route', JSON.stringify({ name: 'Old Format Route' }));
+      const received = consumePendingTransfer<{ name: string }>('legacy_route');
+      expect(received).toEqual({ name: 'Old Format Route' });
+      expect(mockStorage.getItem('legacy_route')).toBeNull();
+    });
   });
 });

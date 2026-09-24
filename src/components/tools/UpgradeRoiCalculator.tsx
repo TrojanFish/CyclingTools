@@ -271,7 +271,33 @@ export const UpgradeRoiCalculator: React.FC = () => {
     const activeItems = items.filter(i => i.enabled);
 
     const totalWeightSaveG = activeItems.reduce((sum, i) => sum + (Number(i.weightSaveG) || 0), 0);
-    const totalPowerSaveWatts = activeItems.reduce((sum, i) => sum + (Number(i.powerSaveWatts) || 0), 0);
+
+    // Aerodynamic savings CANNOT be linearly stacked:
+    // multiple aero items (skinsuit, helmet, wheels, bars) all reduce the same system CdA —
+    // stacking them yields diminishing returns due to cross-item drag overlap.
+    // Non-aero items (rolling resistance, drivetrain friction, weight) affect independent
+    // energy loss components and can be summed linearly.
+    const aeroItems = activeItems.filter(i => i.category === 'aero');
+    const nonAeroItems = activeItems.filter(i => i.category !== 'aero');
+
+    const nonAeroPowerSave = nonAeroItems.reduce((sum, i) => sum + (Number(i.powerSaveWatts) || 0), 0);
+
+    // Sort aero items largest-first so the highest-impact item gets full credit.
+    // Each additional stacked aero item provides ~8% less benefit due to CdA overlap regions.
+    // Floor at 0.60 — even with many items the combined benefit stays physically plausible.
+    const sortedAeroItems = [...aeroItems].sort(
+      (a, b) => (Number(b.powerSaveWatts) || 0) - (Number(a.powerSaveWatts) || 0)
+    );
+    let aeroPowerSave = 0;
+    let stackFactor = 1.0;
+    for (const item of sortedAeroItems) {
+      aeroPowerSave += (Number(item.powerSaveWatts) || 0) * stackFactor;
+      stackFactor = Math.max(0.60, stackFactor - 0.08);
+    }
+    // Track whether a correction was applied so the UI can show a notice.
+    const aeroCorrectionApplied = aeroItems.length >= 2;
+
+    const totalPowerSaveWatts = nonAeroPowerSave + aeroPowerSave;
     const totalCostYuan = activeItems.reduce((sum, i) => sum + (Number(i.costYuan) || 0), 0);
 
     // 1. Flat 40km time saved (at baseline cruise speed)
@@ -285,7 +311,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
     const flatTimeNewSec = flatDistM / vNewMs;
     const flatTimeSavedSec = Math.max(0, Math.round(flatTimeBaseSec - flatTimeNewSec));
 
-    // 2. Climb 10km @ 7.5% time saved
+    // 2. Climb 10km @ 7.5% time saved (physically separated aero v^3 & mechanical/rolling v^1 components)
     const climbDistM = 10000;
     const safeTotalWeightKg = Math.max(30, totalSystemWeightKg || 76.5);
     const safeClimbPowerWatts = Math.max(50, climbPowerWatts || 200);
@@ -296,7 +322,14 @@ export const UpgradeRoiCalculator: React.FC = () => {
     const denomBase = massBase * 9.81 * (safeClimbGradePct / 100) + massBase * 9.81 * 0.004;
     const denomNew = massNew * 9.81 * (safeClimbGradePct / 100) + massNew * 9.81 * 0.004;
     const vClimbBaseMs = Math.max(0.5, safeClimbPowerWatts / Math.max(1, denomBase));
-    const vClimbNewMs = Math.max(0.5, (safeClimbPowerWatts + totalPowerSaveWatts * 0.3) / Math.max(1, denomNew));
+
+    // Dynamic physical scaling: aero savings scale with (v_climb / v_flat)^3;
+    // mechanical & rolling resistance savings scale linearly with (v_climb / v_flat).
+    const aeroClimbScaling = Math.pow(vClimbBaseMs / Math.max(1, vBaseMs), 3);
+    const nonAeroClimbScaling = vClimbBaseMs / Math.max(1, vBaseMs);
+    const effectiveClimbPowerSave = (aeroPowerSave * aeroClimbScaling) + (nonAeroPowerSave * nonAeroClimbScaling);
+
+    const vClimbNewMs = Math.max(0.5, (safeClimbPowerWatts + effectiveClimbPowerSave) / Math.max(1, denomNew));
 
     const climbTimeBaseSec = climbDistM / vClimbBaseMs;
     const climbTimeNewSec = climbDistM / vClimbNewMs;
@@ -334,7 +367,8 @@ export const UpgradeRoiCalculator: React.FC = () => {
       costPerWatt,
       costPerGram,
       roiLevel,
-      roiBadgeColor
+      roiBadgeColor,
+      aeroCorrectionApplied
     };
   }, [items, totalSystemWeightKg, flatCruiseSpeedKmh, climbPowerWatts, climbGradePct]);
 
@@ -666,13 +700,21 @@ export const UpgradeRoiCalculator: React.FC = () => {
         <div className="lg:col-span-5 space-y-4 sm:space-y-5 lg:sticky lg:top-20 self-start">
           {/* Key Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            <IOSMetricTile
-              label="总计省瓦收益"
-              value={`+${analysis.totalPowerSaveWatts}`}
-              unit="W"
-              accentColor="blue"
-              icon={Zap}
-            />
+            <div className="space-y-1.5">
+              <IOSMetricTile
+                label="总计省瓦收益"
+                value={`+${analysis.totalPowerSaveWatts}`}
+                unit="W"
+                accentColor="blue"
+                icon={Zap}
+              />
+              {analysis.aeroCorrectionApplied && (
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 flex items-start gap-1 px-1 leading-snug">
+                  <Lightbulb className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
+                  已按气动叠加折减修正（多件气动件共享同一 CdA 减阻空间，叠加收益非线性）
+                </p>
+              )}
+            </div>
 
             <IOSMetricTile
               label="整车总减重"

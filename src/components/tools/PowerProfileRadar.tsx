@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Share2, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer, Dumbbell, ArrowRight } from 'lucide-react';
+import { Target, Activity, Zap, Award, Flame, Shield, TrendingUp, Sparkles, Share2, Info, Upload, FileText, Check, X, FileSpreadsheet, Mountain, Timer, Dumbbell, ArrowRight, BatteryCharging, ChevronDown, ChevronUp, Gauge } from 'lucide-react';
 import { Radar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -21,6 +21,7 @@ import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { useStrava } from '../../context/StravaContext';
 import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
+import { generateCPComparisonReport } from '../../utils/criticalPowerModel';
 
 ChartJS.register(
   RadialLinearScale,
@@ -71,6 +72,25 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   const [activeRiderPreset, setActiveRiderPreset] = useState<'sprinter' | 'climber' | 'rouleur' | 'allrounder' | null>('allrounder');
+
+  // Morton 3-Parameter Critical Power State
+  const [attackPowerWatts, setAttackPowerWatts] = useState<number>(450);
+  const [isCPComparisonExpanded, setIsCPComparisonExpanded] = useState<boolean>(false);
+
+  // Critical Power Models (Morton 3-Parameter & Monod 2-Parameter)
+  const cpAnalysis = useMemo(() => {
+    return generateCPComparisonReport({
+      p5s,
+      p1m,
+      p5m,
+      p20m,
+      weightKg
+    });
+  }, [p5s, p1m, p5m, p20m, weightKg]);
+
+  const attackTteSec = useMemo(() => {
+    return cpAnalysis.threeParam.predictTte(attackPowerWatts);
+  }, [cpAnalysis, attackPowerWatts]);
 
   // Preset Profiles
   const loadPreset = (type: 'sprinter' | 'climber' | 'rouleur' | 'allrounder') => {
@@ -806,6 +826,208 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           </div>
         </div>
       </div>
+
+      {/* 3-Parameter Critical Power (CP) & Anaerobic Work Capacity (W') Engine */}
+      <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
+        <IOSCardHeader
+          title={language === 'zh-TW' ? '3-Parameter 臨界功率 (CP) 與無氧儲備 (W\') 建模' : '3-Parameter 临界功率 (CP) 与无氧储备 (W\') 建模'}
+          subtitle={language === 'zh-TW' ? 'Morton (1996/2006) 非線性動力學模型 · 神經肌肉峰值 Pmax · 突圍攻擊耗盡預警' : 'Morton (1996/2006) 非线性动力学模型 · 神经肌肉峰值 Pmax · 突围攻击耗尽预警'}
+          icon={Zap}
+          iconColor="orange"
+        />
+
+        {/* 4 Core Physiological Metric Tiles */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '臨界功率 (CP)' : '临界功率 (CP)'}
+            value={cpAnalysis.threeParam.cpWatts}
+            unit="W"
+            subtext={`${cpAnalysis.threeParam.cpWkg} W/kg · 有氧乳酸稳态极限`}
+            accentColor="orange"
+          />
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '無氧做功儲備 (W\')' : '无氧做功储备 (W\')'}
+            value={cpAnalysis.threeParam.wPrimeKj}
+            unit="kJ"
+            subtext={`${cpAnalysis.threeParam.wPrimeJkg} J/kg · 高于 CP 的无氧能量池`}
+            accentColor="red"
+          />
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '神經肌肉極值 (Pmax)' : '神经肌肉极值 (Pmax)'}
+            value={cpAnalysis.threeParam.pMaxWatts}
+            unit="W"
+            subtext={`${cpAnalysis.threeParam.pMaxWkg} W/kg · 瞬时峰值爆发力`}
+            accentColor="purple"
+          />
+          <IOSMetricTile
+            label={language === 'zh-TW' ? '時間衰減常數 (k)' : '时间衰减常数 (k)'}
+            value={cpAnalysis.threeParam.timeShiftK}
+            unit="s"
+            subtext="短时间非线性修正参数"
+            accentColor="blue"
+          />
+        </div>
+
+        {/* Phenotype Battery Diagnosis */}
+        <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <BatteryCharging className="w-3.5 h-3.5 text-ios-orange" />
+              <span>{language === 'zh-TW' ? '無氧電池特徵評估' : '无氧电池特征评估'}</span>
+            </span>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full border border-ios-orange/30 bg-ios-orange/10 text-ios-orange">
+              {cpAnalysis.threeParam.phenotypeCategory === 'sprinter'
+                ? '高爆发冲刺型电池'
+                : cpAnalysis.threeParam.phenotypeCategory === 'puncher'
+                ? '强力突围进攻型电池'
+                : cpAnalysis.threeParam.phenotypeCategory === 'allrounder'
+                ? '均衡竞技型电池'
+                : '高耐力柴油机型'}
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+            {cpAnalysis.threeParam.phenotypeDesc}
+          </p>
+        </div>
+
+        {/* Interactive Attack Duration / TTE Predictor */}
+        <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <Gauge className="w-3.5 h-3.5 text-ios-red" />
+                {language === 'zh-TW' ? '超閾值突圍進攻持續時長預測 (Attack TTE Predictor)' : '超阈值突围进攻持续时长预测 (Attack TTE Predictor)'}
+              </span>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                设定拟发起的攻击瓦数，实时计算该攻势下无氧储能 W' 的预计耗尽耗竭时间 (TTE)
+              </p>
+            </div>
+            <div className="w-36 shrink-0">
+              <NumberStepper
+                value={attackPowerWatts}
+                onChange={setAttackPowerWatts}
+                step={10}
+                min={200}
+                max={1500}
+                unit="W"
+              />
+            </div>
+          </div>
+
+          {/* TTE Dynamic Result Banner */}
+          <div className="p-3 rounded-xl bg-white dark:bg-white/[0.05] border border-black/[0.05] dark:border-white/[0.08] space-y-2 shadow-2xs">
+            {attackPowerWatts <= cpAnalysis.threeParam.cpWatts ? (
+              <div className="flex items-start gap-2 text-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 shrink-0" />
+                <div className="space-y-0.5">
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 block">
+                    处于有氧稳态巡航区间（未耗尽风险）
+                  </span>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    当前输出瓦数 ({attackPowerWatts}W) 低于临界功率 CP ({cpAnalysis.threeParam.cpWatts}W)，乳酸产生与消除处于稳态平衡，不会消耗无氧储备 W'。
+                  </p>
+                </div>
+              </div>
+            ) : attackPowerWatts >= cpAnalysis.threeParam.pMaxWatts ? (
+              <div className="flex items-start gap-2 text-xs">
+                <span className="w-2 h-2 rounded-full bg-rose-500 mt-1 shrink-0" />
+                <div className="space-y-0.5">
+                  <span className="font-bold text-rose-600 dark:text-rose-400 block">
+                    超出瞬时神经肌肉爆发极值 (Pmax)
+                  </span>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    当前设定瓦数 ({attackPowerWatts}W) 超过了生理预估的神经肌肉最大瞬时做功功率 ({cpAnalysis.threeParam.pMaxWatts}W)，无法维持持续踩踏。
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    在 {attackPowerWatts}W 超阈值突围下：
+                  </span>
+                  <span className="text-base font-bold font-mono text-ios-red tabular-nums">
+                    {attackTteSec! >= 60
+                      ? `${Math.floor(attackTteSec! / 60)} 分 ${attackTteSec! % 60} 秒`
+                      : `${attackTteSec} 秒`}
+                  </span>
+                </div>
+                <div className="w-full bg-slate-200 dark:bg-white/10 h-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-ios-orange to-ios-red rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.min(100, Math.max(8, ((attackPowerWatts - cpAnalysis.threeParam.cpWatts) / (cpAnalysis.threeParam.pMaxWatts - cpAnalysis.threeParam.cpWatts)) * 100))}%`
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                  <span>消耗强度: <strong className="text-ios-orange tabular-nums">{Math.round(((attackPowerWatts - cpAnalysis.threeParam.cpWatts) / cpAnalysis.threeParam.wPrimeJoules) * 1000) / 10}%/s</strong></span>
+                  <span>预计维持: <strong className="text-ios-red tabular-nums">{attackTteSec} 秒</strong> 后电池见底</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 2-Param vs 3-Param Comparison Accordion */}
+        <div className="border-t border-black/[0.05] dark:border-white/[0.08] pt-3">
+          <button
+            type="button"
+            onClick={() => setIsCPComparisonExpanded(!isCPComparisonExpanded)}
+            className="w-full flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition py-1 apple-touch"
+          >
+            <span className="flex items-center gap-1.5">
+              <Activity className="w-3.5 h-3.5 text-ios-orange" />
+              <span>{language === 'zh-TW' ? '2-Param (經典線性) vs 3-Param (Morton 非線性) 擬合對比' : '2-Param (经典线性) vs 3-Param (Morton 非线性) 拟合对比'}</span>
+            </span>
+            <span className="text-ios-orange font-mono text-[11px] flex items-center gap-1">
+              <span>{isCPComparisonExpanded ? '收起对比' : '展开对比'}</span>
+              <span>{isCPComparisonExpanded ? '▲' : '▼'}</span>
+            </span>
+          </button>
+
+          {isCPComparisonExpanded && (
+            <div className="mt-3 p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3 animate-in fade-in duration-200">
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                经典 Monod-Scherrer 2 参数模型在 $t \to 0$ 时假定输出功率无穷大（导致 1s/5s 预测瓦数失真飙升至数万瓦）；Morton 3 参数模型引入神经肌肉峰值限制常数 $k$，在短时间爆发与长时间巡航之间提供了精准且符合人体生理学的动力学闭环：
+              </p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-left">
+                  <thead>
+                    <tr className="border-b border-black/[0.05] dark:border-white/[0.08] text-slate-500 dark:text-slate-400 text-[11px]">
+                      <th className="pb-2">做功时长</th>
+                      <th className="pb-2">Morton 3-Param (生理拟合)</th>
+                      <th className="pb-2">Monod 2-Param (经典线性)</th>
+                      <th className="pb-2">生理意义与适用场景</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-black/[0.05] dark:divide-white/5 text-slate-700 dark:text-slate-300 font-mono text-xs">
+                    {cpAnalysis.curve.map((pt, idx) => (
+                      <tr key={idx} className="hover:bg-black/5 dark:hover:bg-white/5 transition">
+                        <td className="py-2 font-sans font-semibold text-slate-900 dark:text-white">{pt.durationLabel}</td>
+                        <td className="font-bold text-ios-orange tabular-nums">{pt.power3p} W</td>
+                        <td className="text-slate-400 dark:text-slate-500 tabular-nums">
+                          {pt.power2p > 2500 ? `${pt.power2p} W ⚠️` : `${pt.power2p} W`}
+                        </td>
+                        <td className="font-sans text-[11px] text-slate-500 dark:text-slate-400">
+                          {pt.durationSec <= 5
+                            ? '神经肌肉爆发区间 (3-Param 严格约束在 Pmax 以内)'
+                            : pt.durationSec <= 60
+                            ? '无氧糖酵解供能主导区间'
+                            : pt.durationSec <= 300
+                            ? '最大摄氧量 (VO₂ Max) 极限维持带'
+                            : '有氧门槛与临界功率渐近线'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      </IOSCard>
 
       {/* Social Share Poster Modal */}
       <ShareCardModal

@@ -47,6 +47,7 @@ import {
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
+import { setPendingTransfer } from '../../hooks/useToolDraftState';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
@@ -190,8 +191,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       if (list.length > 0) {
         setPmcDataSource('local_history');
       }
-    } catch (err) {
-      console.error('Failed to load local activities:', err);
+    } catch {
+      // IndexedDB storage temporarily unavailable
     }
   };
 
@@ -202,8 +203,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_pmc_manual_tss', JSON.stringify(manualTssEntries));
-    } catch (e) {
-      console.warn('Failed to save manual TSS:', e);
+    } catch {
+      // LocalStorage quota or access exception
     }
   }, [manualTssEntries]);
 
@@ -276,7 +277,6 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       setActiveTab('trends');
       showToast(`成功载入 Strava 骑行「${act.name}」！`, 'success');
     } catch (err: any) {
-      console.error(err);
       showToast(`载入 Strava 骑行流失败: ${err.message || '网络异常'}`, 'error');
     } finally {
       setIsLoading(false);
@@ -409,8 +409,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       try {
         const demo = generateRealisticDemoRide(ftpWatts, weightKg, maxHr);
         setAnalysis(demo);
-      } catch (err) {
-        console.error(err);
+      } catch {
+        // Fallback to empty state
       }
     }
   }, []);
@@ -584,7 +584,6 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         'success'
       );
     } catch (error: any) {
-      console.error(error);
       showToast(error.message || '文件解析失败，请检查文件是否损坏', 'error');
     } finally {
       setIsLoading(false);
@@ -623,7 +622,6 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         showToast(`所有 ${result.skippedCount} 个文件已存在，已自动跳过重复`, 'info');
       }
     } catch (err: any) {
-      console.error('Batch import failed:', err);
       showToast(`批量导入失败: ${err.message}`, 'error');
     }
   };
@@ -685,7 +683,6 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       setActiveTab('trends');
       showToast(`已成功载入「${record.name}」！`, 'success');
     } catch (err: any) {
-      console.error('Failed to load local activity:', err);
       showToast(`载入本地活动失败: ${err.message}`, 'error');
     } finally {
       setIsLoading(false);
@@ -1164,16 +1161,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       reason: smartWorkoutRecommendation?.deficiencyTitle || '骑行诊断补强',
       segments: JSON.parse(JSON.stringify(tmpl.segments))
     };
-    try {
-      localStorage.setItem('solorider_pending_workout', JSON.stringify(payload));
+    const ok = setPendingTransfer('solorider_pending_workout', payload);
+    if (ok) {
       showToast('已生成专属靶向补强课表，正在跳转工坊...', 'success');
       setSmartWorkoutModalOpen(false);
       if (onNavigateTool) {
         onNavigateTool('workout-builder');
       }
-    } catch (e) {
-      console.error('Failed to dispatch smart workout:', e);
-      showToast('生成课表失败，请稍后再试', 'error');
+    } else {
+      showToast('生成课表失败，请检查浏览器本地存储', 'error');
     }
   };
 

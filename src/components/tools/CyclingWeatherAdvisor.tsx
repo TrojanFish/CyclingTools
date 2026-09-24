@@ -28,6 +28,9 @@ interface SegmentWeather {
   windDirectionDeg: number;
   windRelation: string;
   uvIndex: number;
+  /** True when the Open-Meteo API request for this waypoint failed and fixed
+   *  fallback values were used. The UI should clearly mark such segments. */
+  isFallback?: boolean;
 }
 
 export const CyclingWeatherAdvisor: React.FC = () => {
@@ -306,7 +309,8 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             });
           }
         } catch (e) {
-          // Fallback simulation
+          // API request for this waypoint failed — push clearly-flagged fallback estimates.
+          // The UI will display a visual warning on these segments.
           segmentResults.push({
             pointIndex: i,
             lat: seg.pt.lat,
@@ -320,7 +324,8 @@ export const CyclingWeatherAdvisor: React.FC = () => {
             windSpeedKmh: 14,
             windDirectionDeg: 120,
             windRelation: getWindRelation(seg.bearing, 120),
-            uvIndex: 5
+            uvIndex: 5,
+            isFallback: true
           });
         }
       }
@@ -553,7 +558,7 @@ export const CyclingWeatherAdvisor: React.FC = () => {
 
               <div className="space-y-2.5">
                 {weatherSegments.map((seg) => (
-                  <div key={seg.pointIndex} className="ios-card p-3.5 rounded-xl border border-slate-200/80 dark:border-white/10 space-y-2.5 shadow-ios-card">
+                  <div key={seg.pointIndex} className={`ios-card p-3.5 rounded-xl border space-y-2.5 shadow-ios-card ${seg.isFallback ? 'border-amber-400/40 dark:border-amber-400/30' : 'border-slate-200/80 dark:border-white/10'}`}>
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-2">
                       <div className="flex items-center gap-2">
                         <span className="w-5 h-5 rounded-full bg-ios-blue/15 text-ios-blue flex items-center justify-center text-[11px] font-bold font-mono">
@@ -566,6 +571,12 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                           <Clock className="w-3 h-3 text-slate-400" />
                           预计 {seg.estimatedTimeStr} 到达
                         </span>
+                        {seg.isFallback && (
+                          <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-600 dark:text-amber-400 text-[10px] font-semibold" title="该断面的气象 API 请求失败，以下数据为固定估算值，仅供参考，请勿用于安全判断">
+                            <AlertTriangle className="w-2.5 h-2.5" />
+                            估算数据
+                          </span>
+                        )}
                       </div>
 
                       <div className="text-xs font-semibold text-ios-blue flex items-center gap-1">

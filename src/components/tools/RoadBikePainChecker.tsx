@@ -41,8 +41,9 @@ export const RoadBikePainChecker: React.FC = () => {
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_pain_checks', JSON.stringify(completedChecks));
-    } catch (e) {
-      console.warn('Failed to save pain checks:', e);
+    } catch {
+      // Silent degradation: storage quota exceeded or unavailable.
+      // The check state is preserved in React memory for the current session.
     }
   }, [completedChecks]);
 

@@ -63,8 +63,8 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_playlist', JSON.stringify(playlist));
-    } catch (e) {
-      console.warn('Failed to save playlist:', e);
+    } catch {
+      // LocalStorage quota or access exception
     }
   }, [playlist]);
 
@@ -97,7 +97,9 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
     if (track) {
       audioRef.current.src = track.url;
       if (isPlaying) {
-        audioRef.current.play().catch(e => console.warn('Autoplay blocked:', e));
+        audioRef.current.play().catch(() => {
+          // Autoplay blocked by browser policy without user gesture
+        });
       }
     }
   }, [currentTrackIndex]);
@@ -108,7 +110,9 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(e => console.warn('Play error:', e));
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {
+        setIsPlaying(false);
+      });
     }
   };
 

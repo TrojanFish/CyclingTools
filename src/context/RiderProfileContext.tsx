@@ -164,8 +164,8 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
           });
         }
       }
-    } catch (e) {
-      console.warn('Failed to load roster from localStorage', e);
+    } catch {
+      // LocalStorage unavailable, use default team roster
     }
     return DEFAULT_TEAM_ROSTER;
   });
@@ -175,8 +175,8 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       const saved = localStorage.getItem('yolo_cycling_active_rider_id');
       if (saved) return saved;
-    } catch (e) {
-      console.warn('Failed to load active rider id', e);
+    } catch {
+      // LocalStorage unavailable
     }
     return DEFAULT_TEAM_ROSTER[0].id;
   });
@@ -191,8 +191,8 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
           return parsed.map(b => migrateBikeProfile(b));
         }
       }
-    } catch (e) {
-      console.warn('Failed to load bike garage from localStorage', e);
+    } catch {
+      // LocalStorage unavailable, use default garage
     }
     return DEFAULT_BIKE_GARAGE;
   });
@@ -202,8 +202,8 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       const saved = localStorage.getItem('yolo_cycling_active_bike_id');
       if (saved) return saved;
-    } catch (e) {
-      console.warn('Failed to load active bike id', e);
+    } catch {
+      // LocalStorage unavailable
     }
     return DEFAULT_BIKE_GARAGE[0].id;
   });
@@ -240,8 +240,8 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
           return parsed;
         }
       }
-    } catch (e) {
-      console.warn('Failed to load nav shortcuts from localStorage', e);
+    } catch {
+      // LocalStorage unavailable, use default shortcuts
     }
     return DEFAULT_NAV_SHORTCUTS;
   });
@@ -250,40 +250,40 @@ export const RiderProfileProvider: React.FC<{ children: React.ReactNode }> = ({ 
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_team_roster', JSON.stringify(roster));
-    } catch (e) {
-      console.warn('Failed to save team roster', e);
+    } catch {
+      // Storage quota or private mode
     }
   }, [roster]);
 
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_active_rider_id', activeRiderId);
-    } catch (e) {
-      console.warn('Failed to save active rider id', e);
+    } catch {
+      // Storage quota or private mode
     }
   }, [activeRiderId]);
 
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_bike_garage', JSON.stringify(bikes));
-    } catch (e) {
-      console.warn('Failed to save bike garage', e);
+    } catch {
+      // Storage quota or private mode
     }
   }, [bikes]);
 
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_active_bike_id', activeBikeId);
-    } catch (e) {
-      console.warn('Failed to save active bike id', e);
+    } catch {
+      // Storage quota or private mode
     }
   }, [activeBikeId]);
 
   useEffect(() => {
     try {
       localStorage.setItem('solorider_bottom_nav_shortcuts', JSON.stringify(navShortcuts));
-    } catch (e) {
-      console.warn('Failed to save nav shortcuts to localStorage', e);
+    } catch {
+      // Storage quota or private mode
     }
   }, [navShortcuts]);
 

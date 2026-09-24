@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { HeartPulse, Flame, Activity, User, Scale, Shield, Sparkles, Droplet, Apple, Heart, Percent, TrendingDown, TrendingUp } from 'lucide-react';
+import { HeartPulse, Flame, Activity, User, Scale, Shield, Sparkles, Droplet, Apple, Heart, Percent, TrendingDown, TrendingUp, Info } from 'lucide-react';
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { NumberStepper } from '../common/NumberStepper';
@@ -39,25 +39,33 @@ export const HealthCalculator: React.FC = () => {
   const [rideDurationHours, setRideDurationHours] = useState<number>(3.0);
   const [rideIntensity, setRideIntensity] = useState<'z2' | 'z3' | 'race'>('z3');
 
-  // 1. In-ride Carbohydrate & Fluid Fueling Plan
+  // 1. In-ride Carbohydrate & Fluid Fueling Plan (ISSN / Jeukendrup Sports Nutrition Framework)
   const fuelingResult = useMemo(() => {
-    let carbsPerHour = 45; // g/h
-    let fluidPerHour = 600; // ml/h
-    let sodiumPerHour = 450; // mg/h
-
-    if (rideIntensity === 'z2') {
-      carbsPerHour = rideDurationHours > 2 ? 40 : 25;
-      fluidPerHour = 500;
-      sodiumPerHour = 350;
-    } else if (rideIntensity === 'z3') {
-      carbsPerHour = 60;
-      fluidPerHour = 650;
-      sodiumPerHour = 500;
+    // Carbohydrate intake dynamically scales with duration & metabolic intensity:
+    let carbsPerHour = 45; // g/h baseline
+    if (rideDurationHours <= 1.0) {
+      if (rideIntensity === 'z2') carbsPerHour = 0; // Endogenous glycogen sufficient
+      else if (rideIntensity === 'z3') carbsPerHour = 25;
+      else carbsPerHour = 45;
+    } else if (rideDurationHours <= 2.5) {
+      if (rideIntensity === 'z2') carbsPerHour = 30;
+      else if (rideIntensity === 'z3') carbsPerHour = 50;
+      else carbsPerHour = 65;
     } else {
-      carbsPerHour = 80;
-      fluidPerHour = 750;
-      sodiumPerHour = 650;
+      // Long endurance > 2.5 hours: requires higher oxidation capacity
+      if (rideIntensity === 'z2') carbsPerHour = 50;
+      else if (rideIntensity === 'z3') carbsPerHour = 70;
+      else carbsPerHour = 85;
     }
+
+    // Hydration: base sweat rate dynamically scaled with rider body weight (8~12.5 ml/kg/h):
+    const sweatRatePerKg = rideIntensity === 'z2' ? 8.5 : rideIntensity === 'z3' ? 10.5 : 12.5;
+    const rawFluidPerHour = weightKg * sweatRatePerKg;
+    const fluidPerHour = Math.max(400, Math.min(1100, Math.round(rawFluidPerHour / 25) * 25));
+
+    // Electrolyte Sodium: sweat sodium concentration (~600~900 mg/L) scaled with fluid loss:
+    const sodiumConc = rideIntensity === 'z2' ? 650 : rideIntensity === 'z3' ? 750 : 850; // mg/L
+    const sodiumPerHour = Math.round((fluidPerHour / 1000) * sodiumConc);
 
     const totalCarbsG = Math.round(carbsPerHour * rideDurationHours);
     const totalFluidMl = fluidPerHour * rideDurationHours;
@@ -66,6 +74,8 @@ export const HealthCalculator: React.FC = () => {
     const bottles750 = parseFloat((totalFluidMl / 750).toFixed(1));
     const totalSodiumMg = Math.round(sodiumPerHour * rideDurationHours);
     const gelCount = Math.ceil(totalCarbsG / 25); // ~25g carbs per energy gel
+
+    const requiresDualSource = carbsPerHour > 60;
 
     return {
       carbsPerHour,
@@ -77,9 +87,10 @@ export const HealthCalculator: React.FC = () => {
       bottles550,
       bottles750,
       totalSodiumMg,
-      gelCount
+      gelCount,
+      requiresDualSource
     };
-  }, [rideDurationHours, rideIntensity]);
+  }, [rideDurationHours, rideIntensity, weightKg]);
 
   // 2. Karvonen Heart Rate Zones Calculation: Target HR = ((MaxHR − RestHR) × %Intensity) + RestHR
   const hrZonesResult = useMemo(() => {
@@ -149,16 +160,16 @@ export const HealthCalculator: React.FC = () => {
     let color = 'text-emerald-500';
 
     if (bmiVal < 18.5) {
-      category = '偏瘦 (爬坡手体型)';
+      category = '偏瘦 (纯爬坡手体型)';
       color = 'text-amber-500';
     } else if (bmiVal < 24.0) {
       category = '正常健康 (标准耐力体型)';
       color = 'text-emerald-500';
     } else if (bmiVal < 28.0) {
-      category = '过重 (壮实鲁贝车手)';
-      color = 'text-orange-500';
+      category = '偏高 / 力量型车手 (需结合体脂)';
+      color = 'text-sky-500';
     } else {
-      category = '肥胖 (建议减重减脂)';
+      category = '超重 / 肥胖 (建议减脂)';
       color = 'text-rose-500';
     }
 
@@ -415,6 +426,32 @@ export const HealthCalculator: React.FC = () => {
                   icon={Flame}
                 />
               </div>
+
+              {/* Hourly Intake Rate & Sports Science Notice */}
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-2 text-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between text-slate-700 dark:text-slate-200 font-semibold gap-1">
+                  <span className="flex items-center gap-1.5">
+                    <Apple className="w-3.5 h-3.5 text-ios-blue" />
+                    每小时补给执行指标 (按 {weightKg}kg 体重动态计算)
+                  </span>
+                  <span className="font-mono text-ios-blue text-[11px] sm:text-xs">
+                    ~{fuelingResult.carbsPerHour}g/h 碳水 · ~{fuelingResult.fluidPerHour}ml/h 水分 · ~{fuelingResult.sodiumPerHour}mg/h 钠
+                  </span>
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed space-y-1">
+                  {fuelingResult.requiresDualSource ? (
+                    <p className="text-amber-600 dark:text-amber-400 flex items-start gap-1">
+                      <Info className="w-3 h-3 shrink-0 mt-0.5" />
+                      <span><strong>多源碳水提示：</strong>计划每小时碳水摄入 ≥60g，人体单一葡萄糖转运蛋白(SGLT1)趋于饱和，建议选用麦芽糊精:果糖约为 1:0.8 的双通道能量胶或冲剂，避免胃肠道不适。</span>
+                    </p>
+                  ) : (
+                    <p className="flex items-start gap-1">
+                      <Info className="w-3 h-3 shrink-0 mt-0.5 text-slate-400" />
+                      <span><strong>营养学依据：</strong>基于 ISSN / Jeukendrup 运动营养指南，补水量与出汗率按体重基准动态修正，建议少量多次（每 15~20 分钟补水 150~200ml）。</span>
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 
@@ -535,10 +572,16 @@ export const HealthCalculator: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
-                <span className="text-xs text-slate-500 dark:text-slate-400 block">同身高健康理想体重参考区间:</span>
-                <div className="text-base sm:text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
-                  {bmiResult.idealMin} kg - {bmiResult.idealMax} kg
+              <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
+                <div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 block">同身高健康理想体重参考区间:</span>
+                  <div className="text-base sm:text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">
+                    {bmiResult.idealMin} kg - {bmiResult.idealMax} kg
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-black/[0.05] dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-1">
+                  <Info className="w-3.5 h-3.5 text-ios-blue shrink-0 mt-0.5" />
+                  <span><strong>骑行专项体型说明：</strong>冲刺手与计时赛车手肌肉量充沛，BMI 常在 24~27 之间属于健康竞技体型；纯爬坡手则多在 19~21。BMI 无法区分骨骼肌与脂肪，建议切换「体脂」页签交叉验证。</span>
                 </div>
               </div>
             </IOSCard>
@@ -560,6 +603,11 @@ export const HealthCalculator: React.FC = () => {
                     {bfpResult.level}
                   </div>
                 </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed flex items-start gap-1">
+                <Info className="w-3.5 h-3.5 text-ios-blue shrink-0 mt-0.5" />
+                <span><strong>算法说明：</strong>采用成人 Deurenberg 经验回归公式。若为常年系统训练、大腿肌群高度发达的高水平骑行者，估算值可能偏高 2%~4%，建议以皮褶厚度夹或 DEXA 扫描为准。</span>
               </div>
 
               <div className="overflow-x-auto">

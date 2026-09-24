@@ -133,3 +133,55 @@ export function useToolDraftState<T>(
     saveDraft,
   };
 }
+
+interface PendingTransferEnvelope<T> {
+  timestamp: number;
+  payload: T;
+}
+
+/**
+ * Safely dispatch cross-tool transfer payload with timestamp envelope.
+ * Guarded against QuotaExceededError and private mode restrictions.
+ */
+export function setPendingTransfer<T>(key: string, payload: T): boolean {
+  try {
+    const storage = getStorage();
+    if (!storage) return false;
+    const envelope: PendingTransferEnvelope<T> = {
+      timestamp: Date.now(),
+      payload,
+    };
+    storage.setItem(key, JSON.stringify(envelope));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Safely retrieve and consume cross-tool transfer payload with TTL defense.
+ * Cleans up the storage key immediately upon read to prevent stale replay,
+ * while supporting legacy unenveloped payloads for backward compatibility.
+ */
+export function consumePendingTransfer<T>(key: string, ttlMs = 15 * 60 * 1000): T | null {
+  try {
+    const storage = getStorage();
+    if (!storage) return null;
+    const raw = storage.getItem(key);
+    if (!raw) return null;
+
+    storage.removeItem(key);
+
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && 'timestamp' in parsed && 'payload' in parsed) {
+      const envelope = parsed as PendingTransferEnvelope<T>;
+      if (Date.now() - envelope.timestamp > ttlMs) {
+        return null; // Stale data expired
+      }
+      return envelope.payload;
+    }
+    return parsed as T;
+  } catch {
+    return null;
+  }
+}

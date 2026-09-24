@@ -75,8 +75,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_bgm_playlist', JSON.stringify(playlist));
-    } catch (e) {
-      console.warn('Failed to save audio playlist:', e);
+    } catch {
+      // LocalStorage quota or access exception
     }
   }, [playlist]);
 
@@ -110,8 +110,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (track) {
       audioRef.current.src = track.url;
       if (isPlaying) {
-        audioRef.current.play().catch(e => {
-          console.warn('BGM Play error:', e);
+        audioRef.current.play().catch(() => {
           setIsPlaying(false);
         });
       }
@@ -124,8 +123,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!audioRef.current.src && track) {
       audioRef.current.src = track.url;
     }
-    audioRef.current.play().then(() => setIsPlaying(true)).catch(e => {
-      console.warn('Playback error:', e);
+    audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {
       setIsPlaying(false);
     });
   };

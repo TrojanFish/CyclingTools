@@ -31,6 +31,7 @@ import { TOOLS_LIST } from '../data/toolsList';
 import { useLanguageAndUnit } from '../context/LanguageAndUnitContext';
 import { useStrava } from '../context/StravaContext';
 import { useRiderProfile } from '../context/RiderProfileContext';
+import { useToast } from '../context/ToastContext';
 import { generateDemoStravaActivities } from '../utils/stravaCockpitAnalytics';
 import { IOSSegmentedControl } from './common/IOSSegmentedControl';
 import { generateLatestRideSocialPoster, LatestRidePosterData } from '../utils/shareCardGenerators';
@@ -109,6 +110,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const { language, t } = useLanguageAndUnit();
   const { isConnected, activities: realActivities } = useStrava();
   const { profile, activeBike } = useRiderProfile();
+  const { showToast } = useToast();
 
   // Extract latest activity: Real Strava ride if available, or high-fidelity demo sample
   const effectiveLatestActivity = useMemo(() => {
@@ -235,8 +237,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       const url = await generateLatestRideSocialPoster(data);
       setPosterUrl(url);
       setIsPosterModalOpen(true);
-    } catch (err) {
-      console.error('Failed to generate poster:', err);
+    } catch {
+      showToast('生成骑行海报失败，请稍后重试', 'error');
     } finally {
       setIsGeneratingPoster(false);
     }

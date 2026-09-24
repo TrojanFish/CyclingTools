@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Bike, RotateCcw } from 'lucide-react';
+import { Ruler, Activity, HelpCircle, CheckCircle2, ChevronRight, User, Printer, Footprints, Shield, FileText, Sparkles, Bike, RotateCcw, Sliders, Compass, Layers, AlertCircle, ArrowRight } from 'lucide-react';
 import { BikeDiagram } from '../common/BikeDiagram';
 import { Tooltip } from '../common/Tooltip';
 import { NumberStepper } from '../common/NumberStepper';
@@ -14,6 +14,13 @@ import { useToolDraftState } from '../../hooks/useToolDraftState';
 import { ShareCardModal } from '../common/ShareCardModal';
 import { generateFittingPoster } from '../../utils/shareCardGenerators';
 import { FittingWorkOrderModal } from './FittingWorkOrderModal';
+import {
+  calculateHandlebarPosition,
+  solveFrameFromHandlebar,
+  solveSpacersForTargetDrop,
+  calculateStemDelta,
+  calculateSaddleHeightFromBB
+} from '../../utils/bikeFitGeometry';
 
 interface BikeFitterDraft {
   torso: number;
@@ -139,7 +146,20 @@ export const RoadBikeFitter: React.FC = () => {
     else crank = '172.5mm / 175mm';
 
     // 6. Saddle Setback & Drop
-    const saddleSetback = parseFloat((saddleHeightLeMond * 0.08 + 1.2).toFixed(1));
+    // KOPS (Knee Over Pedal Spindle) setback: riders with proportionally longer thighs
+    // need more posterior saddle position to prevent the knee from tracking too far
+    // forward of the pedal axle at 3 o'clock — a primary risk factor for patellar tendinopathy.
+    //
+    // Formula: base setback 7.0cm (industry standard for thigh/leg ratio ≈ 0.50), adjusted
+    // by how much the user's thigh ratio deviates from that midpoint.
+    // thighRatio range: ~0.43 (short thigh) → ~0.57 (long thigh), adjustment ±1.5cm.
+    const totalLegLength = thighLength + lowerLegLength;
+    const thighRatio = totalLegLength > 0 ? thighLength / totalLegLength : 0.50;
+    const baseSetback = 7.0; // cm, matches biomechanics norm for average proportions
+    const setbackAdjust = (thighRatio - 0.50) * 15; // ~±1.5cm across typical range
+    const saddleSetback = parseFloat(
+      Math.max(4.5, Math.min(10.0, baseSetback + setbackAdjust)).toFixed(1)
+    );
     let saddleDrop = 5.0; // cm
     if (ridingStyle === 'recreational') saddleDrop = 3.5;
     else if (ridingStyle === 'endurance') saddleDrop = 5.5;
@@ -196,6 +216,114 @@ export const RoadBikeFitter: React.FC = () => {
       ]
     };
   }, [height, inseam, torso, armLength, shoulderWidth, sittingHeight, thighLength, lowerLegLength, footLength, ridingStyle, flexibility]);
+
+  // Cockpit Decoupling State
+  const [cockpitStemAngle, setCockpitStemAngle] = useState<number>(-6);
+  const [cockpitStemLength, setCockpitStemLength] = useState<number>(100);
+  const [cockpitHeadsetCap, setCockpitHeadsetCap] = useState<number>(10);
+  const [cockpitSpacers, setCockpitSpacers] = useState<number>(15);
+  const [cockpitHeadTubeAngle, setCockpitHeadTubeAngle] = useState<number>(73.0);
+  const [isTestFrameOpen, setIsTestFrameOpen] = useState<boolean>(false);
+  const [testFrameStack, setTestFrameStack] = useState<number>(545);
+  const [testFrameReach, setTestFrameReach] = useState<number>(383);
+
+  // Synchronize cockpit stem length when fitting result stem length is calculated
+  useEffect(() => {
+    if (result.stemLength) {
+      setCockpitStemLength(result.stemLength);
+    }
+  }, [result.stemLength]);
+
+  // Synchronize test frame with recommended stack & reach initially
+  useEffect(() => {
+    if (result.estimatedStack) setTestFrameStack(result.estimatedStack);
+    if (result.estimatedReach) setTestFrameReach(result.estimatedReach);
+  }, [result.estimatedStack, result.estimatedReach]);
+
+  // Decoupled Geometry Analytics
+  const cockpitAnalytics = useMemo(() => {
+    const saddleHeightMm = result.saddleHeight * 10;
+    const targetDropMm = result.saddleDrop * 10;
+    const saddleVertMm = calculateSaddleHeightFromBB(saddleHeightMm, 73.5);
+    const targetHandlebarStackMm = saddleVertMm - targetDropMm;
+
+    // Standard cockpit span from BB to handlebar clamp center
+    const targetHandlebarReachMm = result.estimatedReach + 85;
+
+    // 1. Decoupled Frame Stack & Reach required for user's selected cockpit hardware
+    const decoupledFrame = solveFrameFromHandlebar(
+      { handlebarStackMm: targetHandlebarStackMm, handlebarReachMm: targetHandlebarReachMm },
+      {
+        headTubeAngleDeg: cockpitHeadTubeAngle,
+        headsetCapMm: cockpitHeadsetCap,
+        spacersMm: cockpitSpacers,
+        stemLengthMm: cockpitStemLength,
+        stemAngleDeg: cockpitStemAngle,
+        stemClampHeightMm: 40
+      }
+    );
+
+    // 2. Handlebar Coords with user's recommended frame + current cockpit
+    const handlebarCoords = calculateHandlebarPosition(
+      { stackMm: result.estimatedStack, reachMm: result.estimatedReach },
+      {
+        headTubeAngleDeg: cockpitHeadTubeAngle,
+        headsetCapMm: cockpitHeadsetCap,
+        spacersMm: cockpitSpacers,
+        stemLengthMm: cockpitStemLength,
+        stemAngleDeg: cockpitStemAngle,
+        stemClampHeightMm: 40
+      }
+    );
+
+    // 3. Recommended Spacers for user's recommended frame stack
+    const spacerFit = solveSpacersForTargetDrop({
+      saddleHeightMm,
+      targetDropMm,
+      frameStackMm: result.estimatedStack,
+      headTubeAngleDeg: cockpitHeadTubeAngle,
+      headsetCapMm: cockpitHeadsetCap,
+      stemLengthMm: cockpitStemLength,
+      stemAngleDeg: cockpitStemAngle,
+      stemClampHeightMm: 40
+    });
+
+    // 4. Test Target Frame Fit
+    const testFrameFit = solveSpacersForTargetDrop({
+      saddleHeightMm,
+      targetDropMm,
+      frameStackMm: testFrameStack,
+      headTubeAngleDeg: cockpitHeadTubeAngle,
+      headsetCapMm: cockpitHeadsetCap,
+      stemLengthMm: cockpitStemLength,
+      stemAngleDeg: cockpitStemAngle,
+      stemClampHeightMm: 40
+    });
+
+    const reachDiffMm = Math.round(testFrameReach - decoupledFrame.reachMm);
+    const recommendedStemForTestFrame = Math.max(60, Math.min(140, Math.round((cockpitStemLength - reachDiffMm) / 5) * 5));
+
+    return {
+      decoupledFrame,
+      handlebarCoords,
+      spacerFit,
+      testFrameFit,
+      recommendedStemForTestFrame,
+      reachDiffMm
+    };
+  }, [
+    result.saddleHeight,
+    result.saddleDrop,
+    result.estimatedStack,
+    result.estimatedReach,
+    cockpitHeadTubeAngle,
+    cockpitHeadsetCap,
+    cockpitSpacers,
+    cockpitStemLength,
+    cockpitStemAngle,
+    testFrameStack,
+    testFrameReach
+  ]);
 
   // Share Poster State
   const [sharePosterUrl, setSharePosterUrl] = useState<string | null>(null);
@@ -499,7 +627,7 @@ export const RoadBikeFitter: React.FC = () => {
                 label={language === 'zh-TW' ? '坐墊後移' : '坐垫后移'}
                 value={result.saddleSetback}
                 unit="cm"
-                subtext="鼻头距离五通垂线"
+                subtext="基于大腿/腿长比 KOPS 推算"
                 accentColor="green"
               />
 
@@ -549,32 +677,64 @@ export const RoadBikeFitter: React.FC = () => {
             )}
           </IOSCard>
 
-          {/* Stack & Reach + Body Proportion Analysis */}
-          <IOSCard variant="default" className="p-4 sm:p-5 space-y-3">
+          {/* Stack & Reach + Cockpit Decoupling Configurator */}
+          <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
             <IOSCardHeader
               title="Stack & Reach"
-              subtitle={language === 'zh-TW' ? '車架幾何與身材特徵推斷' : '车架几何与身材特征推断'}
-              icon={Activity}
+              subtitle={language === 'zh-TW' ? '車架幾何與把立墊圈解耦計算' : '车架几何与把立垫圈解耦计算'}
+              icon={Sliders}
               iconColor="purple"
             />
-            <div className="grid grid-cols-2 gap-3 text-xs">
+
+            {/* Core Decoupled Metric Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
               <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
-                  {'建议车架 Stack (堆高)'}
+                  {'解算车架 Stack'}
                 </span>
                 <span className="text-base font-bold font-mono text-ios-blue tabular-nums">
-                  ~{result.estimatedStack} mm {isImperial ? `(${(result.estimatedStack / 25.4).toFixed(1)} in)` : ''}
+                  ~{cockpitAnalytics.decoupledFrame.stackMm} mm
+                </span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5">
+                  对应图纸裸车架
                 </span>
               </div>
               <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
-                  {'建议车架 Reach (前伸)'}
+                  {'解算车架 Reach'}
                 </span>
                 <span className="text-base font-bold font-mono text-ios-blue tabular-nums">
-                  ~{result.estimatedReach} mm {isImperial ? `(${(result.estimatedReach / 25.4).toFixed(1)} in)` : ''}
+                  ~{cockpitAnalytics.decoupledFrame.reachMm} mm
+                </span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5">
+                  五通至头管上中心
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
+                  {'把立中心 HY (堆高)'}
+                </span>
+                <span className="text-base font-bold font-mono text-ios-purple tabular-nums">
+                  {cockpitAnalytics.handlebarCoords.handlebarStackMm} mm
+                </span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5">
+                  车把锁紧中心高度
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
+                <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
+                  {'把立中心 HX (前伸)'}
+                </span>
+                <span className="text-base font-bold font-mono text-ios-purple tabular-nums">
+                  {cockpitAnalytics.handlebarCoords.handlebarReachMm} mm
+                </span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5">
+                  五通水平前伸坐标
                 </span>
               </div>
             </div>
+
+            {/* Proportion Diagnosis Notes */}
             <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
               <div className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-ios-purple mt-1.5 shrink-0"></span>
@@ -584,6 +744,199 @@ export const RoadBikeFitter: React.FC = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
                 <span>{result.thighLowerLegNote}</span>
               </div>
+            </div>
+
+            {/* Cockpit Tuning Controls */}
+            <div className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-ios-purple" />
+                  {language === 'zh-TW' ? '座艙配件幾何解耦調校 (Cockpit Tuning)' : '座舱配件几何解耦调校 (Cockpit Tuning)'}
+                </span>
+                <span className="text-[11px] font-mono text-ios-purple font-medium">
+                  {cockpitStemAngle}°把立 / {cockpitStemLength}mm
+                </span>
+              </div>
+
+              {/* Stem Angle Selector */}
+              <div>
+                <label className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mb-1">
+                  {language === 'zh-TW' ? '把立角度規格 (Stem Angle)' : '把立角度规格 (Stem Angle)'}
+                </label>
+                <IOSSegmentedControl
+                  options={[
+                    { value: '-17', label: '-17° (水平)' },
+                    { value: '-10', label: '-10°' },
+                    { value: '-6', label: '-6° (标准)' },
+                    { value: '6', label: '+6° (抬升)' }
+                  ]}
+                  value={String(cockpitStemAngle)}
+                  onChange={(val) => setCockpitStemAngle(parseInt(val, 10))}
+                  size="sm"
+                  tint="purple"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div>
+                  <label className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mb-1">
+                    {language === 'zh-TW' ? '把立長度' : '把立长度'} (mm)
+                  </label>
+                  <NumberStepper
+                    value={cockpitStemLength}
+                    onChange={setCockpitStemLength}
+                    step={5}
+                    min={60}
+                    max={140}
+                    unit="mm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mb-1">
+                    {language === 'zh-TW' ? '碗組上蓋' : '碗组上盖'} (mm)
+                  </label>
+                  <NumberStepper
+                    value={cockpitHeadsetCap}
+                    onChange={setCockpitHeadsetCap}
+                    step={2.5}
+                    min={5}
+                    max={25}
+                    unit="mm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mb-1">
+                    {language === 'zh-TW' ? '預設墊圈' : '预设垫圈'} (mm)
+                  </label>
+                  <NumberStepper
+                    value={cockpitSpacers}
+                    onChange={setCockpitSpacers}
+                    step={2.5}
+                    min={0}
+                    max={40}
+                    unit="mm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mb-1">
+                    {language === 'zh-TW' ? '頭管角度' : '头管角度'} (°)
+                  </label>
+                  <NumberStepper
+                    value={cockpitHeadTubeAngle}
+                    onChange={setCockpitHeadTubeAngle}
+                    step={0.5}
+                    min={70.5}
+                    max={74.5}
+                    unit="°"
+                    decimals={1}
+                  />
+                </div>
+              </div>
+
+              {/* Spacer Fit Recommendation Status */}
+              <div className="p-3 rounded-xl bg-white dark:bg-white/[0.05] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-ios-blue" />
+                    {'推荐车架垫圈余量研判'}
+                  </span>
+                  <span
+                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                      cockpitAnalytics.spacerFit.fitStatus === 'optimal'
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+                        : cockpitAnalytics.spacerFit.fitStatus === 'slammed'
+                        ? 'bg-ios-purple/10 text-ios-purple border-ios-purple/25'
+                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
+                    }`}
+                  >
+                    {cockpitAnalytics.spacerFit.fitStatus === 'optimal'
+                      ? '理想余量'
+                      : cockpitAnalytics.spacerFit.fitStatus === 'slammed'
+                      ? '激进全切'
+                      : '需注意垫圈'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {cockpitAnalytics.spacerFit.message}
+                </p>
+                <div className="flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400 font-mono pt-0.5">
+                  <span>目标落差: <strong className="text-slate-800 dark:text-slate-200 tabular-nums">{result.saddleDrop * 10}mm</strong></span>
+                  <span>当前装车落差: <strong className="text-ios-blue tabular-nums">{cockpitAnalytics.spacerFit.actualDropMm}mm</strong></span>
+                  <span>偏差: <strong className="text-slate-700 dark:text-slate-300 tabular-nums">{cockpitAnalytics.spacerFit.dropErrorMm > 0 ? `+${cockpitAnalytics.spacerFit.dropErrorMm}` : cockpitAnalytics.spacerFit.dropErrorMm}mm</strong></span>
+                </div>
+              </div>
+            </div>
+
+            {/* Target Bike Frame Trial Sandbox */}
+            <div className="border-t border-black/[0.05] dark:border-white/[0.08] pt-3">
+              <button
+                type="button"
+                onClick={() => setIsTestFrameOpen(!isTestFrameOpen)}
+                className="w-full flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition py-1 apple-touch"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Bike className="w-3.5 h-3.5 text-ios-purple" />
+                  <span>{language === 'zh-TW' ? '試算心儀目標車架 (Frame Fit Sandbox)' : '试算心仪目标车架 (Frame Fit Sandbox)'}</span>
+                </span>
+                <span className="text-ios-purple font-mono text-[11px] flex items-center gap-1">
+                  <span>{isTestFrameOpen ? '收起试算' : '展开试算'}</span>
+                  <span>{isTestFrameOpen ? '▲' : '▼'}</span>
+                </span>
+              </button>
+
+              {isTestFrameOpen && (
+                <div className="mt-3 p-3.5 rounded-xl bg-ios-purple/5 dark:bg-ios-purple/10 border border-ios-purple/20 space-y-3 animate-in fade-in duration-200">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    输入您心仪候选车架（如崔克 Emonda、闪电 Tarmac、捷安特 TCR）具体尺码的几何表 Stack 与 Reach，系统将自动算出装车所需的垫圈与把立长度方案：
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                        目标车架 Stack (mm)
+                      </label>
+                      <NumberStepper
+                        value={testFrameStack}
+                        onChange={setTestFrameStack}
+                        step={1}
+                        min={460}
+                        max={650}
+                        unit="mm"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                        目标车架 Reach (mm)
+                      </label>
+                      <NumberStepper
+                        value={testFrameReach}
+                        onChange={setTestFrameReach}
+                        step={1}
+                        min={350}
+                        max={450}
+                        unit="mm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-[#2C2C2E] border border-ios-purple/20 space-y-1.5 shadow-2xs text-xs">
+                    <div className="flex items-center justify-between font-semibold">
+                      <span className="text-slate-800 dark:text-slate-200">装车适配计算建议</span>
+                      <span className="text-ios-purple font-mono font-bold">
+                        {cockpitAnalytics.testFrameFit.roundedSpacersMm}mm 垫圈 + {cockpitAnalytics.recommendedStemForTestFrame}mm 把立
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      {cockpitAnalytics.testFrameFit.message}
+                    </p>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 pt-0.5">
+                      <span>车架 Reach 偏差: <strong className="text-slate-700 dark:text-slate-300 tabular-nums">{cockpitAnalytics.reachDiffMm > 0 ? `+${cockpitAnalytics.reachDiffMm}` : cockpitAnalytics.reachDiffMm}mm</strong></span>
+                      <span>•</span>
+                      <span>把立适配建议: <strong className="text-ios-blue tabular-nums">{cockpitAnalytics.recommendedStemForTestFrame}mm</strong></span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </IOSCard>
 

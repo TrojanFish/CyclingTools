@@ -228,9 +228,8 @@ export const getValidAccessToken = async (): Promise<string | null> => {
       try {
         const refreshed = await refreshAccessToken(apiKeys.clientId, apiKeys.clientSecret, tokenData.refreshToken);
         return refreshed.accessToken;
-      } catch (err) {
-        console.warn('Failed to auto-refresh Strava token:', err);
-        return tokenData.accessToken; // fallback to existing
+      } catch {
+        return tokenData.accessToken; // fallback to existing token
       }
     }
   }

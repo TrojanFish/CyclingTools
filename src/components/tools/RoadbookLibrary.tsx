@@ -58,6 +58,7 @@ import { ShareCardModal } from '../common/ShareCardModal';
 import { generateRoadbookPoster } from '../../utils/shareCardGenerators';
 import { useStrava } from '../../context/StravaContext';
 import { StravaRouteRecord } from '../../utils/indexedDb';
+import { setPendingTransfer } from '../../hooks/useToolDraftState';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
@@ -118,8 +119,8 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_personal_roadbooks', JSON.stringify(personalRoutes));
-    } catch (e) {
-      console.warn('Failed to save personal roadbooks to localStorage:', e);
+    } catch {
+      // Silent degradation: storage quota exceeded or unavailable.
     }
   }, [personalRoutes]);
 
@@ -127,8 +128,8 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
   useEffect(() => {
     try {
       localStorage.setItem('yolo_cycling_bookmarked_roadbooks', JSON.stringify(bookmarkedIds));
-    } catch (e) {
-      console.warn('Failed to save bookmarked roadbooks to localStorage:', e);
+    } catch {
+      // Silent degradation: storage quota exceeded or unavailable.
     }
   }, [bookmarkedIds]);
 
@@ -231,8 +232,8 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
 
       markersLayerRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
-    } catch (err) {
-      console.warn('Leaflet map initialization warning:', err);
+    } catch {
+      // Leaflet container already initialized or unmounted cleanly
     }
 
     return () => {
@@ -329,8 +330,8 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
           map.fitBounds(bounds, { padding: [40, 40] });
         }
       }
-    } catch (e) {
-      console.warn('Map fitBounds failed:', e);
+    } catch {
+      // Map view bounds cannot be computed or polyline is empty
     }
   }, [activeRoute, language, convertElevation]);
 
@@ -675,43 +676,37 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
   // Transfer active route into GPX Route Creator
   const handleSendToGpxCreator = () => {
     if (!activeRoute) return;
-    try {
-      localStorage.setItem(
-        'solorider_pending_gpx_route',
-        JSON.stringify({
-          name: activeRoute.name,
-          waypoints: activeRoute.waypoints
-        })
-      );
+    const ok = setPendingTransfer('solorider_pending_gpx_route', {
+      name: activeRoute.name,
+      waypoints: activeRoute.waypoints,
+    });
+    if (ok) {
       showToast(language === 'zh-TW' ? `已將路書「${activeRoute.name}」載入 GPX 路線工坊` : `已将路书「${activeRoute.name}」载入 GPX 路线工坊`, 'success');
       if (onNavigateTool) {
         onNavigateTool('gpx-creator');
       }
-    } catch (e) {
-      console.warn('Failed to transfer route to GPX creator:', e);
+    } else {
+      showToast('载入 GPX 路线工坊失败，请检查浏览器本地存储', 'error');
     }
   };
 
   // Transfer active route into Climb Pacing Planner
   const handleSendToClimbPacing = () => {
     if (!activeRoute) return;
-    try {
-      localStorage.setItem(
-        'solorider_pending_climb_route',
-        JSON.stringify({
-          name: activeRoute.name,
-          distanceKm: activeRoute.distanceKm,
-          elevationGainM: activeRoute.elevationGainM,
-          avgGradePct: activeRoute.avgGradePct,
-          waypoints: activeRoute.waypoints
-        })
-      );
+    const ok = setPendingTransfer('solorider_pending_climb_route', {
+      name: activeRoute.name,
+      distanceKm: activeRoute.distanceKm,
+      elevationGainM: activeRoute.elevationGainM,
+      avgGradePct: activeRoute.avgGradePct,
+      waypoints: activeRoute.waypoints,
+    });
+    if (ok) {
       showToast(language === 'zh-TW' ? `已將路書「${activeRoute.name}」轉入爬坡配速規劃` : `已将路书「${activeRoute.name}」转入爬坡配速规划`, 'success');
       if (onNavigateTool) {
         onNavigateTool('climb-pacing');
       }
-    } catch (e) {
-      console.warn('Failed to transfer route to Climb Pacing:', e);
+    } else {
+      showToast('转入爬坡配速规划失败，请检查浏览器本地存储', 'error');
     }
   };
 

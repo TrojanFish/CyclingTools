@@ -14,9 +14,24 @@ export const TIRE_SETUP_FACTORS: Record<string, { label: string; factor: number;
 };
 
 // Base PSI lookup for nominal tire width vs total system weight (kg)
+//
+// Formula source: Adapted from Frank Berto's empirical tire pressure research (1993, "The Dancing
+// Chain") combined with Silca's updated 15% casing deflection target method for minimizing
+// rolling resistance on textured road surfaces.
+//
+// P ≈ K × (SystemWeight_kg / Width_mm^1.45)
+//
+// The K-coefficients (120/112/108) and exponent (1.45) are experience-based calibration
+// values tuned to match real-world recommendations for modern road/gravel/MTB tires.
+// Surface-type multipliers and tube-setup multipliers are engineering estimates without
+// independent laboratory validation — they represent reasonable heuristic adjustments.
+//
+// IMPORTANT: This formula is a starting-point guide. Rider feel, rim internal width,
+// tread compound, and casing suppleness all affect optimal pressure. Always fine-tune
+// on the bike. Output should not be treated as a precision specification.
 export function getBaseTirePsi(nominalWidthMm: number, systemWeightKg: number, bikeType: 'road' | 'gravel' | 'mtb'): number {
-  // Model: Ideal pressure formula based on Frank Berto & Silca 15% tire deflection
-  // P ≈ K * (Weight / Width^1.45)
+  // K-coefficients are empirical calibration constants (not derived from first principles).
+  // Road: tuned for 23–32mm tires; Gravel: 33–50mm; MTB: 2.0–2.6" knobby.
   let k = 120;
   if (bikeType === 'gravel') k = 112;
   if (bikeType === 'mtb') k = 108;

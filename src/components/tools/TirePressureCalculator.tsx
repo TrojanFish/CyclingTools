@@ -669,6 +669,14 @@ export const TirePressureCalculator: React.FC = () => {
               </span>
             </li>
           </ul>
+          <div className="flex items-start gap-2 pt-2 border-t border-black/[0.05] dark:border-white/[0.08]">
+            <Info className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0 mt-0.5" />
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              <strong className="text-slate-600 dark:text-slate-300">算法说明：</strong>
+              建议胎压基于 Frank Berto 经验公式与 Silca 15% 胎面下沉量法则推算，路面系数与气嘴类型修正值为工程估算，并非独立实验室测试数据。
+              输出结果仅作参考起点，实际骑行体感（贴地感、滚阻、防扎余量）应作为最终调整依据。
+            </p>
+          </div>
         </IOSCard>
       </div>
     </div>

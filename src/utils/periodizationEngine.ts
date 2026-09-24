@@ -468,8 +468,8 @@ export function loadSavedGoalEvent(): GoalEvent {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.name && parsed.date) return parsed;
     }
-  } catch (e) {
-    console.warn('Failed to parse saved goal event:', e);
+  } catch {
+    // LocalStorage quota or access exception
   }
   return PRESET_GOAL_EVENTS[0];
 }
@@ -481,8 +481,8 @@ export function saveGoalEvent(event: GoalEvent): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY_GOAL_EVENT, JSON.stringify(event));
-  } catch (e) {
-    console.warn('Failed to save goal event:', e);
+  } catch {
+    // LocalStorage quota or access exception
   }
 }
 
@@ -497,8 +497,8 @@ export function loadPlannedWorkouts(): PlannedWorkout[] {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return parsed;
     }
-  } catch (e) {
-    console.warn('Failed to load planned workouts:', e);
+  } catch {
+    // LocalStorage quota or access exception
   }
   return [];
 }
@@ -510,7 +510,7 @@ export function savePlannedWorkouts(workouts: PlannedWorkout[]): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEY_PLANNED_WORKOUTS, JSON.stringify(workouts));
-  } catch (e) {
-    console.warn('Failed to save planned workouts:', e);
+  } catch {
+    // LocalStorage quota or access exception
   }
 }

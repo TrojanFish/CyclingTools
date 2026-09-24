@@ -189,7 +189,6 @@ export async function batchIngestActivityFiles(
       importedRecords.push(record);
       successfulCount++;
     } catch (err: any) {
-      console.error(`Error parsing file ${fileName}:`, err);
       failedCount++;
       errors.push({
         fileName,
