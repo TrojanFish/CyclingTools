@@ -417,7 +417,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                 <div>
                   <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block mb-1">
-                    {language === 'zh-TW' ? '乳酸閾值功率 (FTP)' : '乳酸阈值功率 (FTP)'}
+                    {language === 'zh-TW' ? '車手閾值功率 FTP' : '车手阈值功率 FTP'}
                   </label>
                   <NumberStepper
                     value={profile.ftpWatts}
@@ -624,8 +624,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate">
-                {language === 'zh-TW' ? '車隊戰車車庫 (動力學數據總線)' : '车队战车车库 (动力学数据总线)'}
-                <span className="hidden sm:inline font-normal text-slate-500 dark:text-slate-400 ml-1">(点击装配并自动联动全站计算)</span>
+                {language === 'zh-TW' ? '車隊戰車車庫 · 動力學數據總線' : '车队战车车库 · 动力学数据总线'}
+                <span className="hidden sm:inline font-normal text-slate-500 dark:text-slate-400 ml-1">· 点击装配并联动全站计算</span>
               </span>
               <button
                 type="button"
@@ -1024,11 +1024,11 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         {/* Section E: Fitting Geometry */}
                         <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2">
                           <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">
-                            📐 Fitting 设定几何 (毫米 mm)
+                            📐 Fitting 设定几何 (mm)
                           </span>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <div>
-                              <label className="text-[10px] text-slate-400 block mb-0.5">坐垫高度 (BB中心)</label>
+                              <label className="text-[10px] text-slate-400 block mb-0.5">坐垫高度 · BB中心</label>
                               <NumberStepper
                                 value={b.geometry?.saddleHeightMm || 710}
                                 onChange={(v) => updateBike(b.id, {
@@ -1694,7 +1694,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
               {/* Slots Preview */}
               <div className="space-y-1.5">
                 <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                  {language === 'zh-TW' ? '導航欄即時佈局 (點擊快捷位自選替換)' : '导航栏即时布局 (点击快捷位自选替换)'}
+                  {language === 'zh-TW' ? '導航欄即時佈局 · 點擊快捷位自選替換' : '导航栏即时布局 · 点击快捷位自选替换'}
                 </div>
 
                 <div className="grid grid-cols-5 gap-1 sm:gap-1.5 p-2 rounded-2xl bg-slate-100/80 dark:bg-[#121214] border border-black/[0.04] dark:border-white/[0.06]">

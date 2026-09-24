@@ -160,12 +160,12 @@ export interface CogganBenchmarkLevel {
 }
 
 export const COGGAN_BENCHMARKS: CogganBenchmarkLevel[] = [
-  { level: 'world_tour', label: 'WorldTour (世巡职业)', color: '#FF2D55', wkg5s: 23.5, wkg1m: 11.5, wkg5m: 7.6, wkg20m: 6.7, wkg60m: 6.4 },
-  { level: 'cat1', label: 'Cat 1 (国家级精英)', color: '#AF52DE', wkg5s: 20.0, wkg1m: 9.6, wkg5m: 5.8, wkg20m: 5.2, wkg60m: 4.9 },
-  { level: 'cat2', label: 'Cat 2 (省级健将)', color: '#007AFF', wkg5s: 17.5, wkg1m: 8.4, wkg5m: 5.0, wkg20m: 4.4, wkg60m: 4.2 },
-  { level: 'cat3', label: 'Cat 3 (俱乐部高阶)', color: '#34C759', wkg5s: 15.2, wkg1m: 7.3, wkg5m: 4.3, wkg20m: 3.7, wkg60m: 3.5 },
-  { level: 'cat4', label: 'Cat 4 (进阶骑手)', color: '#FF9500', wkg5s: 13.0, wkg1m: 6.2, wkg5m: 3.6, wkg20m: 3.1, wkg60m: 2.9 },
-  { level: 'cat5', label: 'Cat 5 / Untrained (业余入门)', color: '#8E8E93', wkg5s: 10.5, wkg1m: 5.0, wkg5m: 2.8, wkg20m: 2.4, wkg60m: 2.3 }
+  { level: 'world_tour', label: '世巡职业级', color: '#FF2D55', wkg5s: 23.5, wkg1m: 11.5, wkg5m: 7.6, wkg20m: 6.7, wkg60m: 6.4 },
+  { level: 'cat1', label: '国家精英级', color: '#AF52DE', wkg5s: 20.0, wkg1m: 9.6, wkg5m: 5.8, wkg20m: 5.2, wkg60m: 4.9 },
+  { level: 'cat2', label: '省级健将级', color: '#007AFF', wkg5s: 17.5, wkg1m: 8.4, wkg5m: 5.0, wkg20m: 4.4, wkg60m: 4.2 },
+  { level: 'cat3', label: '俱乐部高阶', color: '#34C759', wkg5s: 15.2, wkg1m: 7.3, wkg5m: 4.3, wkg20m: 3.7, wkg60m: 3.5 },
+  { level: 'cat4', label: '进阶骑手', color: '#FF9500', wkg5s: 13.0, wkg1m: 6.2, wkg5m: 3.6, wkg20m: 3.1, wkg60m: 2.9 },
+  { level: 'cat5', label: '业余入门', color: '#8E8E93', wkg5s: 10.5, wkg1m: 5.0, wkg5m: 2.8, wkg20m: 2.4, wkg60m: 2.3 }
 ];
 
 export interface WPrimeBalanceResult {
@@ -753,7 +753,7 @@ export async function parseFitFile(
 
   const recordMesgs = messages?.recordMesgs || [];
   if (recordMesgs.length === 0) {
-    throw new Error('该 FIT 文件中未提取到有效的骑行记录点 (recordMesgs)');
+    throw new Error('该 FIT 文件中未提取到有效的骑行记录点');
   }
 
   // Build developer fields map to decode custom power/cadence data
@@ -1225,7 +1225,7 @@ export function generateRealisticDemoRide(
 
   return analyzePoints(
     points,
-    '千岛湖经典起伏丘陵实测 (Demo).fit',
+    '千岛湖经典起伏丘陵实测.fit',
     'demo',
     ftpWatts,
     weightKg,

@@ -312,7 +312,7 @@ export const seedDemoSeasonActivities = async (
   const demoBlueprints = [
     {
       daysAgo: 85,
-      name: '赛季启动 · 基础有氧耐力巡航 (Z2 Base Endurance)',
+      name: '赛季启动 · 基础有氧耐力巡航',
       dist: 65.4,
       dur: 8100, // 2h 15m
       mov: 7800,
@@ -326,7 +326,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 78,
-      name: '平路踏频微循环与节奏巡航 (Tempo Aerobic)',
+      name: '平路踏频微循环与节奏巡航',
       dist: 46.2,
       dur: 5400,
       mov: 5100,
@@ -340,7 +340,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 71,
-      name: '周末俱乐部百公里长距离 (Century Club Ride)',
+      name: '周末俱乐部百公里长途拉练',
       dist: 104.8,
       dur: 13200, // 3h 40m
       mov: 12600,
@@ -354,7 +354,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 64,
-      name: '甜区 3x15min 进阶阈值间歇 (Sweet Spot 3x15)',
+      name: '甜区 3x15min 进阶阈值间歇',
       dist: 42.0,
       dur: 4800,
       mov: 4500,
@@ -368,7 +368,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 57,
-      name: '丘陵起伏路爬坡突围拉练 (Rolling Hills Climbing)',
+      name: '丘陵起伏路爬坡突围拉练',
       dist: 76.5,
       dur: 9600,
       mov: 9000,
@@ -382,7 +382,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 50,
-      name: '雨天骑行台稳态补课 (Indoor Steady Spin)',
+      name: '雨天骑行台稳态补课',
       dist: 35.0,
       dur: 3900,
       mov: 3900,
@@ -396,7 +396,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 43,
-      name: '半赛季 20min 功率峰值基准测试 (FTP Benchmark Test)',
+      name: '半赛季 20min 功率峰值基准测试',
       dist: 38.5,
       dur: 4500,
       mov: 4200,
@@ -410,7 +410,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 36,
-      name: 'Over-Under 4x8min 乳酸穿梭 (Over-Under Lactate Clearing)',
+      name: 'Over-Under 4x8min 乳酸穿梭间歇',
       dist: 43.8,
       dur: 5100,
       mov: 4800,
@@ -424,7 +424,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 29,
-      name: '周末大团骑冲刺抢分赛 (Fast Group Ride with Sprints)',
+      name: '周末大团骑冲刺抢分赛',
       dist: 82.6,
       dur: 10200,
       mov: 9600,
@@ -438,7 +438,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 22,
-      name: 'VO2Max 5x3min 摄氧极限突破 (VO2Max Intervals)',
+      name: 'VO2max 5x3min 摄氧极限突破',
       dist: 39.2,
       dur: 4500,
       mov: 4200,
@@ -452,7 +452,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 17,
-      name: '千岛湖环湖经典耐力挑战 (Lake Scenic Long Ride)',
+      name: '千岛湖环湖经典耐力挑战',
       dist: 91.8,
       dur: 11400,
       mov: 10800,
@@ -466,7 +466,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 12,
-      name: 'Tabata 40/20 无氧电量极致冲刺 (Anaerobic Battery)',
+      name: 'Tabata 40/20 无氧电量极致冲刺',
       dist: 33.4,
       dur: 3700,
       mov: 3500,
@@ -480,7 +480,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 8,
-      name: '赛前两周高负荷最后冲顶 (Pre-Race Peak Overreach)',
+      name: '赛前两周高负荷最后冲顶',
       dist: 69.5,
       dur: 8400,
       mov: 8100,
@@ -494,7 +494,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 4,
-      name: '赛前减量开机骑行 (Taper Openers & Form Activation)',
+      name: '赛前减量开机骑行',
       dist: 28.2,
       dur: 3200,
       mov: 3000,
@@ -508,7 +508,7 @@ export const seedDemoSeasonActivities = async (
     },
     {
       daysAgo: 1,
-      name: '赛前热身定妆与装备校验 (Pre-Race Shakeout Ride)',
+      name: '赛前热身定妆与装备校验',
       dist: 18.5,
       dur: 2300,
       mov: 2100,

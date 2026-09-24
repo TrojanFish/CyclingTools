@@ -224,7 +224,7 @@ export const DayWorkoutModal: React.FC<DayWorkoutModalProps> = ({
                       <button
                         onClick={() => handleExportZwo(wkt)}
                         className="p-1.5 rounded-lg bg-white/80 dark:bg-white/10 text-slate-600 dark:text-slate-300 hover:text-ios-blue transition apple-touch"
-                        title="导出 .zwo (Zwift)"
+                        title="导出 Zwift ZWO 课表"
                       >
                         <Download className="w-3.5 h-3.5" />
                       </button>

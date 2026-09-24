@@ -348,7 +348,7 @@ describe('StravaCockpitAnalytics - Sports Science Calculations', () => {
       const csv = exportActivitiesToCsv(demoActivities.slice(0, 3));
       expect(csv.startsWith('\uFEFF')).toBe(true);
       expect(csv).toContain('活动ID');
-      expect(csv).toContain('加权功率(W NP)');
+      expect(csv).toContain('NP标准化功率(W)');
 
       const lines = csv.split('\n');
       expect(lines.length).toBe(4); // 1 header + 3 data lines

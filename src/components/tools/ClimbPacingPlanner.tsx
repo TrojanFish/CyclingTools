@@ -391,30 +391,30 @@ export const ClimbPacingPlanner: React.FC = () => {
     } else if (key === 'balang') {
       setClimbName('川西巴朗山熊猫王国巅峰天路');
       setSegments([
-        { id: '1', name: '邓生沟峡谷段 (海拔2700m)', distanceKm: 8.0, gradePct: 4.6 },
-        { id: '2', name: '贝母坪高山草甸 (海拔3400m)', distanceKm: 10.0, gradePct: 5.8 },
-        { id: '3', name: '巴朗山垭口冲顶 (海拔4487m)', distanceKm: 12.0, gradePct: 6.5 }
+        { id: '1', name: '邓生沟峡谷段 海拔2700m', distanceKm: 8.0, gradePct: 4.6 },
+        { id: '2', name: '贝母坪高山草甸 海拔3400m', distanceKm: 10.0, gradePct: 5.8 },
+        { id: '3', name: '巴朗山垭口冲顶 海拔4487m', distanceKm: 12.0, gradePct: 6.5 }
       ]);
       showToast('已加载巴朗山高原天路预设', 'info');
     } else if (key === 'alpedhuez') {
-      setClimbName('环法·阿尔普迪埃 (Alpe d\'Huez)');
+      setClimbName('环法·阿尔普迪埃 21道拐');
       setSegments([
-        { id: '1', name: '谷底起步急升弯 (Bourg d\'Oisans)', distanceKm: 2.5, gradePct: 10.2 },
-        { id: '2', name: '圣尼古拉森林路段 (St. Nicolas)', distanceKm: 4.5, gradePct: 8.5 },
-        { id: '3', name: '于埃村中间平缓段 (Huez Village)', distanceKm: 3.5, gradePct: 7.2 },
-        { id: '4', name: '终点滑雪场冲刺 (Alpe Station 1860m)', distanceKm: 3.3, gradePct: 8.9 }
+        { id: '1', name: '谷底起步急升弯', distanceKm: 2.5, gradePct: 10.2 },
+        { id: '2', name: '圣尼古拉森林路段', distanceKm: 4.5, gradePct: 8.5 },
+        { id: '3', name: '于埃村中间平缓段', distanceKm: 3.5, gradePct: 7.2 },
+        { id: '4', name: '终点滑雪场冲刺 1860m', distanceKm: 3.3, gradePct: 8.9 }
       ]);
       showToast('已加载环法阿尔普迪埃 21道拐预设', 'info');
     } else if (key === 'stelvio') {
-      setClimbName('环意·斯泰尔维奥 (Passo dello Stelvio)');
+      setClimbName('环意·斯泰尔维奥 48弯');
       setSegments([
-        { id: '1', name: '特劳福伊入山口 (Trafoi)', distanceKm: 8.0, gradePct: 5.8 },
+        { id: '1', name: '特劳福伊入山口', distanceKm: 8.0, gradePct: 5.8 },
         { id: '2', name: '48道高山发卡弯攻坚', distanceKm: 9.0, gradePct: 8.2 },
-        { id: '3', name: '终点雪山垭口冲顶 (海拔2757m)', distanceKm: 7.3, gradePct: 8.6 }
+        { id: '3', name: '终点雪山垭口冲顶 海拔2757m', distanceKm: 7.3, gradePct: 8.6 }
       ]);
       showToast('已加载环意最高殿堂斯泰尔维奥预设', 'info');
     } else if (key === 'sacalobra') {
-      setClimbName('马略卡·卡洛布拉 (Sa Calobra)');
+      setClimbName('马略卡·卡洛布拉');
       setSegments([
         { id: '1', name: '海港峡湾起点盘旋', distanceKm: 2.5, gradePct: 6.5 },
         { id: '2', name: '悬崖岩石发卡急坡', distanceKm: 4.0, gradePct: 7.8 },
@@ -525,21 +525,21 @@ export const ClimbPacingPlanner: React.FC = () => {
     const anaerobicWorkKj = parseFloat((anaerobicWorkJoules / 1000).toFixed(1));
 
     let feasibilityStatus: 'safe' | 'challenging' | 'high_risk' = 'safe';
-    let feasibilityTitle = '稳健可行 (有氧主导巡航)';
+    let feasibilityTitle = '稳健可行 · 有氧主导巡航';
     let feasibilityAdvice = '全程目标功率维持在阈值以内或接近甜蜜区，糖原消耗可控，属于健康可持续的配速方案。';
 
     if (totalSeconds > 1800 && intensityFactor > 1.02) {
       // Climbing for > 30 minutes at > 102% FTP is physiologically impossible or extreme high blowout risk
       feasibilityStatus = 'high_risk';
-      feasibilityTitle = '高危爆缸风险 (超人类持续极限)';
-      feasibilityAdvice = `预计爬坡总耗时 ${overallTimeStr}，而全程规划均瓦达 ${Math.round(intensityFactor * 100)}% FTP (IF: ${intensityFactor})。根据临界功率生理模型，人类在 >100% FTP 的持续做功极限仅约 30~50 分钟。极易在后半程心率飙升爆表、双腿乳酸衰竭弃赛，强烈建议将配速策略下调至「均衡」或「稳健」！`;
+      feasibilityTitle = '高危爆缸风险 · 超持续极限';
+      feasibilityAdvice = `预计爬坡总耗时 ${overallTimeStr}，而全程规划均瓦达 ${Math.round(intensityFactor * 100)}% FTP，IF 达 ${intensityFactor}。根据临界功率生理模型，人类在 >100% FTP 的持续做功极限仅约 30~50 分钟。极易在后半程心率飙升爆表、双腿乳酸衰竭弃赛，强烈建议将配速策略下调至「均衡」或「稳健」！`;
     } else if (totalSeconds > 3600 && intensityFactor > 0.95) {
       feasibilityStatus = 'high_risk';
-      feasibilityTitle = '超高负荷 (极难持续到底)';
+      feasibilityTitle = '超高负荷 · 极难持续到底';
       feasibilityAdvice = `持续 1 小时以上的长坡若设定均瓦超过 95% FTP，对糖原储备与耐乳酸要求极高，极难按计划执行到底，建议留出 5%~10% 的体能余量。`;
     } else if (intensityFactor > 0.98 || anaerobicWorkKj > 15) {
       feasibilityStatus = 'challenging';
-      feasibilityTitle = '极限挑战 (考验无氧储备)';
+      feasibilityTitle = '极限挑战 · 考验无氧储备';
       feasibilityAdvice = `超阈值分段累计做功达 ${anaerobicWorkKj} kJ（约耗费大部分 W' 无氧储备）。需依赖陡坡后的平缓段迅速排酸与深呼吸恢复，必须严格按照目标瓦数控制节奏。`;
     }
 
@@ -650,7 +650,7 @@ export const ClimbPacingPlanner: React.FC = () => {
             <button
               onClick={handleOpenStravaSegments}
               className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-[#FC4C02]/10 hover:bg-[#FC4C02]/20 text-[#FC4C02] text-xs font-semibold border border-[#FC4C02]/25 transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-              title="从 Strava 检索赛段 (KOM / Starred) 并导入"
+              title="从 Strava 检索赛段并导入"
             >
               <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
                 <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7.01 13.828h4.172" />
@@ -685,13 +685,13 @@ export const ClimbPacingPlanner: React.FC = () => {
             <span>{language === 'zh-TW' ? 'Strava 賽段庫' : 'Strava 赛段库'}</span>
           </button>
           {[
-            { id: 'longjing', name: '杭州龙井', title: '杭州龙井 (3.2km)' },
-            { id: 'miaofeng', name: '北京妙峰山', title: '北京妙峰山 (20.5km)' },
-            { id: 'tianhuang', name: '安吉天荒坪', title: '安吉天荒坪 (18km)' },
-            { id: 'balang', name: '巴朗山', title: '巴朗山 (30km)' },
-            { id: 'alpedhuez', name: '阿尔普迪埃', title: "环法殿堂 Alpe d'Huez 21道拐 (13.8km)", isTour: true },
-            { id: 'stelvio', name: '斯泰尔维奥', title: '环意最高峰 Passo dello Stelvio 48弯 (24.3km)', isTour: true },
-            { id: 'sacalobra', name: '卡洛布拉', title: '马略卡骑行圣地 Sa Calobra (9.4km)', isTour: true },
+            { id: 'longjing', name: '杭州龙井', title: '杭州龙井 3.2km' },
+            { id: 'miaofeng', name: '北京妙峰山', title: '北京妙峰山 20.5km' },
+            { id: 'tianhuang', name: '安吉天荒坪', title: '安吉天荒坪 18km' },
+            { id: 'balang', name: '巴朗山', title: '巴朗山 30km' },
+            { id: 'alpedhuez', name: '阿尔普迪埃', title: "环法殿堂阿尔普迪埃 21道拐 13.8km", isTour: true },
+            { id: 'stelvio', name: '斯泰尔维奥', title: '环意最高峰斯泰尔维奥 48弯 24.3km', isTour: true },
+            { id: 'sacalobra', name: '卡洛布拉', title: '马略卡骑行圣地卡洛布拉 9.4km', isTour: true },
           ].map((m) => {
             const isSelected = activeMountainPreset === m.id;
             return (
@@ -919,7 +919,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                       display: true,
                       position: 'left' as const,
                       grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                      title: { display: true, text: '功率 (Watts)', color: '#007aff', font: { size: 10 } }
+                      title: { display: true, text: '功率 (W)', color: '#007aff', font: { size: 10 } }
                     },
                     y1: {
                       type: 'linear' as const,
@@ -975,8 +975,8 @@ export const ClimbPacingPlanner: React.FC = () => {
                 </div>
                 <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                   {language === 'zh-TW'
-                    ? '檢測到路線存在坡度 ≥11% 的攻堅分段！在常規 34-34T 齒比下，踩踏踏頻將逼近 60 RPM 甚至更低。重踏（Grinding）危害：極低踏頻將急劇加大膝蓋髕股關節剪切壓，引發局部乳酸暴增與抽筋。戰術建議：① 改裝 36T / 40T 爬坡大飛輪；② 進坡前提前拉高踏頻蓄勢；③ 採取「坐騎結合間歇站姿搖車」卸載股四頭肌峰值扭矩。'
-                    : '检测到路线存在坡度 ≥11% 的攻坚分段！在常规 34-34T 齿比下，踩踏踏频将逼近 60 RPM 甚至更低。重踏（Grinding）危害：极低踏频将急剧加大膝盖髌股关节剪切压，引发局部肌酸暴增与抽筋。战术建议：① 改装 36T / 40T 爬坡大飞轮；② 进坡前提前拉高踏频蓄势；③ 采取「坐骑结合间歇站姿摇车」卸载股四头肌峰值扭矩。'}
+                    ? '檢測到路線存在坡度 ≥11% 的攻堅分段！在常規 34-34T 齒比下，踩踏踏頻將逼近 60 RPM 甚至更低。極低踏頻重踏危害：將急劇加大膝蓋髕股關節剪切壓，引發局部乳酸暴增與抽筋。戰術建議：① 改裝 36T / 40T 爬坡大飛輪；② 進坡前提前拉高踏頻蓄勢；③ 採取「坐騎結合間歇站姿搖車」卸載股四頭肌峰值扭矩。'
+                    : '检测到路线存在坡度 ≥11% 的攻坚分段！在常规 34-34T 齿比下，踩踏踏频将逼近 60 RPM 甚至更低。极低踏频重踏危害：将急剧加大膝盖髌股关节剪切压，引发局部肌酸暴增与抽筋。战术建议：① 改装 36T / 40T 爬坡大飞轮；② 进坡前提前拉高踏频蓄势；③ 采取「坐骑结合间歇站姿摇车」卸载股四头肌峰值扭矩。'}
                 </p>
               </div>
             </div>
@@ -1091,7 +1091,7 @@ export const ClimbPacingPlanner: React.FC = () => {
                     type="text"
                     value={customSegmentInput}
                     onChange={(e) => setCustomSegmentInput(e.target.value)}
-                    placeholder="输入赛段 ID (如 661401)"
+                    placeholder="输入赛段 ID，如 661401"
                     className="flex-1 sm:w-44 h-9 bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-[#FC4C02]"
                   />
                   <button
@@ -1245,7 +1245,7 @@ export const ClimbPacingPlanner: React.FC = () => {
             <div className="p-3 sm:p-3.5 border-t border-slate-200/80 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="text-[11px] flex items-center gap-1.5">
                 <span className={`w-2 h-2 rounded-full ${isStravaConnected ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                <span>{isStravaConnected ? '已连接 Strava 官方 API' : '离线状态 (可导入经典 KOM 或输入赛段 ID)'}</span>
+                <span>{isStravaConnected ? '已连接 Strava 官方 API' : '离线状态 · 可导入赛段 ID'}</span>
               </span>
 
               <button

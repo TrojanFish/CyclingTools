@@ -197,9 +197,9 @@ export const TargetRaceWizardModal: React.FC<TargetRaceWizardModalProps> = ({
                       onChange={(e) => setPriority(e.target.value as RacePriority)}
                       className="w-full h-9 bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-ios-blue"
                     >
-                      <option value="A">A 级 (年度决战，需充分减量巅峰)</option>
-                      <option value="B">B 级 (中期检阅，轻度减量)</option>
-                      <option value="C">C 级 (以赛代练，无需减量)</option>
+                      <option value="A">A 级 · 年度决战，需充分减量巅峰</option>
+                      <option value="B">B 级 · 中期检阅，轻度减量</option>
+                      <option value="C">C 级 · 以赛代练，无需减量</option>
                     </select>
                   </div>
                 </div>
@@ -210,19 +210,19 @@ export const TargetRaceWizardModal: React.FC<TargetRaceWizardModalProps> = ({
           {step === 2 && (
             <div className="space-y-4">
               <div className="p-3 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-xs text-ios-blue">
-                💡 <b>体能反推法则 (Tudor Bompa 模型)</b>：算法将以比赛日为锚点，以当前实际体能为基准，向后倒推每周进阶梯度与赛前减量幅度。
+                💡 <b>体能反推法则 · Tudor Bompa 模型</b>：算法将以比赛日为锚点，以当前实际体能为基准，向后倒推每周进阶梯度与赛前减量幅度。
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-slate-700 dark:text-slate-300 font-semibold">
-                      当前体能 CTL (Fitness)
+                      当前 CTL
                     </span>
                     <span className="text-slate-400 text-[11px]">IndexedDB 最新</span>
                   </div>
                   <div className="w-full h-9 bg-slate-100 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 rounded-xl px-3 flex items-center text-xs font-mono font-bold text-ios-blue tabular-nums">
-                    {currentCtl} CTL (周负荷均值)
+                    {currentCtl} CTL · 历史均值
                   </div>
                 </div>
 
@@ -247,7 +247,7 @@ export const TargetRaceWizardModal: React.FC<TargetRaceWizardModalProps> = ({
               <div className="space-y-1">
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-slate-700 dark:text-slate-300 font-semibold">
-                    比赛日目标竞技状态 TSB (Form)
+                    比赛日目标 TSB
                   </span>
                   <span className="text-amber-500 font-bold tabular-nums">+{targetTsb}</span>
                 </div>
@@ -270,7 +270,7 @@ export const TargetRaceWizardModal: React.FC<TargetRaceWizardModalProps> = ({
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                  每周可支配训练时间配额 (Weekly Training Hours)
+                  每周可支配训练时长配额
                 </label>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1.5">
                   算法将根据可用小时数智能匹配每周目标 TSS 与课表长短：

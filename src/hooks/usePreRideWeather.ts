@@ -419,8 +419,8 @@ export async function reverseGeocode(lat: number, lng: number): Promise<{ name: 
   } catch {
     const nearest = findNearestLocation(lat, lng);
     return {
-      name: `${nearest.name} (当前定位)`,
-      desc: `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E (GPS)`
+      name: `${nearest.name} · 当前定位`,
+      desc: `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E · GPS`
     };
   }
 }

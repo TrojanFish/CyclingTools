@@ -121,15 +121,15 @@ export const ChainLengthCalculator: React.FC = () => {
     const isRingInverted = !isSingleRing && smallRing >= bigRing;
     const isCogInverted = smallCog >= bigCog;
 
-    let rearDerailleurRecommendation = '短腿 (SS: ~30T) 或 中腿 (GS)';
+    let rearDerailleurRecommendation = '短腿 SS（≤30T）或中腿 GS';
     let isCapacityWarning = false;
 
     if (requiredCapacity > 41) {
-      rearDerailleurRecommendation = '超长腿 (SGS: 43T+)';
+      rearDerailleurRecommendation = '超长腿 SGS（≥43T）';
     } else if (requiredCapacity > 34) {
-      rearDerailleurRecommendation = '中腿 (GS: 35~41T)';
+      rearDerailleurRecommendation = '中腿 GS（35~41T）';
     } else {
-      rearDerailleurRecommendation = '短腿 (SS: 28~34T) 或 中腿 (GS)';
+      rearDerailleurRecommendation = '短腿 SS（28~34T）或中腿 GS';
     }
 
     if (bigCog > 34 && requiredCapacity > 39) {
@@ -296,8 +296,8 @@ export const ChainLengthCalculator: React.FC = () => {
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">齿盘系统</label>
               <IOSSegmentedControl
                 options={[
-                  { id: '2x', label: '双盘 (2x)' },
-                  { id: '1x', label: '单盘 (1x)' },
+                  { id: '2x', label: '双盘' },
+                  { id: '1x', label: '单盘' },
                 ]}
                 value={isSingleRing ? '1x' : '2x'}
                 onChange={(val) => setIsSingleRing(val === '1x')}
@@ -309,13 +309,13 @@ export const ChainLengthCalculator: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {isSingleRing ? '单盘齿数 (T)' : '最大大盘齿数 (T)'}
+                  {isSingleRing ? '单盘齿数' : '最大大盘齿数'}
                 </label>
                 <NumberStepper value={bigRing} onChange={setBigRing} min={30} max={60} unit="T" />
               </div>
               {!isSingleRing && (
                 <div>
-                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">最小小盘齿数 (T)</label>
+                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">最小小盘齿数</label>
                   <NumberStepper value={smallRing} onChange={setSmallRing} min={28} max={46} unit="T" />
                 </div>
               )}
@@ -324,11 +324,11 @@ export const ChainLengthCalculator: React.FC = () => {
             {/* Cassette */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮最大片齿数 (T)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮最大片齿数</label>
                 <NumberStepper value={bigCog} onChange={setBigCog} min={25} max={52} unit="T" />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮最小片齿数 (T)</label>
+                <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">飞轮最小片齿数</label>
                 <NumberStepper value={smallCog} onChange={setSmallCog} min={9} max={14} unit="T" />
               </div>
             </div>
@@ -341,9 +341,9 @@ export const ChainLengthCalculator: React.FC = () => {
               </label>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 {[
-                  { teeth: 11, label: '标准原厂 (11T)' },
-                  { teeth: 12, label: 'AXS/新型 (12T)' },
-                  { teeth: 14, label: '大鸡腿改装 (14T+)' }
+                  { teeth: 11, label: '标准原厂 11T' },
+                  { teeth: 12, label: '新型导轮 12T' },
+                  { teeth: 14, label: '改装导轮 14T+' }
                 ].map((p) => {
                   const isSelected = pulleyTeeth === p.teeth;
                   return (
@@ -479,7 +479,7 @@ export const ChainLengthCalculator: React.FC = () => {
               <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-1.5">
                 <span className="font-semibold text-ios-blue block">Shimano 经典大对大法</span>
                 <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
-                  链条不经过后拨导轮，直接绕过最大大盘与最大飞轮拉紧，在两端闭合重合处额外加 <strong>2 节 (含魔术扣)</strong> 即为标准长度。
+                  链条不经过后拨导轮，直接绕过最大大盘与最大飞轮拉紧，在两端闭合重合处额外加 <strong>2 节（含魔术扣）</strong> 即为标准长度。
                 </p>
               </div>
 

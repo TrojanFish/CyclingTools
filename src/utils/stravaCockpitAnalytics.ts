@@ -534,7 +534,7 @@ export function diagnoseAthleteStatus(
 
   let rampRateWarning: string | undefined;
   if (weeklyRampRate > 10) {
-    rampRateWarning = `负荷激增预警: 本周 CTL 攀升 +${weeklyRampRate} TSS/周 (超安全上限 +8)，注意预防肌肉拉伤与慢性劳损！`;
+    rampRateWarning = `负荷激增预警: 本周 CTL 攀升 +${weeklyRampRate} TSS/周，超过安全上限 +8，注意预防过度劳损！`;
   }
 
   if (latestTsb >= 5) {
@@ -1003,8 +1003,8 @@ export function computeGearFleet(
   const rawBikes = bikes && bikes.length > 0
     ? bikes
     : [
-        { id: 'b_road_1', name: 'Canyon Aeroad CFR (气动公路)', distance: 4820000, primary: true },
-        { id: 'b_gravel_2', name: 'Specialized Diverge (Gravel全地形)', distance: 2150000, primary: false }
+        { id: 'b_road_1', name: 'Canyon Aeroad CFR 气动公路车', distance: 4820000, primary: true },
+        { id: 'b_gravel_2', name: 'Specialized Diverge 全地形公路车', distance: 2150000, primary: false }
       ];
 
   for (const b of rawBikes) {
@@ -1114,7 +1114,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
   return [
     {
       id: 'century',
-      title: '破百挑战者 (Century 100km)',
+      title: '破百挑战者',
       subtitle: '单次骑行突破 100 公里大关',
       achieved: centuryCount > 0,
       count: centuryCount,
@@ -1123,7 +1123,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
     },
     {
       id: 'imperial_century',
-      title: '百英里大满贯 (160km)',
+      title: '百英里大满贯',
       subtitle: '完成单次 160.9 公里帝国世纪骑行',
       achieved: imperialCenturyCount > 0,
       count: imperialCenturyCount,
@@ -1132,7 +1132,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
     },
     {
       id: 'double_century',
-      title: '双百超级壮举 (200km)',
+      title: '双百超级壮举',
       subtitle: '单日长途耐力极限破 200 公里',
       achieved: doubleCenturyCount > 0,
       count: doubleCenturyCount,
@@ -1142,7 +1142,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
     {
       id: 'everest_challenge',
       title: '珠峰攀登累计',
-      subtitle: `累计爬升已达 ${everestPct}% (目标 8,848m)`,
+      subtitle: `累计爬升已达 ${everestPct}% · 目标 8,848m`,
       achieved: totalElevationM >= 8848,
       currentValue: `${Math.round(totalElevationM)}m`,
       targetValue: '8,848m',
@@ -1173,7 +1173,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
     },
     {
       id: 'pr_power',
-      title: '单场最高加权功率 (NP)',
+      title: '单场最高加权功率',
       subtitle: `${maxNpWatts} W 强劲输出`,
       achieved: maxNpWatts > 0,
       currentValue: `${maxNpWatts} W`
@@ -2111,9 +2111,9 @@ export function computePersonalRecordsTimeline(
       prs.push({
         id: `pr-pow-${a.id}`,
         type: 'power',
-        label: '最高加权功率 (NP) 突破',
+        label: '最高加权功率突破',
         value: np,
-        formattedValue: `${np} W NP`,
+        formattedValue: `${np} W`,
         unit: 'W',
         date: actDate,
         shortDate,
@@ -2220,7 +2220,7 @@ export function exportActivitiesToCsv(activities: StravaActivityRecord[]): strin
   const headers = [
     '活动ID', '活动名称', '日期', '类型', '骑行距离(km)', '累计爬升(m)',
     '移动用时(分)', '平均速度(km/h)', '最高速度(km/h)', '平均功率(W)',
-    '加权功率(W NP)', '训练负荷(TSS)', '强度系数(IF)', '平均心率(BPM)', '最高心率(BPM)', '消耗热量(kcal)'
+    'NP标准化功率(W)', 'TSS训练负荷', 'IF强度系数', '平均心率(bpm)', '最高心率(bpm)', '消耗热量(kcal)'
   ];
 
   const rows = activities.map(a => {

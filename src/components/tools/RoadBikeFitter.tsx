@@ -182,7 +182,7 @@ export const RoadBikeFitter: React.FC = () => {
 
     let thighLowerLegNote = '大腿与小腿长度比例适中。';
     if (thighLength > lowerLegLength * 1.08) {
-      thighLowerLegNote = '大腿相对小腿偏长：建议适当加大坐垫后移量(Setback)，以避免膝盖前移超过脚踏轴心。';
+      thighLowerLegNote = '大腿相对小腿偏长：建议适当加大坐垫后移量，以避免膝盖前移超过脚踏轴心。';
     }
 
     // 9. Frame Size Category
@@ -211,7 +211,7 @@ export const RoadBikeFitter: React.FC = () => {
       generalAdvice: [
         '初次设定请以脚跟踩在脚踏最低点时膝盖完全伸直为基准，穿上锁鞋后膝关节保持 25°~35° 微屈角。',
         ridingStyle === 'racing'
-          ? '竞技激进几何：较低的座舱落差(Drop)能提供更低迎风面积，需配合良好的腘绳肌柔韧性与核心支撑。'
+          ? '竞技激进几何：较低的座舱落差能提供更低迎风面积，需配合良好的腘绳肌柔韧性与核心支撑。'
           : '耐力舒适几何：把立垫圈可适当保留 15~25mm，减少腰背及颈部长时间骑行的肌肉疲劳。'
       ]
     };
@@ -461,7 +461,7 @@ export const RoadBikeFitter: React.FC = () => {
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 flex items-center mb-1.5">
                 {language === 'zh-TW' ? '肩寬' : '肩宽'} (cm)
-                <Tooltip content="双手自然下垂，测量左右两侧肩峰外侧骨性突起之间的直线距离。车把中对中（C-C）宽度通常与肩宽相同。" />
+                <Tooltip content="双手自然下垂，测量左右两侧肩峰外侧骨性突起之间的直线距离。车把中对中宽度通常与肩宽相同。" />
               </label>
               <NumberStepper value={shoulderWidth} onChange={setShoulderWidth} step={0.5} min={34} max={50} unit="cm" decimals={1} />
             </div>
@@ -551,7 +551,7 @@ export const RoadBikeFitter: React.FC = () => {
                   <div>
                     <label className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center mb-1">
                       {language === 'zh-TW' ? '大腿長' : '大腿长'} (cm)
-                      <Tooltip content="端坐在椅子上（大腿水平、小腿垂直），测量臀部大转子后缘到膝盖前缘的水平距离。用于精确微调坐垫后移量 (Setback)。" />
+                      <Tooltip content="端坐在椅子上（大腿水平、小腿垂直），测量臀部大转子后缘到膝盖前缘的水平距离。用于精确微调坐垫后移量。" />
                     </label>
                     <NumberStepper value={thighLength} onChange={setThighLength} min={30} max={65} unit="cm" />
                   </div>
@@ -616,7 +616,7 @@ export const RoadBikeFitter: React.FC = () => {
               />
 
               <IOSMetricTile
-                label={language === 'zh-TW' ? '有效上管 (ETT)' : '有效上管 (ETT)'}
+                label="ETT"
                 value={result.effectiveTopTube}
                 unit="cm"
                 subtext={isImperial ? `${(result.effectiveTopTube / 2.54).toFixed(1)} in | 水平上管长` : '水平有效上管长'}
@@ -632,7 +632,7 @@ export const RoadBikeFitter: React.FC = () => {
               />
 
               <IOSMetricTile
-                label={language === 'zh-TW' ? '座艙落差 (Drop)' : '座舱落差 (Drop)'}
+                label={language === 'zh-TW' ? '座艙落差' : '座舱落差'}
                 value={result.saddleDrop}
                 unit="cm"
                 subtext="坐垫顶与车把高差"
@@ -712,7 +712,7 @@ export const RoadBikeFitter: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
-                  {'把立中心 HY (堆高)'}
+                  {'把立中心 HY'}
                 </span>
                 <span className="text-base font-bold font-mono text-ios-purple tabular-nums">
                   {cockpitAnalytics.handlebarCoords.handlebarStackMm} mm
@@ -723,7 +723,7 @@ export const RoadBikeFitter: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08]">
                 <span className="text-slate-500 dark:text-slate-400 block text-[11px]">
-                  {'把立中心 HX (前伸)'}
+                  {'把立中心 HX'}
                 </span>
                 <span className="text-base font-bold font-mono text-ios-purple tabular-nums">
                   {cockpitAnalytics.handlebarCoords.handlebarReachMm} mm
@@ -751,7 +751,7 @@ export const RoadBikeFitter: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                   <Compass className="w-3.5 h-3.5 text-ios-purple" />
-                  {language === 'zh-TW' ? '座艙配件幾何解耦調校 (Cockpit Tuning)' : '座舱配件几何解耦调校 (Cockpit Tuning)'}
+                  {language === 'zh-TW' ? '座艙配件幾何解耦調校' : '座舱配件几何解耦调校'}
                 </span>
                 <span className="text-[11px] font-mono text-ios-purple font-medium">
                   {cockpitStemAngle}°把立 / {cockpitStemLength}mm
@@ -761,14 +761,14 @@ export const RoadBikeFitter: React.FC = () => {
               {/* Stem Angle Selector */}
               <div>
                 <label className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block mb-1">
-                  {language === 'zh-TW' ? '把立角度規格 (Stem Angle)' : '把立角度规格 (Stem Angle)'}
+                  {language === 'zh-TW' ? '把立角度規格' : '把立角度规格'}
                 </label>
                 <IOSSegmentedControl
                   options={[
-                    { value: '-17', label: '-17° (水平)' },
+                    { value: '-17', label: '-17° 水平' },
                     { value: '-10', label: '-10°' },
-                    { value: '-6', label: '-6° (标准)' },
-                    { value: '6', label: '+6° (抬升)' }
+                    { value: '-6', label: '-6° 标准' },
+                    { value: '6', label: '+6° 抬升' }
                   ]}
                   value={String(cockpitStemAngle)}
                   onChange={(val) => setCockpitStemAngle(parseInt(val, 10))}
@@ -876,7 +876,7 @@ export const RoadBikeFitter: React.FC = () => {
               >
                 <span className="flex items-center gap-1.5">
                   <Bike className="w-3.5 h-3.5 text-ios-purple" />
-                  <span>{language === 'zh-TW' ? '試算心儀目標車架 (Frame Fit Sandbox)' : '试算心仪目标车架 (Frame Fit Sandbox)'}</span>
+                  <span>{language === 'zh-TW' ? '試算心儀目標車架' : '试算心仪目标车架'}</span>
                 </span>
                 <span className="text-ios-purple font-mono text-[11px] flex items-center gap-1">
                   <span>{isTestFrameOpen ? '收起试算' : '展开试算'}</span>

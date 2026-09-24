@@ -160,16 +160,16 @@ export const HealthCalculator: React.FC = () => {
     let color = 'text-emerald-500';
 
     if (bmiVal < 18.5) {
-      category = '偏瘦 (纯爬坡手体型)';
+      category = '偏瘦，爬坡体型';
       color = 'text-amber-500';
     } else if (bmiVal < 24.0) {
-      category = '正常健康 (标准耐力体型)';
+      category = '正常标准耐力体型';
       color = 'text-emerald-500';
     } else if (bmiVal < 28.0) {
-      category = '偏高 / 力量型车手 (需结合体脂)';
+      category = '偏高，力量型体格';
       color = 'text-sky-500';
     } else {
-      category = '超重 / 肥胖 (建议减脂)';
+      category = '超重，建议减脂';
       color = 'text-rose-500';
     }
 
@@ -199,13 +199,13 @@ export const HealthCalculator: React.FC = () => {
     let levelColor = 'text-emerald-500';
 
     if (gender === 'male') {
-      if (bfpVal < 6) { level = '极端偏低 (职业大环赛车手)'; levelColor = 'text-amber-500'; }
+      if (bfpVal < 6) { level = '极端偏低，职业级'; levelColor = 'text-amber-500'; }
       else if (bfpVal <= 13) { level = '竞技运动员级别'; levelColor = 'text-blue-500'; }
       else if (bfpVal <= 17) { level = '优秀健康健美'; levelColor = 'text-emerald-500'; }
       else if (bfpVal <= 24) { level = '正常水平'; levelColor = 'text-slate-500'; }
       else { level = '体脂偏高'; levelColor = 'text-rose-500'; }
     } else {
-      if (bfpVal < 14) { level = '极端偏低 (女性选手极值)'; levelColor = 'text-amber-500'; }
+      if (bfpVal < 14) { level = '极端偏低，职业级'; levelColor = 'text-amber-500'; }
       else if (bfpVal <= 20) { level = '竞技运动员级别'; levelColor = 'text-blue-500'; }
       else if (bfpVal <= 24) { level = '优秀健康健美'; levelColor = 'text-emerald-500'; }
       else if (bfpVal <= 31) { level = '正常水平'; levelColor = 'text-slate-500'; }
@@ -228,8 +228,8 @@ export const HealthCalculator: React.FC = () => {
         title={language === 'zh-TW' ? '代謝與能耗' : '代谢与能耗'}
         description={
           language === 'zh-TW'
-            ? '一站式計算騎行能量補給、Karvonen 靶心率區間、BMR 基礎代謝、TDEE 每日總能耗及體脂率(BFP)。'
-            : '一站式计算骑行能量补给、Karvonen 靶心率区间、BMR 基础代谢、TDEE 每日总能耗及体脂率(BFP)。'
+            ? '一站式計算騎行能量補給、Karvonen 靶心率區間、BMR 基礎代謝、TDEE 每日總能耗及體脂率。'
+            : '一站式计算骑行能量补给、Karvonen 靶心率区间、BMR 基础代谢、TDEE 每日总能耗及体脂率。'
         }
         tint="red"
         actions={
@@ -343,11 +343,11 @@ export const HealthCalculator: React.FC = () => {
                 onChange={(e) => setActivityFactor(parseFloat(e.target.value))}
                 className="w-full h-9 bg-slate-100/80 dark:bg-white/5 border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-ios-blue"
               >
-                <option value={1.2}>久坐不动 (办公室办公，极少运动) × 1.2</option>
-                <option value={1.375}>轻度活跃 (每周轻度骑行 1-3 天) × 1.375</option>
-                <option value={1.55}>中度活跃 (每周中等强度骑行 3-5 天) × 1.55</option>
-                <option value={1.725}>高强度训练 (每周规律大强度训练 6-7 天) × 1.725</option>
-                <option value={1.9}>专业运动员 (每天高负荷骑行两练) × 1.9</option>
+                <option value={1.2}>久坐不动 · 办公室或极少运动 × 1.2</option>
+                <option value={1.375}>轻度活跃 · 每周轻度骑行 1-3 天 × 1.375</option>
+                <option value={1.55}>中度活跃 · 每周中等强度骑行 3-5 天 × 1.55</option>
+                <option value={1.725}>高强度训练 · 每周规律大强度训练 6-7 天 × 1.725</option>
+                <option value={1.9}>专业运动员 · 每天高负荷双练 × 1.9</option>
               </select>
             </div>
           </IOSCard>
@@ -389,9 +389,9 @@ export const HealthCalculator: React.FC = () => {
                       onChange={(e) => setRideIntensity(e.target.value as any)}
                       className="w-full h-9 bg-white dark:bg-[#2C2C2E] border border-black/[0.05] dark:border-white/[0.08] rounded-xl px-3 text-xs text-slate-900 dark:text-slate-200"
                     >
-                      <option value="z2">Z2 轻松长距离耐力 (有氧消耗脂肪为主)</option>
-                      <option value="z3">Z3 节奏与爬坡团骑 (中高糖原消耗)</option>
-                      <option value="race">Z4+ 竞技高强突围 (极高碳水代谢需求)</option>
+                      <option value="z2">Z2 基础耐力 · 脂肪氧化为主</option>
+                      <option value="z3">Z3 节奏巡航 · 中高糖原消耗</option>
+                      <option value="race">Z4+ 竞技突围 · 极高碳水代谢</option>
                     </select>
                   </div>
                 </div>
@@ -412,7 +412,7 @@ export const HealthCalculator: React.FC = () => {
                   label="全程总饮水需求"
                   value={fuelingResult.totalFluidL}
                   unit="L"
-                  subtext={`≈ ${fuelingResult.bottles550} 壶 (550ml)`}
+                  subtext={`≈ ${fuelingResult.bottles550} 壶 · 550ml`}
                   accentColor="green"
                   icon={Droplet}
                 />
@@ -432,7 +432,7 @@ export const HealthCalculator: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between text-slate-700 dark:text-slate-200 font-semibold gap-1">
                   <span className="flex items-center gap-1.5">
                     <Apple className="w-3.5 h-3.5 text-ios-blue" />
-                    每小时补给执行指标 (按 {weightKg}kg 体重动态计算)
+                    每小时补给执行指标 · 基于 {weightKg}kg 体重动态计算
                   </span>
                   <span className="font-mono text-ios-blue text-[11px] sm:text-xs">
                     ~{fuelingResult.carbsPerHour}g/h 碳水 · ~{fuelingResult.fluidPerHour}ml/h 水分 · ~{fuelingResult.sodiumPerHour}mg/h 钠
@@ -442,7 +442,7 @@ export const HealthCalculator: React.FC = () => {
                   {fuelingResult.requiresDualSource ? (
                     <p className="text-amber-600 dark:text-amber-400 flex items-start gap-1">
                       <Info className="w-3 h-3 shrink-0 mt-0.5" />
-                      <span><strong>多源碳水提示：</strong>计划每小时碳水摄入 ≥60g，人体单一葡萄糖转运蛋白(SGLT1)趋于饱和，建议选用麦芽糊精:果糖约为 1:0.8 的双通道能量胶或冲剂，避免胃肠道不适。</span>
+                      <span><strong>多源碳水提示：</strong>计划每小时碳水摄入 ≥60g，人体单一葡萄糖转运蛋白 SGLT1 趋于饱和，建议选用麦芽糊精:果糖约为 1:0.8 的双通道能量胶或冲剂，避免胃肠道不适。</span>
                     </p>
                   ) : (
                     <p className="flex items-start gap-1">
@@ -498,7 +498,7 @@ export const HealthCalculator: React.FC = () => {
             <div className="space-y-4 sm:space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <IOSMetricTile
-                  label={language === 'zh-TW' ? '基礎代謝 (BMR)' : '基础代谢 (BMR)'}
+                  label={language === 'zh-TW' ? '基礎代謝 BMR' : '基础代谢 BMR'}
                   value={bmrResult.bmr}
                   unit="kcal/天"
                   subtext="维持机体存活最基本的能量消耗"
@@ -507,7 +507,7 @@ export const HealthCalculator: React.FC = () => {
                 />
 
                 <IOSMetricTile
-                  label={language === 'zh-TW' ? '每日總能耗 (TDEE)' : '每日总能耗 (TDEE)'}
+                  label={language === 'zh-TW' ? '每日總能耗 TDEE' : '每日总能耗 TDEE'}
                   value={bmrResult.tdee}
                   unit="kcal/天"
                   subtext="包含日常骑行及所有活动能耗"
@@ -520,7 +520,7 @@ export const HealthCalculator: React.FC = () => {
               <IOSCard variant="default" className="p-4 sm:p-5 space-y-3.5">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-200 flex items-center gap-2">
                   <Flame className="w-4 h-4 text-amber-500" />
-                  不同目标每日推荐热量摄入 (Calorie Goals)
+                  不同目标每日推荐热量摄入
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="p-3.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] space-y-1">
@@ -592,7 +592,7 @@ export const HealthCalculator: React.FC = () => {
             <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 block">估算体脂率 (BFP)</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 block">估算体脂率 BFP</span>
                   <div className="text-3xl sm:text-4xl font-bold font-mono text-ios-blue mt-1 tabular-nums">
                     {bfpResult.bfp} <span className="text-xl text-slate-500 dark:text-slate-400 font-normal">%</span>
                   </div>
@@ -620,7 +620,7 @@ export const HealthCalculator: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-black/[0.05] dark:divide-white/[0.08] font-mono text-slate-700 dark:text-slate-300">
-                    <tr><td className="py-2 font-sans">必需脂肪 (极低)</td><td className="tabular-nums">2% - 5%</td><td className="tabular-nums">10% - 13%</td></tr>
+                    <tr><td className="py-2 font-sans">必需脂肪 · 极低</td><td className="tabular-nums">2% - 5%</td><td className="tabular-nums">10% - 13%</td></tr>
                     <tr><td className="py-2 font-sans text-ios-blue font-semibold">竞技运动员</td><td className="tabular-nums">6% - 13%</td><td className="tabular-nums">14% - 20%</td></tr>
                     <tr><td className="py-2 font-sans text-emerald-600 dark:text-emerald-400 font-semibold">健身良好</td><td className="tabular-nums">14% - 17%</td><td className="tabular-nums">21% - 24%</td></tr>
                     <tr><td className="py-2 font-sans">可接受区间</td><td className="tabular-nums">18% - 24%</td><td className="tabular-nums">25% - 31%</td></tr>

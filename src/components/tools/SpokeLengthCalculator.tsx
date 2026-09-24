@@ -119,7 +119,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       setRightPcdMm(45);
       setRightCenterDistMm(16.0);
       setRightCross(2); // 2X drive side
-      showToast(language === 'zh-TW' ? '已載入框煞經典 (左側直拉 / 右側2X交叉)' : '已载入圈刹经典 (左侧直拉 / 右侧2X交叉)', 'info');
+      showToast(language === 'zh-TW' ? '已載入框煞經典 · 左側直拉 / 右側 2X 交叉' : '已载入圈刹经典 · 左侧直拉 / 右侧 2X 交叉', 'info');
     }
   };
 
@@ -204,7 +204,7 @@ export const SpokeLengthCalculator: React.FC = () => {
       warnings.push('安全警告：碟刹后轮碟刹侧采用 0X 直拉无法承受制动扭矩，必须至少采用 1X 或 2X 交叉！');
     }
     if (wheelPosition === 'rear' && rightCross === 0) {
-      warnings.push('传动警告：后轮驱动侧 (塔基侧) 采用 0X 直拉无法有效传递链条踩踏扭矩，除非搭配超粗筒体花鼓或 2:1 异索编法。');
+      warnings.push('传动警告：后轮驱动侧塔基端采用 0X 直拉无法有效传递链条踩踏扭矩，除非搭配超粗筒体花鼓或 2:1 异索编法。');
     }
     if (spokeCount <= 24 && (leftCross >= 3 || rightCross >= 3)) {
       warnings.push('几何提示：24孔或更少孔数下采用 3X 交叉，辐条出条角度过大可能遮挡相邻辐条孔头或引起折角。建议 24孔使用 2X。');
@@ -251,8 +251,8 @@ export const SpokeLengthCalculator: React.FC = () => {
         title={language === 'zh-TW' ? '輻條長度' : '辐条长度'}
         description={
           language === 'zh-TW'
-            ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側 (DS) 與非驅動側 (NDS) 毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
-            : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧 (DS) 与非驱动侧 (NDS) 毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'
+            ? '基於經典 Jobst Brandt 編輪空間三角幾何方程。精確推算驅動側與非驅動側毫米級輻條下料尺寸、市售整數規格、偏心圈 Offset 張力最佳化比及碟煞/踩踏扭矩編法安全校核。'
+            : '基于经典 Jobst Brandt 编轮空间三角几何方程。精确推算驱动侧与非驱动侧毫米级辐条下料尺寸、市售整数规格、偏心圈 Offset 张力优化比及碟刹/踩踏扭矩编法安全校核。'
         }
         tint="blue"
         actions={
@@ -382,27 +382,27 @@ export const SpokeLengthCalculator: React.FC = () => {
 
               {/* Spoke Count */}
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1">单轮总孔数 (Holes)</label>
+                <label className="text-[11px] text-slate-500 block mb-1">单轮总孔数</label>
                 <select
                   value={spokeCount}
                   onChange={(e) => setSpokeCount(Number(e.target.value))}
                   className="w-full h-9 bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 rounded-xl px-3 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:border-ios-blue"
                 >
-                  <option value={16}>16 孔 (TT/前轮超轻)</option>
-                  <option value={20}>20 孔 (圈刹标准前轮)</option>
-                  <option value={24}>24 孔 (现代公路/碟刹主流)</option>
-                  <option value={28}>28 孔 (Gravel / 山地XC)</option>
-                  <option value={32}>32 孔 (长途重载 / Enduro)</option>
-                  <option value={36}>36 孔 (旅行车 / 经典重负荷)</option>
+                  <option value={16}>16 孔 · 计时与超轻前轮</option>
+                  <option value={20}>20 孔 · 圈刹前轮</option>
+                  <option value={24}>24 孔 · 公路碟刹主流</option>
+                  <option value={28}>28 孔 · 全地形与越野</option>
+                  <option value={32}>32 孔 · 耐力与高负荷</option>
+                  <option value={36}>36 孔 · 旅行车重载</option>
                 </select>
                 <span className="text-[11px] text-slate-400 block mt-1">碟刹后轮通常 24H 或 28H</span>
               </div>
             </div>
 
-            {/* 条帽与垫片规格 (Nipple & Washer Compensation) */}
+            {/* 条帽与垫片规格 */}
             <div className="pt-3 border-t border-black/[0.05] dark:border-white/[0.08] grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">条帽长度规格 (Nipple Length)</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">条帽长度规格</label>
                 <div className="grid grid-cols-3 gap-1.5">
                   {[
                     { val: 12, label: '12mm 标准' },
@@ -430,7 +430,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-[11px] text-slate-500 block mb-1.5">辐条孔垫片 (Rim Washer)</label>
+                <label className="text-[11px] text-slate-500 block mb-1.5">辐条孔垫片</label>
                 <div className="grid grid-cols-3 gap-1.5">
                   {[
                     { val: 0, label: '无垫片' },
@@ -473,7 +473,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
-                    {wheelPosition === 'rear' ? '左侧：非驱动侧 (NDS)' : '左侧：碟刹盘侧 (Disc)'}
+                    {wheelPosition === 'rear' ? '左侧：非驱动侧' : '左侧：碟刹盘侧'}
                   </span>
                   <span className="text-[11px] text-slate-400 font-mono">
                     有效中心距: {result.effLeftCenter}mm
@@ -509,17 +509,17 @@ export const SpokeLengthCalculator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-500 block mb-1">左侧交叉数 (Cross Pattern)</label>
+                  <label className="text-xs text-slate-500 block mb-1">左侧交叉数</label>
                   <select
                     value={leftCross}
                     onChange={(e) => setLeftCross(Number(e.target.value))}
                     className="w-full h-9 bg-white dark:bg-[#1C1C1E] border border-black/[0.08] dark:border-white/[0.12] rounded-xl px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                   >
-                    <option value={0}>0X (直拉/放射状 Radial)</option>
-                    <option value={1}>1X (1交叉)</option>
-                    <option value={2}>2X (2交叉 - 24H主流)</option>
-                    <option value={3}>3X (3交叉 - 28/32H主流)</option>
-                    <option value={4}>4X (4交叉 - 36H经典)</option>
+                    <option value={0}>0X · 放射状直拉</option>
+                    <option value={1}>1X · 一交叉</option>
+                    <option value={2}>2X · 二交叉</option>
+                    <option value={3}>3X · 三交叉</option>
+                    <option value={4}>4X · 四交叉</option>
                   </select>
                 </div>
               </div>
@@ -528,7 +528,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-rose-600 dark:text-rose-400">
-                    {wheelPosition === 'rear' ? '右侧：驱动塔基侧 (DS)' : '右侧：无盘侧 (Non-Disc)'}
+                    {wheelPosition === 'rear' ? '右侧：驱动塔基侧' : '右侧：无盘侧'}
                   </span>
                   <span className="text-[11px] text-slate-400 font-mono">
                     有效中心距: {result.effRightCenter}mm
@@ -564,17 +564,17 @@ export const SpokeLengthCalculator: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-500 block mb-1">右侧交叉数 (Cross Pattern)</label>
+                  <label className="text-xs text-slate-500 block mb-1">右侧交叉数</label>
                   <select
                     value={rightCross}
                     onChange={(e) => setRightCross(Number(e.target.value))}
                     className="w-full h-9 bg-white dark:bg-[#1C1C1E] border border-black/[0.08] dark:border-white/[0.12] rounded-xl px-3 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-ios-blue"
                   >
-                    <option value={0}>0X (直拉/放射状 Radial)</option>
-                    <option value={1}>1X (1交叉)</option>
-                    <option value={2}>2X (2交叉 - 24H主流)</option>
-                    <option value={3}>3X (3交叉 - 28/32H主流)</option>
-                    <option value={4}>4X (4交叉 - 36H经典)</option>
+                    <option value={0}>0X · 放射状直拉</option>
+                    <option value={1}>1X · 一交叉</option>
+                    <option value={2}>2X · 二交叉</option>
+                    <option value={3}>3X · 三交叉</option>
+                    <option value={4}>4X · 四交叉</option>
                   </select>
                 </div>
               </div>
@@ -666,7 +666,7 @@ export const SpokeLengthCalculator: React.FC = () => {
               {result.tensionRatioPercent < 60 && rimOffsetMm === 0 && (
                 <div className="text-[11px] text-amber-600 dark:text-amber-400 pt-1 flex items-start gap-1">
                   <Lightbulb className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-                  <span>{language === 'zh-TW' ? '提示：當前對稱圈非驅動側張力偏低。若選用 2.5~3.0mm 偏心圈 (Asymmetric Rim)，張力比可大幅提升至 ~70%，顯著增強輪組側向剛性並減少斷條幾率！' : '提示：当前对称圈非驱动侧张力偏低。若选用 2.5~3.0mm 偏心圈 (Asymmetric Rim)，张力比可大幅提升至 ~70%，显著增强轮组侧向刚性并减少断条几率！'}</span>
+                  <span>{language === 'zh-TW' ? '提示：當前對稱圈非驅動側張力偏低。若選用 2.5~3.0mm 偏心圈，張力比可大幅提升至 ~70%，顯著增強輪組側向剛性並減少斷條幾率！' : '提示：当前对称圈非驱动侧张力偏低。若选用 2.5~3.0mm 偏心圈，张力比可大幅提升至 ~70%，显著增强轮组侧向刚性并减少断条几率！'}</span>
                 </div>
               )}
             </div>
@@ -779,7 +779,7 @@ export const SpokeLengthCalculator: React.FC = () => {
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
               <Check className="w-4 h-4" />
-              <span>3. 应力释放 (Stress Relieving)</span>
+              <span>3. 应力释放</span>
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
               调圈上紧至目标张力后，必须用双手用力对捏相邻交叉辐条，或将轮组放置在地面用掌心按压轮圈外缘数次。听到清脆的“噼啪”金属微摩擦释放声后再次微调偏摆与真圆，杜绝首骑松弛。

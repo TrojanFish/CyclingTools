@@ -83,12 +83,12 @@ export const GroupRideSimulator: React.FC = () => {
 
   // Initial Roster
   const [riders, setRiders] = useState<GroupRider[]>([
-    { id: '1', name: '车手 1 (GC主将)', weight: 68, ftp: 320, wPrime: 22, followOnly: false, pullSeconds: 15, role: 'leader', isSacrificial: false },
-    { id: '2', name: '车手 2 (破风手)', weight: 75, ftp: 350, wPrime: 25, followOnly: false, pullSeconds: 30, role: 'rouleur', isSacrificial: false },
-    { id: '3', name: '车手 3 (计时赛专家)', weight: 72, ftp: 340, wPrime: 24, followOnly: false, pullSeconds: 25, role: 'rouleur', isSacrificial: false },
-    { id: '4', name: '车手 4 (爬坡副将)', weight: 64, ftp: 290, wPrime: 19, followOnly: false, pullSeconds: 15, role: 'climber', isSacrificial: false },
-    { id: '5', name: '车手 5 (牺牲破风副将)', weight: 76, ftp: 330, wPrime: 23, followOnly: false, pullSeconds: 35, role: 'domestique', isSacrificial: true },
-    { id: '6', name: '车手 6 (平路副将)', weight: 71, ftp: 310, wPrime: 20, followOnly: false, pullSeconds: 20, role: 'domestique', isSacrificial: false }
+    { id: '1', name: '车手 1 · GC主将', weight: 68, ftp: 320, wPrime: 22, followOnly: false, pullSeconds: 15, role: 'leader', isSacrificial: false },
+    { id: '2', name: '车手 2 · 破风手', weight: 75, ftp: 350, wPrime: 25, followOnly: false, pullSeconds: 30, role: 'rouleur', isSacrificial: false },
+    { id: '3', name: '车手 3 · 计时赛专家', weight: 72, ftp: 340, wPrime: 24, followOnly: false, pullSeconds: 25, role: 'rouleur', isSacrificial: false },
+    { id: '4', name: '车手 4 · 爬坡副将', weight: 64, ftp: 290, wPrime: 19, followOnly: false, pullSeconds: 15, role: 'climber', isSacrificial: false },
+    { id: '5', name: '车手 5 · 破风副将', weight: 76, ftp: 330, wPrime: 23, followOnly: false, pullSeconds: 35, role: 'domestique', isSacrificial: true },
+    { id: '6', name: '车手 6 · 平路副将', weight: 71, ftp: 310, wPrime: 20, followOnly: false, pullSeconds: 20, role: 'domestique', isSacrificial: false }
   ]);
 
   // Reactively sync lead rider with rider profile
@@ -433,7 +433,7 @@ export const GroupRideSimulator: React.FC = () => {
         categoryIcon={Users}
         title={
           mode === 'ttt'
-            ? (language === 'zh-TW' ? '車隊計時 (TTT)' : '车队计时 (TTT)')
+            ? (language === 'zh-TW' ? '車隊計時賽' : '车队计时赛')
             : (language === 'zh-TW' ? '車隊戰術' : '车队战术')
         }
         description={
@@ -471,7 +471,7 @@ export const GroupRideSimulator: React.FC = () => {
                   label: (
                     <>
                       <span className="sm:hidden">TTT</span>
-                      <span className="hidden sm:inline">{language === 'zh-TW' ? '車隊計時 (TTT)' : '车队计时 (TTT)'}</span>
+                      <span className="hidden sm:inline">{language === 'zh-TW' ? '車隊計時' : '车队计时'}</span>
                     </>
                   )
                 }
@@ -496,8 +496,8 @@ export const GroupRideSimulator: React.FC = () => {
               <div className="w-full sm:w-auto">
                 <IOSSegmentedControl
                   options={[
-                    { value: 'ttt_worldtour', label: '世巡赛 TTT (40km)' },
-                    { value: 'ttt_regional', label: '俱乐部 TTT (25km)' }
+                    { value: 'ttt_worldtour', label: '世巡赛 TTT 40km' },
+                    { value: 'ttt_regional', label: '俱乐部 TTT 25km' }
                   ]}
                   value={activePreset === 'ttt_worldtour' || activePreset === 'ttt_regional' ? activePreset : ''}
                   onChange={(v) => applyPreset(v as any)}
@@ -508,7 +508,7 @@ export const GroupRideSimulator: React.FC = () => {
               <div className="w-full sm:w-auto">
                 <IOSSegmentedControl
                   options={[
-                    { value: 'peloton_standard', label: '大组团骑 (80km)' }
+                    { value: 'peloton_standard', label: '大组团骑 80km' }
                   ]}
                   value={activePreset === 'peloton_standard' ? 'peloton_standard' : ''}
                   onChange={(v) => applyPreset(v as any)}
@@ -547,7 +547,7 @@ export const GroupRideSimulator: React.FC = () => {
           label={mode === 'ttt' ? 'UCI 冲线标准判定' : '车手体能生存状态'}
           value={
             mode === 'ttt'
-              ? (simulationResult.isUciValid ? `达标 (${simulationResult.survivingRidersCount}人完赛)` : '成绩无效 (掉队过多)')
+              ? (simulationResult.isUciValid ? `达标 · ${simulationResult.survivingRidersCount}人完赛` : '成绩无效 · 掉队过多')
               : (simulationResult.droppedRiders.every(r => !r.isDropped) ? '全员完赛' : `${simulationResult.droppedRiders.filter(r => r.isDropped).length} 人掉队`)
           }
           unit=""
@@ -656,7 +656,7 @@ export const GroupRideSimulator: React.FC = () => {
             ) : (
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">领骑轮转周期 (分钟/人)</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">领骑轮转周期 · 分钟/人</label>
                   <span className="text-ios-mint font-mono font-bold text-xs">{rotationMinutes} 分钟</span>
                 </div>
                 <input

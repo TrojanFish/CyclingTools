@@ -126,16 +126,16 @@ export const LatestRideShareModal: React.FC<LatestRideShareModalProps> = ({
 
     if (language === 'zh-TW') {
       return {
-        conquer: `${data.title} | ${data.distKm} km | 累計爬升 +${data.eleM} m (直拔 ${eiffelStr} 座艾菲爾鐵塔) | NP ${data.np} W${wKgStr} | IF ${data.ifVal} | TSS ${data.tss}。山就在那裡，雙腿是丈量大地的唯一標尺。征服收官。`,
+        conquer: `${data.title} | ${data.distKm} km | 累計爬升 +${data.eleM} m · 直拔 ${eiffelStr} 座艾菲爾鐵塔 | NP ${data.np} W${wKgStr} | IF ${data.ifVal} | TSS ${data.tss}。山就在那裡，雙腿是丈量大地的唯一標尺。征服收官。`,
         lifestyle: `清晨 05:30 的晨風與破曉日出，是對抗平庸生活的最好解藥。${data.distKm} km 晨風刷街完畢，均速 ${data.avgSpeed} km/h，爬升 +${data.eleM}m，滿電開啟搬磚模式！清晨的風，是世界給自律者最好的紅包。`,
-        geek: `本想晨騎排個酸，不小心均速幹到了 ${data.avgSpeed} km/h。NP ${data.np}W${wKgStr} 穩態巡航 ${data.distKm} 公里，VI ${data.vi} (平穩如水)，IF ${data.ifVal}，TSS ${data.tss}${hrStr}。今天這風阻很禮貌。`
+        geek: `本想晨騎排個酸，不小心均速幹到了 ${data.avgSpeed} km/h。NP ${data.np}W${wKgStr} 穩態巡航 ${data.distKm} 公里，VI ${data.vi} 平穩如水，IF ${data.ifVal}，TSS ${data.tss}${hrStr}。今天這風阻很禮貌。`
       };
     }
 
     return {
-      conquer: `${data.title} | ${data.distKm} km | 累计爬升 +${data.eleM} m (直拔 ${eiffelStr} 座埃菲尔铁塔) | NP ${data.np} W${wKgStr} | IF ${data.ifVal} | TSS ${data.tss}。山就在那里，双腿是丈量大地的唯一标尺。征服收官。`,
+      conquer: `${data.title} | ${data.distKm} km | 累计爬升 +${data.eleM} m · 直拔 ${eiffelStr} 座埃菲尔铁塔 | NP ${data.np} W${wKgStr} | IF ${data.ifVal} | TSS ${data.tss}。山就在那里，双腿是丈量大地的唯一标尺。征服收官。`,
       lifestyle: `清晨 05:30 的晨风与破晓日出，是对抗平庸生活的最好解药。${data.distKm} km 晨风刷街完毕，均速 ${data.avgSpeed} km/h，爬升 +${data.eleM}m，满电开启搬砖模式！清晨的风，是世界给自律者最好的红包。`,
-      geek: `本想晨骑排个酸，不小心均速干到了 ${data.avgSpeed} km/h。NP ${data.np}W${wKgStr} 稳态巡航 ${data.distKm} 公里，VI ${data.vi} (平稳如水)，IF ${data.ifVal}，TSS ${data.tss}${hrStr}。今天这风阻很礼貌。`
+      geek: `本想晨骑排个酸，不小心均速干到了 ${data.avgSpeed} km/h。NP ${data.np}W${wKgStr} 稳态巡航 ${data.distKm} 公里，VI ${data.vi} 平稳如水，IF ${data.ifVal}，TSS ${data.tss}${hrStr}。今天这风阻很礼貌。`
     };
   }, [data, language]);
 

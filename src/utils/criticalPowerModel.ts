@@ -170,10 +170,10 @@ export function calculateMorton3ParamCP(input: PowerTestInput): ThreeParamCPResu
     phenotypeDesc = '均衡竞技型：兼顾突围进攻与巡航门槛，可自如应对各类复杂公路赛段。';
   } else if (wPrimeJkg <= 320) {
     phenotypeCategory = 'puncher';
-    phenotypeDesc = '短坡突围攻击手 (Puncher)：庞大的无氧电池，在 1~3 分钟的连续攻坡中具备致命撕扯力。';
+    phenotypeDesc = '短坡突围攻击手：庞大的无氧电池，在 1~3 分钟的连续攻坡中具备致命撕扯力。';
   } else {
     phenotypeCategory = 'sprinter';
-    phenotypeDesc = '终点爆发冲刺手 (Sprinter)：极为庞大的无氧储能与瞬间峰值功率，终点线 200 米内的统治者。';
+    phenotypeDesc = '终点爆发冲刺手：极为庞大的无氧储能与瞬间峰值功率，终点线 200 米内的统治者。';
   }
 
   const predictPower = (timeSec: number): number => {

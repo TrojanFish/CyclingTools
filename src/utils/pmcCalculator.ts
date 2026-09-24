@@ -45,8 +45,8 @@ export const getTsbZoneInfo = (tsb: number): TsbZoneInfo => {
       label: '高收益强化训练期',
       labelTw: '高收益強化訓練期',
       color: '#00AFFF', // blue
-      advice: '处于最佳超量恢复刺激区间（Overreaching）。机体正建立深层有氧与无氧耐力适应，保证每晚 8 小时深度睡眠和高碳水补给。',
-      adviceTw: '處於最佳超量恢復刺激區間（Overreaching）。機體正建立深層有氧與無氧耐力適應，保證每晚 8 小時深度睡眠和高碳水補給。'
+      advice: '处于最佳超量恢复刺激区间。机体正建立深层有氧与无氧耐力适应，保证每晚 8 小时深度睡眠和高碳水补给。',
+      adviceTw: '處於最佳超量恢復刺激區間。機體正建立深層有氧與無氧耐力適應，保證每晚 8 小時深度睡眠和高碳水補給。'
     };
   }
   if (tsb >= -10 && tsb <= 5) {
@@ -62,8 +62,8 @@ export const getTsbZoneInfo = (tsb: number): TsbZoneInfo => {
   if (tsb > 5 && tsb <= 25) {
     return {
       zone: 'peak',
-      label: '黄金巅峰竞技状态 (Race Ready)',
-      labelTw: '黃金巔峰競技狀態 (Race Ready)',
+      label: '黄金巅峰竞技状态',
+      labelTw: '黃金巔峰競技狀態',
       color: '#f59e0b', // amber
       advice: '绝佳比赛状态！疲劳已大部分消退，肌肉储备完全充能，踏频与心率反应敏锐，正是冲击 A 级目标赛事最佳成绩的黄金窗口！',
       adviceTw: '絕佳比賽狀態！疲勞已大部分消退，肌肉儲備完全充能，踏頻與心率反應敏銳，正是衝擊 A 級目標賽事最佳成績的黃金窗口！'
@@ -89,10 +89,10 @@ export interface ManualTssEntry {
 }
 
 export const BASELINE_FITNESS_OPTIONS: Record<BaselineFitnessLevel, { ctl: number; atl: number; label: string; desc: string }> = {
-  rec: { ctl: 35, atl: 30, label: '业余骑游 (CTL 35)', desc: '周骑 3-5h' },
-  club: { ctl: 65, atl: 60, label: '进阶俱乐部 (CTL 65)', desc: '周骑 6-10h' },
-  elite: { ctl: 90, atl: 85, label: '业余精英 (CTL 90)', desc: '周骑 12-16h' },
-  pro: { ctl: 115, atl: 110, label: '职业世巡 (CTL 115)', desc: '周骑 18h+' }
+  rec: { ctl: 35, atl: 30, label: '业余骑游', desc: '周骑 3-5h' },
+  club: { ctl: 65, atl: 60, label: '进阶俱乐部', desc: '周骑 6-10h' },
+  elite: { ctl: 90, atl: 85, label: '业余精英', desc: '周骑 12-16h' },
+  pro: { ctl: 115, atl: 110, label: '职业世巡', desc: '周骑 18h+' }
 };
 
 /**
@@ -175,7 +175,7 @@ export const generatePmcSeries = (
         phaseName = '超量突破冲顶';
         dayTss = dayOfWeek === 1 ? 0 : 120;
       } else if (d <= 21) {
-        phaseName = '减量备战 (Taper)';
+        phaseName = '减量备战';
         // Cut volume by 50% while maintaining sharpness
         dayTss = dayOfWeek === 1 || dayOfWeek === 4 ? 0 : dayOfWeek === 6 ? 55 : 35;
       } else {
@@ -187,10 +187,10 @@ export const generatePmcSeries = (
         phaseName = '赛前定妆发车';
         dayTss = 60;
       } else if (d === 9 || d === 16) {
-        phaseName = '大环赛休战日 (Rest Day)';
+        phaseName = '大环赛休战日';
         dayTss = 25;
       } else {
-        phaseName = '大环赛赛段 (Stage)';
+        phaseName = '大环赛赛段';
         // Brutal Grand Tour stages: 180 - 320 TSS
         const isMountain = d % 3 === 0;
         dayTss = isMountain ? 280 : 190;
@@ -453,26 +453,26 @@ export const calculateContinuousSeasonPmc = (
 
   let acwrStatus: SeasonPmcSummary['acwrStatus'] = {
     status: 'optimal',
-    label: '黄金负荷收益区 (Sweet Spot)',
-    advice: '急性疲劳与慢性体能比例健康 (0.8 - 1.3)，体能稳步超量恢复，伤病风险处于最低区间。'
+    label: '黄金负荷收益区',
+    advice: '急性疲劳与慢性体能比例健康处于 0.8~1.3，体能稳步超量恢复，伤病风险处于最低区间。'
   };
 
   if (acwr < 0.8) {
     acwrStatus = {
       status: 'low',
-      label: '训练负荷偏低 (Under-training)',
+      label: '训练负荷偏低',
       advice: '近期负荷显著低于基准均线，体能可能逐步回落。如非重大赛后调整，建议适当提高甜区或节奏课表频次。'
     };
   } else if (acwr >= 1.3 && acwr <= 1.5) {
     acwrStatus = {
       status: 'moderate',
-      label: '负荷快速增量 (Caution Zone)',
-      advice: '近期训练量快速攀升 (1.3 - 1.5)，机体进入高刺激适应期。建议加强深层拉伸、电解质补充与睡眠监测。'
+      label: '负荷快速增量',
+      advice: '近期训练量快速攀升至 1.3~1.5，机体进入高刺激适应期。建议加强深层拉伸、电解质补充与睡眠监测。'
     };
   } else if (acwr > 1.5) {
     acwrStatus = {
       status: 'high_risk',
-      label: '急性过载高危 (High Injury Risk)',
+      label: '急性过载高危',
       advice: 'ACWR > 1.5 属于伤病与过度疲劳高危红线！强烈建议立即插入 1-2 天主动休骑或排酸骑，严防免疫力崩解。'
     };
   }

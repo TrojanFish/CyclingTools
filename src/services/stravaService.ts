@@ -457,7 +457,7 @@ export interface StravaSegmentItem {
 export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
   {
     id: 661401,
-    name: "Alpe d'Huez 经典 21 道拐 (Tour de France)",
+    name: "Alpe d'Huez 经典 21 道拐",
     distance: 13800,
     average_grade: 8.1,
     maximum_grade: 14.8,
@@ -551,7 +551,7 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
   },
   {
     id: 647318,
-    name: "Sa Calobra - Coll dels Reis (马略卡海湾回环)",
+    name: "Sa Calobra 萨卡洛布拉海湾回环",
     distance: 9400,
     average_grade: 7.0,
     maximum_grade: 11.5,
@@ -581,7 +581,7 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
   },
   {
     id: 651111,
-    name: "Col du Tourmalet (Sainte-Marie 出发)",
+    name: "Col du Tourmalet 图尔马莱",
     distance: 17200,
     average_grade: 7.4,
     maximum_grade: 10.5,
@@ -612,7 +612,7 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
   },
   {
     id: 1541014,
-    name: "北京门头沟妙峰山 (金顶牌楼挑战赛段)",
+    name: "北京门头沟妙峰山",
     distance: 20300,
     average_grade: 4.3,
     maximum_grade: 9.2,
@@ -644,7 +644,7 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
   },
   {
     id: 4322894,
-    name: "杭州西湖龙井爬坡 (龙井路经典计时段)",
+    name: "杭州西湖龙井爬坡",
     distance: 3200,
     average_grade: 5.1,
     maximum_grade: 8.5,
@@ -675,7 +675,7 @@ export const CURATED_STRAVA_SEGMENTS: StravaSegmentItem[] = [
   },
   {
     id: 1894562,
-    name: "浙江安吉天荒坪 (江南天池抽水蓄能盘山公路)",
+    name: "浙江安吉天荒坪",
     distance: 17800,
     average_grade: 5.6,
     maximum_grade: 10.0,

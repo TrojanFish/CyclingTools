@@ -23,8 +23,8 @@ export const zh = {
 
   // Units & Toggles
   langToggle: '繁體',
-  unitToggleMetric: '公制 (Metric)',
-  unitToggleImperial: '英制 (Imperial)',
+  unitToggleMetric: '公制',
+  unitToggleImperial: '英制',
   unitWeightKg: 'kg',
   unitWeightLbs: 'lbs',
   unitDistKm: 'km',

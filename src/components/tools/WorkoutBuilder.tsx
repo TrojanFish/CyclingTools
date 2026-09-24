@@ -96,8 +96,8 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     subtitleTw: 'Helgerud & Hoff 協議 / 4組4分 / 心肺泵血重構',
     category: 'vo2max',
     categoryLabel: '最大摄氧量 VO₂max',
-    description: '挪威科技大学 Helgerud & Hoff 实验室金牌课表。4 组 4 分钟 @ 110% FTP (逼近 90-95% HRmax)，组间 3 分钟积极恢复。被运动医学界证实为单位时间内提升左心室每搏输出量与摄氧量效率最高的手段之一。',
-    descriptionTw: '挪威科技大學 Helgerud & Hoff 實驗室金牌課表。4 組 4 分鐘 @ 110% FTP (逼近 90-95% HRmax)，組間 3 分鐘積極恢復。被運動醫學界證實為單位時間內提升左心室每搏輸出量與攝氧量效率最高的手法之一。',
+    description: '挪威科技大学 Helgerud & Hoff 实验室金牌课表。4 组 4 分钟 @ 110% FTP，逼近 90-95% HRmax，组间 3 分钟积极恢复。被运动医学界证实为单位时间内提升左心室每搏输出量与摄氧量效率最高的手段之一。',
+    descriptionTw: '挪威科技大學 Helgerud & Hoff 實驗室金牌課表。4 組 4 分鐘 @ 110% FTP，逼近 90-95% HRmax，組間 3 分鐘積極恢復。被運動醫學界證實為單位時間內提升左心室每搏輸出量與攝氧量效率最高的手法之一。',
     targetAdaptation: '心肌收缩力增强 · 最大心输出量 · 爬坡爆发力',
     segments: [
       { id: '1', type: 'warmup', name: '渐进热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.75, cadenceRpm: 90 },
@@ -119,8 +119,8 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     subtitleTw: '公路計時賽/長爬坡基石 / 2組20分 / FTP 鐵壁錨定',
     category: 'threshold',
     categoryLabel: '乳酸阈值 FTP',
-    description: '所有耐力车手的奠基经典。2 组 20 分钟 @ 98% FTP（组间 5 分钟轻度巡航）。极强的心智毅力与肌肉耐酸磨练，直接拓展乳酸拐点下的维持功率（TTE），是计时赛与名山大坡的绝对制胜王牌。',
-    descriptionTw: '所有耐力車手的奠基經典。2 組 20 分鐘 @ 98% FTP（組間 5 分鐘輕度巡航）。極強的心智毅力與肌肉耐酸磨練，直接拓展乳酸拐點下的維持功率（TTE），是計時賽與名山大坡的絕對制勝王牌。',
+    description: '所有耐力车手的奠基经典。2 组 20 分钟 @ 98% FTP（组间 5 分钟轻度巡航）。极强的心智毅力与肌肉耐酸磨练，直接拓展 TTE 极限维持时长，是计时赛与名山大坡的绝对制胜王牌。',
+    descriptionTw: '所有耐力車手的奠基經典。2 組 20 分鐘 @ 98% FTP（組間 5 分鐘輕度巡航）。極強的心智毅力與肌肉耐酸磨練，直接拓展 TTE 極限維持時長，是計時賽與名山大坡的絕對制勝王牌。',
     targetAdaptation: '功能阈值功率 TTE 延展 · 抗疲劳耐受力 · 心理坚韧度',
     segments: [
       { id: '1', type: 'warmup', name: '渐进热身', durationSec: 900, powerStartPct: 0.50, powerEndPct: 0.80, cadenceRpm: 90 },
@@ -178,8 +178,8 @@ export const WORKOUT_TEMPLATES: WorkoutTemplate[] = [
     subtitleTw: 'San-Millán 博士代謝方案 / 90分鐘恆定 / 線粒體基石',
     category: 'endurance',
     categoryLabel: '基础耐力 Z2',
-    description: '职业车手训练计划中占比 75% 以上的真正基石。90 分钟稳定输出在 65% FTP (Zone 2)。在此区间脂肪氧化率达到峰值 (FatMax)，刺激骨骼肌慢肌纤维与细胞线粒体大量增生。',
-    descriptionTw: '職業車手訓練計劃中佔比 75% 以上的真正基石。90 分鐘穩定輸出在 65% FTP (Zone 2)。在此區間脂肪氧化率達到峰值 (FatMax)，刺激骨骼肌慢肌纖維與細胞線粒體大量增生。',
+    description: '职业车手训练计划中占比 75% 以上的真正基石。90 分钟稳定输出在 65% FTP。在此区间脂肪氧化率达到 FatMax 峰值，刺激骨骼肌慢肌纤维与细胞线粒体大量增生。',
+    descriptionTw: '職業車手訓練計劃中佔比 75% 以上的真正基石。90 分鐘穩定輸出在 65% FTP。在此區間脂肪氧化率達到 FatMax 峰值，刺激骨骼肌慢肌纖維與細胞線粒體大量增生。',
     targetAdaptation: '线粒体密度增生 · 脂肪氧化利用率 · 有氧底功筑基',
     segments: [
       { id: '1', type: 'warmup', name: '平缓热身', durationSec: 600, powerStartPct: 0.50, powerEndPct: 0.65, cadenceRpm: 90 },
@@ -504,7 +504,7 @@ export const WorkoutBuilder: React.FC = () => {
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={Dumbbell}
         title={language === 'zh-TW' ? '間歇課表' : '间歇课表'}
-        description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，无缝导出 Zwift (.zwo) 与 Garmin/Wahoo (.mrc) 码表文件。"
+        description="内置 6 大经典名将科学训练协议，支持秒级段落编辑与功率踏频靶向定制，无缝导出 Zwift 与码表训练文件。"
         tint="red"
         onShare={handleGeneratePoster}
         shareTitle="生成社交分享课表海报"
@@ -524,7 +524,7 @@ export const WorkoutBuilder: React.FC = () => {
       <div className="ios-card p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card flex flex-wrap items-center justify-between gap-3.5">
         <div className="flex flex-wrap items-center gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <span className="text-slate-500 font-medium">车手阈值功率 (FTP):</span>
+            <span className="text-slate-500 font-medium">车手 FTP:</span>
             <NumberStepper
               value={ftpWatts}
               onChange={setFtpWatts}
@@ -573,7 +573,7 @@ export const WorkoutBuilder: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-ios-red" />
-            <span>世界殿堂科学训练协议预设库 (Classic Workout Presets)</span>
+            <span>世界殿堂经典训练协议预设</span>
           </div>
         </div>
 
@@ -634,7 +634,7 @@ export const WorkoutBuilder: React.FC = () => {
               />
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              课表可视化功率踏频时序图谱（按 Coggan 7 区色系区分）
+              课表功率踏频时序图谱 · Coggan 7 区色系
             </p>
           </div>
 

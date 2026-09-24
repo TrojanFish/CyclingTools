@@ -225,9 +225,9 @@ export const RoadbookLibrary: React.FC<RoadbookLibraryProps> = ({ onNavigateTool
       voyagerLayer.addTo(map);
 
       L.control.layers({
-        '高清骑行 (HD)': voyagerLayer,
-        '卫星实景 (Satellite)': satelliteLayer,
-        '极简底图 (Light)': positronLayer,
+        '高清骑行': voyagerLayer,
+        '卫星实景': satelliteLayer,
+        '极简底图': positronLayer,
       }, undefined, { position: 'topright' }).addTo(map);
 
       markersLayerRef.current = L.layerGroup().addTo(map);
@@ -1036,7 +1036,7 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-ios-blue" />
-                {'全线高程起伏与地形剖面 (交互联动)'}
+                {'全线高程起伏与地形剖面 · 交互联动'}
               </h3>
               <span className="text-[11px] text-slate-400">
                 {'鼠标悬浮图表可在地图上定位对应点'}

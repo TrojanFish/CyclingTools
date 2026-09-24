@@ -4,6 +4,9 @@
  * Avoids LocalStorage 5MB QuotaExceeded limitations.
  */
 
+import { generateDemoStravaActivities } from './stravaCockpitAnalytics';
+import { generateSimulatedStravaStream } from './stravaStreamAdapter';
+
 const DB_NAME = 'solorider_strava_db';
 const DB_VERSION = 1;
 
@@ -308,4 +311,22 @@ export const getStravaStorageInfo = async (): Promise<StravaStorageInfo> => {
     };
   }
 };
+
+/**
+ * Seeds demo Strava activities and their corresponding simulation streams into IndexedDB
+ * for offline and simulation testing.
+ */
+export const seedDemoStravaActivitiesToDb = async (): Promise<StravaActivityRecord[]> => {
+  const demoActivities = generateDemoStravaActivities().slice(0, 8);
+  await saveActivitiesToDb(demoActivities);
+
+  // Also seed simulated telemetry streams for each demo activity
+  for (const act of demoActivities) {
+    const stream = generateSimulatedStravaStream(act);
+    await saveStreamToDb(stream);
+  }
+
+  return demoActivities;
+};
+
 

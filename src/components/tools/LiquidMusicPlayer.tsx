@@ -305,14 +305,14 @@ export const LiquidMusicPlayer: React.FC<{ isStandalonePage?: boolean }> = ({ is
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input
                     type="text"
-                    placeholder="曲目名称 (可选)"
+                    placeholder="曲目名称 · 可选"
                     value={newSongName}
                     onChange={(e) => setNewSongName(e.target.value)}
                     className="bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"
                   />
                   <input
                     type="url"
-                    placeholder="直接音频链接 (.mp3/.wav/.ogg)"
+                    placeholder="直接音频链接 · MP3 / WAV / OGG"
                     value={newSongUrl}
                     onChange={(e) => setNewSongUrl(e.target.value)}
                     className="bg-white/90 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-ios-blue"

@@ -100,25 +100,25 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
       setP1m(620);
       setP5m(340);
       setP20m(250);
-      showToast('已载入纯正冲刺手 (Sprinter) 数据模型', 'info');
+      showToast(language === 'zh-TW' ? '已載入純正衝刺手數據模型' : '已载入纯正冲刺手数据模型', 'info');
     } else if (type === 'climber') {
       setP5s(780);
       setP1m(460);
       setP5m(360);
       setP20m(300);
-      showToast('已载入纯血爬坡手 (Climber) 数据模型', 'info');
+      showToast(language === 'zh-TW' ? '已載入純血爬坡手數據模型' : '已载入纯血爬坡手数据模型', 'info');
     } else if (type === 'rouleur') {
       setP5s(900);
       setP1m(510);
       setP5m(380);
       setP20m(320);
-      showToast('已载入计时突围巡航手 (Time Trialist) 数据模型', 'info');
+      showToast(language === 'zh-TW' ? '已載入計時突圍巡航手數據模型' : '已载入计时突围巡航手数据模型', 'info');
     } else {
       setP5s(980);
       setP1m(530);
       setP5m(340);
       setP20m(260);
-      showToast('已载入均衡全能型 (All-Rounder) 数据模型', 'info');
+      showToast(language === 'zh-TW' ? '已載入均衡全能型數據模型' : '已载入均衡全能型数据模型', 'info');
     }
   };
 
@@ -303,22 +303,22 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
     // Seiler Polarized 80/20 Model
     const polarizedZones = [
       {
-        zone: 'Zone 1 低强度有氧基础 (Low Intensity)',
+        zone: 'Zone 1 低强度有氧基础',
         range: `< ${Math.round(ftpWatts * 0.77)} W (< 77% FTP)`,
         volume: '80% 训练容量',
-        desc: '低于第一乳酸阈值 (LT1)，最大化线粒体密度并避免中枢疲劳积累。'
+        desc: '低于第一乳酸阈值，最大化线粒体密度并避免中枢疲劳积累。'
       },
       {
-        zone: 'Zone 2 门槛过渡带 (Threshold / SweetSpot)',
+        zone: 'Zone 2 门槛过渡带',
         range: `${Math.round(ftpWatts * 0.78)} - ${Math.round(ftpWatts * 1.02)} W`,
         volume: '极少量 / 专项期',
-        desc: '介于 LT1 与 LT2 之间，极化训练理念主张尽量减少该区间的无序堆量。'
+        desc: '介于第一与第二乳酸阈值之间，极化训练理念主张尽量减少该区间的无序堆量。'
       },
       {
-        zone: 'Zone 3 高强度间歇 (High Intensity VO2)',
+        zone: 'Zone 3 高强度间歇',
         range: `> ${Math.round(ftpWatts * 1.05)} W (> 105% FTP)`,
         volume: '20% 训练容量',
-        desc: '高于第二乳酸阈值 (LT2)，每周 1~2 次高质 4x4 或 30/30 间歇强化心肺上限。'
+        desc: '高于第二乳酸阈值，每周 1~2 次高质间歇强化心肺上限。'
       }
     ];
 
@@ -830,8 +830,8 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
       {/* 3-Parameter Critical Power (CP) & Anaerobic Work Capacity (W') Engine */}
       <IOSCard variant="default" className="p-4 sm:p-5 space-y-4">
         <IOSCardHeader
-          title={language === 'zh-TW' ? '3-Parameter 臨界功率 (CP) 與無氧儲備 (W\') 建模' : '3-Parameter 临界功率 (CP) 与无氧储备 (W\') 建模'}
-          subtitle={language === 'zh-TW' ? 'Morton (1996/2006) 非線性動力學模型 · 神經肌肉峰值 Pmax · 突圍攻擊耗盡預警' : 'Morton (1996/2006) 非线性动力学模型 · 神经肌肉峰值 Pmax · 突围攻击耗尽预警'}
+          title={language === 'zh-TW' ? '三參數臨界功率與無氧儲備建模' : '三参数临界功率与无氧储备建模'}
+          subtitle={language === 'zh-TW' ? 'Morton 非線性動力學模型 · 神經肌肉峰值 Pmax · 突圍攻擊耗盡預警' : 'Morton 非线性动力学模型 · 神经肌肉峰值 Pmax · 突围攻击耗尽预警'}
           icon={Zap}
           iconColor="orange"
         />
@@ -839,28 +839,28 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
         {/* 4 Core Physiological Metric Tiles */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <IOSMetricTile
-            label={language === 'zh-TW' ? '臨界功率 (CP)' : '临界功率 (CP)'}
+            label={language === 'zh-TW' ? '臨界功率' : '临界功率'}
             value={cpAnalysis.threeParam.cpWatts}
             unit="W"
             subtext={`${cpAnalysis.threeParam.cpWkg} W/kg · 有氧乳酸稳态极限`}
             accentColor="orange"
           />
           <IOSMetricTile
-            label={language === 'zh-TW' ? '無氧做功儲備 (W\')' : '无氧做功储备 (W\')'}
+            label={language === 'zh-TW' ? '無氧做功儲備' : '无氧做功储备'}
             value={cpAnalysis.threeParam.wPrimeKj}
             unit="kJ"
             subtext={`${cpAnalysis.threeParam.wPrimeJkg} J/kg · 高于 CP 的无氧能量池`}
             accentColor="red"
           />
           <IOSMetricTile
-            label={language === 'zh-TW' ? '神經肌肉極值 (Pmax)' : '神经肌肉极值 (Pmax)'}
+            label={language === 'zh-TW' ? '神經肌肉極值' : '神经肌肉极值'}
             value={cpAnalysis.threeParam.pMaxWatts}
             unit="W"
             subtext={`${cpAnalysis.threeParam.pMaxWkg} W/kg · 瞬时峰值爆发力`}
             accentColor="purple"
           />
           <IOSMetricTile
-            label={language === 'zh-TW' ? '時間衰減常數 (k)' : '时间衰减常数 (k)'}
+            label={language === 'zh-TW' ? '時間衰減常數' : '时间衰减常数'}
             value={cpAnalysis.threeParam.timeShiftK}
             unit="s"
             subtext="短时间非线性修正参数"
@@ -899,7 +899,9 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 {language === 'zh-TW' ? '超閾值突圍進攻持續時長預測' : '超阈值突围进攻持续时长预测'}
               </span>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                设定拟发起的攻击瓦数，实时计算该攻势下无氧储能 W' 的预计耗尽耗竭时间 (TTE)
+                {language === 'zh-TW'
+                  ? '設定擬發起的攻擊瓦數，實時計算該攻勢下無氧儲能 W\' 的預計力竭耗盡時間'
+                  : '设定拟发起的攻击瓦数，实时计算该攻势下无氧储能 W\' 的预计力竭耗尽时间'}
               </p>
             </div>
             <div className="w-36 shrink-0">
@@ -933,7 +935,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                 <span className="w-2 h-2 rounded-full bg-rose-500 mt-1 shrink-0" />
                 <div className="space-y-0.5">
                   <span className="font-bold text-rose-600 dark:text-rose-400 block">
-                    超出瞬时神经肌肉爆发极值 (Pmax)
+                    {language === 'zh-TW' ? '超出瞬時神經肌肉爆發極值' : '超出瞬时神经肌肉爆发极值'}
                   </span>
                   <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
                     当前设定瓦数 ({attackPowerWatts}W) 超过了生理预估的神经肌肉最大瞬时做功功率 ({cpAnalysis.threeParam.pMaxWatts}W)，无法维持持续踩踏。
@@ -978,7 +980,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           >
             <span className="flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-ios-orange" />
-              <span>{language === 'zh-TW' ? '2-Param (經典線性) vs 3-Param (Morton 非線性) 擬合對比' : '2-Param (经典线性) vs 3-Param (Morton 非线性) 拟合对比'}</span>
+              <span>{language === 'zh-TW' ? '經典線性與 Morton 非線性擬合對比' : '经典线性与 Morton 非线性拟合对比'}</span>
             </span>
             <span className="text-ios-orange font-mono text-[11px] flex items-center gap-1">
               <span>{isCPComparisonExpanded ? '收起对比' : '展开对比'}</span>
@@ -997,8 +999,8 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
                   <thead>
                     <tr className="border-b border-black/[0.05] dark:border-white/[0.08] text-slate-500 dark:text-slate-400 text-[11px]">
                       <th className="pb-2">做功时长</th>
-                      <th className="pb-2">Morton 3-Param (生理拟合)</th>
-                      <th className="pb-2">Monod 2-Param (经典线性)</th>
+                      <th className="pb-2">{language === 'zh-TW' ? 'Morton 三參數生理擬合' : 'Morton 三参数生理拟合'}</th>
+                      <th className="pb-2">{language === 'zh-TW' ? 'Monod 雙參數線性模型' : 'Monod 双参数线性模型'}</th>
                       <th className="pb-2">生理意义与适用场景</th>
                     </tr>
                   </thead>

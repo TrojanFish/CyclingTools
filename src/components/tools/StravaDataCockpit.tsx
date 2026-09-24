@@ -608,7 +608,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       labels,
       datasets: [
         {
-          label: 'CTL (长期体能)',
+          label: language === 'zh-TW' ? '長期體能' : '长期体能',
           data: ctlData,
           borderColor: '#007AFF',
           backgroundColor: 'rgba(0, 122, 255, 0.12)',
@@ -621,7 +621,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           }
         },
         {
-          label: 'ATL (急性疲劳)',
+          label: language === 'zh-TW' ? '急性疲勞' : '急性疲劳',
           data: atlData,
           borderColor: '#FF9500',
           backgroundColor: 'rgba(255, 149, 0, 0.1)',
@@ -634,7 +634,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           }
         },
         {
-          label: 'TSB (竞技状态)',
+          label: language === 'zh-TW' ? '競技狀態' : '竞技状态',
           data: tsbData,
           borderColor: '#34C759',
           borderWidth: 1.5,
@@ -647,7 +647,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         }
       ]
     };
-  }, [pmcTimeline]);
+  }, [pmcTimeline, language]);
 
   const pmcChartOptions = useMemo(() => {
     return {
@@ -781,7 +781,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       datasets: [
         {
           type: 'bar' as const,
-          label: '周度负荷 (TSS)',
+          label: '周度 TSS',
           data: weeklyVolume.weeks.map(w => w.tss),
           backgroundColor: weeklyVolume.weeks.map(w => w.isPeakTss ? '#FF9500' : '#007AFF'),
           borderRadius: 4,
@@ -889,7 +889,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       datasets: [
         {
           type: 'line' as const,
-          label: 'FTP 阈值功率 (W)',
+          label: language === 'zh-TW' ? '閾值功率 (W)' : '阈值功率 (W)',
           data: ftpHistory.timeline.map(p => p.ftpWatts),
           borderColor: '#007AFF',
           backgroundColor: 'rgba(0, 122, 255, 0.12)',
@@ -902,7 +902,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         },
         {
           type: 'line' as const,
-          label: '推重比 (W/kg)',
+          label: language === 'zh-TW' ? '推重比 (W/kg)' : '推重比 (W/kg)',
           data: ftpHistory.timeline.map(p => p.wkg),
           borderColor: '#34C759',
           borderWidth: 1.5,
@@ -914,7 +914,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         }
       ]
     };
-  }, [ftpHistory]);
+  }, [ftpHistory, language]);
 
   const ftpHistoryChartOptions = useMemo(() => {
     return {
@@ -1028,7 +1028,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
       labels: points.map(p => p.label),
       datasets: [
         {
-          label: mmpUnit === 'wkg' ? '峰值推重比 (W/kg)' : '峰值功率 (Watts)',
+          label: mmpUnit === 'wkg' ? '峰值推重比 (W/kg)' : '峰值功率 (W)',
           data: points.map(p => parseFloat((p.w * factor).toFixed(2))),
           borderColor: '#007AFF',
           backgroundColor: 'rgba(0, 122, 255, 0.15)',
@@ -1038,7 +1038,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           pointBackgroundColor: '#007AFF'
         },
         {
-          label: 'eFTP 阈值线',
+          label: language === 'zh-TW' ? 'eFTP 閾值線' : 'eFTP 阈值线',
           data: points.map(() => parseFloat((eftp.eFTP * factor).toFixed(2))),
           borderColor: '#FF9500',
           borderWidth: 1.5,
@@ -1048,7 +1048,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         }
       ]
     };
-  }, [eftp, mmpUnit, weightKg]);
+  }, [eftp, mmpUnit, weightKg, language]);
 
   const renderComponentIcon = (key: 'chain' | 'tire' | 'brake') => {
     if (key === 'chain') return <Link2 className="w-3.5 h-3.5 text-ios-blue shrink-0" />;
@@ -1221,7 +1221,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
         />
       </div>
 
-      {/* TAB 1: 综合总览 (OVERVIEW) */}
+      {/* TAB 1: 综合总览 */}
       {activeTab === 'overview' && (
         <div className="space-y-4 sm:space-y-5">
           {/* 6 Key Metric Tiles Array */}
@@ -1667,8 +1667,8 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 1. PMC Matrix (Intervals.icu Model) */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '體能動力學 (PMC)' : '体能动力学 (PMC)'}
-              subtitle="90天体能 (CTL) · 急性疲劳 (ATL) · 竞技状态 (TSB) 及未来 14 天减量推演"
+              title={language === 'zh-TW' ? '體能動力學' : '体能动力学'}
+              subtitle={language === 'zh-TW' ? '90天長期體能 · 急性疲勞 · 競技狀態及未來 14 天減量推演' : '90天长期体能 · 急性疲劳 · 竞技状态及未来 14 天减量推演'}
               icon={TrendingUp}
               iconColor="text-ios-blue bg-ios-blue/10"
               action={
@@ -1723,8 +1723,8 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                   <div>
                     <strong>黄金竞技窗口预测:</strong>{' '}
                     {optimalRaceWindow.inOptimalFormToday
-                      ? `今日已处于黄金竞技状态 (TSB ${latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb})！`
-                      : `若保持合理排酸减量，预计 ${optimalRaceWindow.daysUntilPeak} 天后 (${optimalRaceWindow.peakShortDate}) TSB 回弹至 +${optimalRaceWindow.peakTsb} 竞技巅峰！`}
+                      ? `今日已处于黄金竞技状态 · TSB ${latestPmc.tsb > 0 ? `+${latestPmc.tsb}` : latestPmc.tsb}！`
+                      : `若保持合理排酸减量，预计 ${optimalRaceWindow.daysUntilPeak} 天后 · ${optimalRaceWindow.peakShortDate}，TSB 回弹至 +${optimalRaceWindow.peakTsb} 竞技巅峰！`}
                     {optimalRaceWindow.optimalDateRange && ` 适宜出赛区间: ${optimalRaceWindow.optimalDateRange}。`}
                   </div>
                 </div>
@@ -1754,7 +1754,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
               }
               subtitle={
                 volumeSubView === 'volume'
-                  ? '周训练负荷 (TSS 柱状) 与骑行里程 (折线) 双轴走势'
+                  ? (language === 'zh-TW' ? '週訓練負荷柱狀與騎行里程折線雙軸走勢' : '周训练负荷柱状与骑行里程折线双轴走势')
                   : '监控每周 CTL 爬升斜率，避免激增超速 (>8 TSS/周) 引发慢性损伤'
               }
               icon={BarChart2}
@@ -1934,7 +1934,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
           {/* 5. MMP Power Duration Curve & eFTP */}
           <IOSCard className="space-y-3.5">
             <IOSCardHeader
-              title={language === 'zh-TW' ? '功率持續曲線 (MMP)' : '功率持续曲线 (MMP)'}
+              title={language === 'zh-TW' ? '功率持續曲線' : '功率持续曲线'}
               subtitle={`估算 FTP: ${eftp.eFTP}W (${eftp.eFTPWkg} W/kg) · W' ${eftp.wPrimeKj} kJ`}
               icon={Zap}
               iconColor="text-ios-blue bg-ios-blue/10"
@@ -2138,7 +2138,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       <div className="p-2.5 rounded-xl bg-ios-blue/5 dark:bg-ios-blue/10 border border-ios-blue/15 space-y-1.5">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold text-ios-blue flex items-center gap-1">
-                            <span>🥇 {language === 'zh-TW' ? '個人最佳 (PR)' : '个人最佳 (PR)'}</span>
+                            <span>🥇 {language === 'zh-TW' ? '個人最佳' : '个人最佳'}</span>
                           </span>
                           {seg.athlete_attempts && (
                             <span className="text-[10px] text-slate-500 dark:text-slate-400">
@@ -2186,7 +2186,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       <div className="p-2.5 rounded-xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/20 space-y-1.5">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                            <span>👑 {language === 'zh-TW' ? '全網紀錄 (KOM)' : '全网纪录 (KOM)'}</span>
+                            <span>👑 {language === 'zh-TW' ? '全網紀錄' : '全网纪录'}</span>
                           </span>
                           {seg.kom_athlete && (
                             <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[80px]" title={seg.kom_athlete}>
@@ -2397,7 +2397,7 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
             {/* Left 5 cols: Eddington Number Hero */}
             <IOSCard className="lg:col-span-5 space-y-3.5">
               <IOSCardHeader
-                title={language === 'zh-TW' ? '愛丁頓數 (E)' : '爱丁顿数 (E)'}
+                title={language === 'zh-TW' ? '愛丁頓數' : '爱丁顿数'}
                 subtitle="全球严肃骑行者耐力终极勋章"
                 icon={Award}
                 iconColor="text-ios-blue bg-ios-blue/10"

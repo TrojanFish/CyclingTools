@@ -327,7 +327,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       labels: pmcData.map(d => d.date),
       datasets: [
         {
-          label: language === 'zh-TW' ? 'CTL (體能)' : 'CTL (体能)',
+          label: language === 'zh-TW' ? '長期體能' : '长期体能',
           data: pmcData.map(d => d.ctl),
           borderColor: '#00AFFF',
           backgroundColor: 'transparent',
@@ -337,7 +337,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           yAxisID: 'y'
         },
         {
-          label: language === 'zh-TW' ? 'ATL (疲勞)' : 'ATL (疲劳)',
+          label: language === 'zh-TW' ? '急性疲勞' : '急性疲劳',
           data: pmcData.map(d => d.atl),
           borderColor: '#f43f5e',
           backgroundColor: 'transparent',
@@ -347,7 +347,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           yAxisID: 'y'
         },
         {
-          label: language === 'zh-TW' ? 'TSB (狀態)' : 'TSB (状态)',
+          label: language === 'zh-TW' ? '競技狀態' : '竞技状态',
           data: pmcData.map(d => d.tsb),
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.15)',
@@ -475,8 +475,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         setAnalysis(updated);
         showToast(
           language === 'zh-TW'
-            ? '已基於經典物理力學模型重構仿真功率 (NP/TSS/做功/功率曲線)'
-            : '已基于经典物理力学模型重构仿真功率 (NP/TSS/做功/功率曲线)',
+            ? '已基於經典物理力學模型重構仿真功率 · NP、TSS、總做功與功率曲線'
+            : '已基于经典物理力学模型重构仿真功率 · NP、TSS、总做功与功率曲线',
           'success'
         );
       } else {
@@ -1085,7 +1085,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         type: 'puncher',
         title: language === 'zh-TW' ? '阿登突圍/陡坡型' : '阿登突围/陡坡型',
         badgeColor: 'text-ios-orange bg-ios-orange/10 border-ios-orange/20',
-        description: '最大摄氧量 (VO₂max) 与抗乳酸能力突出，擅长 1~5 分钟的短陡坡爆击、反复突围拉扯与追赶。',
+        description: '最大摄氧量 VO₂max 与抗乳酸能力突出，擅长 1~5 分钟的短陡坡爆击、反复突围拉扯与追赶。',
         trainingFocus: '可配合「Over-Under 乳酸清除间歇」与「4x4 VO₂max 课表」进一步强化乳酸穿梭再循环能力。'
       };
     }
@@ -1093,7 +1093,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       type: 'time_trialist',
       title: language === 'zh-TW' ? '計時賽/長坡巡航型' : '计时赛/长坡巡航型',
       badgeColor: 'text-ios-green bg-ios-green/10 border-ios-green/20',
-      description: '功能阈值功率 (FTP) 持续输出坚如磐石，有氧底蕴深厚，长距离平路巡航与稳态爬坡表现优异。',
+      description: '功能阈值功率持续输出坚如磐石，有氧底蕴深厚，长距离平路巡航与稳态爬坡表现优异。',
       trainingFocus: '建议使用「2x20 经典阈值巡航」巩固推重比，同时适度补充「Tabata 冲刺」激活无氧能量池储备。'
     };
   }, [analysis, weightKg, language]);
@@ -1107,9 +1107,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'zone2_endurance') || WORKOUT_TEMPLATES[5];
       return {
         template: tmpl,
-        deficiencyTitle: language === 'zh-TW' ? '有氧耐力脫節 (Pw:HR 漂移過大)' : '有氧耐力脱节 (Pw:HR 漂移过大)',
+        deficiencyTitle: language === 'zh-TW' ? '有氧耐力脫節 · 心率漂移過大' : '有氧耐力脱节 · 心率漂移过大',
         deficiencyDesc: `本次骑行后程有氧解耦率高达 ${analysis.aerobicDecoupling}%。在同等踩踏功率下心率出现显著代偿性爬升，表明基础有氧能力、肌纤维抗疲劳度与线粒体容量亟待加强。`,
-        actionAdvice: '推荐通过 90 分钟 Zone 2 恒定巡航课表，最大化脂肪氧化率 (FatMax)，建立扎实有氧金字塔基石。'
+        actionAdvice: '推荐通过 90 分钟 Zone 2 恒定巡航课表，最大化脂肪氧化率，建立扎实有氧金字塔基石。'
       };
     }
 
@@ -1132,7 +1132,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'ronnestad_30_15') || WORKOUT_TEMPLATES[0];
         return {
           template: tmpl,
-          deficiencyTitle: language === 'zh-TW' ? '最大攝氧量 (VO₂max) 儲備不足' : '最大摄氧量 (VO₂max) 储备不足',
+          deficiencyTitle: language === 'zh-TW' ? '最大攝氧量儲備不足' : '最大摄氧量储备不足',
           deficiencyDesc: `本次骑行 1m~5m 相对推重比偏弱 (5m 推重比: ${m5m.toFixed(1)} W/kg)。面对急陡坡爆击或高强度拉扯突围时易进入急性缺氧力竭。`,
           actionAdvice: '推荐执行 Rønnestad 30/15s 微间歇或 4x4 min 高摄氧课表，快速提升左心室泵血输出与神经抗乳酸效率。'
         };
@@ -1143,8 +1143,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         const tmpl = WORKOUT_TEMPLATES.find(t => t.id === 'threshold_2x20') || WORKOUT_TEMPLATES[2];
         return {
           template: tmpl,
-          deficiencyTitle: language === 'zh-TW' ? '乳酸閾值 (FTP) 續航持久力不足' : '乳酸阈值 (FTP) 续航持久力不足',
-          deficiencyDesc: `本次骑行 20m 稳态功率或长坡表现相对滞后 (20m 推重比: ${m20m.toFixed(1)} W/kg)。乳酸拐点下的维持极限时间 (TTE) 存在短板。`,
+          deficiencyTitle: language === 'zh-TW' ? '乳酸閾值續航持久力不足' : '乳酸阈值续航持久力不足',
+          deficiencyDesc: `本次骑行 20m 稳态功率或长坡表现相对滞后 (20m 推重比: ${m20m.toFixed(1)} W/kg)。乳酸拐点下的维持极限时间存在短板。`,
           actionAdvice: '推荐执行 2x20 min 经典阈值巡航或 Over-Under 乳酸清除课表，铁壁锚定阈值输出，拓展名山长爬坡统治力。'
         };
       }
@@ -1175,7 +1175,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     const tmpl = targetTemplate || (selectedSmartTemplateId ? WORKOUT_TEMPLATES.find(t => t.id === selectedSmartTemplateId) : smartWorkoutRecommendation?.template) || WORKOUT_TEMPLATES[0];
     const payload = {
       templateId: tmpl.id,
-      title: `${tmpl.name} (针对本次骑行诊断)`,
+      title: `${tmpl.name} · 专属靶向补强`,
       reason: smartWorkoutRecommendation?.deficiencyTitle || '骑行诊断补强',
       segments: JSON.parse(JSON.stringify(tmpl.segments))
     };
@@ -1218,7 +1218,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (analysis && mmpShowCurrent) {
       datasets.push({
         type: 'line' as const,
-        label: isWkg ? '本次活动 (W/kg)' : '本次活动 (Watts)',
+        label: isWkg ? '本次活动 (W/kg)' : '本次活动 (W)',
         data: analysis.mmp.map(m => isWkg ? m.wkg : m.watts),
         borderColor: '#8b5cf6',
         backgroundColor: 'rgba(139, 92, 246, 0.18)',
@@ -1235,7 +1235,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (mmpShow90d && localActivities.length > 0) {
       datasets.push({
         type: 'line' as const,
-        label: isWkg ? '近90天最佳包络 (W/kg)' : '近90天最佳包络 (Watts)',
+        label: isWkg ? '近90天最佳包络 (W/kg)' : '近90天最佳包络 (W)',
         data: mmpEnvelope90d.map(m => isWkg ? m.wkg : m.watts),
         borderColor: '#f59e0b',
         borderDash: [5, 3],
@@ -1253,7 +1253,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (mmpShowAllTime && localActivities.length > 0) {
       datasets.push({
         type: 'line' as const,
-        label: isWkg ? '历史最佳纪录 (W/kg)' : '历史最佳纪录 (Watts)',
+        label: isWkg ? '历史最佳纪录 (W/kg)' : '历史最佳纪录 (W)',
         data: mmpEnvelopeAllTime.map(m => isWkg ? m.wkg : m.watts),
         borderColor: '#ef4444',
         borderDash: [8, 4],
@@ -1371,14 +1371,14 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (analysis.variabilityIndex > 1.20) {
       notes.push({
         type: 'info',
-        title: '高波动性输出 (VI > 1.20)',
+        title: '高波动性输出 · VI > 1.20',
         desc: `变化指数 VI 达 ${analysis.variabilityIndex}，说明存在大量突围、陡坡踩踏与下坡滑行，属于典型的起伏赛道或绕圈进攻战术。`
       });
     } else if (analysis.variabilityIndex <= 1.06) {
       notes.push({
         type: 'success',
-        title: '极平稳巡航配速 (VI ≤ 1.06)',
-        desc: `变化指数 VI 仅为 ${analysis.variabilityIndex}，动力输出平稳如钟摆，堪称计时赛（TT）教科书般的配速掌控。`
+        title: '极平稳巡航配速 · VI ≤ 1.06',
+        desc: `变化指数 VI 仅为 ${analysis.variabilityIndex}，动力输出平稳如钟摆，堪称计时赛教科书般的配速掌控。`
       });
     }
 
@@ -1393,7 +1393,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       } else {
         notes.push({
           type: 'warning',
-          title: '后半程存在显著心率漂移 (Pw:HR > 5%)',
+          title: '后半程存在显著心率漂移 (心率漂移 > 5%)',
           desc: `后半程有氧解耦率达到 ${analysis.aerobicDecoupling}%，相同瓦数下心率显著爬升，可能由长距离疲劳、环境高温或电解质水化不足引起。`
         });
       }
@@ -1442,7 +1442,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
         category={language === 'zh-TW' ? '生理與代謝' : '生理与代谢'}
         categoryIcon={LineChartIcon}
         title={language === 'zh-TW' ? '活動解析' : '活动解析'}
-        description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率 (NP)、强度系数 (IF)、训练压力 (TSS)、变化指数 (VI)、效率因子 (EF)、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
+        description="纯前端离线直接解析 Garmin/Wahoo/迈金/行者/iGPSPORT 等码表生成的 .fit / .gpx / .tcx 活动文件。精准计算加权标准化功率、强度系数、训练压力、变化指数、效率因子、有氧解耦率及 Coggan 7 区时间驻留分布，数据绝不上云。"
         tint="red"
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成復盤海報' : '生成复盘海报'}
@@ -1516,7 +1516,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
             </div>
 
             <div className="font-bold text-sm text-slate-800 dark:text-white">
-              {'点击选择或拖拽码表文件至此 (.fit / .gpx / .tcx)'}
+              {'点击选择或拖拽码表文件至此（FIT / GPX / TCX）'}
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {'全面兼容佳明 Garmin、Wahoo、迈金、行者、iGPSPORT、百锐腾等各大主流品牌'}
@@ -1664,7 +1664,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <Zap className="w-3.5 h-3.5" />
                     <span>
                       {analysis.isEstimatedPower
-                        ? (language === 'zh-TW' ? '切換回硬件原始數據 (0W)' : '切换回硬件原始数据 (0W)')
+                        ? (language === 'zh-TW' ? '切換回硬件原始無功率數據' : '切换回硬件原始无功率数据')
                         : (language === 'zh-TW' ? '開啟物理動力學仿真估算功率' : '开启物理动力学仿真估算功率')}
                     </span>
                   </button>
@@ -1750,9 +1750,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   </div>
                   <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1">
                     {analysis.sensorDiagnostics.hasHardwarePower
-                      ? `${analysis.avgPower}W (${analysis.normalizedPower}W NP)`
+                      ? `${analysis.avgPower}W · NP ${analysis.normalizedPower}W`
                       : analysis.isEstimatedPower
-                      ? `${analysis.avgPower}W (估算 NP ${analysis.normalizedPower}W)`
+                      ? `${analysis.avgPower}W · 估算 NP ${analysis.normalizedPower}W`
                       : (language === 'zh-TW' ? '硬件功率計離線' : '硬件功率计离线')}
                   </div>
                 </div>
@@ -1811,31 +1811,31 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-3.5">
             <IOSMetricTile
-              label={analysis.isEstimatedPower ? '标准化功率 NP (估算)' : '标准化功率 NP'}
+              label="NP"
               value={analysis.normalizedPower}
               unit="W"
-              subtext={`${(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg · 均功率 ${analysis.avgPower}W${analysis.isEstimatedPower ? ' · 物理估算' : ''}`}
+              subtext={`标准化功率 · ${(analysis.normalizedPower / (weightKg || 68)).toFixed(2)} W/kg${analysis.isEstimatedPower ? ' · 物理估算' : ''}`}
               theme={analysis.isEstimatedPower ? 'amber' : 'blue'}
               icon={<Zap className={`w-4 h-4 ${analysis.isEstimatedPower ? 'text-ios-amber' : 'text-ios-blue'}`} />}
             />
             <IOSMetricTile
-              label="强度系数 IF"
+              label="强度系数"
               value={analysis.intensityFactor}
               subtext={`${Math.round(analysis.intensityFactor * 100)}% FTP负荷${analysis.isEstimatedPower ? ' · 估算' : ''}`}
               theme="amber"
               icon={<Flame className="w-4 h-4 text-ios-orange" />}
             />
             <IOSMetricTile
-              label="训练压力 TSS"
+              label="训练压力"
               value={analysis.tss}
               subtext={analysis.tss < 150 ? '低度疲劳' : analysis.tss < 300 ? '中度疲劳' : '重度负荷'}
               theme="purple"
               icon={<Award className="w-4 h-4 text-ios-purple" />}
             />
             <IOSMetricTile
-              label="变化指数 VI"
+              label="变化指数"
               value={analysis.variabilityIndex}
-              subtext={analysis.variabilityIndex <= 1.05 ? 'TT Steady' : analysis.variabilityIndex <= 1.15 ? 'Rolling Hills' : 'Punchy Attack'}
+              subtext={analysis.variabilityIndex <= 1.05 ? '平稳巡航' : analysis.variabilityIndex <= 1.15 ? '起伏路段' : '高频突围'}
               theme="blue"
               icon={<TrendingUp className="w-4 h-4 text-ios-blue" />}
             />
@@ -1877,7 +1877,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               {analysis.efficiencyFactor && (
                 <span className="hidden sm:inline-flex items-center gap-1.5">
                   <Gauge className="w-4 h-4 text-ios-blue" />
-                  <span>{'效率因子 (EF)'}: <strong className="text-ios-blue tabular-nums">{analysis.efficiencyFactor} W/bpm</strong></span>
+                  <span>{'效率因子'}: <strong className="text-ios-blue tabular-nums">{analysis.efficiencyFactor} W/bpm</strong></span>
                 </span>
               )}
 
@@ -2355,7 +2355,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         }`}
                       >
                         <span className="sm:hidden">W/kg</span>
-                        <span className="hidden sm:inline">W/kg (推重比)</span>
+                        <span className="hidden sm:inline">推重比</span>
                       </button>
                       <button
                         type="button"
@@ -2365,7 +2365,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         }`}
                       >
                         <span className="sm:hidden">瓦特</span>
-                        <span className="hidden sm:inline">Watts (瓦特)</span>
+                        <span className="hidden sm:inline">绝对功率</span>
                       </button>
                     </div>
 
@@ -2375,13 +2375,13 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       onChange={(e) => setSelectedCogganTier(e.target.value)}
                       className="h-9 bg-white dark:bg-[#1C1C1E] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-purple"
                     >
-                      <option value="all">Coggan 全等级天梯标尺</option>
-                      <option value="world_tour">WorldTour (世巡职业)</option>
-                      <option value="cat1">Cat 1 (国家级精英)</option>
-                      <option value="cat2">Cat 2 (省级健将)</option>
-                      <option value="cat3">Cat 3 (俱乐部高阶)</option>
-                      <option value="cat4">Cat 4 (进阶骑手)</option>
-                      <option value="cat5">Cat 5 / Untrained (业余入门)</option>
+                      <option value="all">能力分级全天梯标尺</option>
+                      <option value="world_tour">世巡职业级</option>
+                      <option value="cat1">国家精英级</option>
+                      <option value="cat2">省级健将级</option>
+                      <option value="cat3">俱乐部高阶</option>
+                      <option value="cat4">进阶骑手</option>
+                      <option value="cat5">业余入门</option>
                       <option value="none">隐藏天梯对比线</option>
                     </select>
                   </div>
@@ -2492,7 +2492,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                               ticks: { font: { size: 10 }, color: '#8E8E93' },
                               title: {
                                 display: true,
-                                text: mmpUnit === 'wkg' ? 'W/kg (推重比)' : 'Watts (瓦特)',
+                                text: mmpUnit === 'wkg' ? 'W/kg' : 'W',
                                 color: '#AF52DE',
                                 font: { size: 11 }
                               }
@@ -2552,7 +2552,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           </h3>
                         </div>
                         <p className="text-xs text-slate-500 mt-0.5">
-                          模拟无氧电池在 CP (临界功率) 以上踩踏时的放电耗竭与低于 CP 时的动态指数重充
+                          模拟无氧电池在临界功率以上踩踏时的放电耗竭与低于临界功率时的动态指数重充
                         </p>
                       </div>
 
@@ -2634,7 +2634,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-ios-card space-y-3.5">
                     <div className="flex items-center justify-between">
                       <div className="text-xs font-bold text-slate-850 dark:text-white">
-                        {"W' Balance 电量耗竭波形 (绿色) 与实时功率 (蓝色) 对照"}
+                        {"W' Balance 实时电量耗竭波形与踩踏功率对照"}
                       </div>
                       <span className="text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
                         CP 临界基准: {cpWatts} W · W' max: {wPrimeKj} kJ
@@ -2683,7 +2683,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                         <Info className="w-4 h-4 text-ios-blue shrink-0 mt-0.5" />
                         <div className="space-y-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
                           <p>
-                            <strong>科学原理</strong>：当输出功率高于临界功率 (CP) 时，身体主要依靠无氧糖酵解供能，迅速消耗 W' 储备；当功率降回 CP 以下时，机体利用有氧代谢乳酸穿梭逐步重充电量。若 W' 降至 0%，将引发急性力竭（爆缸）。
+                            <strong>科学原理</strong>：当输出功率高于临界功率时，身体主要依靠无氧糖酵解供能，迅速消耗 W' 储备；当功率降回临界功率以下时，机体利用有氧代谢乳酸穿梭逐步重充电量。若 W' 降至 0%，将引发急性力竭。
                           </p>
                         </div>
                       </div>
@@ -2711,7 +2711,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
               <div className="flex flex-wrap items-center justify-between gap-2.5">
                 <div className="text-xs font-bold text-slate-850 dark:text-white flex items-center gap-2">
                   <Layers className="w-4 h-4 text-ios-purple" />
-                  <span>{language === 'zh-TW' ? '電子變速換擋深度解析 (Shimano Di2 / SRAM)' : '电子变速换挡深度解析 (Shimano Di2 / SRAM)'}</span>
+                  <span>{language === 'zh-TW' ? '電子變速換擋深度解析' : '电子变速换挡深度解析'}</span>
                 </div>
                 <div className="text-xs text-slate-500">
                   {language === 'zh-TW' ? '全程累計換擋' : '全程累计换挡'}: <strong className="text-slate-900 dark:text-white tabular-nums">{analysis.shiftingEvents.length}</strong> {language === 'zh-TW' ? '次' : '次'}
@@ -2729,7 +2729,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 </div>
 
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
-                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '前撥換檔 (大/小盤)' : '前拨换挡 (大/小盘)'}</div>
+                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '前撥換檔' : '前拨换挡'}</div>
                   <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
                     {analysis.shiftingEvents.filter(e => e.frontGearNum !== undefined).length} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span>
                   </div>
@@ -2739,7 +2739,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 </div>
 
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/10">
-                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '後撥換擋 (飛輪)' : '后拨换挡 (飞轮)'}</div>
+                  <div className="text-[11px] text-slate-500">{language === 'zh-TW' ? '後撥換擋' : '后拨换挡'}</div>
                   <div className="text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">
                     {analysis.shiftingEvents.filter(e => e.rearGearNum !== undefined).length} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{language === 'zh-TW' ? '次' : '次'}</span>
                   </div>
@@ -2827,8 +2827,8 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       <TrendingUp className="w-5 h-5 text-ios-blue" />
                       <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                         {language === 'zh-TW'
-                          ? '體能管理模型 (PMC)'
-                          : '体能管理模型 (PMC)'}
+                          ? '體能管理模型'
+                          : '体能管理模型'}
                       </h3>
                       <span className="px-2 py-0.5 rounded-full text-[11px] font-mono bg-ios-blue/10 text-ios-blue border border-ios-blue/20">
                         {pmcDataSource === 'local_history' ? 'Local-First 真实时序' : 'Bannister EWMA 模拟'}
@@ -2837,7 +2837,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {pmcDataSource === 'local_history'
                         ? `由本地持久化时序库中 ${localActivities.length} 场真实骑行连续驱动，每日自动递推计算体能累积与疲劳消退。`
-                        : '长周期体能积累 (CTL 42天)、急性疲劳 (ATL 7天) 与比赛竞技状态 (TSB) 动态时序监测。'}
+                        : '长期体能积累 (42天)、急性疲劳 (7天) 与比赛竞技状态动态时序监测。'}
                     </p>
                   </div>
 
@@ -2978,7 +2978,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="p-3 sm:p-3.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-center">
                     <span className="text-[11px] font-semibold text-ios-blue block">
-                      当前 CTL (长期体能)
+                      当前长期体能
                     </span>
                     <span className="text-2xl sm:text-3xl font-bold font-mono text-ios-blue block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.ctl : '--'}
@@ -2988,7 +2988,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                   <div className="p-3 sm:p-3.5 rounded-xl bg-ios-orange/10 border border-ios-orange/20 text-center">
                     <span className="text-[11px] font-semibold text-ios-orange block">
-                      当前 ATL (急性疲劳)
+                      当前急性疲劳
                     </span>
                     <span className="text-2xl sm:text-3xl font-bold font-mono text-ios-orange block my-1 tabular-nums">
                       {latestPmcDay ? latestPmcDay.atl : '--'}
@@ -2998,7 +2998,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
 
                   <div className="p-3 sm:p-3.5 rounded-xl bg-ios-green/10 border border-ios-green/20 text-center">
                     <span className="text-[11px] font-semibold text-ios-green block">
-                      当前 TSB (竞技状态)
+                      当前竞技状态
                     </span>
                     <span
                       className="text-2xl sm:text-3xl font-bold font-mono block my-1 tabular-nums"
@@ -3065,7 +3065,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           position: 'left',
                           grid: { color: 'rgba(150, 150, 150, 0.08)' },
                           ticks: { color: '#AEAEB2', font: { size: 10 } },
-                          title: { display: true, text: 'CTL / ATL (负荷点)', color: '#8E8E93', font: { size: 11 } }
+                          title: { display: true, text: '长期体能 / 急性疲劳', color: '#8E8E93', font: { size: 11 } }
                         },
                         y1: {
                           type: 'linear',
@@ -3073,7 +3073,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                           position: 'right',
                           grid: { drawOnChartArea: false },
                           ticks: { color: '#10b981', font: { size: 10 } },
-                          title: { display: true, text: 'TSB (竞技状态)', color: '#10b981', font: { size: 11 } }
+                          title: { display: true, text: '竞技状态', color: '#10b981', font: { size: 11 } }
                         }
                       },
                       plugins: {
@@ -3147,9 +3147,9 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       className="w-full h-2 bg-slate-200 dark:bg-white/10 rounded-full appearance-none cursor-pointer accent-amber-500"
                     />
                     <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-mono">
-                      <span>+5 (稳健参赛)</span>
-                      <span>+15 (爆发力巅峰)</span>
-                      <span>+25 (极限减量)</span>
+                      <span>+5 稳健参赛</span>
+                      <span>+15 爆发力巅峰</span>
+                      <span>+25 极限减量</span>
                     </div>
                   </div>
 
@@ -3158,7 +3158,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       预计所需减量备赛周期
                     </div>
                     <div className="text-2xl sm:text-3xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
-                      {taperPrediction.daysNeeded} <span className="text-sm font-sans">天 (Days)</span>
+                      {taperPrediction.daysNeeded} <span className="text-sm font-sans">天</span>
                     </div>
                     <div className="text-[11px] text-slate-600 dark:text-slate-300">
                       出关比赛日预测 CTL 体能保全值：<strong className="font-mono text-slate-900 dark:text-white tabular-nums">{taperPrediction.predictedCtl}</strong>
@@ -3166,7 +3166,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   </div>
 
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                    在减量期（Taper）保持每天 20~35 TSS 的低量高频刺激（短冲刺激活神经，缩减总骑行时间 40%），可确保疲劳迅速消退而有氧酶活性不失。
+                    在减量期保持每天 20~35 TSS 的低量高频刺激（短冲刺激活神经，缩减总骑行时间 40%），可确保疲劳迅速消退而有氧酶活性不失。
                   </p>
                 </div>
               </div>
@@ -3191,15 +3191,15 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                       onChange={(e) => setNewManualDayOffset(Number(e.target.value))}
                       className="w-full h-9 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-900 dark:text-white focus:outline-none"
                     >
-                      <option value={0}>今天 (Day 0)</option>
-                      <option value={-1}>昨天 (Day -1)</option>
-                      <option value={-2}>前天 (Day -2)</option>
-                      <option value={-3}>3天前 (Day -3)</option>
+                      <option value={0}>今天</option>
+                      <option value={-1}>昨天</option>
+                      <option value={-2}>前天</option>
+                      <option value={-3}>3天前</option>
                     </select>
                   </div>
 
                   <div className="w-28 sm:w-32">
-                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">负荷点数 (TSS)</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">TSS 负荷点数</label>
                     <NumberStepper
                       value={newManualTss}
                       onChange={setNewManualTss}
@@ -3211,7 +3211,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                   </div>
 
                   <div className="flex-1 min-w-[140px]">
-                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">训练备注 (可选)</label>
+                    <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">训练备注</label>
                     <input
                       type="text"
                       value={newManualTitle}

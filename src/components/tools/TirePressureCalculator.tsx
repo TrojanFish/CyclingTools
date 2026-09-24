@@ -168,8 +168,8 @@ export const TirePressureCalculator: React.FC = () => {
                 : '中央车架包重心居中均衡，前后胎压同步增强'
             }。重车状态下制动距离显著延长，下长坡务必提前阶梯式制动控速，注意碟片热衰竭。`
           : null,
-        actualWidth > nominalWidth ? `实测胎宽(${actualWidth}mm)宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
-        isHooklessPressureExceeded ? '无钩轮圈极限安全气压为 72.5 PSI (5.0 Bar)，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
+        actualWidth > nominalWidth ? `实测胎宽 ${actualWidth}mm 宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
+        isHooklessPressureExceeded ? '无钩轮圈极限安全气压为 72.5 PSI / 5.0 Bar，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
         isHooklessPressureWarning ? '当前气压逼近无钩轮圈 72.5 PSI 上限临界点，建议充气时预留余量以防日晒升温爆胎。' : null
       ].filter(Boolean) as string[]
     };
@@ -177,7 +177,7 @@ export const TirePressureCalculator: React.FC = () => {
 
   const handleGeneratePoster = () => {
     const url = generateTirePressurePoster({
-      bikeType: bikeType === 'road' ? '公路车 Road' : bikeType === 'gravel' ? '全地形 Gravel' : '山地车 MTB',
+      bikeType: bikeType === 'road' ? '公路车' : bikeType === 'gravel' ? '全地形车' : '山地车',
       totalWeightKg: totalSystemWeight,
       tireSetup: tireSetup === 'tubeless' ? '真空胎 Tubeless' : tireSetup === 'tube' ? '开口胎 + 内胎 Tube' : '管胎 Tubular',
       tireWidth: actualWidth,
@@ -482,7 +482,7 @@ export const TirePressureCalculator: React.FC = () => {
                   <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
                     {language === 'zh-TW' ? '無鈎車圈' : '无钩车圈'}
                   </span>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI / 5.0 Bar</span>
                 </div>
                 <input
                   type="checkbox"
@@ -547,7 +547,7 @@ export const TirePressureCalculator: React.FC = () => {
                 <span>ETRTO 安全规范警报：无钩圈与外胎规格不匹配</span>
               </div>
               <p className="leading-relaxed opacity-95">
-                当前车圈内宽为 <strong>{rimInnerWidth}mm</strong>（≥23mm），而外胎规格为 <strong>{nominalWidth}c</strong>（&lt;28c）。根据国际自行车轮胎与轮圈组织 (ETRTO) 规范，宽内宽无钩轮圈严禁搭配小于 28c 外胎，否则胎圈无法产生足够的机械锁紧拉力，存在高速脱圈风险。建议更换为 28c 或以上规格外胎。
+                当前车圈内宽为 <strong>{rimInnerWidth}mm</strong>（≥23mm），而外胎规格为 <strong>{nominalWidth}c</strong>（&lt;28c）。根据欧洲轮胎轮圈组织 ETRTO 规范，宽内宽无钩轮圈严禁搭配小于 28c 外胎，否则胎圈无法产生足够的机械锁紧拉力，存在高速脱圈风险。建议更换为 28c 或以上规格外胎。
               </p>
             </div>
           )}
@@ -560,7 +560,7 @@ export const TirePressureCalculator: React.FC = () => {
                 <span>突破无钩轮圈 72.5 PSI 极限安全红线！</span>
               </div>
               <p className="leading-relaxed opacity-95">
-                当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI (5.0 Bar)</strong> 绝对强制安全上限！无钩轮圈没有内扣机械锁止突缘，超压极易导致外胎炸出车圈。强烈建议选用 28c~32c 更宽外胎以将安全气压降至 50~65 PSI。
+                当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI / 5.0 Bar</strong> 绝对强制安全上限！无钩轮圈没有内扣机械锁止突缘，超压极易导致外胎炸出车圈。强烈建议选用 28c~32c 更宽外胎以将安全气压降至 50~65 PSI。
               </p>
             </div>
           )}
@@ -645,8 +645,8 @@ export const TirePressureCalculator: React.FC = () => {
                 });
                 showToast(
                   language === 'zh-TW'
-                    ? `已將計算胎壓 (前 ${fPsi} / 後 ${rPsi} PSI) 保存至戰車【${activeBike.name.split('/')[0]}】`
-                    : `已将计算胎压 (前 ${fPsi} / 后 ${rPsi} PSI) 保存至战车【${activeBike.name.split('/')[0]}】`,
+                    ? `已將計算胎壓前 ${fPsi} / 後 ${rPsi} PSI 保存至戰車【${activeBike.name.split('/')[0]}】`
+                    : `已将计算胎压前 ${fPsi} / 后 ${rPsi} PSI 保存至战车【${activeBike.name.split('/')[0]}】`,
                   'success'
                 );
               }}

@@ -278,7 +278,7 @@ export const TrainingPlanCalendar: React.FC = () => {
       datasets: [
         {
           type: 'line' as const,
-          label: 'CTL (体能)',
+          label: 'CTL',
           data: points.map(p => p.ctl),
           borderColor: '#0A84FF', // Apple Blue
           backgroundColor: 'transparent',
@@ -289,7 +289,7 @@ export const TrainingPlanCalendar: React.FC = () => {
         },
         {
           type: 'line' as const,
-          label: 'ATL (疲劳)',
+          label: 'ATL',
           data: points.map(p => p.atl),
           borderColor: '#FF453A', // Apple Red
           backgroundColor: 'transparent',
@@ -300,7 +300,7 @@ export const TrainingPlanCalendar: React.FC = () => {
         },
         {
           type: 'line' as const,
-          label: 'TSB (状态)',
+          label: 'TSB',
           data: points.map(p => p.tsb),
           borderColor: '#FFD60A', // Apple Gold
           backgroundColor: 'rgba(255, 214, 10, 0.1)',
@@ -366,7 +366,7 @@ END:VEVENT
     a.download = `LaBao_Pro_训练赛历_${goalEvent.name.replace(/\s+/g, '_')}.ics`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('已导出标准 iCalendar (.ics) 日历，可导入 Apple/Google 日历！', 'success');
+    showToast('已导出标准 iCalendar 日历，可直接导入 Apple / Google 日历！', 'success');
   };
 
   // Generate Poster
@@ -471,7 +471,7 @@ END:VEVENT
             className="p-3 sm:p-4"
           />
           <IOSMetricTile
-            label="体能目标 (CTL)"
+            label="CTL 目标"
             value={`${currentCtl} → ${planSummary.targetRaceCtl}`}
             unit="CTL"
             subtext="基于历史 42 日负荷"
@@ -482,7 +482,7 @@ END:VEVENT
             label="比赛日状态"
             value={`+${planSummary.targetRaceTsb}`}
             unit="TSB"
-            subtext="黄金比赛窗口 (+15~25)"
+            subtext="黄金比赛窗口 +15~+25"
             theme="green"
             className="p-3 sm:p-4"
           />
@@ -686,7 +686,7 @@ END:VEVENT
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-ios-blue" />
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    全赛季 PMC 巅峰走势前瞻模拟 (Banister Impulse-Response Projection)
+                    全赛季 PMC 走势前瞻模拟
                   </h3>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -696,13 +696,13 @@ END:VEVENT
 
               <div className="flex items-center gap-3 text-xs">
                 <span className="flex items-center gap-1 font-bold text-ios-blue">
-                  <span className="w-3 h-0.5 bg-ios-blue inline-block"></span> CTL 体能
+                  <span className="w-3 h-0.5 bg-ios-blue inline-block"></span> CTL
                 </span>
                 <span className="flex items-center gap-1 font-bold text-rose-500">
-                  <span className="w-3 h-0.5 bg-rose-500 inline-block"></span> ATL 疲劳
+                  <span className="w-3 h-0.5 bg-rose-500 inline-block"></span> ATL
                 </span>
                 <span className="flex items-center gap-1 font-bold text-amber-500">
-                  <span className="w-3 h-0.5 bg-amber-500 inline-block"></span> TSB 状态
+                  <span className="w-3 h-0.5 bg-amber-500 inline-block"></span> TSB
                 </span>
               </div>
             </div>
@@ -742,7 +742,7 @@ END:VEVENT
               <div className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-ios-blue" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  年度周期间隔总计划表 (Annual Training Plan Weeks Breakdown)
+                  年度周期训练总计划
                 </h3>
               </div>
               <span className="text-xs text-slate-400 font-mono">

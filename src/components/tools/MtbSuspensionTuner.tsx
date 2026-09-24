@@ -337,8 +337,8 @@ export const MtbSuspensionTuner: React.FC = () => {
         }
         description={
           language === 'zh-TW'
-            ? '前叉氣壓/後膽彈簧磅數 · 下沉量 (SAG) 標尺推導 · 阻尼點位 · 槓桿比與氣室容積'
-            : '前叉气压/后胆弹簧磅数 · 下沉量 (SAG) 标尺推导 · 阻尼点位 · 杠杆比与气室容积'
+            ? '前叉氣壓/後膽彈簧磅數 · 下沉量標尺推導 · 阻尼點位 · 槓桿比與氣室容積'
+            : '前叉气压/后胆弹簧磅数 · 下沉量标尺推导 · 阻尼点位 · 杠杆比与气室容积'
         }
         tint="blue"
         onShare={handleGeneratePoster}
@@ -365,7 +365,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 label: (
                   <>
                     <span className="sm:hidden">XC 120</span>
-                    <span className="hidden sm:inline">XC 竞速 (120mm)</span>
+                    <span className="hidden sm:inline">XC 竞速 120mm</span>
                   </>
                 )
               },
@@ -374,7 +374,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 label: (
                   <>
                     <span className="sm:hidden">Trail 140</span>
-                    <span className="hidden sm:inline">Trail 林道 (140mm)</span>
+                    <span className="hidden sm:inline">林道全地形 140mm</span>
                   </>
                 )
               },
@@ -383,7 +383,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 label: (
                   <>
                     <span className="sm:hidden">Enduro 170</span>
-                    <span className="hidden sm:inline">Enduro 耐力 (170mm)</span>
+                    <span className="hidden sm:inline">耐力下坡 170mm</span>
                   </>
                 )
               },
@@ -392,7 +392,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                 label: (
                   <>
                     <span className="sm:hidden">DH 200</span>
-                    <span className="hidden sm:inline">DH 速降 (200mm)</span>
+                    <span className="hidden sm:inline">速降极限 200mm</span>
                   </>
                 )
               },
@@ -416,7 +416,7 @@ export const MtbSuspensionTuner: React.FC = () => {
           <div className="space-y-4 pt-3">
             <div>
               <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-slate-600 dark:text-slate-400">车手裸重 (Profile)</span>
+                <span className="text-slate-600 dark:text-slate-400">车手裸重</span>
                 <span className="font-mono font-bold text-slate-900 dark:text-white">
                   {baseWeightKg} kg / {Math.round(baseWeightKg * 2.20462)} lbs
                 </span>
@@ -602,7 +602,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     label: (
                       <>
                         <span className="sm:hidden">线性</span>
-                        <span className="hidden sm:inline">线性 (单转点)</span>
+                        <span className="hidden sm:inline">线性单转点</span>
                       </>
                     )
                   },
@@ -611,7 +611,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     label: (
                       <>
                         <span className="sm:hidden">渐进</span>
-                        <span className="hidden sm:inline">渐进 (VPP/Horst)</span>
+                        <span className="hidden sm:inline">渐进多连杆</span>
                       </>
                     )
                   },
@@ -620,7 +620,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     label: (
                       <>
                         <span className="sm:hidden">超渐进</span>
-                        <span className="hidden sm:inline">{'高渐进 (>25%)'}</span>
+                        <span className="hidden sm:inline">{'高渐进曲率'}</span>
                       </>
                     )
                   }
@@ -674,18 +674,18 @@ export const MtbSuspensionTuner: React.FC = () => {
                 </div>
                 <div>
                   <label className="text-xs text-slate-600 dark:text-slate-400 block mb-1">
-                    内管管径 (Stanchion)
+                    内管管径
                   </label>
                   <select
                     value={forkStanchionMm}
                     onChange={(e) => setForkStanchionMm(parseInt(e.target.value))}
                     className="w-full h-9 px-3 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-800 dark:text-white"
                   >
-                    <option value={32}>32mm (XC Step-Cast)</option>
-                    <option value={34}>34mm / 35mm (Trail / SID)</option>
-                    <option value={36}>36mm (All-Mountain)</option>
-                    <option value={38}>38mm (Enduro Heavy)</option>
-                    <option value={40}>40mm (DH 双肩)</option>
+                    <option value={32}>32mm</option>
+                    <option value={34}>34mm / 35mm</option>
+                    <option value={36}>36mm</option>
+                    <option value={38}>38mm</option>
+                    <option value={40}>40mm</option>
                   </select>
                 </div>
               </div>
@@ -693,7 +693,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               {/* Travel Slider */}
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-600 dark:text-slate-400">前叉行程 (Travel)</span>
+                  <span className="text-slate-600 dark:text-slate-400">前叉行程</span>
                   <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {forkTravelMm} mm
                   </span>
@@ -726,7 +726,7 @@ export const MtbSuspensionTuner: React.FC = () => {
 
                 <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-center">
                   <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
-                    标准静态下沉量 (SAG)
+                    标准静态下沉量
                   </div>
                   <div className="text-3xl font-bold font-mono tabular-nums text-slate-900 dark:text-white my-1">
                     {calc.targetForkSagMm}
@@ -770,28 +770,28 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.reboundClicksOut}
                     </div>
-                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-blue-500 font-semibold text-[11px]">低速压缩 LSC</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.lscClicksOut}
                     </div>
-                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-purple-500 font-semibold text-[11px]">高速压缩 HSC</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.hscClicksOut}
                     </div>
-                    <div className="text-[11px] text-slate-400">格 (GRIP2/Charger)</div>
+                    <div className="text-[11px] text-slate-400">格</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-ios-blue font-semibold text-[11px]">气室垫块 Token</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.recommendedForkTokens}
                     </div>
-                    <div className="text-[11px] text-slate-400">枚 (Spacers)</div>
+                    <div className="text-[11px] text-slate-400">枚</div>
                   </div>
                 </div>
               </div>
@@ -800,7 +800,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               <div className="space-y-2 pt-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-semibold text-slate-700 dark:text-slate-300">
-                    实测前叉下沉量核验 (毫米尺测量):
+                    实测前叉下沉量核验:
                   </span>
                   <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {measuredForkSagMm} mm ({calc.actualForkSagPct}%)
@@ -828,7 +828,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   {calc.forkSagDiagnosis === 'optimal' ? (
                     <>
                       <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
-                      <span>前叉 SAG 完美契合黄金区间（误差 ≤ 3%），平衡了小震动滤震与大冲击支撑！</span>
+                      <span>前叉下沉量完美契合黄金区间（误差 ≤ 3%），平衡了小震动滤震与大冲击支撑！</span>
                     </>
                   ) : calc.forkSagDiagnosis === 'too_soft' ? (
                     <>
@@ -841,7 +841,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <>
                       <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
                       <span>
-                        前叉下沉偏小（过硬），手臂容易发酸（Arm Pump）！建议释放 5~8 PSI 气压以恢复初段顺滑贴地。
+                        前叉下沉偏小（过硬），小臂容易发酸充血！建议释放 5~8 PSI 气压以恢复初段顺滑贴地。
                       </span>
                     </>
                   )}
@@ -990,14 +990,14 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.shockReboundClicks}
                     </div>
-                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格</div>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <div className="text-blue-500 font-semibold text-[11px]">后胆低速压缩 LSC</div>
                     <div className="font-mono font-bold text-slate-900 dark:text-white text-base mt-0.5">
                       {calc.shockLscClicks}
                     </div>
-                    <div className="text-[11px] text-slate-400">格 (Clicks)</div>
+                    <div className="text-[11px] text-slate-400">格</div>
                   </div>
                 </div>
               </div>
@@ -1041,7 +1041,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                     <>
                       <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
                       <span>
-                        后避震过软（下沉过大），上坡容易泄力下沉（Squat），建议补充 10~15 PSI 或调高弹簧磅数。
+                        后避震过软（下沉过大），上坡容易泄力下沉，建议补充 10~15 PSI 或调高弹簧磅数。
                       </span>
                     </>
                   ) : (
@@ -1135,9 +1135,9 @@ export const MtbSuspensionTuner: React.FC = () => {
                 />
               </div>
               <div className="flex justify-between text-[11px] text-slate-500 mt-1 font-mono">
-                <span>0mm (完全展开)</span>
+                <span>0mm（完全展开）</span>
                 <span className="text-ios-blue font-bold">Target: {calc.targetShockSagMm}mm</span>
-                <span>{shockStrokeMm}mm (彻底触底)</span>
+                <span>{shockStrokeMm}mm（彻底触底）</span>
               </div>
             </div>
           </div>
@@ -1158,29 +1158,29 @@ export const MtbSuspensionTuner: React.FC = () => {
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
               <strong>症状</strong>：前轮发硬、震手，抓地力不足。<br />
-              <strong>对策</strong>：逆时针放退 2 格低速回弹 (LSR) 加快回弹速度，防止避震器连续受压缩进深处无法回弹（Packing down）；或释放 4~6 PSI 气压。
+              <strong>对策</strong>：逆时针放退 2 格低速回弹加快回弹速度，防止避震器连续受压缩进深处无法回弹；或释放 4~6 PSI 气压。
             </p>
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-red-600 dark:text-red-400">
               <ShieldAlert className="w-4 h-4" />
-              飞坠或大落差频繁触底 (Bottom-out)
+              飞坠或大落差频繁触底打底
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
               <strong>症状</strong>：打底发出金属撞击声，O 圈被推至行程极限。<br />
-              <strong>对策</strong>：切勿盲目过量打高气压（会破坏初段贴地）。建议在正气室增加 <strong>1 枚容积垫块 (Token)</strong>，大幅拉高末段渐进曲线。
+              <strong>对策</strong>：切勿盲目过量打高气压（会破坏初段贴地）。建议在正气室增加 <strong>1 枚容积垫块</strong>，大幅拉高末段渐进曲线。
             </p>
           </div>
 
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-1.5">
             <div className="flex items-center gap-1.5 font-bold text-ios-blue">
               <Wrench className="w-4 h-4" />
-              重刹点点头严重 (Diving)
+              重刹前叉过度下沉点头
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
               <strong>症状</strong>：入弯前重刹前叉过度下沉压缩，导致头管角度过陡而险些翻车。<br />
-              <strong>对策</strong>：顺时针拧入 2~3 格<strong>低速压缩阻尼 (LSC)</strong>，增强中段平台支撑性。
+              <strong>对策</strong>：顺时针拧入 2~3 格<strong>低速压缩阻尼</strong>，增强中段平台支撑性。
             </p>
           </div>
         </div>

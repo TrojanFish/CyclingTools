@@ -243,7 +243,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
         selectedSpecIndex: 0,
         specs: [
           {
-            label: language === 'zh-TW' ? '自訂規格 (可自由修改下方參數)' : '自定义规格 (可自由修改下方参数)',
+            label: language === 'zh-TW' ? '自訂規格 · 可自由修改下方參數' : '自定义规格 · 可自由修改下方参数',
             weightG: 50,
             baseWatts40: 2.0,
             refPrice: 500,
@@ -339,21 +339,21 @@ export const UpgradeRoiCalculator: React.FC = () => {
     const costPerWatt = totalPowerSaveWatts > 0 ? Math.round(totalCostYuan / totalPowerSaveWatts) : 0;
     const costPerGram = totalWeightSaveG > 0 ? parseFloat((totalCostYuan / totalWeightSaveG).toFixed(1)) : 0;
 
-    let roiLevel = '极高性价比 (神装首选)';
+    let roiLevel = '极高性价比 · 首选神装';
     let roiBadgeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
     if (totalPowerSaveWatts <= 0) {
       if (totalWeightSaveG > 0) {
-        roiLevel = costPerGram < 15 ? '超轻量化优选 (轻量爬坡利器)' : '边际轻量化 (高溢价极限偷轻)';
+        roiLevel = costPerGram < 15 ? '超轻量化优选 · 爬坡利器' : '边际轻量化 · 极限偷轻';
         roiBadgeColor = costPerGram < 15 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-amber-400 bg-amber-500/10 border-amber-500/30';
       } else {
-        roiLevel = '无有效增益 (纯外观/非性能改装)';
+        roiLevel = '外观型改装 · 无有效动力增益';
         roiBadgeColor = 'text-slate-400 bg-slate-500/10 border-slate-500/30';
       }
     } else if (costPerWatt > 1000) {
-      roiLevel = '边际递减奢华件 (高溢价极限追瓦)';
+      roiLevel = '边际递减奢华件 · 极限追瓦';
       roiBadgeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/30';
     } else if (costPerWatt > 400) {
-      roiLevel = '良好进阶升级 (适中性价比)';
+      roiLevel = '良好进阶升级 · 适中性价比';
       roiBadgeColor = 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30';
     }
 
@@ -378,7 +378,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
       labels: items.map(i => i.name.slice(0, 10)),
       datasets: [
         {
-          label: '单品省瓦 (Watts)',
+          label: '单品省瓦 (W)',
           data: items.map(i => Number(i.powerSaveWatts) || 0),
           backgroundColor: items.map(i => i.enabled ? 'rgba(0, 175, 255, 0.75)' : 'rgba(100, 116, 139, 0.2)'),
           borderRadius: 6,
@@ -592,7 +592,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                   {item.specs && item.specs.length > 0 && (
                     <div className="space-y-1">
                       <label className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
-                        <span>规格选型 (选择后自动填入风洞与重量基准):</span>
+                        <span>规格选型 · 自动填入风洞与重量基准:</span>
                       </label>
                       <select
                         value={item.selectedSpecIndex ?? 0}
@@ -634,7 +634,7 @@ export const UpgradeRoiCalculator: React.FC = () => {
                     </div>
 
                     <div className="bg-slate-100/80 dark:bg-white/5 rounded-xl p-2.5 border border-black/[0.05] dark:border-white/[0.08]">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">减重幅度 (克)</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mb-0.5 font-sans">减重幅度 (g)</span>
                       <div className="flex items-center text-emerald-600 dark:text-emerald-400 font-bold">
                         <input
                           type="number"

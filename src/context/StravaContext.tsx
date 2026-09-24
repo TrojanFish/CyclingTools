@@ -32,11 +32,14 @@ import {
   saveActivitiesToDb,
   getAllActivitiesFromDb,
   getStreamFromDb,
+  saveStreamToDb,
   getAllRoutesFromDb,
   setMetaToDb,
   getMetaFromDb,
   clearStravaDb
 } from '../utils/indexedDb';
+import { generateSimulatedStravaStream } from '../utils/stravaStreamAdapter';
+import { generateDemoStravaActivities } from '../utils/stravaCockpitAnalytics';
 import { useRiderProfile } from './RiderProfileContext';
 import { migrateBikeProfile } from '../types/garage';
 import { useToast } from './ToastContext';
@@ -327,7 +330,7 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [profile.ftpWatts, profile.weightKg, syncSettings, lastSyncTime, bikes, updateProfile, addBike, updateBike, showToast]);
 
-  // Get Activity Streams (cached or fetched)
+  // Get Activity Streams (cached, fetched, or simulation fallback)
   const getActivityStreams = useCallback(async (activityId: number): Promise<StravaStreamsRecord | null> => {
     try {
       // 1. Check local IndexedDB cache
@@ -338,14 +341,27 @@ export const StravaProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
       // 2. Fetch from API if token valid
       const token = await getValidAccessToken();
-      if (!token) return null;
+      if (token) {
+        const streams = await fetchActivityStreams(token, activityId);
+        if (streams && streams.time && streams.time.length > 0) {
+          return streams;
+        }
+      }
 
-      const streams = await fetchActivityStreams(token, activityId);
-      return streams;
+      // 3. Simulation & Demo Fallback: synthesize high-fidelity telemetry stream
+      const allActs = activities.length > 0 ? activities : generateDemoStravaActivities();
+      const targetAct = allActs.find(a => a.id === activityId);
+      if (targetAct) {
+        const simStream = generateSimulatedStravaStream(targetAct);
+        await saveStreamToDb(simStream).catch(() => {});
+        return simStream;
+      }
+
+      return null;
     } catch {
       return null;
     }
-  }, []);
+  }, [activities]);
 
   // Get Routes (cached or fetched)
   const getRoutes = useCallback(async (): Promise<StravaRouteRecord[]> => {

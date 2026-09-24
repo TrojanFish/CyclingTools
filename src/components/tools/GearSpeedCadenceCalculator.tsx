@@ -137,7 +137,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
           devMeters: parseFloat(devMeters.toFixed(2)),
           gearInches: parseFloat(gearInches.toFixed(1)),
           isCrossChained: isBigBig || isSmallSmall,
-          crossType: isBigBig ? '大盘对大飞 (Big-Big)' : isSmallSmall ? '小盘对小飞 (Small-Small)' : null
+          crossType: isBigBig ? '大盘对大飞' : isSmallSmall ? '小盘对小飞' : null
         };
       });
       return { ring, row };
@@ -312,8 +312,8 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">牙盘制式</label>
             <IOSSegmentedControl
               options={[
-                { id: 'double', label: '双盘 (2x)' },
-                { id: 'single', label: '单盘 (1x)' },
+                { id: 'double', label: '双盘' },
+                { id: 'single', label: '单盘' },
               ]}
               value={chainringType}
               onChange={(val) => setChainringType(val as any)}
@@ -323,7 +323,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
 
           <div>
             <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-              {chainringType === 'double' ? '大盘 / 小盘齿数' : '单盘齿数 (T)'}
+              {chainringType === 'double' ? '大盘 / 小盘齿数' : '单盘齿数'}
             </label>
             {chainringType === 'double' ? (
               <div className="grid grid-cols-2 gap-2">
@@ -497,7 +497,7 @@ export const GearSpeedCadenceCalculator: React.FC = () => {
                   <th className="p-2.5">传动比</th>
                   <th className="p-2.5">70 RPM</th>
                   <th className="p-2.5">80 RPM</th>
-                  <th className="p-2.5 font-bold text-ios-blue">90 RPM (基准)</th>
+                  <th className="p-2.5 font-bold text-ios-blue">90 RPM</th>
                   <th className="p-2.5">100 RPM</th>
                   <th className="p-2.5">110 RPM</th>
                 </tr>

@@ -126,9 +126,9 @@ export const GpxRouteCreator: React.FC = () => {
     voyagerLayer.addTo(map);
 
     L.control.layers({
-      '高清骑行 (HD)': voyagerLayer,
-      '卫星实景 (Satellite)': satelliteLayer,
-      '极简底图 (Light)': positronLayer,
+      '高清骑行': voyagerLayer,
+      '卫星实景': satelliteLayer,
+      '极简底图': positronLayer,
     }, undefined, { position: 'topright' }).addTo(map);
 
     map.on('click', async (e: L.LeafletMouseEvent) => {
@@ -598,8 +598,8 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               value: 'pacing_engine',
               label: (
                 <>
-                  <span className="sm:hidden">BBS 策略</span>
-                  <span className="hidden sm:inline">风阻与体能策略引擎 (Best Bike Split)</span>
+                  <span className="sm:hidden">策略引擎</span>
+                  <span className="hidden sm:inline">风阻与体能策略引擎</span>
                 </>
               ),
               icon: Zap
@@ -779,7 +779,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               <div className="flex justify-between items-center text-xs">
                 <span className="font-semibold text-slate-800 dark:text-white flex items-center gap-1.5">
                   <Mountain className="w-3.5 h-3.5 text-ios-blue" />
-                  高分辨率海拔剖面 (悬浮联动地图)
+                  高分辨率海拔剖面 · 悬浮联动
                 </span>
                 <span className="text-[11px] text-slate-400 dark:text-slate-500">*坡度语义分色</span>
               </div>
@@ -883,7 +883,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               <div className="flex items-center gap-2">
                 <Wind className="w-4 h-4 text-ios-blue" />
                 <span className="text-sm font-bold text-slate-900 dark:text-white">
-                  虚拟风阻与微气候模拟器 (Virtual Aero Climate Console)
+                  虚拟风阻与微气候模拟器
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
@@ -897,7 +897,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-slate-600 dark:text-slate-300 font-semibold flex items-center gap-1">
                     <Compass className="w-3.5 h-3.5 text-ios-blue" />
-                    来风方向 (Wind Origin):
+                    来风方向:
                   </span>
                   <span className="font-mono text-ios-blue font-bold tabular-nums">
                     {windDirectionDeg}°
@@ -985,7 +985,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                     }`}
                   >
                     <div>
-                      <div className="text-xs font-bold">保守耐力 (Endurance / Audax)</div>
+                      <div className="text-xs font-bold">保守耐力巡航</div>
                       <div className="text-[10px] text-slate-400">适合超长距离拉练，避免过早力竭</div>
                     </div>
                     {strategyMode === 'conservative' && <CheckCircle2 className="w-4 h-4 text-ios-blue shrink-0" />}
@@ -1000,7 +1000,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                     }`}
                   >
                     <div>
-                      <div className="text-xs font-bold">均衡巡航 (Tempo / Gran Fondo)</div>
+                      <div className="text-xs font-bold">均衡节奏挑战</div>
                       <div className="text-[10px] text-slate-400">大组挑战赛最优解，上坡发力平路巡航</div>
                     </div>
                     {strategyMode === 'balanced' && <CheckCircle2 className="w-4 h-4 text-ios-blue shrink-0" />}
@@ -1015,7 +1015,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
                     }`}
                   >
                     <div>
-                      <div className="text-xs font-bold">极限突围 (Race / Time Trial)</div>
+                      <div className="text-xs font-bold">极限竞速突围</div>
                       <div className="text-[10px] text-slate-400">全力以赴刷 KOM，高心率阈值极限输出</div>
                     </div>
                     {strategyMode === 'aggressive' && <CheckCircle2 className="w-4 h-4 text-ios-blue shrink-0" />}
@@ -1083,7 +1083,7 @@ ${waypoints.map(w => `      <trkpt lat="${w.lat}" lon="${w.lng}">
               <div className="flex items-center gap-2">
                 <Activity className="w-4 h-4 text-ios-blue" />
                 <span className="font-bold text-slate-900 dark:text-white">
-                  全赛段坡度分色切片与目标功率曲线 (Dual Pacing Telemetry)
+                  全赛段坡度分色切片与目标功率曲线
                 </span>
               </div>
               <div className="flex items-center gap-3 text-[11px]">

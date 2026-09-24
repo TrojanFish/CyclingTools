@@ -258,7 +258,7 @@ export const CyclePowerCalculator: React.FC = () => {
       labels: speeds.map(s => (isImperial ? `${(s * 0.621371).toFixed(0)} mph` : `${s} km/h`)),
       datasets: [
         {
-          label: isImperial ? 'Required Power (Watts)' : '平路/坡道所需功率 (Watts)',
+          label: isImperial ? 'Required Power (W)' : '平路/坡道所需功率 (W)',
           data: powers,
           borderColor: '#00AFFF',
           backgroundColor: 'rgba(0, 175, 255, 0.12)',
@@ -290,7 +290,7 @@ export const CyclePowerCalculator: React.FC = () => {
       labels: weights.map(w => (isImperial ? `${Math.round(w * 2.20462)} lbs` : `${w} kg`)),
       datasets: [
         {
-          label: isImperial ? 'Power vs Weight at 22mph (Watts)' : '在 35km/h 巡航下不同体重所需功率 (Watts)',
+          label: isImperial ? 'Power vs Weight at 22mph (W)' : '35km/h 巡航不同体重所需功率 (W)',
           data: powers,
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.12)',
@@ -399,7 +399,7 @@ export const CyclePowerCalculator: React.FC = () => {
             {calcMode === 'speed' && (
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5">
-                  {language === 'zh-TW' ? '輸入騎行功率' : '输入骑行功率'} (Watts)
+                  {language === 'zh-TW' ? '輸入騎行功率' : '输入骑行功率'} (W)
                 </label>
                 <NumberStepper value={powerInput} onChange={setPowerInput} step={5} min={20} max={1500} unit="W" />
               </div>
@@ -522,7 +522,7 @@ export const CyclePowerCalculator: React.FC = () => {
             {/* Aero Posture Presets */}
             <div>
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2 flex items-center">
-                {language === 'zh-TW' ? '騎行姿態與風阻迎風面積 (CdA)' : '骑行姿态与风阻迎风面积 (CdA)'}
+                {language === 'zh-TW' ? '騎行姿態與風阻面積 CdA' : '骑行姿态与风阻面积 CdA'}
                 <Tooltip content="CdA 代表风阻系数乘以正面投影迎风面积，值越小越气动省力。" />
               </label>
               <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
@@ -591,7 +591,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   <Tooltip content="偏航角为车手行进方向与合成风矢量的夹角（0°为正迎风，5°~12°为典型公路侧风，20°为强横风）。偏航角增加时身体侧向受风投影面积增大，气动阻力相应上升。" />
                 </span>
                 <span className="font-mono font-bold text-xs text-ios-blue">
-                  {yawAngleDeg}° {yawAngleDeg === 0 ? '(正迎风 0°)' : yawAngleDeg <= 10 ? '(小角度侧风)' : '(强横风迎风面积修正)'}
+                  {yawAngleDeg}° {yawAngleDeg === 0 ? '· 正迎风' : yawAngleDeg <= 10 ? '· 小角度侧风' : '· 强横风'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -787,7 +787,7 @@ export const CyclePowerCalculator: React.FC = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mountain className="w-4 h-4 text-ios-blue" />
-                {language === 'zh-TW' ? '爬坡性能與 VAM (垂直上升速度) 推算' : '爬坡性能与 VAM (垂直上升速度) 推算'}
+                {language === 'zh-TW' ? '爬坡性能與垂直攀升率 VAM 推算' : '爬坡性能与垂直攀升率 VAM 推算'}
               </h3>
               <span className="text-xs font-mono text-ios-blue dark:text-blue-400 font-bold tabular-nums">
                 VAM: {result.vam} m/h {isImperial ? `(${Math.round(result.vam * 3.28084)} ft/h)` : ''}
@@ -859,7 +859,7 @@ export const CyclePowerCalculator: React.FC = () => {
           <div className="p-4 sm:p-5 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-3 shadow-ios-sm">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-slate-900 dark:text-white">
-                {language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
+                {language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 · 基準 FTP ${profile.ftpWatts || 220}W` : `Coggan 7 区间功率训练参考 · 基准 FTP ${profile.ftpWatts || 220}W`}
               </span>
             </div>
             <div className="overflow-x-auto no-scrollbar">
@@ -927,7 +927,7 @@ export const CyclePowerCalculator: React.FC = () => {
                   },
                   scales: {
                     x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: '功率 (Watts)' } }
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, title: { display: true, text: '功率 (W)' } }
                   }
                 }}
               />

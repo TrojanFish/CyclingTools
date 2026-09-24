@@ -89,15 +89,15 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
           <span className="font-bold text-slate-900 truncate block">{riderName}</span>
         </div>
         <div className="border-l border-slate-200 pl-2">
-          <span className="text-slate-400 block text-[8px] uppercase tracking-wider">Fitter / 技师</span>
+          <span className="text-slate-400 block text-[8px] uppercase tracking-wider">技师</span>
           <span className="font-bold text-slate-900 truncate block">{fitterName}</span>
         </div>
         <div className="border-l border-slate-200 pl-2">
-          <span className="text-slate-400 block text-[8px] uppercase tracking-wider">Chassis / 车型</span>
+          <span className="text-slate-400 block text-[8px] uppercase tracking-wider">车型</span>
           <span className="font-bold text-slate-900 truncate block">{bikeModel}</span>
         </div>
         <div className="border-l border-slate-200 pl-2">
-          <span className="text-slate-400 block text-[8px] uppercase tracking-wider">Standard / 规范</span>
+          <span className="text-slate-400 block text-[8px] uppercase tracking-wider">规范</span>
           <span className="font-bold text-emerald-700 block">ISO 4210 CERT</span>
         </div>
       </div>
@@ -106,25 +106,25 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
       <div className="space-y-1">
         <div className="flex items-center justify-between border-b border-slate-200 pb-0.5">
           <span className="text-[10px] font-mono font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1">
-            <span className="text-slate-400">01 //</span> 人体解剖学测量数据 (Rider Anthropometrics)
+            <span className="text-slate-400">01 //</span> 人体解剖学测量数据
           </span>
           <span className="text-[9px] font-mono text-slate-400">UNIT: CM</span>
         </div>
         <div className="grid grid-cols-4 gap-1.5 text-center">
           <div className="border border-slate-200 rounded p-1 bg-white">
-            <div className="text-[9px] text-slate-400 font-medium">身高 (Height)</div>
+            <div className="text-[9px] text-slate-400 font-medium">身高</div>
             <div className="font-mono font-bold text-xs text-slate-900 tabular-nums">{data.height}</div>
           </div>
           <div className="border border-slate-200 rounded p-1 bg-white">
-            <div className="text-[9px] text-slate-400 font-medium">跨高 (Inseam)</div>
+            <div className="text-[9px] text-slate-400 font-medium">跨高</div>
             <div className="font-mono font-bold text-xs text-slate-900 tabular-nums">{data.inseam}</div>
           </div>
           <div className="border border-slate-200 rounded p-1 bg-white">
-            <div className="text-[9px] text-slate-400 font-medium">躯干长 (Torso)</div>
+            <div className="text-[9px] text-slate-400 font-medium">躯干长</div>
             <div className="font-mono font-bold text-xs text-slate-900 tabular-nums">{data.torso}</div>
           </div>
           <div className="border border-slate-200 rounded p-1 bg-white">
-            <div className="text-[9px] text-slate-400 font-medium">手臂长 (Arm)</div>
+            <div className="text-[9px] text-slate-400 font-medium">手臂长</div>
             <div className="font-mono font-bold text-xs text-slate-900 tabular-nums">{data.armLength}</div>
           </div>
         </div>
@@ -140,49 +140,49 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
       <div className="space-y-1">
         <div className="flex items-center justify-between border-b border-slate-200 pb-0.5">
           <span className="text-[10px] font-mono font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1">
-            <span className="text-slate-400">02 //</span> 推荐车架与座舱装车设定 (Fit Geometry Specification)
+            <span className="text-slate-400">02 //</span> 推荐车架与座舱装车设定
           </span>
           <span className="text-[9px] font-mono text-slate-400">LEMOND / HAMLEY DUAL-MODEL</span>
         </div>
         <div className="grid grid-cols-4 gap-1.5">
           <div className="border-2 border-slate-900 rounded p-1.5 bg-slate-50/50">
-            <div className="text-[9px] text-slate-500 font-medium">推荐坐高 (Saddle Height)</div>
+            <div className="text-[9px] text-slate-500 font-medium">推荐坐高</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.saddleHeight} <span className="text-[9px] font-normal text-slate-500">cm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">BB中心至座垫顶点</div>
           </div>
 
           <div className="border border-slate-300 rounded p-1.5 bg-white">
-            <div className="text-[9px] text-slate-500 font-medium">有效上管 (ETT)</div>
+            <div className="text-[9px] text-slate-500 font-medium">有效上管</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.effectiveTopTube} <span className="text-[9px] font-normal text-slate-500">cm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">水平虚拟几何跨距</div>
           </div>
 
           <div className="border border-slate-300 rounded p-1.5 bg-white">
-            <div className="text-[9px] text-slate-500 font-medium">推荐把立规格 (Stem)</div>
+            <div className="text-[9px] text-slate-500 font-medium">推荐把立规格</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.stemLength} <span className="text-[9px] font-normal text-slate-500">mm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">把立中对中中心线</div>
           </div>
 
           <div className="border border-slate-300 rounded p-1.5 bg-white">
-            <div className="text-[9px] text-slate-500 font-medium">座舱垂直落差 (Drop)</div>
+            <div className="text-[9px] text-slate-500 font-medium">座舱垂直落差</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.saddleDrop} <span className="text-[9px] font-normal text-slate-500">cm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">座垫顶面至车把顶</div>
           </div>
 
           <div className="border border-slate-300 rounded p-1.5 bg-white">
-            <div className="text-[9px] text-slate-500 font-medium">车把下把宽度 (C-C)</div>
+            <div className="text-[9px] text-slate-500 font-medium">车把下把宽度</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.handlebarWidth} <span className="text-[9px] font-normal text-slate-500">cm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">对齐肩关节肩峰轴</div>
           </div>
 
           <div className="border border-slate-300 rounded p-1.5 bg-white">
-            <div className="text-[9px] text-slate-500 font-medium">推荐曲柄长度 (Crank)</div>
+            <div className="text-[9px] text-slate-500 font-medium">推荐曲柄长度</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.crankLength} <span className="text-[9px] font-normal text-slate-500">mm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">关节灵活性高频踩踏</div>
           </div>
 
           <div className="border border-slate-300 rounded p-1.5 bg-white">
-            <div className="text-[9px] text-slate-500 font-medium">坐垫后移量 (Setback)</div>
+            <div className="text-[9px] text-slate-500 font-medium">坐垫后移量</div>
             <div className="text-sm font-bold font-mono text-slate-900 tabular-nums">{data.saddleSetback} <span className="text-[9px] font-normal text-slate-500">cm</span></div>
             <div className="text-[8px] text-slate-400 font-mono">座垫鼻尖距BB垂线</div>
           </div>
@@ -199,7 +199,7 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
       <div className="space-y-1">
         <div className="flex items-center justify-between border-b border-slate-200 pb-0.5">
           <span className="text-[10px] font-mono font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1">
-            <span className="text-slate-400">03 //</span> 几何基准线矢量工程图解 (Precision Vector Schematic)
+            <span className="text-slate-400">03 //</span> 几何基准线矢量工程图解
           </span>
           <span className="text-[9px] font-mono text-slate-400">CAD SCALE 1:10 PROJECTION</span>
         </div>
@@ -319,7 +319,7 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
       <div className="space-y-1">
         <div className="flex items-center justify-between border-b border-slate-200 pb-0.5">
           <span className="text-[10px] font-mono font-bold tracking-wider text-slate-800 uppercase flex items-center gap-1">
-            <span className="text-slate-400">04 //</span> 车间施工调校与初骑备忘 (Workshop Protocol & Cleat Alignment)
+            <span className="text-slate-400">04 //</span> 车间施工调校与初骑备忘
           </span>
           <span className="text-[9px] font-mono text-slate-400">CHECKLIST</span>
         </div>
@@ -344,11 +344,11 @@ const FittingSheetContent: React.FC<FittingSheetContentProps> = ({
         <div className="space-y-2">
           <div className="flex items-center gap-4">
             <div>
-              <span className="text-slate-400 block text-[8px] uppercase">Fitter Signature / 技师签章</span>
+              <span className="text-slate-400 block text-[8px] uppercase">技师签章</span>
               <div className="font-bold text-slate-900 border-b border-slate-400 pb-0.5 min-w-[120px]">{fitterName}</div>
             </div>
             <div>
-              <span className="text-slate-400 block text-[8px] uppercase">Rider Acceptance / 车手确认</span>
+              <span className="text-slate-400 block text-[8px] uppercase">车手确认</span>
               <div className="font-bold text-slate-900 border-b border-slate-400 pb-0.5 min-w-[120px]">{riderName}</div>
             </div>
           </div>
@@ -378,7 +378,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
   isOpen,
   onClose,
   initialRiderName = '车手客户',
-  initialBikeModel = '公路车 (Road Disc Aero)',
+  initialBikeModel = '气动碟刹公路车',
   data,
 }) => {
   const todayStr = new Date().toISOString().split('T')[0];
@@ -424,10 +424,10 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
 
   const ridingStyleName =
     data.ridingStyle === 'racing'
-      ? '竞技激进 (Racing)'
+      ? '竞技激进'
       : data.ridingStyle === 'endurance'
-      ? '长途耐力 (Endurance)'
-      : '舒适巡航 (Relaxed)';
+      ? '长途耐力'
+      : '舒适巡航';
 
   const sheetProps: FittingSheetContentProps = {
     riderName,
@@ -543,7 +543,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
           {/* Modal Footer Actions */}
           <div className="relative z-10 p-3.5 sm:p-4 border-t border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#1C1C1E]/95 flex flex-wrap items-center justify-between gap-2.5">
             <div className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:flex items-center gap-1.5">
-              <span>* 系统将自动以纯净 A4 单页送印 (支持直接打印或导出为标准 PDF)</span>
+              <span>* 系统将自动以纯净 A4 单页送印 · 支持直接打印或导出标准 PDF</span>
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
@@ -560,7 +560,7 @@ export const FittingWorkOrderModal: React.FC<FittingWorkOrderModalProps> = ({
                 className="apple-touch flex-1 sm:flex-initial h-9 px-5 rounded-xl bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold text-xs shadow-ios-sm transition active:scale-95 flex items-center justify-center gap-2"
               >
                 <Printer className="w-4 h-4" />
-                <span>打印工单 (A4)</span>
+                <span>打印 A4 工单</span>
               </button>
             </div>
           </div>

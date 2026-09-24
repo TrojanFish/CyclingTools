@@ -202,7 +202,7 @@ export function generatePowerProfilePoster(data: PowerProfilePosterData): string
   const accent = '#FF3B30'; // ios-red
 
   drawBackground(ctx, w, h, accent);
-  drawHeader(ctx, w, '⚡ 生理动力学 · 功率能力画像', '车手能力雷达与极化靶心战报', `车手自重 ${data.weightKg} kg · 功能阈值功率 (FTP) ${data.ftpWatts} W`, accent);
+  drawHeader(ctx, w, '⚡ 生理动力学 · 功率能力画像', '车手能力雷达与极化靶心战报', `车手自重 ${data.weightKg} kg · 功能阈值功率 ${data.ftpWatts} W`, accent);
 
   // Phenotype Card
   roundRect(ctx, 40, 204, w - 80, 94, 20);
@@ -228,8 +228,8 @@ export function generatePowerProfilePoster(data: PowerProfilePosterData): string
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 312, tileW, 80, '5秒 神经肌肉冲刺', data.p5s, `W (${data.w5s} W/kg)`, '#FF375F');
   drawMetricTile(ctx, 40 + tileW + 15, 312, tileW, 80, '1分钟 无氧容量', data.p1m, `W (${data.w1m} W/kg)`, '#FF9F0A');
-  drawMetricTile(ctx, 40, 406, tileW, 80, '5分钟 最大摄氧量 (VO₂)', data.p5m, `W (${data.w5m} W/kg)`, '#30D158');
-  drawMetricTile(ctx, 40 + tileW + 15, 406, tileW, 80, '20分钟 乳酸阈值 (FTP)', data.p20m, `W (${data.w20m} W/kg)`, '#0A84FF');
+  drawMetricTile(ctx, 40, 406, tileW, 80, '5分钟 最大摄氧量', data.p5m, `W (${data.w5m} W/kg)`, '#30D158');
+  drawMetricTile(ctx, 40 + tileW + 15, 406, tileW, 80, '20分钟 乳酸阈值功率', data.p20m, `W (${data.w20m} W/kg)`, '#0A84FF');
 
   // Radar Polygon Simulation Box
   const radarY = 500;
@@ -500,8 +500,8 @@ export function generateGearSpeedPoster(data: GearSpeedPosterData): string {
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('• 保持 85~95 RPM 黄金踏频可最大化肌肉血流灌注并延缓乳酸堆积。', 65, tipY + 68);
-  ctx.fillText('• 极限大对大 (Big-Big) 与小对小 (Small-Small) 会急剧增加链条斜拉磨损与摩擦瓦数损失。', 65, tipY + 98);
-  ctx.fillText('• 针对 10%+ 持续陡坡，建议传动最小齿比维持在 ≤ 1.0 (例如 34T 盘片配 34T 飞轮)。', 65, tipY + 128);
+  ctx.fillText('• 极限大对大与小对小极端档位会急剧增加链条斜拉磨损与摩擦瓦数损失。', 65, tipY + 98);
+  ctx.fillText('• 针对 10%+ 持续陡坡，建议传动最小齿比维持在 ≤ 1.0，如 34T 盘片配 34T 飞轮。', 65, tipY + 128);
 
   drawFooter(ctx, w, h);
   return canvas.toDataURL('image/png');
@@ -528,7 +528,7 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
   const { ctx, canvas } = createPosterCanvas(w, h);
   const accent = '#007AFF';
   const unitStr = String(data.unit || 'PSI').toUpperCase();
-  const tireSetupStr = data.tireSetup || '真空胎 (Tubeless)';
+  const tireSetupStr = data.tireSetup || '真空胎';
   const surfaceStr = data.surface || '综合平整铺装路面';
   const totalWeightStr = data.totalWeightKg ? `${data.totalWeightKg} kg` : '--';
 
@@ -549,7 +549,7 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('前轮最佳充气胎压 (FRONT)', 60, 240);
+  ctx.fillText('前轮最佳充气胎压', 60, 240);
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 54px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -571,7 +571,7 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('后轮最佳充气胎压 (REAR)', 40 + podW + 40, 240);
+  ctx.fillText('后轮最佳充气胎压', 40 + podW + 40, 240);
 
   ctx.fillStyle = '#30D158';
   ctx.font = 'bold 54px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -598,9 +598,9 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
   const params = [
     { label: '车种类型 / 设定', val: data.bikeType },
     { label: '外胎标称宽度', val: `${data.tireWidth} mm` },
-    { label: '胎胎结构形式', val: data.tireSetup },
+    { label: '轮胎结构形式', val: data.tireSetup },
     { label: '骑行路面条件', val: data.surface },
-    { label: '无钩圈 (Hookless) 安全限制', val: data.isHookless ? '是 (上限 72.5 PSI / 5.0 Bar)' : '标准有钩圈 (Clincher)' }
+    { label: '无钩圈安全限制', val: data.isHookless ? '是 · 上限 72.5 PSI / 5.0 Bar' : '标准有钩圈' }
   ];
 
   params.forEach((p, idx) => {
@@ -629,7 +629,7 @@ export function generateTirePressurePoster(data: TirePressurePosterData): string
   ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('• 传统“胎压越打越硬越快”已被 Silca 等顶级风洞实验室推翻。', 65, noticeY + 68);
-  ctx.fillText('• 真实沥青路面上，适度降低胎压可大幅消除阻抗损耗 (Impedance Loss)，平顺更省瓦。', 65, noticeY + 98);
+  ctx.fillText('• 真实沥青路面上，适度降低胎压可大幅消除振动阻抗损耗，平顺更省瓦。', 65, noticeY + 98);
   ctx.fillText('• 骑手重心通常 40:60 偏向后轮，因此前轮胎压应比后轮低 8%~12% 以换取极佳过弯抓地力。', 65, noticeY + 128);
 
   drawFooter(ctx, w, h);
@@ -675,7 +675,7 @@ export function generateUpgradeRoiPoster(data: UpgradeRoiPosterData): string {
 
   ctx.fillStyle = '#FFD60A';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('⭐ 每省 1 瓦边际投入指数 (ROI)', 65, roiY + 36);
+  ctx.fillText('⭐ 每省 1 瓦边际投入指数', 65, roiY + 36);
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 26px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -698,8 +698,8 @@ export function generateUpgradeRoiPoster(data: UpgradeRoiPosterData): string {
   ctx.fillText('顶级风洞与职业车队边际效益铁律', 65, tipY + 40);
 
   const tips = [
-    '1. 贴身气动连体骑行服与气动破风头盔是每瓦成本最低的提速利器 (ROI 极高)。',
-    '2. 升级乳胶内胎 (TPU) 或顶级真空胎，仅需数百元即可在平路节省 5~10 瓦纯机械滚阻。',
+    '1. 贴身气动连体骑行服与气动破风头盔是每瓦成本最低的提速利器，边际回报极高。',
+    '2. 升级乳胶或超轻内胎与顶级真空胎，仅需数百元即可在平路节省 5~10 瓦纯机械滚阻。',
     '3. 减重 500g 在平路巡航中收益几乎为零，但在 8%+ 爬坡中每减重 1kg 可省约 3~4 瓦。',
     '4. 昂贵的高框碳轮主要收益在于 40km/h+ 高速下的气动帆船效应与风阻缩减。',
     '5. 保持链条超声波清洁并采用热熔石蜡浸润，可在传动端稳定挽回 3~6 瓦阻力损失。'
@@ -742,7 +742,7 @@ export function generateCyclePowerPoster(data: CyclePowerPosterData): string {
   drawMetricTile(ctx, 40, 204, tileW, 85, '需要维持功率', data.power, 'W', '#0A84FF');
   drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '功能推重比', data.wkg, 'W/kg', '#30D158');
   drawMetricTile(ctx, 40, 304, tileW, 85, '车手等级画像', data.levelTitle, undefined, '#FF9F0A');
-  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '爬坡垂直爬升率 (VAM)', data.vam, 'm/h', '#BF5AF2');
+  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '爬坡垂直爬升率', data.vam, 'm/h', '#BF5AF2');
 
   // Resistance Split Bar
   const splitY = 415;
@@ -841,7 +841,7 @@ export function generateChainLengthPoster(data: ChainLengthPosterData): string {
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('推荐链条精准截取节数 (含魔术扣)', 65, 240);
+  ctx.fillText('推荐链条精准截取节数 · 含魔术扣', 65, 240);
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 64px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -849,7 +849,7 @@ export function generateChainLengthPoster(data: ChainLengthPosterData): string {
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('节 (Links)', 65 + ctx.measureText(String(data.recommendedLinks)).width * 2.8 + 15, 320);
+  ctx.fillText('节', 65 + ctx.measureText(String(data.recommendedLinks)).width * 2.8 + 15, 320);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
   ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -873,10 +873,10 @@ export function generateChainLengthPoster(data: ChainLengthPosterData): string {
   ctx.fillText('⚙️ 传动几何装配基准', 65, specY + 35);
 
   const specs = [
-    { label: '车架后下叉长度 (Chainstay RC)', val: `${data.chainstayMm} mm` },
+    { label: '车架后下叉长度', val: `${data.chainstayMm} mm` },
     { label: '前牙盘齿数规格', val: data.frontRings },
     { label: '后飞轮极限跨度', val: data.rearCogs },
-    { label: '车架结构形态', val: data.isFullSuspension ? '全避震软尾 (含避震压缩轴距补偿)' : '公路/硬尾硬架' }
+    { label: '车架结构形态', val: data.isFullSuspension ? '全避震软尾 · 含避震压缩轴距补偿' : '公路/硬尾硬架' }
   ];
 
   specs.forEach((s, idx) => {
@@ -967,7 +967,7 @@ export function generatePainCheckPoster(data: PainCheckPosterData): string {
 
   ctx.fillStyle = '#30D158';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('针对性调车自纠处方清单 (Bike Fitting)', 65, rxY + 36);
+  ctx.fillText('针对性调车自纠处方清单', 65, rxY + 36);
 
   checklist.slice(0, 6).forEach((item, idx) => {
     const iy = rxY + 75 + idx * 46;
@@ -1045,8 +1045,8 @@ export function generateWorkoutPoster(data: WorkoutPosterData): string {
 
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 204, tileW, 85, '课表总执行时长', durationStr, undefined, '#0A84FF');
-  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '训练压力指数 (TSS)', data.tss || 0, undefined, '#FF9F0A');
-  drawMetricTile(ctx, 40, 304, tileW, 85, '强度系数 (IF)', data.intensityFactor || 0, undefined, '#FF375F');
+  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '训练压力指数', data.tss || 0, undefined, '#FF9F0A');
+  drawMetricTile(ctx, 40, 304, tileW, 85, '强度系数', data.intensityFactor || 0, undefined, '#FF375F');
   drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '预估能量代谢消耗', data.calories || 0, 'kcal', '#30D158');
 
   // Description
@@ -1250,12 +1250,12 @@ export function generateCoursePacingPoster(data: CoursePacingPosterData): string
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('⚡ 运动人体科学补给方案 (Nutrition & Hydration)', 65, nutY + 28);
+  ctx.fillText('⚡ 运动人体科学补给方案', 65, nutY + 28);
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`碳水化合物: ${data.carbsPerHourG}g / 小时  (约 ${Math.ceil((data.carbsPerHourG * 2.5) / 25)} 支能量胶)`, 65, nutY + 52);
-  ctx.fillText(`水分与电解质: ${data.fluidPerHourMl}ml / 小时  (顶风占比 ${data.headwindPct}%)`, 65, nutY + 72);
+  ctx.fillText(`碳水化合物: ${data.carbsPerHourG}g / 小时 · 约 ${Math.ceil((data.carbsPerHourG * 2.5) / 25)} 支能量胶`, 65, nutY + 52);
+  ctx.fillText(`水分与电解质: ${data.fluidPerHourMl}ml / 小时 · 顶风占比 ${data.headwindPct}%`, 65, nutY + 72);
 
   // Sector Pacing Breakdown Box
   const tableY = 515;
@@ -1268,7 +1268,7 @@ export function generateCoursePacingPoster(data: CoursePacingPosterData): string
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('各路段动力学分配与执行指标 (Sector Pacing Strategy)', 65, tableY + 36);
+  ctx.fillText('各路段动力学分配与执行指标', 65, tableY + 36);
 
   // Table Headers
   ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
@@ -1371,7 +1371,7 @@ export function generateTrainingCalendarPoster(data: TrainingCalendarPosterData)
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('📅 周期化训练科学定位 (Tudor Bompa Model)', 65, phaseY + 28);
+  ctx.fillText('📅 周期化训练科学定位', 65, phaseY + 28);
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1388,7 +1388,7 @@ export function generateTrainingCalendarPoster(data: TrainingCalendarPosterData)
 
   ctx.fillStyle = '#ffffff';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('各周期间隔训练排期与目标负荷 (Weekly Overload Progression)', 65, tableY + 36);
+  ctx.fillText('各周期间隔训练排期与目标负荷', 65, tableY + 36);
 
   // Table Headers
   ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
@@ -1501,7 +1501,7 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
 
   ctx.fillStyle = '#0A84FF';
   ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('前叉避震设定 (FORK)', 65, 240);
+  ctx.fillText('前叉避震设定', 65, 240);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1509,9 +1509,9 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
 
   const forkSpecs = [
     { label: '主气室推荐气压', val: `${forkPsi} PSI` },
-    { label: '下沉量 (SAG)', val: `${forkSagPct}%` },
-    { label: '低速回弹 (LSR)', val: `${forkLsr} Clicks` },
-    { label: '低速压缩 (LSC)', val: `${forkLsc} Clicks` }
+    { label: '下沉量', val: `${forkSagPct}%` },
+    { label: '低速回弹', val: `${forkLsr} 格` },
+    { label: '低速压缩', val: `${forkLsc} 格` }
   ];
 
   forkSpecs.forEach((s, idx) => {
@@ -1534,16 +1534,16 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
 
   ctx.fillStyle = '#30D158';
   ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('后避震设定 (REAR SHOCK)', 40 + podW + 45, 240);
+  ctx.fillText('后避震设定', 40 + podW + 45, 240);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(`${shockType === 'coil' ? '弹簧胆 Coil' : '气压胆 Air'} · ${shockTravel}mm 行程`, 40 + podW + 45, 266);
+  ctx.fillText(`${shockType === 'coil' ? '弹簧后胆' : '气压后胆'} · ${shockTravel}mm 行程`, 40 + podW + 45, 266);
 
   const shockSpecs = [
     { label: '气压 / 弹簧磅数', val: shockPsiOrSpring },
-    { label: '后胆下沉量 (SAG)', val: `${shockSagPct}%` },
-    { label: '回弹阻尼 (Rebound)', val: `${shockRebound} Clicks` },
+    { label: '后胆下沉量', val: `${shockSagPct}%` },
+    { label: '回弹阻尼', val: `${shockRebound} 格` },
     { label: '压缩平台阻尼', val: '平衡开档' }
   ];
 
@@ -1571,8 +1571,8 @@ export function generateSuspensionPoster(data: SuspensionPosterData): string {
   ctx.fillText('山地车下坡姿态与悬挂平衡原则', 65, insY + 40);
 
   const insights = [
-    '• 阻尼调整基准：所有阻尼点击数均从“全关 (Fully Closed / Firmest)”反向顺时针数出。',
-    '• SAG 黄金原则：林道/耐力前后 SAG 建议维持在 25%~30%，过小易跳弹过大易打底。',
+    '• 阻尼调整基准：所有阻尼点击数均从“全关最硬”反向顺时针数出。',
+    '• 下沉量黄金原则：林道/耐力前后下沉量建议维持在 25%~30%，过小易跳弹过大易打底。',
     '• 动态平衡：快速按压车体时，前后避震应同步压缩与回弹，防止“跷跷板”推头失控。',
     '• 气压微调：在连续颠簸碎石路若感到手部剧烈酸痛，可尝试适度降低 3~5 PSI 并放慢一格回弹。'
   ];
@@ -1615,9 +1615,9 @@ export function generateFittingPoster(data: FittingPosterData): string {
 
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 204, tileW, 85, '推荐黄金座高 (BB-坐垫顶)', data.saddleHeight, 'cm', '#0A84FF');
-  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '推荐车架有效上管 (ETT)', data.effectiveTopTube, 'cm', '#30D158');
-  drawMetricTile(ctx, 40, 304, tileW, 85, '建议把立长度 (Stem)', data.stemLength, 'mm', '#FF9F0A');
-  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '座舱落差 (Saddle Drop)', data.saddleDrop, 'cm', '#BF5AF2');
+  drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '推荐车架有效上管', data.effectiveTopTube, 'cm', '#30D158');
+  drawMetricTile(ctx, 40, 304, tileW, 85, '建议把立长度', data.stemLength, 'mm', '#FF9F0A');
+  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '座舱落差', data.saddleDrop, 'cm', '#BF5AF2');
 
   // Core Geometry Table
   const geomY = 415;
@@ -1633,8 +1633,8 @@ export function generateFittingPoster(data: FittingPosterData): string {
 
   const geoms = [
     { label: '车架尺寸参考区间', val: data.frameSize },
-    { label: '弯把宽度 (C-to-C)', val: `${data.handlebarWidth} mm` },
-    { label: '曲柄长度 (Crank)', val: `${data.crankLength} mm` },
+    { label: '弯把宽度', val: `${data.handlebarWidth} mm` },
+    { label: '曲柄长度', val: `${data.crankLength} mm` },
     { label: '躯干与手臂比例分析', val: data.sittingNote }
   ];
 
@@ -1664,7 +1664,7 @@ export function generateFittingPoster(data: FittingPosterData): string {
 
   const guides = [
     '• 膝关节微屈角：脚踏踩到 6 点钟死点时，膝关节内夹角应保持在 145°~155° 之间。',
-    '• 膝盖与脚踏轴心 (KOPS)：曲柄旋转至水平 3 点钟位置时，膝盖骨前缘铅垂线应穿过锁踏轴心。',
+    '• 膝盖与脚踏轴心垂线：曲柄旋转至水平 3 点钟位置时，膝盖骨前缘铅垂线应穿过锁踏轴心。',
     '• 躯干角度：握下把冲刺时躯干与地面夹角约 35°~45°，上身放松无耸肩与手腕过度压迫。'
   ];
 
@@ -1708,12 +1708,12 @@ export function generateFitActivityPoster(data: FitActivityPosterData): string {
   const tileW = (w - 80 - 15) / 2;
   drawMetricTile(ctx, 40, 204, tileW, 85, '总骑行里程', data.distanceKm, 'km', '#0A84FF');
   drawMetricTile(ctx, 40 + tileW + 15, 204, tileW, 85, '总骑行历时', data.durationStr, undefined, '#30D158');
-  drawMetricTile(ctx, 40, 304, tileW, 85, '标准化功率 (NP)', data.normalizedPower, 'W', '#FF375F');
-  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '训练压力 (TSS)', data.tss, undefined, '#FF9F0A');
+  drawMetricTile(ctx, 40, 304, tileW, 85, '标准化功率', data.normalizedPower, 'W', '#FF375F');
+  drawMetricTile(ctx, 40 + tileW + 15, 304, tileW, 85, '训练压力', data.tss, undefined, '#FF9F0A');
 
   // Secondary metrics 4-pack
   const subTileW = (w - 80 - 30) / 4;
-  drawMetricTile(ctx, 40, 404, subTileW, 75, '强度 (IF)', data.intensityFactor, undefined, '#BF5AF2');
+  drawMetricTile(ctx, 40, 404, subTileW, 75, '强度系数', data.intensityFactor, undefined, '#BF5AF2');
   drawMetricTile(ctx, 40 + subTileW + 10, 404, subTileW, 75, '累计爬升', `+${data.elevationGainM}`, 'm', '#30D158');
   drawMetricTile(ctx, 40 + (subTileW + 10) * 2, 404, subTileW, 75, '平均心率', data.avgHeartRate > 0 ? data.avgHeartRate : '--', 'bpm', '#FF375F');
   drawMetricTile(ctx, 40 + (subTileW + 10) * 3, 404, subTileW, 75, '卡路里', data.calories, 'kcal', '#FFD60A');
@@ -1780,8 +1780,8 @@ export function generateFitActivityPoster(data: FitActivityPosterData): string {
   ctx.fillText(`• 平均输出: ${data.avgPower}W | 最大爆发峰值: ${data.maxWatts}W`, 65, reviewY + 102);
 
   const vi = data.avgPower > 0 ? (data.normalizedPower / data.avgPower).toFixed(2) : '1.00';
-  ctx.fillText(`• 变动系数 (VI = NP/AvgP): ${vi} (${Number(vi) > 1.15 ? '波动剧烈，含多次高强度突围/爬坡' : '稳态平顺，节奏控制极佳'})`, 65, reviewY + 134);
-  ctx.fillText(`• 训练强度判定: IF ${data.intensityFactor} (${data.intensityFactor >= 0.95 ? '比赛级/竭尽全力' : data.intensityFactor >= 0.85 ? '高强度甜点/阈值' : '基础耐力有氧'})`, 65, reviewY + 166);
+  ctx.fillText(`• 变异指数 VI: ${vi} · ${Number(vi) > 1.15 ? '波动剧烈，含多次高强度突围与爬坡' : '稳态平顺，节奏控制极佳'}`, 65, reviewY + 134);
+  ctx.fillText(`• 强度系数 IF: ${data.intensityFactor} · ${data.intensityFactor >= 0.95 ? '比赛级超强负荷' : data.intensityFactor >= 0.85 ? '高强度甜区阈值' : '基础耐力有氧'}`, 65, reviewY + 166);
 
   drawFooter(ctx, w, h);
   return canvas.toDataURL('image/png');
@@ -1877,13 +1877,13 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
 
   ctx.fillStyle = '#007AFF';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('运动生理科学 (Intervals.icu 模型) & 状态评估', 65, sciY + 34);
+  ctx.fillText('运动生理科学体能模型与状态评估', 65, sciY + 34);
 
   // PMC Tri-state pills
   const pmcItems = [
-    { label: 'CTL (体能底子)', val: `${data.ctl}`, color: '#007AFF' },
-    { label: 'ATL (急性疲劳)', val: `${data.atl}`, color: '#FF9500' },
-    { label: 'TSB (竞技状态)', val: `${data.tsb > 0 ? '+' : ''}${data.tsb}`, color: data.tsb >= 0 ? '#34C759' : '#FF3B30' },
+    { label: '长期体能', val: `${data.ctl}`, color: '#007AFF' },
+    { label: '急性疲劳', val: `${data.atl}`, color: '#FF9500' },
+    { label: '竞技状态', val: `${data.tsb > 0 ? '+' : ''}${data.tsb}`, color: data.tsb >= 0 ? '#34C759' : '#FF3B30' },
   ];
 
   const pillW = (w - 80 - 50 - 24) / 3;
@@ -1908,7 +1908,7 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
   ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(`• 当前身心竞技状态判定: ${data.tsbLabel}`, 65, sciY + 134);
   ctx.fillText(`• 连续出勤记录: 已连续打卡 ${data.streakDays} 天`, 65, sciY + 165);
-  ctx.fillText(`• 垂直空间征服: 累计爬升相当于征服了 ${data.everestCount} 座珠穆朗玛峰 (Everest)`, 65, sciY + 196);
+  ctx.fillText(`• 垂直空间征服: 累计爬升相当于征服了 ${data.everestCount} 座珠穆朗玛峰`, 65, sciY + 196);
 
   // Eddington Hero Block
   const eddY = 675;
@@ -1920,7 +1920,7 @@ export async function generateStravaCockpitPoster(data: StravaCockpitPosterData)
 
   ctx.fillStyle = '#007AFF';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('车手爱丁顿数 (EDDINGTON NUMBER)', 65, eddY + 34);
+  ctx.fillText('车手爱丁顿数', 65, eddY + 34);
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 56px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -2136,7 +2136,7 @@ async function generateConquerorPoster(data: LatestRidePosterData): Promise<stri
 
   ctx.fillStyle = '#D4AF37';
   ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('山脊高程剖面与爬坡地形蚀刻 (TOPO RIDGE PROFILE)', 88, ridgeY + 32);
+  ctx.fillText('山脊高程剖面与爬坡地形蚀刻', 88, ridgeY + 32);
 
   const baseLine = ridgeY + ridgeH - 35;
   const rPoints = [
@@ -2279,7 +2279,7 @@ async function generateConquerorPoster(data: LatestRidePosterData): Promise<stri
 
   const bullets = [
     `高程征服核算: 本场克服重力直拔累计 +${data.eleM}m，垂直落差与功耗折合直拔 ${eiffel} 座埃菲尔铁塔。`,
-    `功率踏频自律: 标准化功率达 ${data.np}W (变异指数 VI ${data.vi})，爬坡起伏段踏频自律，无氧储备调配合理。`,
+    `功率踏频自律: NP 达 ${data.np}W，变异指数 VI ${data.vi}，爬坡起伏段踏频自律，无氧储备调配合理。`,
     `机体能量消耗: 克服坡度做功总计约 ${data.caloriesKcal || 800} kcal，相当于消耗 ${Math.max(1, Math.round((data.caloriesKcal || 800) / 105))} 根香蕉的生物能量。`,
     `征服格言: 双腿是丈量大地的唯一标尺，山顶的清风只为攀登至巅峰的征服者吹拂。`
   ];

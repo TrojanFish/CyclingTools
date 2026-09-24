@@ -83,9 +83,9 @@ export const CyclingWeatherAdvisor: React.FC = () => {
     voyagerLayer.addTo(map);
 
     L.control.layers({
-      '高清骑行 (HD)': voyagerLayer,
-      '卫星实景 (Satellite)': satelliteLayer,
-      '极简底图 (Light)': positronLayer,
+      '高清骑行': voyagerLayer,
+      '卫星实景': satelliteLayer,
+      '极简底图': positronLayer,
     }, undefined, { position: 'topright' }).addTo(map);
 
     map.on('click', (e: L.LeafletMouseEvent) => {
@@ -544,13 +544,13 @@ export const CyclingWeatherAdvisor: React.FC = () => {
                   <AlertTriangle className="w-4 h-4 text-ios-orange shrink-0 mt-0.5" />
                   <div className="space-y-1 text-xs">
                     <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <span>强侧风预警 (Crosswind Hazard Alert)</span>
+                      <span>强侧风预警</span>
                       <span className="font-mono px-2 py-0.5 bg-ios-orange/20 text-ios-orange rounded-full text-[11px] font-bold">
                         侧风峰值 {isImperial ? `${Math.round(maxCrosswindKmh * 0.621371)} mph` : `${maxCrosswindKmh} km/h`}
                       </span>
                     </div>
                     <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-                      监测到沿途存在明显侧向风/侧顶风！使用 <strong>≥50mm 高框碳纤维轮组</strong>（特别是前轮）在跨海大桥、山脊风口或遭遇大货车交汇时，将产生强烈的横向偏航力矩（Yaw Steering Moment）引起车头突发晃动。<strong>操稳建议：</strong>通过侧风区时请提前握牢下把位（Drops）以降低重心、拓宽臂展杠杆控制，切忌在此区间单手离把饮水或看表！
+                      监测到沿途存在明显侧向风/侧顶风！使用 <strong>≥50mm 高框碳纤维轮组</strong>（特别是前轮）在跨海大桥、山脊风口或遭遇大货车交汇时，将产生强烈的横向偏航力矩引起车头突发晃动。<strong>操稳建议：</strong>通过侧风区时请提前握牢下把位以降低重心、拓宽臂展杠杆控制，切忌在此区间单手离把饮水或看表！
                     </p>
                   </div>
                 </div>

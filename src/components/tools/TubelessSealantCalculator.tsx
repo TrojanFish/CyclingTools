@@ -208,8 +208,8 @@ export const TubelessSealantCalculator: React.FC = () => {
         title={language === 'zh-TW' ? '自補液用量' : '自补液用量'}
         description={
           language === 'zh-TW'
-            ? '基於外胎環面 (Torus) 幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'
-            : '基于外胎环面 (Torus) 几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量。'
+            ? '基於外胎環面幾何內部容積、胎體孔隙率吸附、車圈內寬及氣候溫濕度揮發函數，精準計算單輪/整車首次注膠量、乾涸失效檢查週期及補液劑量。'
+            : '基于外胎环面几何内部容积、胎体孔隙率吸附、车圈内宽及气候温湿度挥发函数，精准计算单轮/整车首次注胶量、干涸失效检查周期及补液剂量。'
         }
         tint="blue"
         actions={
@@ -366,16 +366,16 @@ export const TubelessSealantCalculator: React.FC = () => {
                   className="w-full accent-ios-blue cursor-pointer"
                 />
                 <div className="flex justify-between text-[11px] text-slate-400">
-                  <span>23c (公路细胎)</span>
-                  <span>40c (Gravel)</span>
-                  <span>2.6" (山地重胎)</span>
+                  <span>23c · 公路细胎</span>
+                  <span>40c · 全地形</span>
+                  <span>2.6" · 山地越野</span>
                 </div>
               </div>
 
               {/* Inner Rim Width */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-600 dark:text-slate-400">{'车圈内部宽度 (IW)'}</span>
+                  <span className="text-slate-600 dark:text-slate-400">{'车圈内部宽度'}</span>
                   <span className="font-mono font-bold text-ios-blue">{innerRimWidthMm} mm</span>
                 </div>
                 <input
@@ -391,9 +391,9 @@ export const TubelessSealantCalculator: React.FC = () => {
                   className="w-full accent-ios-blue cursor-pointer"
                 />
                 <div className="flex justify-between text-[11px] text-slate-400">
-                  <span>19mm (公路标配)</span>
-                  <span>25mm (全地形)</span>
-                  <span>30mm+ (宽圈)</span>
+                  <span>19mm · 公路标准</span>
+                  <span>25mm · 全地形</span>
+                  <span>30mm+ · 超宽圈</span>
                 </div>
               </div>
             </div>
@@ -475,9 +475,9 @@ export const TubelessSealantCalculator: React.FC = () => {
                   onChange={(e) => setSealantType(e.target.value as any)}
                   className="w-full h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
                 >
-                  <option value="latex">{language === 'zh-TW' ? "天然水基乳膠 (Stan's / Orange Regular / 經典款)" : "天然水基乳胶 (Stan's / Orange Regular / 经典款)"}</option>
-                  <option value="endurance">{language === 'zh-TW' ? '微粒纖維強化長效版 (Orange Seal Endurance / Muc-Off)' : '微粒纤维强化长效版 (Orange Seal Endurance / Muc-Off)'}</option>
-                  <option value="synthetic">{language === 'zh-TW' ? '無氨合成環保液 (Effetto Mariposa / Finish Line)' : '无氨合成环保液 (Effetto Mariposa / Finish Line)'}</option>
+                  <option value="latex">{language === 'zh-TW' ? '天然水基乳膠配方' : '天然水基乳胶配方'}</option>
+                  <option value="endurance">{language === 'zh-TW' ? '微粒纖維強化長效版' : '微粒纤维强化长效版'}</option>
+                  <option value="synthetic">{language === 'zh-TW' ? '無氨合成環保液' : '无氨合成环保液'}</option>
                 </select>
               </div>
 
@@ -490,9 +490,9 @@ export const TubelessSealantCalculator: React.FC = () => {
                   onChange={(e) => setRideFrequency(e.target.value as any)}
                   className="w-full h-9 bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/15 rounded-xl px-3 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-ios-blue"
                 >
-                  <option value="frequent">{language === 'zh-TW' ? '高頻騎行 (每週 2-4 次，液體均勻附著流動)' : '高频骑行 (每周 2-4 次，液体均匀附着流动)'}</option>
-                  <option value="occasional">{language === 'zh-TW' ? '中頻騎行 (雙週 1 次，偶爾停放)' : '中频骑行 (双周 1 次，偶尔停放)'}</option>
-                  <option value="stored">{language === 'zh-TW' ? '長期懸掛停放 (容易在胎底聚集成橡膠團塊)' : '长期悬挂停放 (容易在胎底聚集成橡胶团块)'}</option>
+                  <option value="frequent">{language === 'zh-TW' ? '高頻騎行 · 每週 2-4 次' : '高频骑行 · 每周 2-4 次'}</option>
+                  <option value="occasional">{language === 'zh-TW' ? '中頻騎行 · 雙週 1 次' : '中频骑行 · 双周 1 次'}</option>
+                  <option value="stored">{language === 'zh-TW' ? '長期懸掛停放' : '长期悬挂停放'}</option>
                 </select>
               </div>
             </div>
@@ -702,7 +702,7 @@ export const TubelessSealantCalculator: React.FC = () => {
               <span>4. 扎钉与培根胶条配合</span>
             </div>
             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-              自补液对 2-3mm 以下微孔可在旋转中数秒自封；对于 3-5mm 较大划口，应迅速将破口朝下让液态胶水浸润，并立即插拔培根胶条（Tubeless Plug），机械填补瞬间止漏。
+              自补液对 2-3mm 以下微孔可在旋转中数秒自封；对于 3-5mm 较大划口，应迅速将破口朝下让液态胶水浸润，并立即插拔培根胶条，机械填补瞬间止漏。
             </p>
           </div>
         </div>

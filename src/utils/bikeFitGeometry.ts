@@ -182,13 +182,13 @@ export function solveSpacersForTargetDrop(params: {
     message = `车架 Stack 偏高：即使全切垫圈，实际落差仍比目标小 ${Math.abs(dropErrorMm)}mm。建议更换 -17° 把立或选小一号车架。`;
   } else if (rawSpacersMm < 2.5) {
     fitStatus = 'slammed';
-    message = `激进全切设定 (Slammed)：需全切垫圈 (0mm) 直插碗组盖，落差高度与竞技设定高度契合。`;
+    message = `激进全切设定：需全切垫圈 0mm 直插碗组盖，落差高度与竞技设定高度契合。`;
   } else if (rawSpacersMm <= 25) {
     fitStatus = 'optimal';
     message = `理想余量区间：搭配约 ${Math.max(0, roundedSpacersMm)}mm 垫圈即可达到目标落差，上下皆具备 15mm 以上微调空间。`;
   } else if (rawSpacersMm <= 35) {
     fitStatus = 'acceptable';
-    message = `垫圈偏高：需要约 ${roundedSpacersMm}mm 垫圈，已接近碳纤维舵管常规建议上限 (35mm)。`;
+    message = `垫圈偏高：需要约 ${roundedSpacersMm}mm 垫圈，已接近碳纤维舵管常规建议上限 35mm。`;
   } else if (rawSpacersMm <= 45) {
     fitStatus = 'high_spacers';
     message = `超量垫圈警报：需要约 ${roundedSpacersMm}mm 垫圈，前叉头管抗扭刚度降低，影响操控质感。`;

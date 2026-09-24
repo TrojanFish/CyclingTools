@@ -64,7 +64,12 @@ npm run build    # tsc && vite build — must exit 0
 
 GitHub Actions workflow is maintained at `.github/workflows/ci.yml` and executes the full 4-stage quality gate on every pull request and push.
 
-### Language
+### Language & Terminology System
 
-- UI text: Simplified Chinese (zh-CN) with Traditional Chinese (zh-TW) support
-- Code comments and variable names: English
+- Skill specification: `.agents/skills/cycling-terminology-system/SKILL.md`
+- **Global Technical Acronyms (Tier 1)**: Universal technical abbreviations (`FTP`, `CTL`, `ATL`, `TSB`, `TSS`, `NP`, `IF`, `VI`, `VO₂max`, `Stack`, `Reach`, `CdA`) remain pure English uppercase on metric titles, chart axes, and formulas — never translated, never bracket-wrapped.
+- **Authentic Chinese (Tier 2)**: UI components, menus, form inputs, and descriptions use authentic cycling Chinese (`前叉`, `下沉量`, `回弹阻尼`, `自补液`, `双盘`, `世巡职业级`) with zero English brackets or parenthetical redundancy.
+- **Hierarchical Decoupling (Tier 3)**: `IOSMetricTile` primary label uses Tier 1 acronym; subtext carries concise localized Chinese explanation (`label="CTL"` ＋ `subtext="42天长期体能积淀"`). Card/section titles use pure Chinese (no bracket acronyms). Chart legend labels may use concise Chinese (`长期体能`) when legend space is constrained — never bracket hybrids like `CTL (长期体能)`.
+- **Physical Units (Tier 4)**: Standard international symbols (`W`, `W/kg`, `bpm`, `rpm`, `km/h`, `PSI`, `Bar`, `mm`) — never spelled out in Chinese.
+- **Tier 2 UI text**: Simplified Chinese (zh-CN) with Traditional Chinese (zh-TW) support via `language === 'zh-TW' ? '...' : '...'` pattern.
+- **Code comments and variable names**: English only.

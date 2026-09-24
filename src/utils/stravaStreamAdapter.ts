@@ -308,3 +308,133 @@ export function convertStravaToLocalRecord(
 
   return { record, analysis, points };
 }
+
+/**
+ * Generates a high-fidelity synthetic StravaStreamsRecord for offline simulation,
+ * demo rides, or activities missing sensor streams.
+ */
+export function generateSimulatedStravaStream(
+  activity: StravaActivityRecord,
+  pointCount = 360
+): StravaStreamsRecord {
+  const durSec = Math.max(60, activity.moving_time || activity.elapsed_time || 3600);
+  const distM = Math.max(1000, activity.distance || 30000);
+  const eleGainM = Math.max(10, activity.total_elevation_gain || 300);
+  const baseWatts = Math.max(80, activity.average_watts || activity.weighted_average_watts || 200);
+  const baseHr = Math.max(90, activity.average_heartrate || 145);
+  const maxHr = Math.min(205, activity.max_heartrate || Math.round(baseHr * 1.2));
+
+  // Determine geo-anchor based on activity name keywords
+  let baseLat = 30.225; // Default: Hangzhou West Lake / Longjing
+  let baseLon = 120.125;
+  let baseAlt = 45;
+
+  const name = activity.name || '';
+  if (name.includes('天荒坪') || name.includes('安吉')) {
+    baseLat = 30.450;
+    baseLon = 119.580;
+    baseAlt = 220;
+  } else if (name.includes('千岛湖')) {
+    baseLat = 29.605;
+    baseLon = 119.010;
+    baseAlt = 108;
+  } else if (name.includes('莫干山')) {
+    baseLat = 30.610;
+    baseLon = 119.850;
+    baseAlt = 180;
+  } else if (name.includes('钱塘江') || name.includes('绿道')) {
+    baseLat = 30.180;
+    baseLon = 120.210;
+    baseAlt = 15;
+  }
+
+  // Determine sampling steps
+  const pts = Math.min(1800, Math.max(60, pointCount));
+  const timeStep = durSec / pts;
+  const distStepM = distM / pts;
+
+  const time: number[] = [];
+  const watts: number[] = [];
+  const heartrate: number[] = [];
+  const cadence: number[] = [];
+  const velocity_smooth: number[] = [];
+  const altitude: number[] = [];
+  const latlng: [number, number][] = [];
+
+  const radiusDeg = (distM / 1000) * 0.0028; // ~0.0028 deg per km
+
+  for (let i = 0; i < pts; i++) {
+    const tSec = Math.round(i * timeStep);
+    time.push(tSec);
+
+    const progress = i / pts;
+
+    // Realistic altitude with climbs, rolling peaks, and descent
+    const hillWave = Math.sin(progress * Math.PI * 3.5) * 0.6 + Math.sin(progress * Math.PI * 8) * 0.4;
+    const currentEle = Math.round(baseAlt + Math.max(0, hillWave * eleGainM * 0.95));
+    altitude.push(currentEle);
+
+    // Instantaneous gradient
+    const prevEle = i > 0 ? altitude[i - 1] : baseAlt;
+    const dEle = currentEle - prevEle;
+    const gradePct = distStepM > 0 ? (dEle / distStepM) * 100 : 0;
+
+    // Power model: higher on uphill, lower/zero on downhill
+    let p = baseWatts;
+    if (gradePct > 1.0) {
+      p = Math.round(baseWatts * (1 + Math.min(0.65, (gradePct / 10) * 0.75)));
+    } else if (gradePct < -1.5) {
+      p = Math.max(0, Math.round(baseWatts * 0.3 - Math.abs(gradePct) * 15));
+    }
+    // Add micro surges and noise
+    const surge = Math.sin(i / 12) * 25 + Math.cos(i / 5) * 15;
+    const finalPower = Math.max(0, Math.round(p + surge));
+    watts.push(finalPower);
+
+    // Cadence model: 86-94 rpm when pedaling, 0 when coasting downhill
+    if (finalPower > 30) {
+      const cad = Math.round(88 + Math.sin(i / 8) * 5 + (finalPower > baseWatts * 1.2 ? 6 : 0));
+      cadence.push(Math.max(60, Math.min(120, cad)));
+    } else {
+      cadence.push(0);
+    }
+
+    // Velocity model: depends on power and gradient
+    let velMs = distM / durSec;
+    if (gradePct > 2.0) {
+      velMs = Math.max(2.8, velMs * (1 - Math.min(0.6, gradePct * 0.05)));
+    } else if (gradePct < -2.0) {
+      velMs = Math.min(20.0, velMs * (1 + Math.min(0.8, Math.abs(gradePct) * 0.07)));
+    }
+    velocity_smooth.push(parseFloat(velMs.toFixed(2)));
+
+    // Heart rate model: lagged response to power + cardiac drift
+    const driftBpm = progress * 6; // ~6 bpm cardiac drift
+    const hrIntensity = finalPower / Math.max(100, baseWatts * 1.3);
+    const targetHr = Math.round(baseHr * 0.85 + hrIntensity * (maxHr - baseHr * 0.85) + driftBpm);
+    const finalHr = Math.min(maxHr, Math.max(80, targetHr));
+    heartrate.push(finalHr);
+
+    // GPS coordinates: parametric curving road trajectory
+    const angle = progress * Math.PI * 2.8;
+    const latOffset = Math.sin(angle) * radiusDeg * (0.85 + 0.15 * Math.cos(progress * 5));
+    const lonOffset = Math.cos(angle) * radiusDeg * (1.1 + 0.1 * Math.sin(progress * 6));
+    latlng.push([
+      parseFloat((baseLat + latOffset).toFixed(6)),
+      parseFloat((baseLon + lonOffset).toFixed(6))
+    ]);
+  }
+
+  return {
+    activityId: activity.id,
+    updatedAt: Date.now(),
+    time,
+    watts,
+    heartrate,
+    cadence,
+    velocity_smooth,
+    altitude,
+    latlng
+  };
+}
+

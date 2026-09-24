@@ -101,22 +101,22 @@ export interface PeriodizationPlanSummary {
 }
 
 const PHASE_METADATA: Record<TrainingPhase, { label: string; color: string; desc: string }> = {
-  base_1: { label: '基础有氧 1 (Base 1)', color: '#10B981', desc: '建立线粒体密度，Z2 长距离有氧巡航' },
-  base_2: { label: '基础有氧 2 (Base 2)', color: '#10B981', desc: '提升肌糖原储备与肌纤维效率，渐进加量' },
-  base_3: { label: '基础有氧 3 (Base 3)', color: '#34D399', desc: '有氧底盘筑基收尾，引入适度节奏骑行' },
-  build_1: { label: '进阶建立 1 (Build 1)', color: '#F59E0B', desc: '乳酸阈值攻坚，2x20min 甜区与爬坡' },
-  build_2: { label: '进阶建立 2 (Build 2)', color: '#F97316', desc: 'VO2max 最大摄氧量拓展，微间歇高负荷' },
-  peak: { label: '巅峰储备 (Peak)', color: '#8B5CF6', desc: '模拟比赛强度，极高强度与适度减容' },
-  taper: { label: '赛前减量 (Taper)', color: '#06B6D4', desc: '训练容积削减 40-50%，快速清空疲劳' },
-  race: { label: '决战比赛周 (Race Week)', color: '#EF4444', desc: '激活排酸，糖原超量充能，决战 A 级目标' },
-  transition: { label: '赛后过渡 (Transition)', color: '#94A3B8', desc: '主动恢复，线粒体与神经系统重置' }
+  base_1: { label: '基础有氧 1', color: '#10B981', desc: '建立线粒体密度，Z2 长距离有氧巡航' },
+  base_2: { label: '基础有氧 2', color: '#10B981', desc: '提升肌糖原储备与肌纤维效率，渐进加量' },
+  base_3: { label: '基础有氧 3', color: '#34D399', desc: '有氧底盘筑基收尾，引入适度节奏骑行' },
+  build_1: { label: '进阶建立 1', color: '#F59E0B', desc: '乳酸阈值攻坚，2x20min 甜区与爬坡' },
+  build_2: { label: '进阶建立 2', color: '#F97316', desc: 'VO2max 最大摄氧量拓展，微间歇高负荷' },
+  peak: { label: '巅峰储备', color: '#8B5CF6', desc: '模拟比赛强度，极高强度与适度减容' },
+  taper: { label: '赛前减量', color: '#06B6D4', desc: '训练容积削减 40-50%，快速清空疲劳' },
+  race: { label: '决战比赛周', color: '#EF4444', desc: '激活排酸，糖原超量充能，决战 A 级目标' },
+  transition: { label: '赛后过渡', color: '#94A3B8', desc: '主动恢复，线粒体与神经系统重置' }
 };
 
 // Preset Popular Events in China & International
 export const PRESET_GOAL_EVENTS: GoalEvent[] = [
   {
     id: 'qiandao_lake_granfondo',
-    name: '千岛湖环湖公路自行车赛 (136km)',
+    name: '千岛湖环湖公路自行车赛',
     date: '2026-05-24',
     priority: 'A',
     discipline: 'gran_fondo',
@@ -140,7 +140,7 @@ export const PRESET_GOAL_EVENTS: GoalEvent[] = [
   },
   {
     id: 'mogan_climb_kom',
-    name: '莫干山·古典爬坡挑战赛 (KOM)',
+    name: '莫干山·古典爬坡挑战赛',
     date: '2026-04-26',
     priority: 'B',
     discipline: 'climb_kom',
@@ -300,13 +300,13 @@ export function generateAnnualTrainingPlan(
     // Recommended workouts
     let recommendedWorkouts = ['Z2 有氧耐力巡航 90m', '主动恢复骑 45m'];
     if (phase === 'base_1' || phase === 'base_2') {
-      recommendedWorkouts = ['Z2 基础长距离巡航 (2.5h)', '节奏踏频进阶 (1h)', '主动恢复排酸 (45m)'];
+      recommendedWorkouts = ['Z2 基础长距离巡航 2.5h', '节奏踏频进阶 1h', '主动恢复排酸 45m'];
     } else if (phase === 'base_3') {
-      recommendedWorkouts = ['甜点巡航 Sweetspot 2x15m', 'Z2 基础耐力 (3h)', '有氧激活 (1h)'];
+      recommendedWorkouts = ['甜区巡航 2x15分钟', 'Z2 基础耐力 3h', '有氧激活 1h'];
     } else if (phase === 'build_1') {
-      recommendedWorkouts = ['FTP 甜区攻坚 2x20min', 'Over-Under 阈值穿梭间歇', '周末长距离耐力 (3.5h)'];
+      recommendedWorkouts = ['FTP 甜区攻坚 2x20min', 'Over-Under 阈值穿梭间歇', '周末长距离耐力 3.5h'];
     } else if (phase === 'build_2') {
-      recommendedWorkouts = ['Rønnestad 30/15s 微间歇 (3组)', 'Seiler 4x8min VO₂max', '大齿扭矩力量爬坡'];
+      recommendedWorkouts = ['经典 30/15秒微间歇 3组', '4x8分钟最大摄氧量间歇', '大齿扭矩力量爬坡'];
     } else if (phase === 'peak') {
       recommendedWorkouts = ['赛道配速仿真模拟 40km', '短冲刺激活 5x30s', '轻松巡航 1h'];
     } else if (phase === 'taper') {

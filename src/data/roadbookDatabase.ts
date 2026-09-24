@@ -309,7 +309,7 @@ export const ROADBOOK_DATABASE: RoadbookItem[] = [
     roadCondition: '环湖公路沥青路面，地势开阔，高海拔缺氧挑战',
     bestSeason: '6月 - 8月（7-8月万亩油菜花盛开极美）',
     description: '中国最负盛名的公路自行车圣地！环绕中国最大内陆咸水湖，蔚蓝湖水、金色油菜花海与雪山草原相映成趣，平均海拔 3200 米的高原圣境。',
-    highlights: ['西海镇原子城', '金沙湾沙漠天路', '二郎剑景区', '黑马河日出', '橡皮山垭口(3820m)', '鸟岛湿地'],
+    highlights: ['西海镇原子城', '金沙湾沙漠天路', '二郎剑景区', '黑马河日出', '橡皮山垭口海拔 3820 米', '鸟岛湿地'],
     tips: [
       '平均海拔 3200m，提前适应高海拔缺氧，心率会比平原高 10~15 BPM，控制输出强度。',
       '高原天气多变，紫外线极强，必须做好保暖防雨防晒准备。'
@@ -344,29 +344,29 @@ export const ROADBOOK_DATABASE: RoadbookItem[] = [
     sceneryRating: 5,
     roadCondition: '环法特级柏油路面，21 个编号发卡弯，路标清晰',
     roadConditionEn: 'Tour de France HC tarmac, 21 legendary numbered hairpin signs',
-    bestSeason: '5月 - 10月 (May - October)',
+    bestSeason: '5月 - 10月',
     description: '环法自行车赛最具传奇色彩的高山终点！从瓦桑堡出发，攀登 21 个带历届赛段冠军铭牌的发卡弯，平均坡度 8.1%，最高海拔 1850 米。',
     descriptionEn: 'The most iconic climb in Tour de France history. 21 numbered hairpins bearing plaques of past stage winners, rising from Le Bourg-d Oisans to 1,850m.',
-    highlights: ['瓦桑堡起点', '第21弯 (Marco Pantani)', '拉加尔德村', '第7弯荷兰角 (Dutch Corner)', '环法终点拱门'],
+    highlights: ['瓦桑堡起点', '第21弯潘塔尼赛段', '拉加尔德村', '第7弯荷兰角', '环法终点拱门'],
     tips: [
       '前 2km 坡度高达 10%~11%，切忌盲目高功率起步，保持高踏频配速。',
       '每个发卡弯外侧较为平缓，可在弯心借力微调呼吸与齿比。'
     ],
     waypoints: [
-      { lat: 45.0550, lng: 6.0300, elevation: 740, name: "瓦桑堡起点 (Le Bourg-d'Oisans)" },
-      { lat: 45.0590, lng: 6.0420, elevation: 890, name: '第21弯 (Turn 21 - Pantani)' },
-      { lat: 45.0640, lng: 6.0510, elevation: 1080, name: '第16弯 (Turn 16 - La Garde)' },
-      { lat: 45.0720, lng: 6.0620, elevation: 1390, name: '第7弯荷兰角 (Dutch Corner)' },
-      { lat: 45.0820, lng: 6.0710, elevation: 1650, name: '第3弯 (Turn 3 - Huez Village)' },
-      { lat: 45.0920, lng: 6.0720, elevation: 1850, name: '阿尔普迪埃环法终点 (Alpe d Huez Summit)' }
+      { lat: 45.0550, lng: 6.0300, elevation: 740, name: '瓦桑堡起点' },
+      { lat: 45.0590, lng: 6.0420, elevation: 890, name: '第21弯潘塔尼发卡弯' },
+      { lat: 45.0640, lng: 6.0510, elevation: 1080, name: '第16弯拉加尔德' },
+      { lat: 45.0720, lng: 6.0620, elevation: 1390, name: '第7弯荷兰角' },
+      { lat: 45.0820, lng: 6.0710, elevation: 1650, name: '第3弯于埃村' },
+      { lat: 45.0920, lng: 6.0720, elevation: 1850, name: '阿尔普迪埃环法终点' }
     ]
   },
   {
     id: 'italy-passo-dello-stelvio',
-    name: '意大利斯泰尔维奥山口 48 弯天路 (Cima Coppi)',
+    name: '意大利斯泰尔维奥山口 48 弯天路',
     nameEn: 'Passo dello Stelvio (48 Hairpins) - Giro d Italia',
     sourceCode: 'Giro d Italia Cima Coppi',
-    region: '意大利·南蒂罗尔 (South Tyrol, Italy)',
+    region: '意大利·南蒂罗尔',
     regionEn: 'South Tyrol, Italian Alps',
     province: 'Europe',
     category: 'climb',
@@ -381,7 +381,7 @@ export const ROADBOOK_DATABASE: RoadbookItem[] = [
     sceneryRating: 5,
     roadCondition: '阿尔卑斯高山国家级公路，连续 48 个折返发卡急弯',
     roadConditionEn: 'Alpine pass highway with 48 wall-like engineered switchbacks',
-    bestSeason: '6月中旬 - 9月 (June - September)',
+    bestSeason: '6月中旬 - 9月',
     description: '环意自行车赛最高荣誉 Cima Coppi 象征！从普拉托出发攀登 48 个整齐排列如拉链般的发卡弯，直插海拔 2758 米的雪山垭口。',
     descriptionEn: 'The highest paved pass in the Eastern Alps. Climb 48 legendary wall-like switchbacks from Prato allo Stelvio up to the 2,758m Cima Coppi summit.',
     highlights: ['普拉托村起点', '特劳福伊松林段', '第48~30发卡群', '雪山峭壁视线', '海拔2758m斯泰尔维奥垭口'],
@@ -390,19 +390,19 @@ export const ROADBOOK_DATABASE: RoadbookItem[] = [
       '山顶即使盛夏 7 月气温也经常只有 5℃ 左右，下坡前必须换戴全指防风手套。'
     ],
     waypoints: [
-      { lat: 46.6180, lng: 10.5900, elevation: 915, name: '普拉托起点 (Prato allo Stelvio)' },
-      { lat: 46.5820, lng: 10.5280, elevation: 1370, name: '特劳福伊 (Trafoi Village)' },
-      { lat: 46.5510, lng: 10.4920, elevation: 1980, name: '第35发卡弯森林线 (Timberline)' },
-      { lat: 46.5360, lng: 10.4680, elevation: 2350, name: '第15弯雪山绝壁群 (High Wall)' },
-      { lat: 46.5290, lng: 10.4530, elevation: 2758, name: '斯泰尔维奥山口顶峰 (Stelvio Pass Summit)' }
+      { lat: 46.6180, lng: 10.5900, elevation: 915, name: '普拉托起点' },
+      { lat: 46.5820, lng: 10.5280, elevation: 1370, name: '特劳福伊村' },
+      { lat: 46.5510, lng: 10.4920, elevation: 1980, name: '第35发卡弯高山林线' },
+      { lat: 46.5360, lng: 10.4680, elevation: 2350, name: '第15发卡弯绝壁群' },
+      { lat: 46.5290, lng: 10.4530, elevation: 2758, name: '斯泰尔维奥山口顶峰' }
     ]
   },
   {
     id: 'spain-sa-calobra',
-    name: '西班牙马略卡岛·萨卡洛布拉天路 (Coll dels Reis)',
+    name: '西班牙马略卡岛·萨卡洛布拉天路',
     nameEn: 'Sa Calobra (Coll dels Reis) - Mallorca, Spain',
     sourceCode: 'Mallorca Cycling Paradise',
-    region: '西班牙·马略卡岛 (Mallorca, Spain)',
+    region: '西班牙·马略卡岛',
     regionEn: 'Mallorca, Balearic Islands',
     province: 'Europe',
     category: 'climb',
@@ -417,19 +417,19 @@ export const ROADBOOK_DATABASE: RoadbookItem[] = [
     sceneryRating: 5,
     roadCondition: '世界级旅游公路，特有 270 度立交螺旋发卡弯（领带结）',
     roadConditionEn: 'Engineered cycling paradise featuring the iconic 270-degree Tie Knot bridge',
-    bestSeason: '3月 - 5月 / 9月 - 11月 (March - November)',
+    bestSeason: '3月 - 5月 / 9月 - 11月',
     description: '欧洲职业车队冬季冬训圣地！从地中海幽静峡湾港口出发，穿越鬼斧神工的石灰岩峡谷，以 7% 持续均坡攀登至 Coll dels Reis 垭口。',
     descriptionEn: 'The jewel of Mallorca and winter training mecca for WorldTour pros. Climbs from a turquoise cove through sheer limestone cliffs, featuring the 270-degree Tie Knot bridge.',
-    highlights: ['萨卡洛布拉港口', '石灰岩石裂谷', '领带结螺旋立交弯 (Nus de Sa Corbata)', 'Coll dels Reis 观景垭口'],
+    highlights: ['萨卡洛布拉港口', '石灰岩石裂谷', '领带结螺旋立交弯', 'Coll dels Reis 观景垭口'],
     tips: [
       '由于该路线是死胡同，骑车必须先放坡 10km 到海边再掉头往上爬，下坡时先探明路况。',
       '冬季和早春为欧洲车友聚集高峰期，路面铺装极佳。'
     ],
     waypoints: [
-      { lat: 39.8510, lng: 2.7980, elevation: 5, name: '萨卡洛布拉港湾起点 (Port de Sa Calobra)' },
-      { lat: 39.8420, lng: 2.8090, elevation: 180, name: '岩壁峡谷发卡弯 (Limestone Gorge)' },
-      { lat: 39.8320, lng: 2.8180, elevation: 420, name: '中段盘山折返线 (Mid-Mountain)' },
-      { lat: 39.8250, lng: 2.8220, elevation: 590, name: '270度领带结螺旋弯 (The Tie Knot)' },
+      { lat: 39.8510, lng: 2.7980, elevation: 5, name: '萨卡洛布拉港湾起点' },
+      { lat: 39.8420, lng: 2.8090, elevation: 180, name: '岩壁峡谷发卡弯' },
+      { lat: 39.8320, lng: 2.8180, elevation: 420, name: '中段盘山折返线' },
+      { lat: 39.8250, lng: 2.8220, elevation: 590, name: '270度领带结螺旋弯' },
       { lat: 39.8210, lng: 2.8230, elevation: 682, name: 'Coll dels Reis 垭口顶峰' }
     ]
   }

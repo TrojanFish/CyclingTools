@@ -438,7 +438,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {latestStats?.ef ? latestStats.ef : '--'}
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                    {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` (極${latestStats.maxHr})` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
+                    {latestStats?.avgHr ? `${latestStats.avgHr}bpm${latestStats.maxHr ? ` · 极 ${latestStats.maxHr}` : ''}` : (language === 'zh-TW' ? '有氧效率' : '有氧效率')}
                   </div>
                 </div>
               </div>

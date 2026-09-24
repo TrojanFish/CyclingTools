@@ -30,9 +30,14 @@ import {
 import {
   getAllActivitiesFromDb,
   getStreamFromDb,
+  saveStreamToDb,
+  seedDemoStravaActivitiesToDb,
   StravaActivityRecord
 } from '../../utils/indexedDb';
-import { convertStravaToLocalRecord } from '../../utils/stravaStreamAdapter';
+import {
+  convertStravaToLocalRecord,
+  generateSimulatedStravaStream
+} from '../../utils/stravaStreamAdapter';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
@@ -131,7 +136,11 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
     setLoadingStravaId(act.id);
     try {
       showToast(language === 'zh-TW' ? `正在從本地調取「${act.name}」秒級數據...` : `正在从本地调取「${act.name}」秒级数据...`, 'info');
-      const stream = await getStreamFromDb(act.id);
+      let stream = await getStreamFromDb(act.id);
+      if (!stream || !stream.time || stream.time.length === 0) {
+        stream = generateSimulatedStravaStream(act);
+        await saveStreamToDb(stream).catch(() => {});
+      }
       const { record, points } = convertStravaToLocalRecord(act, stream, ftpWatts, weightKg, maxHr);
       await saveActivityToDb(record, points);
       await onRefreshList();
@@ -143,6 +152,20 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
       showToast(`载入失败: ${message}`, 'error');
     } finally {
       setLoadingStravaId(null);
+    }
+  };
+
+  const handleSeedDemoStrava = async () => {
+    setIsSeeding(true);
+    try {
+      const seeded = await seedDemoStravaActivitiesToDb();
+      setStravaActivities(seeded);
+      showToast(language === 'zh-TW' ? `已成功寫入 ${seeded.length} 場 Strava 擬真拉練與秒級數據！` : `已成功写入 ${seeded.length} 场 Strava 拟真拉练与秒级数据！`, 'success');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      showToast(`初始化仿真数据失败: ${message}`, 'error');
+    } finally {
+      setIsSeeding(false);
     }
   };
 
@@ -313,11 +336,11 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
               onChange={(e) => setSortBy(e.target.value as any)}
               className="h-9 bg-white dark:bg-[#2C2C2E] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-700 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-blue"
             >
-              <option value="date_desc">按时间 (最新优先)</option>
-              <option value="date_asc">按时间 (最早优先)</option>
+              <option value="date_desc">按时间 · 最新优先</option>
+              <option value="date_asc">按时间 · 最早优先</option>
               {activeTab === 'local' && <option value="tss_desc">按 TSS 训练负荷</option>}
               <option value="dist_desc">按骑行总里程</option>
-              <option value="np_desc">按 NP 加权平均功率</option>
+              <option value="np_desc">按 NP 标准化功率</option>
             </select>
 
             {/* Filter by Format (Local Tab only) */}
@@ -487,7 +510,7 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
             /* TAB 2: Strava Local Synchronized Activities */
             filteredStravaActivities.length === 0 ? (
               <div className="py-12 text-center space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-[#FC4C02] flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto">
                   <Cloud className="w-6 h-6" />
                 </div>
                 <div className="space-y-1">
@@ -497,9 +520,22 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">
                     {searchQuery
                       ? '请尝试更换搜索关键字。'
-                      : '请先前往「Strava 数据驾驶舱」同步历史骑行，同步后所有骑行记录即可直接在本地选取并秒级分析！'}
+                      : '可前往「Strava 数据罗盘」同步历史骑行，或一键载入本地拟真拉练数据进行跨工具联动测试！'}
                   </p>
                 </div>
+                {!searchQuery && (
+                  <div className="pt-2 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={handleSeedDemoStrava}
+                      disabled={isSeeding}
+                      className="apple-touch h-9 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition inline-flex items-center gap-2 shadow-ios-sm disabled:opacity-50"
+                    >
+                      {isSeeding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      <span>一键载入 Strava 仿真拉练数据</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               filteredStravaActivities.map((act) => {
