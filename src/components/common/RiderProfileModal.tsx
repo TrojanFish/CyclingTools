@@ -355,7 +355,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
 
                 <div>
                   <label className="text-xs font-medium text-slate-600 dark:text-slate-300 block mb-1">
-                    {language === 'zh-TW' ? '跨高 (Inseam)' : '跨高 (Inseam)'}
+                    {language === 'zh-TW' ? '跨高' : '跨高'}
                   </label>
                   <NumberStepper
                     value={profile.inseamCm}
@@ -841,13 +841,13 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                               onChange={(e) => updateBike(b.id, { type: e.target.value as any })}
                               className="w-full h-9 px-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/[0.06] dark:border-white/[0.08] text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-ios-blue"
                             >
-                              <option value="road_aero">气动公路 (Aero)</option>
-                              <option value="road_climb">超轻爬坡 (Climb)</option>
-                              <option value="road_allround">全能大组 (All-round)</option>
-                              <option value="road_endurance">长途耐力 (Endurance)</option>
-                              <option value="road_tt">计时赛战车 (TT)</option>
-                              <option value="gravel">砂石越野 (Gravel)</option>
-                              <option value="mtb_xc">山地全避震 (MTB XC)</option>
+                              <option value="road_aero">气动公路</option>
+                              <option value="road_climb">超轻爬坡</option>
+                              <option value="road_allround">全能大组</option>
+                              <option value="road_endurance">长途耐力</option>
+                              <option value="road_tt">计时赛战车</option>
+                              <option value="gravel">砂石越野</option>
+                              <option value="mtb_xc">山地全避震</option>
                             </select>
                           </div>
                         </div>
@@ -892,7 +892,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         {/* Section C: Drivetrain */}
                         <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2">
                           <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">
-                            ⚙️ 传动系统 (Drivetrain)
+                            ⚙️ 传动系统
                           </span>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <div>
@@ -907,8 +907,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                                 })}
                                 className="w-full h-9 px-2 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/[0.06] dark:border-white/[0.08] text-xs font-medium"
                               >
-                                <option value="double">双盘 (Double)</option>
-                                <option value="single">单盘 (1x Single)</option>
+                                <option value="double">双盘</option>
+                                <option value="single">单盘</option>
                               </select>
                             </div>
                             <div>
@@ -962,7 +962,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                         {/* Section D: Wheels & Tires */}
                         <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.06] space-y-2">
                           <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">
-                            🛞 轮组与外胎系统 (Wheel & Tire)
+                            🛞 轮组与外胎系统
                           </span>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <div>
@@ -1000,9 +1000,9 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                                 })}
                                 className="w-full h-9 px-2 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/[0.06] dark:border-white/[0.08] text-xs font-medium"
                               >
-                                <option value="tubeless">真空胎 (Tubeless)</option>
-                                <option value="tube">开口内胎 (Tube)</option>
-                                <option value="tubular">管胎 (Tubular)</option>
+                                <option value="tubeless">真空胎</option>
+                                <option value="tube">开口内胎</option>
+                                <option value="tubular">管胎</option>
                               </select>
                             </div>
                             <div>
@@ -1014,8 +1014,8 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                                 })}
                                 className="w-full h-9 px-2 rounded-xl bg-white dark:bg-[#2C2C2E] border border-black/[0.06] dark:border-white/[0.08] text-xs font-medium"
                               >
-                                <option value="hooked">传统有钩圈 (Hooked)</option>
-                                <option value="hookless">无钩圈 (Hookless ≤73psi)</option>
+                                <option value="hooked">传统有钩圈</option>
+                                <option value="hookless">无钩圈 (≤72.5 PSI)</option>
                               </select>
                             </div>
                           </div>
@@ -1067,7 +1067,7 @@ export const RiderProfileModal: React.FC<RiderProfileModalProps> = ({
                               />
                             </div>
                             <div>
-                              <label className="text-[10px] text-slate-400 block mb-0.5">坐垫把落差 (Drop)</label>
+                              <label className="text-[10px] text-slate-400 block mb-0.5">坐垫把落差</label>
                               <NumberStepper
                                 value={b.geometry?.saddleDropMm || 60}
                                 onChange={(v) => updateBike(b.id, {

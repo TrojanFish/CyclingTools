@@ -540,7 +540,7 @@ export function diagnoseAthleteStatus(
   if (latestTsb >= 5) {
     return {
       status: 'peak',
-      label: '巅峰竞技态 (Peak / Fresh)',
+      label: '巅峰竞技态',
       colorToken: 'text-ios-green',
       badgeBg: 'bg-ios-green/10 dark:bg-ios-green/20',
       badgeText: 'text-ios-green',
@@ -552,7 +552,7 @@ export function diagnoseAthleteStatus(
   if (latestTsb >= -15) {
     return {
       status: 'productive',
-      label: '高效提升态 (Productive)',
+      label: '高效提升态',
       colorToken: 'text-ios-blue',
       badgeBg: 'bg-ios-blue/10 dark:bg-ios-blue/20',
       badgeText: 'text-ios-blue',
@@ -564,7 +564,7 @@ export function diagnoseAthleteStatus(
   if (latestTsb >= -30) {
     return {
       status: 'overstress',
-      label: '高负荷警戒 (Overload)',
+      label: '高负荷警戒',
       colorToken: 'text-ios-orange',
       badgeBg: 'bg-ios-orange/10 dark:bg-ios-orange/20',
       badgeText: 'text-ios-orange',
@@ -576,7 +576,7 @@ export function diagnoseAthleteStatus(
 
   return {
     status: 'overreach',
-    label: '过负荷危险态 (Overreach)',
+    label: '过负荷危险态',
     colorToken: 'text-ios-red',
     badgeBg: 'bg-ios-red/10 dark:bg-ios-red/20',
     badgeText: 'text-ios-red',
@@ -1141,7 +1141,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
     },
     {
       id: 'everest_challenge',
-      title: '珠峰攀登累计 (Everesting)',
+      title: '珠峰攀登累计',
       subtitle: `累计爬升已达 ${everestPct}% (目标 8,848m)`,
       achieved: totalElevationM >= 8848,
       currentValue: `${Math.round(totalElevationM)}m`,
@@ -1150,7 +1150,7 @@ export function computeMilestones(activities: StravaActivityRecord[]): Milestone
     },
     {
       id: 'dawn_patrol',
-      title: '破晓先锋 (Dawn Patrol)',
+      title: '破晓先锋',
       subtitle: '在清晨 07:00 前破风出征 ≥ 5次',
       achieved: dawnRideCount >= 5,
       count: dawnRideCount,
@@ -1687,7 +1687,7 @@ export function computePowerZoneDistribution(
   const zones: PowerZoneItem[] = [
     {
       zone: 'Z1',
-      name: '积极恢复 (Recovery)',
+      name: '积极恢复',
       rangeWatts: `< ${z1Upper}W`,
       seconds: Math.round(z1Sec),
       hours: parseFloat((z1Sec / 3600).toFixed(1)),
@@ -1698,7 +1698,7 @@ export function computePowerZoneDistribution(
     },
     {
       zone: 'Z2',
-      name: '基础有氧 (Endurance)',
+      name: '基础有氧',
       rangeWatts: `${z1Upper + 1}-${z2Upper}W`,
       seconds: Math.round(z2Sec),
       hours: parseFloat((z2Sec / 3600).toFixed(1)),
@@ -1709,7 +1709,7 @@ export function computePowerZoneDistribution(
     },
     {
       zone: 'Z3',
-      name: '节奏骑行 (Tempo)',
+      name: '节奏骑行',
       rangeWatts: `${z2Upper + 1}-${z3Upper}W`,
       seconds: Math.round(z3Sec),
       hours: parseFloat((z3Sec / 3600).toFixed(1)),
@@ -1720,7 +1720,7 @@ export function computePowerZoneDistribution(
     },
     {
       zone: 'Z4',
-      name: '乳酸阈值 (Threshold)',
+      name: '乳酸阈值',
       rangeWatts: `${z3Upper + 1}-${z4Upper}W`,
       seconds: Math.round(z4Sec),
       hours: parseFloat((z4Sec / 3600).toFixed(1)),
@@ -1731,7 +1731,7 @@ export function computePowerZoneDistribution(
     },
     {
       zone: 'Z5',
-      name: '最大摄氧 (VO2 Max)',
+      name: '最大摄氧量',
       rangeWatts: `${z4Upper + 1}-${z5Upper}W`,
       seconds: Math.round(z5Sec),
       hours: parseFloat((z5Sec / 3600).toFixed(1)),
@@ -1742,7 +1742,7 @@ export function computePowerZoneDistribution(
     },
     {
       zone: 'Z6',
-      name: '无氧耐力 (Anaerobic)',
+      name: '无氧耐力',
       rangeWatts: `${z5Upper + 1}-${z6Upper}W`,
       seconds: Math.round(z6Sec),
       hours: parseFloat((z6Sec / 3600).toFixed(1)),
@@ -1753,7 +1753,7 @@ export function computePowerZoneDistribution(
     },
     {
       zone: 'Z7',
-      name: '神经肌肉冲刺 (Sprint)',
+      name: '神经肌肉冲刺',
       rangeWatts: `> ${z6Upper}W`,
       seconds: Math.round(z7Sec),
       hours: parseFloat((z7Sec / 3600).toFixed(1)),
@@ -1775,15 +1775,15 @@ export function computePowerZoneDistribution(
 
   if (basePct >= 68 && midPct >= 18 && highPct <= 14) {
     pattern = 'pyramidal';
-    patternLabel = '金字塔型结构 (Pyramidal)';
+    patternLabel = '金字塔型结构';
     patternDescription = '经典耐力赛季模型！低强度地基扎实，中高强度逐级递减，极其稳健防伤病。';
   } else if (basePct >= 72 && midPct <= 14 && highPct >= 12) {
     pattern = 'polarized';
-    patternLabel = '两极化训练模型 (Polarized 80/20)';
+    patternLabel = '两极化训练模型 80/20';
     patternDescription = '严格落实强弱分明法则！80% 极低心率排酸打底，20% 顶峰冲刺，极高效拉升摄氧量。';
   } else if (midPct >= 35) {
     pattern = 'threshold';
-    patternLabel = '甜区/阈值集中型 (Threshold-Heavy)';
+    patternLabel = '甜区/阈值集中型';
     patternDescription = '中高负荷占比偏高，易在短期内快速拉升 FTP，但需密切关注深层疲劳堆积与防爆缸。';
   }
 

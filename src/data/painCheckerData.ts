@@ -10,7 +10,7 @@ export interface PainArea {
 export const PAIN_AREAS: Record<string, PainArea> = {
   knee: {
     id: 'knee',
-    title: '膝盖疼痛 (Knee Pain)',
+    title: '膝盖疼痛',
     icon: 'knee',
     symptoms: [
       '膝前痛（髌骨周围/髌腱酸痛，下楼梯或弯腿时明显）',
@@ -20,7 +20,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
     ],
     commonCauses: [
       {
-        category: '车辆设定问题 (Bike Fitting)',
+        category: '车辆设定问题',
         details: [
           '坐垫高度不当：坐垫过低或过前容易导致膝前侧髌股关节压力倍增；坐垫过高或过于靠后则容易过度伸展导致膝后侧腘肌拉伤。',
           '坐垫前后位置 (Setback)：踏板在 3 点钟水平位置时，膝关节前侧若大幅超出脚踏轴心，会导致髌骨剪切力过大。',
@@ -53,7 +53,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   },
   lower_back: {
     id: 'lower_back',
-    title: '下背与腰部酸痛 (Lower Back Pain)',
+    title: '下背与腰部酸痛',
     icon: 'lower_back',
     symptoms: [
       '骑行 1 小时后下腰部僵硬、酸胀，直腰时吃力',
@@ -61,7 +61,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
     ],
     commonCauses: [
       {
-        category: '座舱距离与落差 (Reach & Drop)',
+        category: '座舱距离与落差',
         details: [
           '把立过长或车架 Reach 过大：身体过度向前伸展，腰背竖脊肌被迫处于持续高张力拉伸状态。',
           '落差 (Drop) 过大：车头过低超出车手目前的脊柱柔韧度，迫使腰椎过度屈曲。'
@@ -83,7 +83,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   },
   neck_shoulder: {
     id: 'neck_shoulder',
-    title: '颈部与肩部酸痛 (Neck & Shoulder Pain)',
+    title: '颈部与肩部酸痛',
     icon: 'neck_shoulder',
     symptoms: [
       '颈后肌群僵硬、转头受限，肩胛骨内侧和斜方肌酸胀痛',
@@ -113,7 +113,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   },
   wrist_hand: {
     id: 'wrist_hand',
-    title: '手腕与手部麻木 (Wrist & Hand Numbness)',
+    title: '手腕与手部麻木',
     icon: 'wrist_hand',
     symptoms: [
       '手腕掌根部酸痛，手掌支撑点发红发热',
@@ -144,7 +144,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   },
   buttock: {
     id: 'buttock',
-    title: '臀部坐骨与会阴压痛 (Saddle Pain & Numbness)',
+    title: '臀部坐骨与会阴压痛',
     icon: 'buttock',
     symptoms: [
       '坐骨结节处皮肤磨破、压痛或毛囊炎',
@@ -176,7 +176,7 @@ export const PAIN_AREAS: Record<string, PainArea> = {
   },
   foot: {
     id: 'foot',
-    title: '足底麻木与灼热 (Foot Pain & Hot Foot)',
+    title: '足底麻木与灼热',
     icon: 'foot',
     symptoms: [
       '足前掌麻木刺痛、发热（Hot Foot 现象）',

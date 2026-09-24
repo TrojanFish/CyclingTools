@@ -62,7 +62,7 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     specs: [
       { label: '修身骑行服', weightG: 0, baseWatts40: 4.0, refPrice: 200, note: '相比宽松风衣，消除衣物兜风鼓包，风洞实测省 ~4W' },
       { label: '破风分体服', weightG: 0, baseWatts40: 7.5, refPrice: 450, note: '手臂与肩部采用低风阻导流面料，实测省 ~7.5W' },
-      { label: '破风连体服 (Skinsuit)', weightG: 0, baseWatts40: 11.0, refPrice: 1500, note: '无接缝极致贴合，职业风洞黄金升级，省 ~11W' },
+      { label: '破风连体服', weightG: 0, baseWatts40: 11.0, refPrice: 1500, note: '无接缝极致贴合，职业风洞黄金升级，省 ~11W' },
     ]
   },
   {
@@ -75,9 +75,9 @@ const DEFAULT_ITEMS_WITH_SPECS: UpgradeItem[] = [
     enabled: true,
     selectedSpecIndex: 1,
     specs: [
-      { label: '乳胶内胎 (Latex)', weightG: 80, baseWatts40: 2.2, refPrice: 120, note: '相比普通丁基胶滞后损失小，路感柔和，滚阻省 ~2.2W' },
+      { label: '乳胶内胎', weightG: 80, baseWatts40: 2.2, refPrice: 120, note: '相比普通丁基胶滞后损失小，路感柔和，滚阻省 ~2.2W' },
       { label: '超轻 TPU 内胎', weightG: 140, baseWatts40: 3.2, refPrice: 160, note: '28g-36g 对装，极致减重 140g 旋转质量，滚阻省 ~3.2W' },
-      { label: '真空胎系统 (Tubeless)', weightG: 180, baseWatts40: 4.8, refPrice: 900, note: '免除内胎摩擦，极低滚阻兼顾防扎，省 ~4.8W' },
+      { label: '真空胎系统', weightG: 180, baseWatts40: 4.8, refPrice: 900, note: '免除内胎摩擦，极低滚阻兼顾防扎，省 ~4.8W' },
     ]
   },
   {

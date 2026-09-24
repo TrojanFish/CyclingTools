@@ -669,7 +669,7 @@ export const TubelessSealantCalculator: React.FC = () => {
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08] space-y-2">
             <div className="font-bold text-ios-blue flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" />
-              <span>1. 摇轮听声法 (Slosh Test)</span>
+              <span>1. 摇轮听声法</span>
             </div>
             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
               无需拆卸外胎！将车轮拆下在耳边快速晃动。若能听到清脆的“哗啦哗啦”水撞击声，表明胶水充足活跃；若声音沉闷微弱或完全无声，说明乳胶已干涸结块，需立即补液。

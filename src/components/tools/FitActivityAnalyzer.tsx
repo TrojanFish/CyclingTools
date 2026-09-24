@@ -1065,7 +1065,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (maxScore - minScore < 0.25) {
       return {
         type: 'all_rounder',
-        title: language === 'zh-TW' ? '全能均衡型 (All-Rounder)' : '全能均衡型 (All-Rounder)',
+        title: language === 'zh-TW' ? '全能均衡型' : '全能均衡型',
         badgeColor: 'text-ios-blue bg-ios-blue/10 border-ios-blue/20',
         description: '冲刺、无氧摄氧与阈值巡航能力全面且均衡，能够从容应对多起伏丘陵、大组突围与平路追击等各类综合赛况。',
         trainingFocus: '建议保持全面素质，结合「训练课表工坊」针对短板（如 VO₂max 4x4 或 2x20 阈值）进行特定专项突破。'
@@ -1074,7 +1074,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (score5s === maxScore) {
       return {
         type: 'sprinter',
-        title: language === 'zh-TW' ? '衝刺爆發型 (Sprinter)' : '冲刺爆发型 (Sprinter)',
+        title: language === 'zh-TW' ? '衝刺爆發型' : '冲刺爆发型',
         badgeColor: 'text-ios-pink bg-ios-pink/10 border-ios-pink/20',
         description: '瞬时神经肌肉爆发力极高，终点冲刺与短陡坡超车优势显著，具备优秀的无氧电量快速放电能力。',
         trainingFocus: '建议搭配「Ronnestad 30/15s 微间歇」提升抗乳酸恢复速度，并补充「Z2 基础耐力」避免后半程电量耗尽。'
@@ -1083,7 +1083,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     if (score1m === maxScore || score5m === maxScore) {
       return {
         type: 'puncher',
-        title: language === 'zh-TW' ? '阿登突圍/陡坡型 (Puncher / Breakaway)' : '阿登突围/陡坡型 (Puncher / Breakaway)',
+        title: language === 'zh-TW' ? '阿登突圍/陡坡型' : '阿登突围/陡坡型',
         badgeColor: 'text-ios-orange bg-ios-orange/10 border-ios-orange/20',
         description: '最大摄氧量 (VO₂max) 与抗乳酸能力突出，擅长 1~5 分钟的短陡坡爆击、反复突围拉扯与追赶。',
         trainingFocus: '可配合「Over-Under 乳酸清除间歇」与「4x4 VO₂max 课表」进一步强化乳酸穿梭再循环能力。'
@@ -1091,7 +1091,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     }
     return {
       type: 'time_trialist',
-      title: language === 'zh-TW' ? '計時賽/長坡巡航型 (Time Trialist / Climber)' : '计时赛/长坡巡航型 (Time Trialist / Climber)',
+      title: language === 'zh-TW' ? '計時賽/長坡巡航型' : '计时赛/长坡巡航型',
       badgeColor: 'text-ios-green bg-ios-green/10 border-ios-green/20',
       description: '功能阈值功率 (FTP) 持续输出坚如磐石，有氧底蕴深厚，长距离平路巡航与稳态爬坡表现优异。',
       trainingFocus: '建议使用「2x20 经典阈值巡航」巩固推重比，同时适度补充「Tabata 冲刺」激活无氧能量池储备。'
@@ -1356,7 +1356,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
     } else if (analysis.intensityFactor <= 0.90) {
       notes.push({
         type: 'success',
-        title: '高效节奏与甜点训练 (Tempo / SweetSpot)',
+        title: '高效节奏与甜点训练',
         desc: `本次骑行强度系数 IF 为 ${analysis.intensityFactor}，训练刺激充分，是提升巡航能力与推重比的黄金区间。`
       });
     } else {
@@ -3176,7 +3176,7 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Zap className="w-4 h-4 text-ios-blue" />
-                    手动补录日常训练负荷 (Manual TSS Entry)
+                    手动补录日常训练负荷
                   </h4>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     可补记未导出 FIT 文件的骑行台训练、通勤或周末外骑，实时重塑 42 天 CTL 体能与 ATL 疲劳走势。

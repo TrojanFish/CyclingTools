@@ -569,7 +569,7 @@ export const MtbSuspensionTuner: React.FC = () => {
               </div>
               <div>
                 <label className="text-xs text-slate-600 dark:text-slate-400 block mb-1">
-                  后胆行程 (Stroke)
+                  后胆行程 (mm)
                 </label>
                 <input
                   type="number"
@@ -632,7 +632,7 @@ export const MtbSuspensionTuner: React.FC = () => {
 
             <div className="p-2.5 rounded-xl bg-ios-blue/10 border border-ios-blue/20 flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                平均杠杆比 (Leverage Ratio)
+                平均杠杆比
               </span>
               <span className="text-sm font-bold font-mono text-ios-blue">
                 {calc.leverageRatio}:1
@@ -867,7 +867,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         : 'bg-slate-100 dark:bg-white/5 text-slate-500'
                     }`}
                   >
-                    气胆 (Air)
+                    气压后胆
                   </button>
                   <button
                     type="button"
@@ -878,7 +878,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                         : 'bg-slate-100 dark:bg-white/5 text-slate-500'
                     }`}
                   >
-                    弹簧胆 (Coil)
+                    钢簧后胆
                   </button>
                 </div>
               }
@@ -941,7 +941,7 @@ export const MtbSuspensionTuner: React.FC = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="p-4 rounded-2xl bg-ios-blue/15 border border-ios-blue/30 text-center">
                       <div className="text-[11px] font-semibold text-ios-blue">
-                        推荐市售弹簧磅数 (Spring)
+                        推荐市售弹簧磅数
                       </div>
                       <div className="text-3xl font-bold font-mono tabular-nums text-ios-blue my-1">
                         {calc.closestSpringRate}
@@ -954,11 +954,11 @@ export const MtbSuspensionTuner: React.FC = () => {
 
                     <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.08] text-center">
                       <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
-                        预紧环调节圈数 (Preload)
+                        预紧环调节圈数
                       </div>
                       <div className="text-3xl font-bold font-mono tabular-nums text-slate-900 dark:text-white my-1">
                         1 ~ 2
-                        <span className="text-sm ml-1 font-sans">圈 (Turns)</span>
+                        <span className="text-sm ml-1 font-sans">圈</span>
                       </div>
                       <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400">
                         注意：预紧切勿超过 2.5 圈！

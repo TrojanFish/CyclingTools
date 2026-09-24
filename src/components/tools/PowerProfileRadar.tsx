@@ -278,24 +278,24 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
     const sClimb = Math.min(100, Math.round((wFtp / 5.2) * 100));
 
     // Phenotype Classification
-    let phenotype = '均衡全能型骑士 (All-Rounder)';
+    let phenotype = language === 'zh-TW' ? '均衡全能型騎士' : '均衡全能型骑士';
     let phenotypeDesc = '各功率区间均衡无明显短板，在平路巡航、起伏冲刺与爬坡中皆具备良好适应力。';
     let phenotypeColor = 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30';
 
     if (w5s >= 16.0 && s5s > s20m + 15) {
-      phenotype = '终点爆发冲刺手 (Sprinter)';
+      phenotype = language === 'zh-TW' ? '終點爆發衝刺手' : '终点爆发冲刺手';
       phenotypeDesc = '拥有出众的神经肌肉瞬间爆发力与无氧糖酵解输出，适合大集团冲刺与终点线卡位。';
       phenotypeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/30';
     } else if (w20m >= 4.2 && w5m >= 5.0 && sClimb > s5s + 10) {
-      phenotype = '纯血爬坡攻坚手 (Climber)';
+      phenotype = language === 'zh-TW' ? '純血爬坡攻堅手' : '纯血爬坡攻坚手';
       phenotypeDesc = '拥有极高的推重比与乳酸清除效率，长距离山地大坡是你的绝对主场。';
       phenotypeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
     } else if (ftpWatts >= 280 && sCruise > s5s) {
-      phenotype = '平路巡航与计时突围手 (Time Trialist / Rouleur)';
+      phenotype = language === 'zh-TW' ? '平路巡航與計時突圍手' : '平路巡航与计时突围手';
       phenotypeDesc = '高绝对瓦数输出，平路高速单飞、破风领骑与铁三计时赛能力极强。';
       phenotypeColor = 'text-purple-400 bg-purple-500/10 border-purple-500/30';
     } else if (w1m >= 8.5 && w5m >= 5.2) {
-      phenotype = '起伏路短坡突围手 (Puncher)';
+      phenotype = language === 'zh-TW' ? '起伏路短坡突圍手' : '起伏路短坡突围手';
       phenotypeDesc = '在 1~3 分钟的陡坡短坡上具备毁灭性的加速进攻能力。';
       phenotypeColor = 'text-amber-400 bg-amber-500/10 border-amber-500/30';
     }
@@ -611,7 +611,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-4 shadow-ios-card">
             <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Activity className="w-4 h-4 text-ios-blue" />
-              {language === 'zh-TW' ? '車手巔峰功率數據 (Peak Power)' : '车手巅峰功率数据 (Peak Power)'}
+              {language === 'zh-TW' ? '車手巔峰功率數據' : '车手巅峰功率数据'}
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
@@ -727,7 +727,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
           <div className="ios-card p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 space-y-2 shadow-ios-card">
             <div className="flex justify-between items-center">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                {language === 'zh-TW' ? '車手生理表型判定 (Rider Phenotype)' : '车手生理表型判定 (Rider Phenotype)'}
+                {language === 'zh-TW' ? '車手生理表型判定' : '车手生理表型判定'}
               </span>
               <span className={`text-xs px-3 py-1 rounded-full font-bold border ${analytics.phenotypeColor}`}>
                 {analytics.phenotype}
@@ -896,7 +896,7 @@ export const PowerProfileRadar: React.FC<PowerProfileRadarProps> = ({ onNavigate
             <div>
               <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                 <Gauge className="w-3.5 h-3.5 text-ios-red" />
-                {language === 'zh-TW' ? '超閾值突圍進攻持續時長預測 (Attack TTE Predictor)' : '超阈值突围进攻持续时长预测 (Attack TTE Predictor)'}
+                {language === 'zh-TW' ? '超閾值突圍進攻持續時長預測' : '超阈值突围进攻持续时长预测'}
               </span>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                 设定拟发起的攻击瓦数，实时计算该攻势下无氧储能 W' 的预计耗尽耗竭时间 (TTE)

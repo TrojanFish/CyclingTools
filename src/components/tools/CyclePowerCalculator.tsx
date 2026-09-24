@@ -166,19 +166,19 @@ export const CyclePowerCalculator: React.FC = () => {
     const gravityPct = Math.max(0, 100 - aeroPct - rollingPct);
 
     // Coggan FTP Level Evaluation
-    let levelTitle = '业余骑游 (Recreational)';
+    let levelTitle = language === 'zh-TW' ? '業餘騎遊' : '业余骑游';
     let levelBadgeColor = 'text-sky-400 bg-sky-500/10 border-sky-500/20';
     if (wkg >= 5.2) {
-      levelTitle = '世界职业级 (World Tour / Pro)';
+      levelTitle = language === 'zh-TW' ? '世界職業級' : '世界职业级';
       levelBadgeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
     } else if (wkg >= 4.2) {
-      levelTitle = '业余精英一级 (Cat 1-2 / Elite)';
+      levelTitle = language === 'zh-TW' ? '業餘精英一級' : '业余精英一级';
       levelBadgeColor = 'text-purple-400 bg-purple-500/10 border-purple-500/20';
     } else if (wkg >= 3.2) {
-      levelTitle = '强力进阶骑士 (Cat 3-4 / Advanced)';
+      levelTitle = language === 'zh-TW' ? '強力進階騎士' : '强力进阶骑士';
       levelBadgeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
     } else if (wkg >= 2.4) {
-      levelTitle = '活跃俱乐部车手 (Club Rider)';
+      levelTitle = language === 'zh-TW' ? '活躍俱樂部車手' : '活跃俱乐部车手';
       levelBadgeColor = 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20';
     }
 
@@ -558,7 +558,7 @@ export const CyclePowerCalculator: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs font-semibold text-slate-900 dark:text-slate-200">
-                      {language === 'zh-TW' ? '頭部下潛 (Head Shrug)' : '头部下潜 (Head Shrug)'}
+                      {language === 'zh-TW' ? '頭部下潛' : '头部下潜'}
                     </span>
                     <Tooltip content="世界巡回赛 TT 计时赛核心控风技巧：头部下沉嵌于双肩之间，压平后背高速气流湍流。风洞实测平均降低 CdA 约 0.015 m²（40km/h 下省约 12~18W）。" />
                   </div>
@@ -587,7 +587,7 @@ export const CyclePowerCalculator: React.FC = () => {
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-700 dark:text-slate-300 font-medium flex items-center gap-1">
                   <Wind className="w-3.5 h-3.5 text-ios-blue" />
-                  {language === 'zh-TW' ? '側風偏航角 (Yaw)' : '侧风偏航角 (Yaw)'}
+                  {language === 'zh-TW' ? '側風偏航角' : '侧风偏航角'}
                   <Tooltip content="偏航角为车手行进方向与合成风矢量的夹角（0°为正迎风，5°~12°为典型公路侧风，20°为强横风）。偏航角增加时身体侧向受风投影面积增大，气动阻力相应上升。" />
                 </span>
                 <span className="font-mono font-bold text-xs text-ios-blue">
@@ -772,7 +772,7 @@ export const CyclePowerCalculator: React.FC = () => {
               </div>
               <div>
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
-                  {language === 'zh-TW' ? '車手競技水平評估 (Coggan Power Profile)' : '车手竞技水平评估 (Coggan Power Profile)'}
+                  {language === 'zh-TW' ? '車手競技水平評估' : '车手竞技水平评估'}
                 </span>
                 <span className="text-sm font-bold text-slate-900 dark:text-white">{result.levelTitle}</span>
               </div>

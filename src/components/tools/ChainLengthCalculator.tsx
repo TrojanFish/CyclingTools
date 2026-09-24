@@ -257,7 +257,7 @@ export const ChainLengthCalculator: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-semibold text-slate-900 dark:text-white block">全避震软尾补偿 (Full Suspension)</span>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-white block">全避震软尾补偿</span>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400">后避震压缩触底时后下叉转点拉伸拉长</span>
                 </div>
                 <input
@@ -271,7 +271,7 @@ export const ChainLengthCalculator: React.FC = () => {
               {isFullSuspension && (
                 <div className="pt-2 border-t border-black/[0.04] dark:border-white/[0.06] space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-500 dark:text-slate-400">压缩触底拉伸量 (Chainstay Growth)</span>
+                    <span className="text-slate-500 dark:text-slate-400">压缩触底拉伸量</span>
                     <span className="font-mono text-ios-blue font-bold">+{chainstayGrowthMm} mm</span>
                   </div>
                   <input
@@ -336,7 +336,7 @@ export const ChainLengthCalculator: React.FC = () => {
             {/* Pulley Teeth */}
             <div className="pt-2 border-t border-black/[0.05] dark:border-white/[0.08]">
               <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1.5 flex items-center">
-                后拨导轮规格 (Pulley Wheels)
+                后拨导轮规格
                 <Tooltip content="标准原厂导轮一般为 11T/12T；若改装超大导轮系统（如 14T/16T/18T 大鸡腿），需相应补偿链节。" />
               </label>
               <div className="grid grid-cols-3 gap-2 text-xs">
@@ -387,7 +387,7 @@ export const ChainLengthCalculator: React.FC = () => {
               label="标准截链推荐"
               value={result.recommendedLinks}
               unit="Links"
-              subtext="含 1 节魔术扣 (Quick Link)"
+              subtext="含 1 节魔术扣"
               accentColor="blue"
               icon={Link}
             />
@@ -447,7 +447,7 @@ export const ChainLengthCalculator: React.FC = () => {
                   {bigRing}T
                 </text>
                 <text x="280" y="128" fontSize="9" fill="#8E8E93" textAnchor="middle" className="dark:fill-[#8E8E93]">
-                  牙盘 (Chainring)
+                  牙盘
                 </text>
 
                 {/* Rear Cassette */}
@@ -457,7 +457,7 @@ export const ChainLengthCalculator: React.FC = () => {
                   {bigCog}T
                 </text>
                 <text x="80" y="128" fontSize="9" fill="#8E8E93" textAnchor="middle" className="dark:fill-[#8E8E93]">
-                  飞轮 (Cassette)
+                  飞轮
                 </text>
 
                 {/* Derailleur Pulley Cage */}

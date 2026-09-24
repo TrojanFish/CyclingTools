@@ -147,16 +147,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const calories = act.kilojoules ? Math.round(act.kilojoules) : Math.round((np || 200) * (movingSec / 3600) * 3.6 * 0.95);
     const wKg = profile.weightKg && profile.weightKg > 0 && np > 0 ? parseFloat((np / profile.weightKg).toFixed(1)) : null;
 
-    let tacticalPace = language === 'zh-TW' ? '穩態巡航 (Steady Pace)' : '稳态巡航 (Steady Pace)';
+    let tacticalPace = language === 'zh-TW' ? '穩態巡航' : '稳态巡航';
     let tacticalTextColor = 'text-ios-blue';
     if (vi > 1.15) {
-      tacticalPace = language === 'zh-TW' ? '變速突圍 / 起伏拉扯 (Variable Surge)' : '变速突围 / 起伏拉扯 (Variable Surge)';
+      tacticalPace = language === 'zh-TW' ? '變速突圍 / 起伏拉扯' : '变速突围 / 起伏拉扯';
       tacticalTextColor = 'text-ios-orange';
     } else if (ifVal >= 0.9) {
-      tacticalPace = language === 'zh-TW' ? '競賽極限 / 閾值突破 (Threshold Race)' : '竞赛极限 / 阈值突破 (Threshold Race)';
+      tacticalPace = language === 'zh-TW' ? '競賽極限 / 閾值突破' : '竞赛极限 / 阈值突破';
       tacticalTextColor = 'text-ios-red';
     } else if (ifVal <= 0.65) {
-      tacticalPace = language === 'zh-TW' ? '低強有氧 / 排酸刷脂 (Z2 Recovery)' : '低强有氧 / 排酸刷脂 (Z2 Recovery)';
+      tacticalPace = language === 'zh-TW' ? '低強有氧 / 排酸刷脂' : '低强有氧 / 排酸刷脂';
       tacticalTextColor = 'text-ios-green';
     }
 

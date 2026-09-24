@@ -157,19 +157,19 @@ export const TirePressureCalculator: React.FC = () => {
       notes: [
         isHooklessWidthMismatch ? 'ETRTO 规范安全红线：无钩轮圈内宽 ≥23mm 严禁搭配小于 28c 外胎，极易脱圈导致严重摔车事故！' : null,
         surfaceKey === 'wet_slick' ? '雨天/湿滑路面：建议胎压调低 5~8 PSI 提升橡胶抓地力与刹车循迹性。' : null,
-        tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬(Pinch Flat)爆胎。',
-        hasTireInsert ? '已启用真空胎防爆胎垫 (Tire Insert)：胎垫提供侧向渐进支撑并防止轮圈磕底，推荐胎压已自适应调低 2.5 PSI，兼顾极致抓地循迹与轮圈防护。' : null,
+        tireSetup === 'tubeless' ? '真空胎优势：自补液自动密封微小穿孔，可安心使用较低胎压享受极致滤震与更低滚阻。' : '普通内胎：请勿低于推荐下限，以防过坑或减速带发生蛇咬爆胎。',
+        hasTireInsert ? '已启用真空胎防爆胎垫：胎垫提供侧向渐进支撑并防止轮圈磕底，推荐胎压已自适应调低 2.5 PSI，兼顾极致抓地循迹与轮圈防护。' : null,
         isBikepacking && effectiveLuggage > 0
           ? `长途重装 Bikepacking 模式 (+${effectiveLuggage}kg 行囊)：前后轮载荷动态平衡重构为 [前 ${effectiveFrontPct}% / 后 ${effectiveRearPct}%]。${
               luggageBias === 'rear'
-                ? '后轮承重显著升高，后胎压已自适应调升以防坑洼过坎砸框 (Rim Strike)'
+                ? '后轮承重显著升高，后胎压已自适应调升以防坑洼过坎砸框'
                 : luggageBias === 'front'
                 ? '前轮载荷升高，转向手感沉稳，已提升前胎气压维持支撑刚性'
                 : '中央车架包重心居中均衡，前后胎压同步增强'
             }。重车状态下制动距离显著延长，下长坡务必提前阶梯式制动控速，注意碟片热衰竭。`
           : null,
         actualWidth > nominalWidth ? `实测胎宽(${actualWidth}mm)宽于标称，已自动优化下调胎压以获得更平坦接地印记。` : null,
-        isHooklessPressureExceeded ? '无钩圈(Hookless)极限安全气压为 72.5 PSI (5.0 Bar)，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
+        isHooklessPressureExceeded ? '无钩轮圈极限安全气压为 72.5 PSI (5.0 Bar)，计算气压已超标，请立即更换更宽外胎降低胎压！' : null,
         isHooklessPressureWarning ? '当前气压逼近无钩轮圈 72.5 PSI 上限临界点，建议充气时预留余量以防日晒升温爆胎。' : null
       ].filter(Boolean) as string[]
     };
@@ -365,7 +365,7 @@ export const TirePressureCalculator: React.FC = () => {
 
                   <div>
                     <span className="text-xs text-slate-700 dark:text-slate-300 font-medium block mb-1.5">
-                      主要装载重心分布 (Center of Gravity)
+                      {language === 'zh-TW' ? '主要裝載重心分佈' : '主要装载重心分布'}
                     </span>
                     <IOSSegmentedControl
                       options={[
@@ -479,7 +479,9 @@ export const TirePressureCalculator: React.FC = () => {
               {/* Hookless Rim Option */}
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
                 <div>
-                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">无钩车圈 (Hookless Rim)</span>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
+                    {language === 'zh-TW' ? '無鈎車圈' : '无钩车圈'}
+                  </span>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400">ETRTO 强制上限 72.5 PSI (5.0 Bar)</span>
                 </div>
                 <input
@@ -493,7 +495,9 @@ export const TirePressureCalculator: React.FC = () => {
               {/* Tire Insert Option */}
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.08]">
                 <div>
-                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">防爆胎垫 / 内衬 (Tire Insert)</span>
+                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block">
+                    {language === 'zh-TW' ? '防爆胎墊 / 內襯' : '防爆胎垫 / 内衬'}
+                  </span>
                   <span className="text-[11px] text-slate-500 dark:text-slate-400">如 CushCore/Vittoria，防磕圈自适应降压 2.5 PSI</span>
                 </div>
                 <input
@@ -507,7 +511,9 @@ export const TirePressureCalculator: React.FC = () => {
 
             {/* Surface Type */}
             <div>
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">主要路面条件 (Surface Conditions)</label>
+              <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-2">
+                {language === 'zh-TW' ? '主要路面條件' : '主要路面条件'}
+              </label>
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(SURFACE_FACTORS).map(([key, s]) => {
                   const isSelected = surfaceKey === key;
@@ -551,7 +557,7 @@ export const TirePressureCalculator: React.FC = () => {
             <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-900 dark:text-rose-200 text-xs space-y-1.5 shadow-ios-sm">
               <div className="font-bold flex items-center gap-2 text-sm text-rose-600 dark:text-rose-400">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>突破无钩轮圈 (Hookless) 72.5 PSI 极限安全红线！</span>
+                <span>突破无钩轮圈 72.5 PSI 极限安全红线！</span>
               </div>
               <p className="leading-relaxed opacity-95">
                 当前计算气压（前 {result.front.rec} / 后 {result.rear.rec} {pressureUnit.toUpperCase()}）已突破国际 ETRTO/ISO 无钩轮圈 <strong>72.5 PSI (5.0 Bar)</strong> 绝对强制安全上限！无钩轮圈没有内扣机械锁止突缘，超压极易导致外胎炸出车圈。强烈建议选用 28c~32c 更宽外胎以将安全气压降至 50~65 PSI。
