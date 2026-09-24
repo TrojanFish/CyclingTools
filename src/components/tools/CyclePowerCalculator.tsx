@@ -185,13 +185,13 @@ export const CyclePowerCalculator: React.FC = () => {
     // Coggan 7-Zone FTP Training Ranges
     const ftpBase = calcMode === 'speed' ? effectiveWatts : profile.ftpWatts || 220;
     const ftpZones = [
-      { zone: 'Z1 主动恢复 (Active Recovery)', pct: '< 55%', min: 0, max: Math.round(ftpBase * 0.55), desc: '轻松排酸，加速代谢恢复' },
-      { zone: 'Z2 有氧耐力 (Endurance Zone)', pct: '56% - 75%', min: Math.round(ftpBase * 0.56), max: Math.round(ftpBase * 0.75), desc: '提升线粒体密度与脂肪燃烧效率' },
-      { zone: 'Z3 节奏区间 (Tempo)', pct: '76% - 90%', min: Math.round(ftpBase * 0.76), max: Math.round(ftpBase * 0.90), desc: '高效率巡航与长距离有氧输出' },
-      { zone: 'Z4 甜点/乳酸阈值 (Sweetspot/Threshold)', pct: '91% - 105%', min: Math.round(ftpBase * 0.91), max: Math.round(ftpBase * 1.05), desc: '提升 FTP 阈值功率的核心训练区间' },
-      { zone: 'Z5 最大摄氧量 (VO₂ Max)', pct: '106% - 120%', min: Math.round(ftpBase * 1.06), max: Math.round(ftpBase * 1.20), desc: '3~5分钟短坡与破风突围极限' },
-      { zone: 'Z6 无氧耐力 (Anaerobic Capacity)', pct: '121% - 150%', min: Math.round(ftpBase * 1.21), max: Math.round(ftpBase * 1.50), desc: '30秒~2分钟陡坡进攻与超车' },
-      { zone: 'Z7 神经肌肉冲刺 (Neuromuscular Power)', pct: '> 150%', min: Math.round(ftpBase * 1.51), max: 9999, desc: '全速冲刺与瞬间终点爆发' }
+      { zone: language === 'zh-TW' ? 'Z1 主動恢復' : 'Z1 主动恢复', pct: '< 55%', min: 0, max: Math.round(ftpBase * 0.55), desc: language === 'zh-TW' ? '輕鬆排酸，加速代謝恢復' : '轻松排酸，加速代谢恢复' },
+      { zone: language === 'zh-TW' ? 'Z2 有氧耐力' : 'Z2 有氧耐力', pct: '56% - 75%', min: Math.round(ftpBase * 0.56), max: Math.round(ftpBase * 0.75), desc: language === 'zh-TW' ? '提升線粒體密度與脂肪燃燒效率' : '提升线粒体密度与脂肪燃烧效率' },
+      { zone: language === 'zh-TW' ? 'Z3 節奏區間' : 'Z3 节奏区间', pct: '76% - 90%', min: Math.round(ftpBase * 0.76), max: Math.round(ftpBase * 0.90), desc: language === 'zh-TW' ? '高效率巡航與長距離有氧輸出' : '高效率巡航与长距离有氧输出' },
+      { zone: language === 'zh-TW' ? 'Z4 甜點/乳酸閾值' : 'Z4 甜点/乳酸阈值', pct: '91% - 105%', min: Math.round(ftpBase * 0.91), max: Math.round(ftpBase * 1.05), desc: language === 'zh-TW' ? '提升 FTP 閾值功率的核心訓練區間' : '提升 FTP 阈值功率的核心训练区间' },
+      { zone: language === 'zh-TW' ? 'Z5 最大攝氧量' : 'Z5 最大摄氧量', pct: '106% - 120%', min: Math.round(ftpBase * 1.06), max: Math.round(ftpBase * 1.20), desc: language === 'zh-TW' ? '3~5分鐘短坡與破風突圍極限' : '3~5分钟短坡与破风突围极限' },
+      { zone: language === 'zh-TW' ? 'Z6 無氧耐力' : 'Z6 无氧耐力', pct: '121% - 150%', min: Math.round(ftpBase * 1.21), max: Math.round(ftpBase * 1.50), desc: language === 'zh-TW' ? '30秒~2分鐘陡坡進攻與超車' : '30秒~2分钟陡坡进攻与超车' },
+      { zone: language === 'zh-TW' ? 'Z7 神經肌肉衝刺' : 'Z7 神经肌肉冲刺', pct: '> 150%', min: Math.round(ftpBase * 1.51), max: 9999, desc: language === 'zh-TW' ? '全速衝刺與瞬間終點爆發' : '全速冲刺与瞬间终点爆发' }
     ];
 
     // Metabolic energy consumption (24% mechanical efficiency)
@@ -862,23 +862,25 @@ export const CyclePowerCalculator: React.FC = () => {
                 {language === 'zh-TW' ? `Coggan 7 區間功率訓練參考 (FTP: ${profile.ftpWatts || 220}W)` : `Coggan 7 区间功率训练参考 (FTP: ${profile.ftpWatts || 220}W)`}
               </span>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left">
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full min-w-[460px] sm:min-w-0 text-xs text-left">
                 <thead>
                   <tr className="border-b border-black/[0.04] dark:border-white/[0.06] text-slate-500 dark:text-slate-400">
-                    <th className="pb-2 font-medium">{language === 'zh-TW' ? '訓練區間' : '训练区间'}</th>
-                    <th className="pb-2 font-medium">{'FTP 比例'}</th>
-                    <th className="pb-2 font-medium">{language === 'zh-TW' ? '目標功率 (W)' : '目标功率 (W)'}</th>
+                    <th className="pb-2 font-medium whitespace-nowrap">{language === 'zh-TW' ? '訓練區間' : '训练区间'}</th>
+                    <th className="pb-2 font-medium whitespace-nowrap">{'FTP 比例'}</th>
+                    <th className="pb-2 font-medium whitespace-nowrap">{language === 'zh-TW' ? '目標功率 (W)' : '目标功率 (W)'}</th>
                     <th className="pb-2 font-medium">{language === 'zh-TW' ? '主要訓練效益' : '主要训练效益'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/[0.03] dark:divide-white/[0.04] text-slate-700 dark:text-slate-300 font-mono tabular-nums">
                   {result.ftpZones.map((z, idx) => (
                     <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
-                      <td className="py-2 font-sans font-semibold text-slate-900 dark:text-white">{z.zone}</td>
-                      <td>{z.pct}</td>
-                      <td className="text-ios-blue font-bold">{z.min} - {z.max === 9999 ? 'MAX' : `${z.max} W`}</td>
-                      <td className="font-sans text-slate-500 dark:text-slate-400 text-[11px]">{z.desc}</td>
+                      <td className="py-2 font-sans font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                        {z.zone}
+                      </td>
+                      <td className="whitespace-nowrap tabular-nums">{z.pct}</td>
+                      <td className="whitespace-nowrap tabular-nums text-ios-blue font-bold">{z.min} - {z.max === 9999 ? 'MAX' : `${z.max} W`}</td>
+                      <td className="font-sans text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">{z.desc}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -888,19 +890,22 @@ export const CyclePowerCalculator: React.FC = () => {
 
           {/* Interactive Chart Tabs */}
           <div className="p-4 sm:p-5 rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl space-y-4 shadow-ios-sm">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {language === 'zh-TW' ? '多維動力學預測曲線' : '多维动力学预测曲线'}
               </span>
-              <IOSSegmentedControl
-                options={[
-                  { id: 'speed', label: language === 'zh-TW' ? '速度-功率' : '速度-功率' },
-                  { id: 'weight', label: language === 'zh-TW' ? '體重-功率' : '体重-功率' },
-                ]}
-                value={chartTab}
-                onChange={(val) => setChartTab(val as any)}
-                size="sm"
-              />
+              <div className="w-full sm:w-auto">
+                <IOSSegmentedControl
+                  options={[
+                    { id: 'speed', label: language === 'zh-TW' ? '速度-功率' : '速度-功率' },
+                    { id: 'weight', label: language === 'zh-TW' ? '體重-功率' : '体重-功率' },
+                  ]}
+                  value={chartTab}
+                  onChange={(val) => setChartTab(val as any)}
+                  size="sm"
+                  fullWidth
+                />
+              </div>
             </div>
 
             <div className="h-56">

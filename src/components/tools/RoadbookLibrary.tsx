@@ -744,37 +744,41 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
         onShare={handleGeneratePoster}
         shareTitle={language === 'zh-TW' ? '生成社交打卡路書海報' : '生成社交打卡路书海报'}
         actions={
-          <>
+          <div className="grid grid-cols-3 gap-1.5 w-full flex-1 sm:flex-initial sm:flex sm:items-center sm:gap-2 sm:w-auto">
             <button
               onClick={handleOpenStravaModal}
-              className={`apple-touch h-9 px-3.5 sm:px-4 rounded-xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
+              className={`apple-touch h-9 px-2 sm:px-4 rounded-xl text-xs font-semibold border transition shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap min-w-0 ${
                 isStravaConnected
                   ? 'bg-orange-500/10 hover:bg-orange-500/20 text-[#FC4C02] border-orange-500/30'
                   : 'bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
               }`}
               title={isStravaConnected ? '从 Strava 同步星标路线' : '连接 Strava 导入路线'}
             >
-              <Cloud className="w-3.5 h-3.5 text-[#FC4C02]" />
-              <span>{language === 'zh-TW' ? '從 Strava 匯入' : '从 Strava 导入'}</span>
+              <Cloud className="w-3.5 h-3.5 text-[#FC4C02] shrink-0" />
+              <span>
+                <span className="hidden sm:inline">{language === 'zh-TW' ? '從 ' : '从 '}</span>
+                Strava
+                <span className="hidden sm:inline">{language === 'zh-TW' ? ' 匯入' : ' 导入'}</span>
+              </span>
               {isStravaConnected && (
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
               )}
             </button>
 
-            <label className="apple-touch h-9 px-3.5 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0">
-              <Upload className="w-3.5 h-3.5 text-ios-mint" />
+            <label className="apple-touch h-9 px-2 sm:px-4 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200/80 dark:border-white/10 cursor-pointer transition shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap min-w-0">
+              <Upload className="w-3.5 h-3.5 text-ios-mint shrink-0" />
               <span>{language === 'zh-TW' ? '匯入 GPX' : '导入 GPX'}</span>
               <input type="file" accept=".gpx,.tcx,.xml" onChange={handleUserGpxUpload} className="hidden" />
             </label>
 
             <button
               onClick={handleExportGpx}
-              className="apple-touch h-9 px-3.5 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="apple-touch h-9 px-2 sm:px-4 bg-ios-mint hover:bg-ios-mint/90 text-slate-950 font-bold rounded-xl text-xs transition shadow-ios-sm flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap min-w-0"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 shrink-0" />
               <span>{language === 'zh-TW' ? '匯出 GPX' : '导出 GPX'}</span>
             </button>
-          </>
+          </div>
         }
       >
         {/* Tabs & Search Filter Bar */}
@@ -1117,44 +1121,44 @@ ${activeRoute.waypoints.map(wp => `      <trkpt lat="${wp.lat}" lon="${wp.lng}">
             </div>
 
             {/* Cross-Tool Actions */}
-            <div className="pt-3 border-t border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
+            <div className="pt-3 border-t border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+              <div className="grid grid-cols-3 gap-2 w-full sm:w-auto sm:flex sm:items-center">
                 {onNavigateTool && (
                   <>
                     <button
                       onClick={() => onNavigateTool('weather-advisor')}
-                      className="flex items-center gap-1.5 h-9 px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      className="flex items-center justify-center gap-1.5 h-9 px-2 sm:px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch whitespace-nowrap"
                     >
-                      <Compass className="w-3.5 h-3.5 text-ios-blue" />
-                      {language === 'zh-TW' ? '沿途天氣' : '沿途天气'}
+                      <Compass className="w-3.5 h-3.5 text-ios-blue shrink-0" />
+                      <span>{language === 'zh-TW' ? '沿途天氣' : '沿途天气'}</span>
                     </button>
                     <button
                       onClick={handleSendToGpxCreator}
-                      className="flex items-center gap-1.5 h-9 px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      className="flex items-center justify-center gap-1.5 h-9 px-2 sm:px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch whitespace-nowrap"
                       title={language === 'zh-TW' ? '將此路書航點載入 GPX 工坊自訂編輯' : '将此路书航点载入 GPX 工坊自定义编辑'}
                     >
-                      <MapPin className="w-3.5 h-3.5 text-emerald-500" />
-                      {language === 'zh-TW' ? 'GPX 工坊編輯' : 'GPX 工坊编辑'}
+                      <MapPin className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      <span>{language === 'zh-TW' ? 'GPX編輯' : 'GPX编辑'}</span>
                     </button>
                     <button
                       onClick={handleSendToClimbPacing}
-                      className="flex items-center gap-1.5 h-9 px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch"
+                      className="flex items-center justify-center gap-1.5 h-9 px-2 sm:px-3.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-white/10 transition shadow-ios-sm apple-touch whitespace-nowrap"
                       title={language === 'zh-TW' ? '將此路線坡度帶入爬坡配速規劃器' : '将此路线坡度带入爬坡配速规划器'}
                     >
-                      <Mountain className="w-3.5 h-3.5 text-amber-500" />
-                      {language === 'zh-TW' ? '爬坡配速規劃' : '爬坡配速规划'}
+                      <Mountain className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span>{language === 'zh-TW' ? '爬坡配速' : '爬坡配速'}</span>
                     </button>
                   </>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="w-full sm:w-auto">
                 <button
                   onClick={handleExportGpx}
-                  className="apple-touch h-9 flex items-center gap-1.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm shadow-cyan-500/20"
+                  className="apple-touch h-9 w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-ios-sm shadow-cyan-500/20 whitespace-nowrap"
                 >
-                  <Download className="w-3.5 h-3.5" />
-                  {language === 'zh-TW' ? '下載 GPX 檔' : '下载 GPX 文件'}
+                  <Download className="w-3.5 h-3.5 shrink-0" />
+                  <span>{language === 'zh-TW' ? '下載 GPX 檔' : '下载 GPX 文件'}</span>
                 </button>
               </div>
             </div>
