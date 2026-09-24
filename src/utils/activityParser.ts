@@ -78,7 +78,7 @@ export interface SensorDiagnostics {
 
 export interface ActivityAnalysis {
   fileName: string;
-  fileType: 'fit' | 'gpx' | 'tcx' | 'demo';
+  fileType: 'fit' | 'gpx' | 'tcx' | 'demo' | 'strava';
   totalDurationSec: number;
   movingTimeSec: number;
   totalDistanceKm: number;
@@ -449,7 +449,7 @@ export function computeEstimatedPowerPoints(
 export function analyzePoints(
   rawPoints: ActivityPoint[],
   fileName: string,
-  fileType: 'fit' | 'gpx' | 'tcx' | 'demo',
+  fileType: 'fit' | 'gpx' | 'tcx' | 'demo' | 'strava',
   ftpWatts = 240,
   weightKg = 68,
   maxHr = 185,

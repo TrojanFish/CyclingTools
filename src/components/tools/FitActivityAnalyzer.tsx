@@ -47,7 +47,7 @@ import {
 import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
-import { setPendingTransfer } from '../../hooks/useToolDraftState';
+import { setPendingTransfer, consumePendingTransfer } from '../../hooks/useToolDraftState';
 import { IOSCard, IOSMetricTile } from '../common/IOSCard';
 import { IOSToolHeader } from '../common/IOSToolHeader';
 import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
@@ -688,6 +688,24 @@ export const FitActivityAnalyzer: React.FC<FitActivityAnalyzerProps> = ({ onNavi
       setIsLoading(false);
     }
   };
+
+  // Consume incoming cross-tool transfer (e.g. from StravaDataCockpit)
+  useEffect(() => {
+    const pending = consumePendingTransfer<{ activityId: string; name?: string }>('solorider_pending_activity_analysis');
+    if (pending && pending.activityId) {
+      (async () => {
+        try {
+          const list = await getAllLocalActivities();
+          const target = list.find(a => a.id === pending.activityId);
+          if (target) {
+            await handleLoadLocalActivity(target);
+          }
+        } catch {
+          // Ignore transfer error
+        }
+      })();
+    }
+  }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();

@@ -1,8 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
   FolderArchive,
   Search,
-  SlidersHorizontal,
   Calendar,
   Zap,
   Timer,
@@ -14,9 +13,10 @@ import {
   Sparkles,
   ArrowRight,
   X,
-  Plus,
   CheckCircle2,
-  FileSpreadsheet
+  Cloud,
+  Loader2,
+  Activity
 } from 'lucide-react';
 import {
   LocalActivityRecord,
@@ -24,9 +24,18 @@ import {
   clearAllLocalActivities,
   exportActivitiesBackup,
   importActivitiesBackup,
-  seedDemoSeasonActivities
+  seedDemoSeasonActivities,
+  saveActivityToDb
 } from '../../utils/localActivityDb';
+import {
+  getAllActivitiesFromDb,
+  getStreamFromDb,
+  StravaActivityRecord
+} from '../../utils/indexedDb';
+import { convertStravaToLocalRecord } from '../../utils/stravaStreamAdapter';
+import { IOSSegmentedControl } from '../common/IOSSegmentedControl';
 import { useToast } from '../../context/ToastContext';
+import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 
 interface ActivityArchiveModalProps {
   isOpen: boolean;
@@ -52,14 +61,28 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
   onRefreshList
 }) => {
   const { showToast } = useToast();
+  const { language } = useLanguageAndUnit();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [activeTab, setActiveTab] = useState<'local' | 'strava'>('local');
+  const [stravaActivities, setStravaActivities] = useState<StravaActivityRecord[]>([]);
+  const [loadingStravaId, setLoadingStravaId] = useState<number | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'date_desc' | 'date_asc' | 'tss_desc' | 'dist_desc' | 'np_desc'>('date_desc');
   const [filterType, setFilterType] = useState<string>('all');
   const [isSeeding, setIsSeeding] = useState(false);
 
-  // Filter & Sort
+  // Load cached Strava activities from solorider_strava_db when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      getAllActivitiesFromDb()
+        .then(list => setStravaActivities(list || []))
+        .catch(() => setStravaActivities([]));
+    }
+  }, [isOpen]);
+
+  // Filter & Sort Local Activities
   const filteredActivities = useMemo(() => {
     let result = activities.filter(act => {
       if (filterType !== 'all' && act.fileType !== filterType) return false;
@@ -83,6 +106,46 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
     return result;
   }, [activities, searchQuery, sortBy, filterType]);
 
+  // Filter & Sort Strava Activities
+  const filteredStravaActivities = useMemo(() => {
+    let result = stravaActivities.filter(act => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      return act.name.toLowerCase().includes(q);
+    });
+
+    result = [...result].sort((a, b) => {
+      const timeA = new Date(a.start_date).getTime();
+      const timeB = new Date(b.start_date).getTime();
+      if (sortBy === 'date_desc') return timeB - timeA;
+      if (sortBy === 'date_asc') return timeA - timeB;
+      if (sortBy === 'dist_desc') return b.distance - a.distance;
+      if (sortBy === 'np_desc') return (b.weighted_average_watts || b.average_watts || 0) - (a.weighted_average_watts || a.average_watts || 0);
+      return 0;
+    });
+
+    return result;
+  }, [stravaActivities, searchQuery, sortBy]);
+
+  const handleLoadStravaActivity = async (act: StravaActivityRecord) => {
+    setLoadingStravaId(act.id);
+    try {
+      showToast(language === 'zh-TW' ? `正在從本地調取「${act.name}」秒級數據...` : `正在从本地调取「${act.name}」秒级数据...`, 'info');
+      const stream = await getStreamFromDb(act.id);
+      const { record, points } = convertStravaToLocalRecord(act, stream, ftpWatts, weightKg, maxHr);
+      await saveActivityToDb(record, points);
+      await onRefreshList();
+      onLoadActivity(record);
+      showToast(language === 'zh-TW' ? `已成功載入 Strava 騎行「${act.name}」！` : `已成功载入 Strava 骑行「${act.name}」！`, 'success');
+      onClose();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      showToast(`载入失败: ${message}`, 'error');
+    } finally {
+      setLoadingStravaId(null);
+    }
+  };
+
   const handleDelete = async (e: React.MouseEvent, id: string, name: string) => {
     e.stopPropagation();
     if (!window.confirm(`确定要删除「${name}」的记录与详细时序流吗？`)) return;
@@ -91,8 +154,9 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
       await deleteLocalActivity(id);
       showToast(`已删除活动「${name}」`, 'info');
       await onRefreshList();
-    } catch (err: any) {
-      showToast(`删除失败: ${err.message}`, 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      showToast(`删除失败: ${message}`, 'error');
     }
   };
 
@@ -104,8 +168,9 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
       await clearAllLocalActivities();
       showToast('已清空本地活动数据库', 'info');
       await onRefreshList();
-    } catch (err: any) {
-      showToast(`清空失败: ${err.message}`, 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      showToast(`清空失败: ${message}`, 'error');
     }
   };
 
@@ -126,8 +191,9 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast(`已导出 ${activities.length} 场活动备份文件！`, 'success');
-    } catch (err: any) {
-      showToast(`导出失败: ${err.message}`, 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      showToast(`导出失败: ${message}`, 'error');
     }
   };
 
@@ -140,8 +206,9 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
       const count = await importActivitiesBackup(text);
       showToast(`成功恢复 ${count} 场活动记录！`, 'success');
       await onRefreshList();
-    } catch (err: any) {
-      showToast(`恢复失败: ${err.message || '格式无效'}`, 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '格式无效';
+      showToast(`恢复失败: ${message}`, 'error');
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
@@ -153,8 +220,9 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
       const seeded = await seedDemoSeasonActivities(ftpWatts, weightKg, maxHr);
       showToast(`已成功写入 ${seeded.length} 场拟真赛季经典拉练数据！`, 'success');
       await onRefreshList();
-    } catch (err: any) {
-      showToast(`初始化演示数据失败: ${err.message}`, 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '未知错误';
+      showToast(`初始化演示数据失败: ${message}`, 'error');
     } finally {
       setIsSeeding(false);
     }
@@ -189,14 +257,14 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  本地活动档案库
+                  {language === 'zh-TW' ? '本地活動檔案庫' : '本地活动档案库'}
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-ios-blue/10 text-ios-blue border border-ios-blue/20 tabular-nums">
-                  {activities.length} 场骑行
+                  {activeTab === 'local' ? `${activities.length} 场骑行` : `${stravaActivities.length} 场同步`}
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                离线安全存储 · 时序与 MMP 功率矩阵本地持久化
+                {language === 'zh-TW' ? '離線安全存儲 · 時序與 MMP 功率矩陣本地持久化' : '离线安全存储 · 时序与 MMP 功率矩阵本地持久化'}
               </p>
             </div>
           </div>
@@ -210,6 +278,20 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
           </button>
         </div>
 
+        {/* Source Switcher: Local Archives vs Strava Local Cache */}
+        <div className="px-4 sm:px-5 pt-3 pb-2.5 bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/10">
+          <IOSSegmentedControl
+            options={[
+              { id: 'local', label: language === 'zh-TW' ? `本地已載入檔案 (${activities.length})` : `本地已载入档案 (${activities.length})` },
+              { id: 'strava', label: language === 'zh-TW' ? `Strava 本地同步庫 (${stravaActivities.length})` : `Strava 本地同步库 (${stravaActivities.length})` }
+            ]}
+            value={activeTab}
+            onChange={(val) => setActiveTab(val as 'local' | 'strava')}
+            size="sm"
+            fullWidth
+          />
+        </div>
+
         {/* Search & Filter Toolbar */}
         <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 space-y-2.5">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -220,7 +302,7 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="搜索活动名称或文件名..."
+                placeholder={activeTab === 'local' ? '搜索活动名称或文件名...' : '搜索 Strava 骑行活动...'}
                 className="h-9 w-full pl-9 pr-3 rounded-xl bg-white dark:bg-[#2C2C2E] border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-ios-blue"
               />
             </div>
@@ -233,155 +315,272 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
             >
               <option value="date_desc">按时间 (最新优先)</option>
               <option value="date_asc">按时间 (最早优先)</option>
-              <option value="tss_desc">按 TSS 训练负荷</option>
+              {activeTab === 'local' && <option value="tss_desc">按 TSS 训练负荷</option>}
               <option value="dist_desc">按骑行总里程</option>
               <option value="np_desc">按 NP 加权平均功率</option>
             </select>
 
-            {/* Filter by Format */}
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="h-9 bg-white dark:bg-[#2C2C2E] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-700 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-blue"
-            >
-              <option value="all">所有格式 ({activities.length})</option>
-              <option value="fit">FIT 原生码表</option>
-              <option value="gpx">GPX 轨迹</option>
-              <option value="tcx">TCX 训练</option>
-              <option value="demo">拟真示范数据</option>
-            </select>
+            {/* Filter by Format (Local Tab only) */}
+            {activeTab === 'local' && (
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="h-9 bg-white dark:bg-[#2C2C2E] border border-slate-200 dark:border-white/10 rounded-xl px-3 text-xs text-slate-700 dark:text-slate-200 font-medium focus:outline-none focus:border-ios-blue"
+              >
+                <option value="all">所有格式 ({activities.length})</option>
+                <option value="fit">FIT 原生码表</option>
+                <option value="gpx">GPX 轨迹</option>
+                <option value="tcx">TCX 训练</option>
+                <option value="strava">Strava 同步</option>
+                <option value="demo">拟真示范数据</option>
+              </select>
+            )}
           </div>
         </div>
 
         {/* Activity List Container */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5">
-          {filteredActivities.length === 0 ? (
-            <div className="py-12 text-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 flex items-center justify-center mx-auto">
-                <FolderArchive className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                  {searchQuery ? '未找到符合条件的活动记录' : '本地档案库暂无活动'}
-                </h4>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  {searchQuery
-                    ? '请尝试更换搜索关键字或清除格式筛选条件。'
-                    : '你可以拖拽或批量上传 .fit/.gpx/.tcx 码表文件，或直接载入 15 场经典拟真赛季拉练数据。'}
-                </p>
-              </div>
-
-              {!searchQuery && (
-                <button
-                  type="button"
-                  onClick={handleSeedDemoSeason}
-                  disabled={isSeeding}
-                  className="apple-touch h-9 px-4 rounded-xl bg-ios-blue text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-ios-sm hover:bg-ios-blue/90 transition"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>{isSeeding ? '正在写入...' : '一键载入 15 场拟真赛季拉练数据'}</span>
-                </button>
-              )}
-            </div>
-          ) : (
-            filteredActivities.map((act) => {
-              const isSelected = act.id === activeActivityId;
-              const dateStr = new Date(act.startDate || act.startTime).toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              });
-
-              return (
-                <div
-                  key={act.id}
-                  onClick={() => onLoadActivity(act)}
-                  className={`p-3 sm:p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-                    isSelected
-                      ? 'bg-ios-blue/5 border-ios-blue/40 shadow-xs'
-                      : 'bg-white dark:bg-[#2C2C2E]/50 border-slate-200/70 dark:border-white/10 hover:border-ios-blue/30 hover:bg-slate-50 dark:hover:bg-white/5'
-                  }`}
-                >
-                  {/* Left: Metadata */}
-                  <div className="space-y-1.5 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                        {act.name}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
-                        {act.fileType}
-                      </span>
-                      {isSelected && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-ios-blue text-white flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" />
-                          <span>当前正在分析</span>
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 font-mono tabular-nums">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-slate-400" />
-                        {dateStr}
-                      </span>
-                      <span className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
-                        {act.distanceKm.toFixed(1)} km
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Timer className="w-3 h-3 text-slate-400" />
-                        {formatDuration(act.movingTimeSec || act.totalDurationSec)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Mountain className="w-3 h-3 text-slate-400" />
-                        +{act.elevationGainM}m
-                      </span>
-                    </div>
-
-                    {/* Telemetry badges */}
-                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                      <span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-ios-orange/10 text-ios-orange tabular-nums">
-                        NP {act.normalizedPower} W
-                      </span>
-                      <span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-ios-blue/10 text-ios-blue tabular-nums">
-                        IF {act.intensityFactor}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-ios-purple/10 text-ios-purple tabular-nums">
-                        TSS {act.tss}
-                      </span>
-                      {act.hasShifting && act.shiftCount && (
-                        <span className="px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-400 tabular-nums">
-                          电变 {act.shiftCount}次
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right: Actions */}
-                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onLoadActivity(act);
-                      }}
-                      className="apple-touch h-9 px-3 rounded-xl bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue text-xs font-bold transition flex items-center gap-1"
-                    >
-                      <span>载入分析</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={(e) => handleDelete(e, act.id, act.name)}
-                      className="apple-touch h-9 w-9 rounded-xl bg-slate-100 hover:bg-ios-red/10 hover:text-ios-red dark:bg-white/10 text-slate-400 transition flex items-center justify-center"
-                      title="删除此记录"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+          {activeTab === 'local' ? (
+            /* TAB 1: Local Loaded Activities */
+            filteredActivities.length === 0 ? (
+              <div className="py-12 text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-400 flex items-center justify-center mx-auto">
+                  <FolderArchive className="w-6 h-6" />
                 </div>
-              );
-            })
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    {searchQuery ? '未找到符合条件的活动记录' : '本地档案库暂无活动'}
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                    {searchQuery
+                      ? '请尝试更换搜索关键字或清除格式筛选条件。'
+                      : '你可以拖拽或批量上传 .fit/.gpx/.tcx 码表文件，或切换至「Strava 本地同步库」直接选取骑行记录。'}
+                  </p>
+                </div>
+
+                {!searchQuery && (
+                  <button
+                    type="button"
+                    onClick={handleSeedDemoSeason}
+                    disabled={isSeeding}
+                    className="apple-touch h-9 px-4 rounded-xl bg-ios-blue text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-ios-sm hover:bg-ios-blue/90 transition"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{isSeeding ? '正在写入...' : '一键载入 15 场拟真赛季拉练数据'}</span>
+                  </button>
+                )}
+              </div>
+            ) : (
+              filteredActivities.map((act) => {
+                const isSelected = act.id === activeActivityId;
+                const dateStr = new Date(act.startDate || act.startTime).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                });
+
+                return (
+                  <div
+                    key={act.id}
+                    onClick={() => onLoadActivity(act)}
+                    className={`p-3 sm:p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                      isSelected
+                        ? 'bg-ios-blue/10 border-ios-blue/30 shadow-ios-sm ring-1 ring-ios-blue/40'
+                        : 'bg-white dark:bg-[#2C2C2E]/60 border-slate-200/80 dark:border-white/10 hover:border-ios-blue/30 hover:bg-slate-50/80 dark:hover:bg-[#2C2C2E]'
+                    }`}
+                  >
+                    {/* Activity Meta */}
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+                          {act.name}
+                        </span>
+
+                        {/* Format Tag */}
+                        <span
+                          className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase ${
+                            act.fileType === 'fit'
+                              ? 'bg-ios-blue/10 text-ios-blue border border-ios-blue/20'
+                              : act.fileType === 'gpx'
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                              : act.fileType === 'strava'
+                              ? 'bg-[#FC4C02]/10 text-[#FC4C02] border border-[#FC4C02]/20'
+                              : act.fileType === 'tcx'
+                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                              : 'bg-ios-purple/10 text-ios-purple border border-ios-purple/20'
+                          }`}
+                        >
+                          {act.fileType}
+                        </span>
+
+                        {isSelected && (
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-ios-blue">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>当前正在查看</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Primary Metrics Row */}
+                      <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 flex-wrap tabular-nums">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{dateStr}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Timer className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{formatDuration(act.movingTimeSec || act.totalDurationSec)}</span>
+                        </div>
+                        <div className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
+                          <span>{act.distanceKm} km</span>
+                        </div>
+                        {act.elevationGainM > 0 && (
+                          <div className="flex items-center gap-1">
+                            <Mountain className="w-3.5 h-3.5 text-ios-orange" />
+                            <span>+{act.elevationGainM}m</span>
+                          </div>
+                        )}
+                        {act.normalizedPower > 0 && (
+                          <div className="flex items-center gap-1 font-semibold text-ios-blue">
+                            <Zap className="w-3.5 h-3.5" />
+                            <span>{act.normalizedPower}W NP</span>
+                          </div>
+                        )}
+                        {act.tss > 0 && (
+                          <div className="flex items-center gap-1 text-ios-purple font-medium">
+                            <Flame className="w-3.5 h-3.5" />
+                            <span>{act.tss} TSS</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions on Desktop / Mobile */}
+                    <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => handleDelete(e, act.id, act.name)}
+                        className="apple-touch w-8 h-8 rounded-xl text-slate-400 hover:text-ios-red hover:bg-ios-red/10 flex items-center justify-center transition"
+                        title="删除该记录"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => onLoadActivity(act)}
+                        className={`apple-touch h-8 px-3 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+                          isSelected
+                            ? 'bg-ios-blue text-white shadow-ios-sm'
+                            : 'bg-slate-100 hover:bg-ios-blue hover:text-white dark:bg-white/10 text-slate-700 dark:text-slate-200'
+                        }`}
+                      >
+                        <span>{isSelected ? '重载' : '载入'}</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )
+          ) : (
+            /* TAB 2: Strava Local Synchronized Activities */
+            filteredStravaActivities.length === 0 ? (
+              <div className="py-12 text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-[#FC4C02] flex items-center justify-center mx-auto">
+                  <Cloud className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    {searchQuery ? '未找到符合条件的 Strava 骑行记录' : '本地暂未检测到 Strava 骑行记录'}
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                    {searchQuery
+                      ? '请尝试更换搜索关键字。'
+                      : '请先前往「Strava 数据驾驶舱」同步历史骑行，同步后所有骑行记录即可直接在本地选取并秒级分析！'}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              filteredStravaActivities.map((act) => {
+                const distKm = (act.distance / 1000).toFixed(1);
+                const eleM = Math.round(act.total_elevation_gain || 0);
+                const durSec = act.moving_time || act.elapsed_time || 0;
+                const dateStr = act.start_date.split('T')[0];
+                const np = act.weighted_average_watts || act.average_watts || 0;
+                const isLoadingThis = loadingStravaId === act.id;
+
+                return (
+                  <div
+                    key={act.id}
+                    onClick={() => !isLoadingThis && handleLoadStravaActivity(act)}
+                    className="p-3 sm:p-3.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#2C2C2E]/60 hover:border-orange-500/40 hover:bg-orange-500/[0.02] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+                          {act.name}
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#FC4C02]/10 text-[#FC4C02] border border-[#FC4C02]/20 flex items-center gap-1">
+                          <Cloud className="w-2.5 h-2.5" />
+                          <span>Strava</span>
+                        </span>
+                        {act.sport_type && (
+                          <span className="px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
+                            {act.sport_type}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 flex-wrap tabular-nums">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{dateStr}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Timer className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{formatDuration(durSec)}</span>
+                        </div>
+                        <div className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
+                          <span>{distKm} km</span>
+                        </div>
+                        {eleM > 0 && (
+                          <div className="flex items-center gap-1 text-ios-orange">
+                            <Mountain className="w-3.5 h-3.5" />
+                            <span>+{eleM}m</span>
+                          </div>
+                        )}
+                        {np > 0 && (
+                          <div className="flex items-center gap-1 font-semibold text-ios-blue">
+                            <Zap className="w-3.5 h-3.5" />
+                            <span>{np}W NP</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLoadStravaActivity(act);
+                        }}
+                        disabled={isLoadingThis}
+                        className="apple-touch h-8 px-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition flex items-center gap-1 disabled:opacity-50 shadow-ios-sm shadow-orange-500/20"
+                      >
+                        {isLoadingThis ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Activity className="w-3.5 h-3.5" />
+                        )}
+                        <span>{isLoadingThis ? '载入中...' : '载入分析'}</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )
           )}
         </div>
 
@@ -423,7 +622,7 @@ export const ActivityArchiveModal: React.FC<ActivityArchiveModalProps> = ({
 
           {/* Right: Clear All & Close */}
           <div className="flex items-center gap-2">
-            {activities.length > 0 && (
+            {activeTab === 'local' && activities.length > 0 && (
               <button
                 type="button"
                 onClick={handleClearAll}

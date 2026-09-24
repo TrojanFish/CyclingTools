@@ -26,7 +26,9 @@ import {
   Download,
   History,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  MapPin,
+  Loader2
 } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
@@ -53,6 +55,13 @@ import { useRiderProfile } from '../../context/RiderProfileContext';
 import { useLanguageAndUnit } from '../../context/LanguageAndUnitContext';
 import { useToast } from '../../context/ToastContext';
 import { StravaActivityRecord } from '../../utils/indexedDb';
+import { setPendingTransfer } from '../../hooks/useToolDraftState';
+import { saveActivityToDb } from '../../utils/localActivityDb';
+import {
+  convertStravaToLocalRecord,
+  stravaStreamsToWaypoints,
+  exportStravaActivityToGpxXml
+} from '../../utils/stravaStreamAdapter';
 import {
   TimePeriod,
   filterByPeriod,
@@ -103,10 +112,13 @@ interface StravaDataCockpitProps {
 type CockpitTab = 'overview' | 'fitness' | 'segments' | 'fleet';
 
 export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigateTool }) => {
-  const { isConnected, athlete, activities: realActivities, isSyncing, syncActivities, getStarredSegments, syncProgress } = useStrava();
+  const { isConnected, athlete, activities: realActivities, isSyncing, syncActivities, getStarredSegments, syncProgress, getActivityStreams } = useStrava();
   const { profile, bikes: userBikes } = useRiderProfile();
   const { language, convertDistance, convertElevation } = useLanguageAndUnit();
   const { showToast } = useToast();
+
+  const [loadingActId, setLoadingActId] = useState<number | null>(null);
+  const [loadingActAction, setLoadingActAction] = useState<'analyze' | 'gpx' | 'export' | null>(null);
 
   // Tab State: Overview vs Fitness vs Fleet
   const [activeTab, setActiveTab] = useState<CockpitTab>('overview');
@@ -253,6 +265,88 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
     if (onNavigateTool) {
       showToast(`已选定路段「${segment.name}」，正在前往爬坡配速规划师...`, 'success');
       onNavigateTool('climb-pacing-planner');
+    }
+  };
+
+  const handleAnalyzeStravaActivity = async (act: StravaActivityRecord) => {
+    setLoadingActId(act.id);
+    setLoadingActAction('analyze');
+    try {
+      showToast(language === 'zh-TW' ? `正在從本地調取「${act.name}」秒級數據...` : `正在从本地调取「${act.name}」秒级数据...`, 'info');
+      const stream = await getActivityStreams(act.id);
+      const ftp = profile.ftpWatts || 220;
+      const weight = profile.weightKg || 68;
+      const maxHr = profile.maxHr || 185;
+
+      const { record, points } = convertStravaToLocalRecord(act, stream, ftp, weight, maxHr);
+      await saveActivityToDb(record, points);
+
+      setPendingTransfer('solorider_pending_activity_analysis', {
+        activityId: record.id,
+        name: act.name,
+      });
+
+      if (onNavigateTool) {
+        onNavigateTool('activity-analyzer');
+      }
+    } catch (err: any) {
+      showToast(`载入深度分析失败: ${err.message || '未知错误'}`, 'error');
+    } finally {
+      setLoadingActId(null);
+      setLoadingActAction(null);
+    }
+  };
+
+  const handleSendStravaToGpx = async (act: StravaActivityRecord) => {
+    setLoadingActId(act.id);
+    setLoadingActAction('gpx');
+    try {
+      showToast(language === 'zh-TW' ? `正在讀取「${act.name}」GPS 航跡...` : `正在读取「${act.name}」GPS 航迹...`, 'info');
+      const stream = await getActivityStreams(act.id);
+      const waypoints = stravaStreamsToWaypoints(act, stream);
+      if (waypoints.length === 0) {
+        showToast(language === 'zh-TW' ? '該次騎行無 GPS 座標航跡，無法載入工坊' : '该次骑行无 GPS 坐标航迹，无法载入工坊', 'warning');
+        return;
+      }
+
+      setPendingTransfer('solorider_pending_gpx_route', {
+        name: act.name,
+        waypoints,
+      });
+
+      if (onNavigateTool) {
+        onNavigateTool('gpx-creator');
+      }
+    } catch (err: any) {
+      showToast(`载入 GPX 工坊失败: ${err.message || '未知错误'}`, 'error');
+    } finally {
+      setLoadingActId(null);
+      setLoadingActAction(null);
+    }
+  };
+
+  const handleExportStravaGpx = async (act: StravaActivityRecord) => {
+    setLoadingActId(act.id);
+    setLoadingActAction('export');
+    try {
+      showToast(language === 'zh-TW' ? `正在生成「${act.name}」GPX 文件...` : `正在生成「${act.name}」GPX 文件...`, 'info');
+      const stream = await getActivityStreams(act.id);
+      const xml = exportStravaActivityToGpxXml(act, stream);
+      const blob = new Blob([xml], { type: 'application/gpx+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${(act.name || 'Strava_Activity').replace(/[\\/:*?"<>|]/g, '_')}.gpx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(language === 'zh-TW' ? 'GPX 檔案匯出成功！' : 'GPX 文件导出成功！', 'success');
+    } catch (err: any) {
+      showToast(err.message || '导出 GPX 失败', 'error');
+    } finally {
+      setLoadingActId(null);
+      setLoadingActAction(null);
     }
   };
 
@@ -2508,15 +2602,57 @@ export const StravaDataCockpit: React.FC<StravaDataCockpitProps> = ({ onNavigate
                       </div>
                     </div>
 
-                    {onNavigateTool && (
+                    <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                      {onNavigateTool && (
+                        <button
+                          type="button"
+                          onClick={() => handleAnalyzeStravaActivity(act)}
+                          disabled={loadingActId === act.id}
+                          className="h-8 px-2.5 sm:px-3 rounded-lg bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue text-xs font-semibold apple-touch transition flex items-center gap-1 disabled:opacity-50"
+                          title={language === 'zh-TW' ? '從本地調取該次騎行秒級數據並轉入深度分析' : '从本地调取该次骑行秒级数据并转入深度分析'}
+                        >
+                          {loadingActId === act.id && loadingActAction === 'analyze' ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Activity className="w-3.5 h-3.5" />
+                          )}
+                          <span>{language === 'zh-TW' ? '深度分析' : '深度分析'}</span>
+                        </button>
+                      )}
+
+                      {onNavigateTool && (
+                        <button
+                          type="button"
+                          onClick={() => handleSendStravaToGpx(act)}
+                          disabled={loadingActId === act.id}
+                          className="h-8 px-2.5 sm:px-3 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold apple-touch transition flex items-center gap-1 disabled:opacity-50"
+                          title={language === 'zh-TW' ? '將該次騎行 GPS 軌跡載入 GPX 路線工坊' : '将该次骑行 GPS 轨迹载入 GPX 路线工坊'}
+                        >
+                          {loadingActId === act.id && loadingActAction === 'gpx' ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <MapPin className="w-3.5 h-3.5" />
+                          )}
+                          <span className="hidden sm:inline">GPX </span>
+                          <span>{language === 'zh-TW' ? '工坊' : '工坊'}</span>
+                        </button>
+                      )}
+
                       <button
-                        onClick={() => onNavigateTool('activity-analyzer')}
-                        className="self-start sm:self-auto h-8 px-3 rounded-lg bg-ios-blue/10 hover:bg-ios-blue/20 text-ios-blue text-xs font-medium apple-touch transition flex items-center gap-1 shrink-0"
+                        type="button"
+                        onClick={() => handleExportStravaGpx(act)}
+                        disabled={loadingActId === act.id}
+                        className="h-8 px-2 sm:px-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-medium apple-touch transition flex items-center gap-1 disabled:opacity-50"
+                        title={language === 'zh-TW' ? '匯出為標準 GPX 航跡檔' : '导出为标准 GPX 航迹文件'}
                       >
-                        <span>深度分析</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        {loadingActId === act.id && loadingActAction === 'export' ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Download className="w-3.5 h-3.5" />
+                        )}
+                        <span className="hidden sm:inline">{language === 'zh-TW' ? '匯出' : '导出'}</span>
                       </button>
-                    )}
+                    </div>
                   </div>
                 );
               })}
