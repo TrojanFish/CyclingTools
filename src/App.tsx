@@ -9,7 +9,6 @@ import { Dashboard } from './components/Dashboard';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/common/BackToTop';
 import { IOSToolSkeleton } from './components/common/IOSToolSkeleton';
-import { prefetchTool } from './utils/toolLoader';
 
 // Lazy-loaded Tool Components with zero-jank chunking
 const CyclePowerCalculator = React.lazy(() => import('./components/tools/CyclePowerCalculator').then(m => ({ default: m.CyclePowerCalculator })));
@@ -35,7 +34,6 @@ const StravaDataCockpit = React.lazy(() => import('./components/tools/StravaData
 const TrainingPlanCalendar = React.lazy(() => import('./components/tools/TrainingPlanCalendar').then(m => ({ default: m.TrainingPlanCalendar })));
 import { PwaInstallPrompt } from './components/common/PwaInstallPrompt';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
-import { CustomToolSelect } from './components/common/CustomToolSelect';
 import { MacosSidebar } from './components/common/MacosSidebar';
 import { CommandPaletteModal } from './components/common/CommandPaletteModal';
 import { OfflineStatusPill } from './components/common/OfflineStatusPill';
@@ -43,7 +41,6 @@ import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { TOOLS_LIST } from './data/toolsList';
 import { smoothScrollToTop } from './utils/toolNavHelper';
 import { parseToolIdFromHash, syncHashToBrowser } from './utils/hashRouter';
-import { Home, ChevronRight, ChevronLeft } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
   const [currentToolId, setCurrentToolId] = useState<string | null>(() => {
@@ -141,7 +138,7 @@ const MainAppContent: React.FC = () => {
 
   const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
-  const { language, t } = useLanguageAndUnit();
+  const { language } = useLanguageAndUnit();
 
   // Global keyboard shortcut: Cmd+K / Ctrl+K opens Command Palette
   useEffect(() => {
@@ -176,15 +173,6 @@ const MainAppContent: React.FC = () => {
     });
   }, [selectedCategory, searchTerm]);
 
-  // Current active tool meta & navigation indexes
-  const currentToolIndex = useMemo(() => {
-    return TOOLS_LIST.findIndex(t => t.id === currentToolId);
-  }, [currentToolId]);
-
-  const currentToolMeta = useMemo(() => {
-    return TOOLS_LIST.find(t => t.id === currentToolId);
-  }, [currentToolId]);
-
   // Unified tool navigation with browser URL hash sync
   const handleSelectTool = (id: string | null) => {
     setCurrentToolId(id);
@@ -210,18 +198,6 @@ const MainAppContent: React.FC = () => {
       window.removeEventListener('popstate', handleUrlChange);
     };
   }, []);
-
-  const handlePrevTool = () => {
-    if (currentToolIndex > 0) {
-      handleSelectTool(TOOLS_LIST[currentToolIndex - 1].id);
-    }
-  };
-
-  const handleNextTool = () => {
-    if (currentToolIndex < TOOLS_LIST.length - 1) {
-      handleSelectTool(TOOLS_LIST[currentToolIndex + 1].id);
-    }
-  };
 
   return (
     <div className={`min-h-screen lg:h-screen lg:overflow-hidden flex flex-col justify-between ${isDark ? 'dark bg-[#000000] text-slate-100' : 'light bg-[#F2F2F7] text-slate-900'}`}>
@@ -272,91 +248,8 @@ const MainAppContent: React.FC = () => {
           >
             <div className="p-4 sm:p-5 pb-24 lg:pb-8">
               <main className="max-w-7xl mx-auto space-y-4 sm:space-y-5">
-            {/* Top Breadcrumb & Next/Prev Tool Switcher (Inside a tool) */}
-            {currentToolId && currentToolMeta && (
-              <div className="relative z-30 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-black/[0.05] dark:border-white/[0.08] bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-2xl flex items-center justify-between gap-2 shadow-ios-sm no-print">
-                {/* Left: Mobile Back Button & Desktop Breadcrumbs */}
-                <div className="flex items-center gap-2 shrink-0">
-                  {/* Below lg: Back to Home Button with Home SVG Icon - Standard h-9 w-9 Apple HIG control */}
-                  <button
-                    onClick={() => handleSelectTool(null)}
-                    className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-xl bg-ios-blue/10 border border-ios-blue/20 text-ios-blue hover:bg-ios-blue/15 transition active:scale-95 shrink-0 apple-touch"
-                    title={t('backToHome')}
-                    aria-label={t('backToHome')}
-                  >
-                    <Home className="w-4 h-4" />
-                  </button>
-
-                  {/* Desktop: Breadcrumb Hierarchy: 首页 > 分类 > 工具名 */}
-                  <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    <button
-                      onClick={() => handleSelectTool(null)}
-                      className="cursor-pointer hover:text-ios-blue transition font-medium hover:underline text-slate-600 dark:text-slate-300"
-                    >
-                      {language === 'zh-TW' ? '首頁' : '首页'}
-                    </button>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
-                    <span>
-                      {language === 'zh-TW' && currentToolMeta.categoryLabelTw
-                        ? currentToolMeta.categoryLabelTw
-                        : currentToolMeta.categoryLabel}
-                    </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />
-                    <span className="text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[220px]">
-                      {language === 'zh-TW' && currentToolMeta?.titleTw
-                        ? currentToolMeta.titleTw
-                        : currentToolMeta?.title}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Right: Sequential Tool Navigation (Prev / Next) + Fluid Jump Selector - Unified h-9 controls */}
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-end min-w-0">
-                  <button
-                    onClick={handlePrevTool}
-                    onMouseEnter={() => {
-                      if (currentToolIndex > 0) prefetchTool(TOOLS_LIST[currentToolIndex - 1].id);
-                    }}
-                    onTouchStart={() => {
-                      if (currentToolIndex > 0) prefetchTool(TOOLS_LIST[currentToolIndex - 1].id);
-                    }}
-                    disabled={currentToolIndex <= 0}
-                    className="h-9 px-2 sm:px-2.5 flex items-center justify-center rounded-xl bg-white/80 dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch shadow-2xs"
-                    title={t('prevTool')}
-                    aria-label={t('prevTool')}
-                  >
-                    <ChevronLeft className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                    <span className="hidden sm:inline sm:ml-1">{t('prevTool')}</span>
-                  </button>
-
-                  <CustomToolSelect
-                    currentToolId={currentToolId}
-                    onSelectTool={(id) => handleSelectTool(id)}
-                    language={language}
-                  />
-
-                  <button
-                    onClick={handleNextTool}
-                    onMouseEnter={() => {
-                      if (currentToolIndex < TOOLS_LIST.length - 1) prefetchTool(TOOLS_LIST[currentToolIndex + 1].id);
-                    }}
-                    onTouchStart={() => {
-                      if (currentToolIndex < TOOLS_LIST.length - 1) prefetchTool(TOOLS_LIST[currentToolIndex + 1].id);
-                    }}
-                    disabled={currentToolIndex >= TOOLS_LIST.length - 1}
-                    className="h-9 px-2 sm:px-2.5 flex items-center justify-center rounded-xl bg-white/80 dark:bg-[#1C1C1E] border border-black/[0.06] dark:border-white/10 text-xs text-slate-700 dark:text-slate-300 hover:text-ios-blue disabled:opacity-30 disabled:hover:text-slate-400 transition shrink-0 apple-touch shadow-2xs"
-                    title={t('nextTool')}
-                    aria-label={t('nextTool')}
-                  >
-                    <span className="hidden sm:inline sm:mr-1">{t('nextTool')}</span>
-                    <ChevronRight className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Render Active View */}
-            {currentToolId === null && (
+                {/* Render Active View */}
+                {currentToolId === null && (
               <Dashboard
                 onSelectTool={(id) => {
                   handleSelectTool(id);
